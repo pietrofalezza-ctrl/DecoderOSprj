@@ -113,7 +113,14 @@ function WorkspacePage() {
     setSummaryText("");
     setQualityText("");
     setSecurityText("");
+    setAiOriginText("");
   }, [selectedFileId, providerValue]);
+
+  // Open the repo-level AI-origin sheet if landed via ?view=analyze
+  useEffect(() => {
+    if (search.view === "analyze") setRepoSheetOpen(true);
+  }, [search.view]);
+
 
   const isLocal = providerValue.startsWith("local:");
   const lang = (i18n.resolvedLanguage as "en" | "it" | "zh") || "en";
