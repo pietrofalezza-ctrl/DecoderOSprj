@@ -91,7 +91,7 @@ function WorkspacePage() {
   return (
     <AppShell>
       <div className="h-[calc(100vh-3.5rem)]">
-        <ResizablePanelGroup direction="horizontal">
+        <ResizablePanelGroup orientation="horizontal">
           <ResizablePanel defaultSize={20} minSize={14}>
             <div className="flex h-full flex-col border-r border-border bg-sidebar">
               <div className="border-b border-border px-3 py-2 text-xs font-medium uppercase text-muted-foreground">
