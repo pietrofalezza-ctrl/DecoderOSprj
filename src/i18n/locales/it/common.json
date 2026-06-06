@@ -1,0 +1,115 @@
+{
+  "brand": {
+    "name": "De-coder",
+    "tagline": "Trasforma il codice sorgente in conoscenza leggibile"
+  },
+  "nav": {
+    "dashboard": "Dashboard",
+    "settings": "Impostazioni",
+    "signOut": "Esci",
+    "signIn": "Accedi"
+  },
+  "languages": {
+    "en": "English",
+    "it": "Italiano",
+    "zh": "简体中文"
+  },
+  "landing": {
+    "heroTitle": "Comprendi qualsiasi codice, nella tua lingua, al tuo livello",
+    "heroSubtitle": "Open source. Porta la tua chiave AI. Cloud o completamente locale.",
+    "ctaStart": "Inizia",
+    "ctaSignIn": "Accedi",
+    "feature1Title": "Multilingua",
+    "feature1Body": "Italiano, English, 简体中文 — cambia quando vuoi.",
+    "feature2Title": "Porta la tua AI",
+    "feature2Body": "OpenAI, Anthropic, Gemini, OpenRouter — o locale con Ollama / LM Studio.",
+    "feature3Title": "Local-first",
+    "feature3Body": "In modalità Locale il tuo codice non lascia mai la tua macchina."
+  },
+  "auth": {
+    "title": "Accedi a De-coder",
+    "subtitle": "Email/password, Google, oppure continua in locale.",
+    "emailLabel": "Email",
+    "passwordLabel": "Password",
+    "signIn": "Accedi",
+    "signUp": "Crea account",
+    "or": "oppure",
+    "withGoogle": "Continua con Google",
+    "githubNote": "Il login con GitHub OAuth non è ancora disponibile in questa build.",
+    "switchToSignUp": "Nessun account? Creane uno",
+    "switchToSignIn": "Hai già un account? Accedi",
+    "checkEmail": "Controlla la tua email per confermare l'account."
+  },
+  "dashboard": {
+    "title": "I tuoi progetti",
+    "newProject": "Nuovo progetto",
+    "empty": "Non hai ancora progetti.",
+    "projectNamePlaceholder": "Nome progetto",
+    "projectDescPlaceholder": "Descrizione (opzionale)",
+    "create": "Crea"
+  },
+  "project": {
+    "repos": "Repository",
+    "uploadZip": "Carica ZIP",
+    "uploading": "Caricamento…",
+    "noRepos": "Nessuna repository. Carica uno ZIP per iniziare.",
+    "openRepo": "Apri"
+  },
+  "workspace": {
+    "files": "File",
+    "selectFile": "Seleziona un file per vederne il sorgente",
+    "explain": "Spiega questo file",
+    "explaining": "Sto spiegando…",
+    "proficiency": "Livello",
+    "type": "Tipo",
+    "provider": "Provider",
+    "model": "Modello",
+    "noProvider": "Aggiungi una chiave API in Impostazioni per attivare le spiegazioni AI.",
+    "tabs": {
+      "human": "Riassunto umano",
+      "technical": "Riassunto tecnico"
+    }
+  },
+  "proficiency": {
+    "nontech": "Lettore non tecnico",
+    "junior": "Sviluppatore junior",
+    "intermediate": "Sviluppatore intermedio",
+    "senior": "Sviluppatore senior",
+    "architect": "Software architect",
+    "cto": "CTO / Dirigente tecnico"
+  },
+  "settings": {
+    "title": "Impostazioni",
+    "profileSection": "Profilo",
+    "displayName": "Nome visualizzato",
+    "language": "Lingua preferita",
+    "save": "Salva",
+    "saved": "Salvato.",
+    "byokSection": "Provider AI (BYOK)",
+    "byokIntro": "De-coder non salva mai le tue chiavi in chiaro. Il tuo codice non viene usato per addestrare modelli.",
+    "addKey": "Salva chiave",
+    "removeKey": "Rimuovi",
+    "configured": "Configurato",
+    "notConfigured": "Non configurato",
+    "providers": {
+      "openai": "OpenAI",
+      "anthropic": "Anthropic",
+      "gemini": "Google Gemini",
+      "openrouter": "OpenRouter"
+    },
+    "localSection": "Endpoint AI locali",
+    "localIntro": "La modalità locale gira interamente nel browser verso il tuo localhost. Il codice non raggiunge mai i nostri server.",
+    "endpointKind": "Tipo",
+    "endpointUrl": "Base URL",
+    "endpointModel": "Modello predefinito",
+    "addEndpoint": "Salva endpoint"
+  },
+  "errors": {
+    "generic": "Qualcosa è andato storto.",
+    "zipTooLarge": "Il file ZIP è troppo grande.",
+    "noFiles": "Nessun file leggibile trovato nello ZIP."
+  },
+  "footer": {
+    "ownership": "Il tuo codice e la documentazione generata appartengono a te. De-coder non addestra modelli sulle tue repository."
+  }
+}
