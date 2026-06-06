@@ -1,9 +1,10 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
 
-import { Button } from "@/components/ui/button";
+
 import { LangSwitcher } from "@/components/LangSwitcher";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { PublicHeaderAuthSlot } from "@/components/PublicHeaderAuthSlot";
 
 export const Route = createFileRoute("/docs")({
   head: () => ({
@@ -44,9 +45,7 @@ function DocsPage() {
         <div className="flex items-center gap-1">
           <ThemeToggle />
           <LangSwitcher />
-          <Button asChild size="sm">
-            <Link to="/auth">{t("landing.ctaSignIn")}</Link>
-          </Button>
+          <PublicHeaderAuthSlot ctaLabelKey="landing.ctaSignIn" showArrow={false} />
         </div>
       </header>
 

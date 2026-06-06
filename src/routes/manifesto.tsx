@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { LangSwitcher } from "@/components/LangSwitcher";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { Logo } from "@/components/Logo";
+import { PublicHeaderAuthSlot } from "@/components/PublicHeaderAuthSlot";
 
 export const Route = createFileRoute("/manifesto")({
   head: () => ({
@@ -51,9 +52,7 @@ function ManifestoPage() {
             </Button>
             <LangSwitcher />
             <ThemeToggle />
-            <Button asChild size="sm" className="ml-2">
-              <Link to="/auth">{t("landing.ctaStart")}</Link>
-            </Button>
+            <PublicHeaderAuthSlot showArrow={false} />
           </div>
         </div>
       </header>
