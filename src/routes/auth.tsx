@@ -66,6 +66,11 @@ function AuthPage() {
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!accepted) {
+      toast.error(t("auth.disclaimerRequired"));
+      return;
+    }
+    persistAcceptance();
     setLoading(true);
     try {
       if (mode === "signup") {
@@ -89,6 +94,11 @@ function AuthPage() {
   };
 
   const google = async () => {
+    if (!accepted) {
+      toast.error(t("auth.disclaimerRequired"));
+      return;
+    }
+    persistAcceptance();
     setLoading(true);
     try {
       const r = await lovable.auth.signInWithOAuth("google", {
@@ -139,7 +149,30 @@ function AuthPage() {
                 onChange={(e) => setPassword(e.target.value)}
               />
             </div>
-            <Button type="submit" className="w-full" disabled={loading}>
+            <div className="flex items-start gap-2 rounded-md border border-border/60 bg-muted/30 p-3">
+              <Checkbox
+                id="disclaimer"
+                checked={accepted}
+                onCheckedChange={(v) => setAccepted(v === true)}
+                className="mt-0.5"
+              />
+              <Label
+                htmlFor="disclaimer"
+                className="text-xs font-normal leading-relaxed text-muted-foreground"
+              >
+                {t("auth.disclaimerAcceptPrefix")}
+                <Link
+                  to="/terms"
+                  target="_blank"
+                  className="font-medium text-primary underline-offset-2 hover:underline"
+                >
+                  {t("auth.disclaimerAcceptLink")}
+                </Link>
+                {t("auth.disclaimerAcceptSuffix")}
+              </Label>
+            </div>
+
+            <Button type="submit" className="w-full" disabled={loading || !accepted}>
               {mode === "signin" ? t("auth.signIn") : t("auth.signUp")}
             </Button>
           </form>
@@ -150,7 +183,12 @@ function AuthPage() {
             <div className="h-px flex-1 bg-border" />
           </div>
 
-          <Button variant="outline" className="w-full" onClick={google} disabled={loading}>
+          <Button
+            variant="outline"
+            className="w-full"
+            onClick={google}
+            disabled={loading || !accepted}
+          >
             {t("auth.withGoogle")}
           </Button>
           <p className="mt-3 text-xs text-muted-foreground">{t("auth.githubNote")}</p>
