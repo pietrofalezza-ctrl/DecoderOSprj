@@ -99,35 +99,4 @@ export async function callCloudProvider(args: {
   throw new Error(`Unknown provider: ${provider}`);
 }
 
-export function buildPrompt(args: {
-  proficiency: string;
-  explanationType: "human" | "technical";
-  language: "en" | "it" | "zh";
-  filePath: string;
-  fileContent: string;
-}): { system: string; user: string } {
-  const langName =
-    args.language === "it" ? "Italian" : args.language === "zh" ? "Simplified Chinese" : "English";
-  const audience: Record<string, string> = {
-    nontech: "a non-technical reader (manager, student, curious user)",
-    junior: "a junior developer (1–2 years experience)",
-    intermediate: "an intermediate developer",
-    senior: "a senior developer",
-    architect: "a software architect",
-    cto: "a CTO / technical executive who wants strategic implications",
-  };
-  const audienceText = audience[args.proficiency] ?? audience.intermediate;
-  const focus =
-    args.explanationType === "human"
-      ? "Explain in plain language what this file does and why it exists. Avoid jargon."
-      : "Give a precise technical summary: responsibilities, key functions/classes, inputs/outputs, side effects, and notable patterns.";
-
-  const system = `You are De-coder, an assistant that helps people understand source code.
-Audience: ${audienceText}.
-Reply in ${langName}.
-${focus}
-Be concise (under ~350 words). Use Markdown. Never invent behavior you cannot infer from the code.`;
-
-  const user = `File: ${args.filePath}\n\n\`\`\`\n${args.fileContent}\n\`\`\``;
-  return { system, user };
-}
+export { buildPrompt } from "./prompt";
