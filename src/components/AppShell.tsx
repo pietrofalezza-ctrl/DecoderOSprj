@@ -25,7 +25,7 @@ export function AppShell({ children }: { children: ReactNode }) {
   return (
     <div className="flex min-h-screen flex-col bg-background">
       <header className="flex h-14 items-center justify-between border-b border-border px-4">
-        <Link to="/_authenticated/dashboard" className="flex items-center gap-2 font-semibold">
+        <Link to="/dashboard" className="flex items-center gap-2 font-semibold">
           <span className="inline-block h-2 w-2 rounded-full bg-primary" />
           <span>{t("brand.name")}</span>
         </Link>
@@ -39,13 +39,13 @@ export function AppShell({ children }: { children: ReactNode }) {
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               <DropdownMenuItem asChild>
-                <Link to="/_authenticated/dashboard">
+                <Link to="/dashboard">
                   <LayoutDashboard className="mr-2 h-4 w-4" />
                   {t("nav.dashboard")}
                 </Link>
               </DropdownMenuItem>
               <DropdownMenuItem asChild>
-                <Link to="/_authenticated/settings">
+                <Link to="/settings">
                   <Settings className="mr-2 h-4 w-4" />
                   {t("nav.settings")}
                 </Link>

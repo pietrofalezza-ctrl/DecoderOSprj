@@ -53,7 +53,7 @@ function ProjectPage() {
     onSuccess: (r) => {
       qc.invalidateQueries({ queryKey: ["project", projectId] });
       navigate({
-        to: "/_authenticated/projects/$projectId/repos/$repoId",
+        to: "/projects/$projectId/repos/$repoId",
         params: { projectId, repoId: r.repository_id },
       });
     },
@@ -104,7 +104,7 @@ function ProjectPage() {
           {data.data?.repositories.map((r) => (
             <Link
               key={r.id}
-              to="/_authenticated/projects/$projectId/repos/$repoId"
+              to="/projects/$projectId/repos/$repoId"
               params={{ projectId, repoId: r.id }}
               className="flex items-center justify-between rounded-md border border-border bg-card p-3 text-sm hover:border-primary/60"
             >

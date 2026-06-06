@@ -42,7 +42,7 @@ function DashboardPage() {
       setOpen(false);
       setName("");
       setDesc("");
-      navigate({ to: "/_authenticated/projects/$projectId", params: { projectId: r.id } });
+      navigate({ to: "/projects/$projectId", params: { projectId: r.id } });
     },
     onError: (e: any) => toast.error(e?.message ?? t("errors.generic")),
   });
@@ -95,7 +95,7 @@ function DashboardPage() {
           {projects.data?.projects.map((p) => (
             <Link
               key={p.id}
-              to="/_authenticated/projects/$projectId"
+              to="/projects/$projectId"
               params={{ projectId: p.id }}
               className="group rounded-lg border border-border bg-card p-4 transition-colors hover:border-primary/60"
             >
