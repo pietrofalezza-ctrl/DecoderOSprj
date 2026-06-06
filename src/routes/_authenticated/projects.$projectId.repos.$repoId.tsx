@@ -229,6 +229,24 @@ function WorkspacePage() {
     onError: (e: any) => toast.error(e?.message ?? t("errors.generic")),
   });
 
+  const aiOriginMut = useMutation({
+    mutationFn: () => runAnalysisKind("ai_origin"),
+    onSuccess: (text) => setAiOriginText(text),
+    onError: (e: any) => toast.error(e?.message ?? t("errors.generic")),
+  });
+
+  const repoAiMut = useMutation({
+    mutationFn: async () => {
+      if (!providerValue.startsWith("cloud:")) throw new Error("needs_cloud_provider");
+      const provider = providerValue.slice(6) as CloudProvider;
+      return repoAiOriginFn({
+        data: { repo_id: repoId, provider, language: lang },
+      });
+    },
+    onSuccess: (r) => setRepoAiResult(r as RepoAiOriginResult),
+    onError: (e: any) => toast.error(e?.message ?? t("errors.generic")),
+  });
+
   const exportMut = useMutation({
     mutationFn: () => exportFn({ data: { repo_id: repoId } }),
     onSuccess: (r) => {
@@ -249,8 +267,9 @@ function WorkspacePage() {
   const activeText = useMemo(() => {
     if (mainTab === "summary") return summaryText;
     if (mainTab === "quality") return qualityText;
+    if (mainTab === "ai_origin") return aiOriginText;
     return securityText;
-  }, [mainTab, summaryText, qualityText, securityText]);
+  }, [mainTab, summaryText, qualityText, securityText, aiOriginText]);
 
   const mdFilename = useMemo(() => {
     const base = fileQ.data?.path?.split("/").pop() ?? "explanation";
@@ -259,9 +278,12 @@ function WorkspacePage() {
         ? `${summarySub}.${proficiency}`
         : mainTab === "quality"
           ? `quality.${qualityKind}`
-          : `security`;
+          : mainTab === "ai_origin"
+            ? `ai-origin`
+            : `security`;
     return `${base}.${suffix}.md`;
   }, [fileQ.data?.path, mainTab, summarySub, proficiency, qualityKind]);
+
 
   const onCopy = async () => {
     if (!activeText) return;
