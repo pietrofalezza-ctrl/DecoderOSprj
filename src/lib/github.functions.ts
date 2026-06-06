@@ -63,7 +63,15 @@ export const importFromGitHub = createServerFn({ method: "POST" })
       .single();
     if (rErr) throw rErr;
 
-    const rows: Array<Record<string, unknown>> = [];
+    const rows: Array<{
+      repository_id: string;
+      owner_id: string;
+      path: string;
+      language: string | null;
+      size_bytes: number;
+      sha256: string;
+      storage_path: string;
+    }> = [];
     for (const f of files) {
       const sha = sha256Hex(f.bytes);
       const storagePath = `${context.userId}/${repoRow.id}/${f.path}`;
