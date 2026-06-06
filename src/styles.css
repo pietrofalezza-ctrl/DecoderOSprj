@@ -100,6 +100,32 @@
   --sidebar-ring: oklch(0.78 0.16 165);
 }
 
+:root {
+  --gradient-accent: linear-gradient(
+    100deg,
+    oklch(0.62 0.21 280) 0%,
+    oklch(0.7 0.18 240) 50%,
+    oklch(0.78 0.16 165) 100%
+  );
+  --gradient-hero: radial-gradient(
+    1100px 480px at 12% 0%,
+    color-mix(in oklab, var(--primary) 14%, transparent) 0%,
+    transparent 60%
+  ),
+  radial-gradient(
+    900px 460px at 100% 0%,
+    color-mix(in oklab, oklch(0.7 0.18 280) 12%, transparent) 0%,
+    transparent 65%
+  );
+  --gradient-logo: linear-gradient(
+    135deg,
+    color-mix(in oklab, var(--primary) 20%, transparent),
+    color-mix(in oklab, oklch(0.7 0.18 280) 20%, transparent)
+  );
+  --shadow-elegant: 0 30px 80px -20px color-mix(in oklab, var(--primary) 25%, transparent),
+    0 8px 20px -8px color-mix(in oklab, var(--foreground) 10%, transparent);
+}
+
 @layer base {
   * {
     border-color: var(--color-border);
