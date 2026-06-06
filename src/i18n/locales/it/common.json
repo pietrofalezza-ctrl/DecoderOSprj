@@ -200,12 +200,23 @@
   "auth": {
     "title": "Accedi a De-coder",
     "subtitle": "Email/password, Google, oppure continua in locale.",
+    "tabs": {
+      "signIn": "Accedi",
+      "signUp": "Registrati"
+    },
+    "signInHeadline": "Bentornato",
+    "signInSubline": "Accedi per continuare ad analizzare codice generato da AI.",
+    "signUpHeadline": "Crea il tuo account",
+    "signUpSubline": "Ottieni un assistente AI-aware per il codice che non hai scritto tu.",
     "emailLabel": "Email",
     "passwordLabel": "Password",
+    "confirmPasswordLabel": "Conferma password",
+    "passwordMismatch": "Le password non coincidono.",
     "signIn": "Accedi",
     "signUp": "Crea account",
     "or": "oppure",
-    "withGoogle": "Continua con Google",
+    "withGoogle": "Accedi con Google",
+    "signUpWithGoogle": "Registrati con Google",
     "githubNote": "Il login con GitHub OAuth non è ancora disponibile in questa build.",
     "switchToSignUp": "Nessun account? Creane uno",
     "switchToSignIn": "Hai già un account? Accedi",
@@ -215,7 +226,7 @@
     "disclaimerAcceptSuffix": " — comprese le limitazioni su output IA, codice analizzato, sicurezza e usi non conformi.",
     "disclaimerRequired": "Devi accettare l'esonero di responsabilità per continuare.",
     "disclaimerHeader": "Prima di continuare",
-    "disclaimerRequiredHint": "Spunta questa casella per attivare l'accesso (email o Google)."
+    "disclaimerRequiredHint": "Spunta questa casella per attivare accesso e registrazione (email o Google)."
   },
   "dashboard": {
     "title": "I tuoi progetti",
@@ -238,7 +249,14 @@
     "githubRef": "Branch / tag (opzionale)",
     "githubRefPlaceholder": "main",
     "githubOnlyPublic": "In questa build sono supportate solo repository pubbliche.",
-    "import": "Importa"
+    "import": "Importa",
+    "analyzeCodebase": "Analizza la codebase",
+    "capabilityExplain": "Spiega ogni file",
+    "capabilityExplainBody": "Riassunti umani o tecnici, calibrati sul tuo livello.",
+    "capabilityQuality": "Qualità & sicurezza",
+    "capabilityQualityBody": "Code smell, codice morto, possibili bug e revisione di sicurezza.",
+    "capabilityAiOrigin": "Probabilità AI",
+    "capabilityAiOriginBody": "Stima la probabilità che la codebase — o parti di essa — sia stata generata da una AI."
   },
   "workspace": {
     "files": "File",
