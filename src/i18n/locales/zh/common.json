@@ -327,6 +327,7 @@
     "running": "正在扫描代码库…",
     "runningHint": "正在分批分析源文件,可能需要一分钟。",
     "needsCloud": "扫描整个仓库需要使用云端 AI 提供商。",
+    "needsCloudLong": "分析代码库需要云端提供商（免费的 Lovable AI 或你自己的密钥）。",
     "repoScore": "仓库评分",
     "bucket": {
       "human": "可能为人类",
