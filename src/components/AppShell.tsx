@@ -1,6 +1,6 @@
 import { Link, useNavigate } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
-import { LogOut, Settings, LayoutDashboard } from "lucide-react";
+import { LogOut, Settings, LayoutDashboard, BookOpen } from "lucide-react";
 import type { ReactNode } from "react";
 
 import { Button } from "@/components/ui/button";
@@ -11,6 +11,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { LangSwitcher } from "./LangSwitcher";
+import { ThemeToggle } from "./ThemeToggle";
 import { supabase } from "@/integrations/supabase/client";
 
 export function AppShell({ children }: { children: ReactNode }) {
@@ -29,7 +30,14 @@ export function AppShell({ children }: { children: ReactNode }) {
           <span className="inline-block h-2 w-2 rounded-full bg-primary" />
           <span>{t("brand.name")}</span>
         </Link>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1">
+          <Button asChild variant="ghost" size="sm">
+            <Link to="/docs">
+              <BookOpen className="mr-2 h-4 w-4" />
+              {t("nav.docs")}
+            </Link>
+          </Button>
+          <ThemeToggle />
           <LangSwitcher />
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
