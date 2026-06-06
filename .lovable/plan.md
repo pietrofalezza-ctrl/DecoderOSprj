@@ -1,77 +1,54 @@
-# Phase 2 — Close the gaps from the original brief
+# Phase 3 — Funzionalità avanzate
 
-Implement everything that is feasible inside Lovable Cloud. GitHub OAuth login is the only item that can't be done natively (Cloud's managed auth only supports Google/Apple); I'll add a clear UI note instead of pretending it works.
+## 0. Fix idratazione (bloccante)
+L'errore runtime mostra che SSR renderizza "Sign in" (en) ma il client renderizza "Accedi" (it) sulla landing pubblica. `I18nBootstrap` cambia lingua solo nelle route sotto `_authenticated`. Estendere il "force-en su SSR + swap dopo mount con key bump" anche a `__root.tsx` (o avvolgere `<Outlet/>` con il bootstrap a livello root), così tutte le route — incluse `/` e `/docs` — restano consistenti.
 
-## 1. Fix lingering hydration mismatch (blocking)
+## 1. GitHub repo sync (import via URL)
+- Nuova server fn `importFromGitHub({ url, ref? })` in `src/lib/repos.functions.ts`:
+  - valida URL `github.com/<owner>/<repo>` con Zod
+  - scarica tarball pubblico via `https://codeload.github.com/<owner>/<repo>/tar.gz/<ref>` (default `HEAD`)
+  - estrae con `tar-stream` (puro JS, Worker-safe), filtra binari/`node_modules`/`.git`, applica gli stessi limiti dell'import ZIP
+  - riusa la pipeline esistente: upload su bucket `repositories`, insert in `files`, calcolo sha256
+- UI: nel dialog "New repository" del progetto, aggiungere tab "From GitHub URL" accanto a "Upload ZIP". Solo repo pubblici in questa fase (token GitHub rimandato).
 
-The landing page still mismatches because `Sign in` (SSR) becomes `Accedi` (client) after `I18nBootstrap` swaps language post-mount. Fix by deferring the language swap to AFTER first paint AND re-rendering only translated nodes:
-- Wrap `LangSwitcher` + all translated landing copy in a small `<Translated>` boundary that renders `null`/placeholders until mounted, OR
-- Better: keep `I18nBootstrap` swap but mark the root tree with `suppressHydrationWarning` on the `<body>` and force a single post-mount re-render via a `key` bumped after mount. I'll use the second approach (one-line, no per-string wrapping).
+## 2. Commenti inline suggeriti
+- Server fn `suggestComments({ fileId, provider, model })` che ritorna `[{ line, severity, comment }]` come JSON strutturato (prompt con schema, parse difensivo).
+- Variante client `suggestCommentsLocal` per Ollama/LM Studio (riusa `local-ai.client.ts`).
+- Nuovo tab "Comments" nel pannello AI del workspace:
+  - decorazioni Monaco (gutter icon + hover) sulle righe suggerite
+  - lista laterale con accept/reject per suggerimento
+  - bottone "Copy as patch" che genera un diff unified con i commenti accettati inseriti
+  - **mai** scrittura automatica sui file
 
-## 2. Wire Local AI (Ollama / LM Studio) into the workspace
+## 3. Analisi profonde (tabs aggiuntivi nel pannello AI)
+Una sola server fn generica `runAnalysis({ fileId, kind, provider, model })` con `kind ∈ { smells, deadcode, bugs, security, performance, maintainability, architecture, dependencies }`. Ogni `kind` ha un prompt dedicato in `src/lib/prompt.ts` (i18n EN/IT/ZH) che chiede output Markdown strutturato. Cache in `explanations` riusando `explanation_type = kind`.
 
-`user_local_endpoints` already saves base URL + default model. Add:
-- Provider selector now includes saved local endpoints alongside cloud providers.
-- New `src/lib/local-ai.client.ts` calls `${base_url}/api/chat` (Ollama) or `/v1/chat/completions` (LM Studio) directly from the browser — source code never reaches the De-coder server.
-- Cache: hash file content + prompt; store result in `explanations` table via a thin server fn `saveLocalExplanation` (content sent, key never leaves browser).
-- Footer in the AI panel: "Local mode — your code stays on your machine."
+UI: tabs nel pannello AI raggruppati in "Summary | Comments | Quality | Security | Architecture". "Architecture" e "Dependencies" lavorano a livello repo (aggregano import/grafo file) non singolo file — nuova fn `runRepoAnalysis({ repoId, kind })`.
 
-## 3. Markdown export
+## 4. Admin UI per `user_roles`
+- Migration: policy INSERT/DELETE su `user_roles` solo per admin via `has_role(auth.uid(),'admin')`; helper SQL `make_first_user_admin()` opzionale.
+- Server fn `listUsers` / `setUserRole` con middleware `requireAdmin` (verifica `has_role`).
+- Nuova route `src/routes/_authenticated/admin.tsx` — visibile in `AppShell` solo se l'utente ha ruolo admin (query `hasRole`).
+- Tabella utenti con toggle ruolo admin/user.
 
-- Per-file: "Copy" + "Download .md" buttons in the AI panel for the current explanation.
-- Per-repo: "Export all explanations" → server fn streams a zip of `<path>.md` files for every explanation the user owns in that repo. Uses `fflate` (already installed).
+## 5. Export per-repo
+- Server fn `exportRepoMarkdown({ repoId })`: zippa tutte le explanations del repo in `explanations.zip` con `fflate` (Worker-safe), un `.md` per file + `INDEX.md`.
+- Bottone "Export all" nella vista repo.
 
-## 4. Suggested inline comments (read-only)
+## 6. i18n
+Estendere `en/it/zh/common.json` con namespace `analysis.*`, `comments.*`, `admin.*`, `github.*`.
 
-- New tab in the AI panel: **Suggested comments**.
-- Server fn `suggestComments` prompts the model to return a JSON array `[{ line, comment }]` keyed to the current file.
-- UI renders them next to the code (Monaco decorations) and offers "Copy patch" — never mutates stored files. Honors the brief's "original files never modified" rule.
+## Tecnico — boundary client/server
+- `tar-stream`, `fflate` solo dentro `.handler()` (dynamic import) per evitare leak nel bundle client.
+- Provider locali continuano a girare browser-side (codice non lascia la macchina utente).
+- Tutte le nuove server fn protette montano `requireSupabaseAuth`; nessuna nel loader di route pubbliche.
 
-## 5. Open-source hygiene
+## Differito a Phase 4
+- GitHub OAuth login (richiede uscita da auth gestito Lovable Cloud)
+- GitHub sync di repo privati (richiede PAT utente cifrato)
+- PR generation con i commenti accettati
+- Pagine `/docs` aggiuntive oltre l'indice attuale
 
-- `README.md` (EN, with IT + ZH short sections): what De-coder does, BYOK + local mode, quick start, contributing pointer.
-- `LICENSE` — MIT (lightweight, fits "open-source" framing).
-- `CONTRIBUTING.md` — basic dev setup, i18n key conventions, no PII in issues.
-- Public roadmap inside README (Phase 1 ✅, Phase 2 in progress, Phase 3 deferred items).
-
-## 6. Documentation pages (tri-lingual)
-
-New top-level public routes (SSR-on, no auth) under `src/routes/docs.*`:
-- `/docs` index
-- `/docs/getting-started`
-- `/docs/byok` (cloud keys)
-- `/docs/local-ai` (Ollama/LM Studio)
-- `/docs/security`
-Content lives in i18n JSON namespaces `docs.<page>` for EN/IT/ZH. Each route sets its own `head()` title + description (also translated). Footer link added.
-
-## 7. Light theme
-
-- Add `light` token set to `src/styles.css` (currently dark-only).
-- Theme toggle in `AppShell` header (sun/moon), persisted in `localStorage` under `decoder.theme`, applied via `document.documentElement.classList`.
-- Defer system-preference auto-detect to avoid another SSR mismatch — explicit user toggle only.
-
-## 8. Admin surface for `user_roles`
-
-- New route `/_authenticated/admin` gated by a `beforeLoad` that calls a server fn `requireAdmin` (uses `has_role(auth.uid(),'admin')`).
-- Lists users with their roles; allows promoting/demoting via a server fn that uses `supabaseAdmin`. Self-demotion blocked.
-- A second migration adds an `INSERT/UPDATE/DELETE` policy on `user_roles` restricted to admins, plus a `make_admin` SQL helper for bootstrapping the first admin (instructions in README).
-
-## 9. GitHub login — honest fallback
-
-Add a disabled "Sign in with GitHub" button on `/auth` with a tooltip: "Coming soon — needs an external Supabase connection." Don't half-implement.
-
-## What stays deferred (Phase 3)
-
-GitHub repo sync (clone from URL), and the deeper analyses tabs from the brief: code-smell, dead-code, bug hints, architecture map, dependencies, security review, performance, maintainability. Each is its own prompt + UI surface and worth a dedicated phase.
-
-## Technical notes
-
-- No new tables. Two small migrations: (a) `user_roles` admin write policy, (b) RLS check.
-- No new secrets. No new buckets.
-- New files: `src/lib/local-ai.client.ts`, `src/lib/export.functions.ts`, `src/lib/admin.functions.ts`, `src/components/ThemeToggle.tsx`, `src/routes/docs.*.tsx`, `src/routes/_authenticated/admin.tsx`, `README.md`, `LICENSE`, `CONTRIBUTING.md`.
-- Edited files: `src/i18n/locales/{en,it,zh}/common.json` (+ new `docs` keys), workspace route (local provider + comments tab + export), `AppShell` (theme toggle + docs link), `styles.css` (light tokens), `__root.tsx` (mount-key for i18n).
-
-## Confirm before I build
-
-1. License: **MIT** (recommended) or Apache-2.0?
-2. Suggested-comments tab: ship in this phase, or move to Phase 3 with the other analyses?
+## Domande
+1. **Analisi profonde**: spedire tutte e 8 in questa fase, o solo il subset "Quality" (smells + deadcode + bugs) + "Security", lasciando architecture/dependencies/performance/maintainability a Phase 4?
+2. **Admin bootstrap**: come promuovere il primo admin? Opzioni: (a) helper SQL manuale documentato in README, (b) prima registrazione = admin automatico, (c) variabile d'ambiente `ADMIN_EMAIL`.

@@ -15,6 +15,7 @@ import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated/settings'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
+import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 import { Route as AuthenticatedProjectsProjectIdRouteImport } from './routes/_authenticated/projects.$projectId'
 import { Route as AuthenticatedProjectsProjectIdReposRepoIdRouteImport } from './routes/_authenticated/projects.$projectId.repos.$repoId'
 
@@ -47,6 +48,11 @@ const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   path: '/dashboard',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedProjectsProjectIdRoute =
   AuthenticatedProjectsProjectIdRouteImport.update({
     id: '/projects/$projectId',
@@ -64,6 +70,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/docs': typeof DocsRoute
+  '/admin': typeof AuthenticatedAdminRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/settings': typeof AuthenticatedSettingsRoute
   '/projects/$projectId': typeof AuthenticatedProjectsProjectIdRouteWithChildren
@@ -73,6 +80,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/docs': typeof DocsRoute
+  '/admin': typeof AuthenticatedAdminRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/settings': typeof AuthenticatedSettingsRoute
   '/projects/$projectId': typeof AuthenticatedProjectsProjectIdRouteWithChildren
@@ -84,6 +92,7 @@ export interface FileRoutesById {
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/auth': typeof AuthRoute
   '/docs': typeof DocsRoute
+  '/_authenticated/admin': typeof AuthenticatedAdminRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/settings': typeof AuthenticatedSettingsRoute
   '/_authenticated/projects/$projectId': typeof AuthenticatedProjectsProjectIdRouteWithChildren
@@ -95,6 +104,7 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/docs'
+    | '/admin'
     | '/dashboard'
     | '/settings'
     | '/projects/$projectId'
@@ -104,6 +114,7 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/docs'
+    | '/admin'
     | '/dashboard'
     | '/settings'
     | '/projects/$projectId'
@@ -114,6 +125,7 @@ export interface FileRouteTypes {
     | '/_authenticated'
     | '/auth'
     | '/docs'
+    | '/_authenticated/admin'
     | '/_authenticated/dashboard'
     | '/_authenticated/settings'
     | '/_authenticated/projects/$projectId'
@@ -171,6 +183,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDashboardRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/admin': {
+      id: '/_authenticated/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AuthenticatedAdminRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/projects/$projectId': {
       id: '/_authenticated/projects/$projectId'
       path: '/projects/$projectId'
@@ -204,12 +223,14 @@ const AuthenticatedProjectsProjectIdRouteWithChildren =
   )
 
 interface AuthenticatedRouteRouteChildren {
+  AuthenticatedAdminRoute: typeof AuthenticatedAdminRoute
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedSettingsRoute: typeof AuthenticatedSettingsRoute
   AuthenticatedProjectsProjectIdRoute: typeof AuthenticatedProjectsProjectIdRouteWithChildren
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedAdminRoute: AuthenticatedAdminRoute,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedSettingsRoute: AuthenticatedSettingsRoute,
   AuthenticatedProjectsProjectIdRoute:

@@ -4,7 +4,7 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
-import { Sparkles, Copy, Download, ShieldCheck } from "lucide-react";
+import { Sparkles, Copy, Download, ShieldCheck, FileDown, BugPlay } from "lucide-react";
 
 import { AppShell } from "@/components/AppShell";
 import { FileTree } from "@/components/FileTree";
@@ -29,12 +29,16 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { getRepository, getFileContent } from "@/lib/repos.functions";
 import { listProviders } from "@/lib/credentials.functions";
 import { explainFile, saveLocalExplanation } from "@/lib/explain.functions";
+import { runAnalysis, saveLocalAnalysis } from "@/lib/analysis.functions";
+import { exportRepoMarkdown } from "@/lib/export.functions";
 import { callLocalProvider, type LocalKind } from "@/lib/local-ai.client";
 import { buildPrompt, type Proficiency } from "@/lib/prompt";
+import { buildAnalysisPrompt, type AnalysisKind } from "@/lib/analysis-prompt";
 
 type CloudProvider = "openai" | "anthropic" | "gemini" | "openrouter";
-// Selector value: "cloud:openai" or "local:ollama"
 type ProviderValue = `cloud:${CloudProvider}` | `local:${LocalKind}`;
+type MainTab = "summary" | "quality" | "security";
+type SummarySub = "human" | "technical";
 
 export const Route = createFileRoute("/_authenticated/projects/$projectId/repos/$repoId")({
   component: WorkspacePage,
@@ -48,6 +52,9 @@ function WorkspacePage() {
   const providersFn = useServerFn(listProviders);
   const explain = useServerFn(explainFile);
   const saveLocal = useServerFn(saveLocalExplanation);
+  const analyze = useServerFn(runAnalysis);
+  const saveLocalA = useServerFn(saveLocalAnalysis);
+  const exportFn = useServerFn(exportRepoMarkdown);
 
   const repo = useQuery({ queryKey: ["repo", repoId], queryFn: () => getRepo({ data: { id: repoId } }) });
   const provs = useQuery({ queryKey: ["providers"], queryFn: () => providersFn() });
@@ -55,14 +62,18 @@ function WorkspacePage() {
   const [selectedFileId, setSelectedFileId] = useState<string | null>(null);
   const [proficiency, setProficiency] = useState<Proficiency>("intermediate");
   const [providerValue, setProviderValue] = useState<ProviderValue | "">("");
-  const [tab, setTab] = useState<"human" | "technical">("human");
-  const [explanation, setExplanation] = useState<string>("");
+  const [mainTab, setMainTab] = useState<MainTab>("summary");
+  const [summarySub, setSummarySub] = useState<SummarySub>("human");
+  const [qualityKind, setQualityKind] = useState<AnalysisKind>("smells");
+
+  const [summaryText, setSummaryText] = useState<string>("");
+  const [qualityText, setQualityText] = useState<string>("");
+  const [securityText, setSecurityText] = useState<string>("");
 
   const cloudKeys = provs.data?.keys ?? [];
   const localEndpoints = provs.data?.endpoints ?? [];
   const hasAny = cloudKeys.length > 0 || localEndpoints.length > 0;
 
-  // Auto-pick first available provider
   useEffect(() => {
     if (providerValue) return;
     if (cloudKeys[0]) setProviderValue(`cloud:${cloudKeys[0].provider as CloudProvider}`);
@@ -76,17 +87,19 @@ function WorkspacePage() {
     queryFn: () => getContent({ data: { file_id: selectedFileId! } }),
   });
 
+  // Reset all outputs when context changes
   useEffect(() => {
-    setExplanation("");
-  }, [selectedFileId, tab, proficiency, providerValue]);
+    setSummaryText("");
+    setQualityText("");
+    setSecurityText("");
+  }, [selectedFileId, providerValue]);
 
   const isLocal = providerValue.startsWith("local:");
+  const lang = (i18n.resolvedLanguage as "en" | "it" | "zh") || "en";
 
   const explainMut = useMutation({
     mutationFn: async () => {
       if (!selectedFileId || !providerValue) throw new Error("missing");
-      const lang = (i18n.resolvedLanguage as "en" | "it" | "zh") || "en";
-
       if (providerValue.startsWith("cloud:")) {
         const provider = providerValue.slice(6) as CloudProvider;
         const r = await explain({
@@ -94,21 +107,18 @@ function WorkspacePage() {
             file_id: selectedFileId,
             provider,
             proficiency,
-            explanation_type: tab,
+            explanation_type: summarySub,
             language: lang,
           },
         });
         return r.content;
       }
-
-      // Local mode — call user's machine directly, server never sees the code
       const kind = providerValue.slice(6) as LocalKind;
       const endpoint = localEndpoints.find((e) => e.kind === kind);
-      if (!endpoint) throw new Error("no_local_endpoint");
-      if (!fileQ.data) throw new Error("file_not_loaded");
+      if (!endpoint || !fileQ.data) throw new Error("not_ready");
       const { system, user } = buildPrompt({
         proficiency,
-        explanationType: tab,
+        explanationType: summarySub,
         language: lang,
         filePath: fileQ.data.path,
         fileContent: fileQ.data.content,
@@ -120,37 +130,115 @@ function WorkspacePage() {
         system,
         user,
       });
-      // Best-effort cache (ignore failures)
       try {
         await saveLocal({
           data: {
             file_id: selectedFileId,
             proficiency,
-            explanation_type: tab,
+            explanation_type: summarySub,
             language: lang,
             content: text,
             kind,
             model: endpoint.default_model ?? undefined,
           },
         });
-      } catch {
-        /* non-fatal */
-      }
+      } catch {}
       return text;
     },
-    onSuccess: (text) => setExplanation(text),
+    onSuccess: (text) => setSummaryText(text),
     onError: (e: any) => toast.error(e?.message ?? t("errors.generic")),
   });
 
+  async function runAnalysisKind(kind: AnalysisKind): Promise<string> {
+    if (!selectedFileId || !providerValue) throw new Error("missing");
+    if (providerValue.startsWith("cloud:")) {
+      const provider = providerValue.slice(6) as CloudProvider;
+      const r = await analyze({
+        data: { file_id: selectedFileId, provider, kind, language: lang },
+      });
+      return r.content;
+    }
+    const localKind = providerValue.slice(6) as LocalKind;
+    const endpoint = localEndpoints.find((e) => e.kind === localKind);
+    if (!endpoint || !fileQ.data) throw new Error("not_ready");
+    const { system, user } = buildAnalysisPrompt({
+      kind,
+      language: lang,
+      filePath: fileQ.data.path,
+      fileContent: fileQ.data.content,
+    });
+    const text = await callLocalProvider({
+      kind: localKind,
+      baseUrl: endpoint.base_url,
+      model: endpoint.default_model || (localKind === "ollama" ? "llama3.2" : "local-model"),
+      system,
+      user,
+    });
+    try {
+      await saveLocalA({
+        data: {
+          file_id: selectedFileId,
+          kind,
+          language: lang,
+          content: text,
+          provider_kind: localKind,
+          model: endpoint.default_model ?? undefined,
+        },
+      });
+    } catch {}
+    return text;
+  }
+
+  const qualityMut = useMutation({
+    mutationFn: () => runAnalysisKind(qualityKind),
+    onSuccess: (text) => setQualityText(text),
+    onError: (e: any) => toast.error(e?.message ?? t("errors.generic")),
+  });
+
+  const securityMut = useMutation({
+    mutationFn: () => runAnalysisKind("security"),
+    onSuccess: (text) => setSecurityText(text),
+    onError: (e: any) => toast.error(e?.message ?? t("errors.generic")),
+  });
+
+  const exportMut = useMutation({
+    mutationFn: () => exportFn({ data: { repo_id: repoId } }),
+    onSuccess: (r) => {
+      const bin = atob(r.zip_base64);
+      const bytes = new Uint8Array(bin.length);
+      for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+      const blob = new Blob([bytes], { type: "application/zip" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = r.filename;
+      a.click();
+      URL.revokeObjectURL(url);
+    },
+    onError: (e: any) => toast.error(e?.message ?? t("errors.generic")),
+  });
+
+  const activeText = useMemo(() => {
+    if (mainTab === "summary") return summaryText;
+    if (mainTab === "quality") return qualityText;
+    return securityText;
+  }, [mainTab, summaryText, qualityText, securityText]);
+
   const mdFilename = useMemo(() => {
     const base = fileQ.data?.path?.split("/").pop() ?? "explanation";
-    return `${base}.${tab}.${proficiency}.md`;
-  }, [fileQ.data?.path, tab, proficiency]);
+    const suffix =
+      mainTab === "summary"
+        ? `${summarySub}.${proficiency}`
+        : mainTab === "quality"
+          ? `quality.${qualityKind}`
+          : `security`;
+    return `${base}.${suffix}.md`;
+  }, [fileQ.data?.path, mainTab, summarySub, proficiency, qualityKind]);
 
   const onCopy = async () => {
-    if (!explanation) return;
+    if (!activeText) return;
     try {
-      await navigator.clipboard.writeText(explanation);
+      await navigator.clipboard.writeText(activeText);
       toast.success(t("workspace.copied"));
     } catch {
       toast.error(t("errors.generic"));
@@ -158,8 +246,8 @@ function WorkspacePage() {
   };
 
   const onDownload = () => {
-    if (!explanation) return;
-    const blob = new Blob([explanation], { type: "text/markdown;charset=utf-8" });
+    if (!activeText) return;
+    const blob = new Blob([activeText], { type: "text/markdown;charset=utf-8" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
@@ -168,15 +256,36 @@ function WorkspacePage() {
     URL.revokeObjectURL(url);
   };
 
+  const runMain = () => {
+    if (mainTab === "summary") explainMut.mutate();
+    else if (mainTab === "quality") qualityMut.mutate();
+    else securityMut.mutate();
+  };
+  const isRunning =
+    (mainTab === "summary" && explainMut.isPending) ||
+    (mainTab === "quality" && qualityMut.isPending) ||
+    (mainTab === "security" && securityMut.isPending);
+
   return (
     <AppShell>
       <div className="h-[calc(100vh-3.5rem)]">
         <ResizablePanelGroup orientation="horizontal">
-
           <ResizablePanel defaultSize={20} minSize={14}>
             <div className="flex h-full flex-col border-r border-border bg-sidebar">
-              <div className="border-b border-border px-3 py-2 text-xs font-medium uppercase text-muted-foreground">
-                {repo.data?.repository?.name ?? t("workspace.files")}
+              <div className="flex items-center justify-between border-b border-border px-3 py-2">
+                <span className="text-xs font-medium uppercase text-muted-foreground">
+                  {repo.data?.repository?.name ?? t("workspace.files")}
+                </span>
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  onClick={() => exportMut.mutate()}
+                  disabled={exportMut.isPending}
+                  aria-label={t("workspace.exportAll")}
+                  title={t("workspace.exportAll")}
+                >
+                  <FileDown className="h-3.5 w-3.5" />
+                </Button>
               </div>
               <ScrollArea className="flex-1">
                 <div className="p-2">
@@ -204,7 +313,7 @@ function WorkspacePage() {
             </div>
           </ResizablePanel>
           <ResizableHandle />
-          <ResizablePanel defaultSize={30} minSize={20}>
+          <ResizablePanel defaultSize={30} minSize={22}>
             <div className="flex h-full flex-col border-l border-border bg-sidebar">
               <div className="space-y-2 border-b border-border p-3">
                 <div className="grid grid-cols-2 gap-2">
@@ -271,32 +380,57 @@ function WorkspacePage() {
                     {t("workspace.localPledge")}
                   </p>
                 )}
+                {mainTab === "quality" && (
+                  <Select value={qualityKind} onValueChange={(v) => setQualityKind(v as AnalysisKind)}>
+                    <SelectTrigger className="h-8">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {(["smells", "deadcode", "bugs"] as const).map((k) => (
+                        <SelectItem key={k} value={k}>
+                          {t(`analysis.kind.${k}`)}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                )}
                 <Button
                   size="sm"
                   className="w-full"
-                  onClick={() => explainMut.mutate()}
-                  disabled={!selectedFileId || !providerValue || explainMut.isPending}
+                  onClick={runMain}
+                  disabled={!selectedFileId || !providerValue || isRunning}
                 >
-                  <Sparkles className="mr-2 h-3.5 w-3.5" />
-                  {explainMut.isPending ? t("workspace.explaining") : t("workspace.explain")}
+                  {mainTab === "summary" ? (
+                    <Sparkles className="mr-2 h-3.5 w-3.5" />
+                  ) : (
+                    <BugPlay className="mr-2 h-3.5 w-3.5" />
+                  )}
+                  {isRunning
+                    ? mainTab === "summary"
+                      ? t("workspace.explaining")
+                      : t("workspace.analyzing")
+                    : mainTab === "summary"
+                      ? t("workspace.explain")
+                      : t("workspace.analyze")}
                 </Button>
               </div>
               <Tabs
-                value={tab}
-                onValueChange={(v) => setTab(v as "human" | "technical")}
+                value={mainTab}
+                onValueChange={(v) => setMainTab(v as MainTab)}
                 className="flex flex-1 flex-col overflow-hidden"
               >
                 <div className="flex items-center justify-between px-2 pt-2">
                   <TabsList>
-                    <TabsTrigger value="human">{t("workspace.tabs.human")}</TabsTrigger>
-                    <TabsTrigger value="technical">{t("workspace.tabs.technical")}</TabsTrigger>
+                    <TabsTrigger value="summary">{t("workspace.tabs.summary")}</TabsTrigger>
+                    <TabsTrigger value="quality">{t("workspace.tabs.quality")}</TabsTrigger>
+                    <TabsTrigger value="security">{t("workspace.tabs.security")}</TabsTrigger>
                   </TabsList>
                   <div className="flex items-center gap-1">
                     <Button
                       variant="ghost"
                       size="sm"
                       onClick={onCopy}
-                      disabled={!explanation}
+                      disabled={!activeText}
                       aria-label={t("workspace.copy")}
                     >
                       <Copy className="h-3.5 w-3.5" />
@@ -305,18 +439,32 @@ function WorkspacePage() {
                       variant="ghost"
                       size="sm"
                       onClick={onDownload}
-                      disabled={!explanation}
+                      disabled={!activeText}
                       aria-label={t("workspace.download")}
                     >
                       <Download className="h-3.5 w-3.5" />
                     </Button>
                   </div>
                 </div>
-                <TabsContent value="human" className="m-0 flex-1 overflow-auto px-4 pb-4">
-                  <ExplanationView text={explanation} />
+                <TabsContent value="summary" className="m-0 flex-1 overflow-auto px-4 pb-4">
+                  <Tabs value={summarySub} onValueChange={(v) => setSummarySub(v as SummarySub)}>
+                    <TabsList className="mt-2">
+                      <TabsTrigger value="human">{t("workspace.tabs.human")}</TabsTrigger>
+                      <TabsTrigger value="technical">{t("workspace.tabs.technical")}</TabsTrigger>
+                    </TabsList>
+                    <TabsContent value="human" className="m-0 pt-2">
+                      <ExplanationView text={summaryText} />
+                    </TabsContent>
+                    <TabsContent value="technical" className="m-0 pt-2">
+                      <ExplanationView text={summaryText} />
+                    </TabsContent>
+                  </Tabs>
                 </TabsContent>
-                <TabsContent value="technical" className="m-0 flex-1 overflow-auto px-4 pb-4">
-                  <ExplanationView text={explanation} />
+                <TabsContent value="quality" className="m-0 flex-1 overflow-auto px-4 pb-4">
+                  <ExplanationView text={qualityText} placeholder={t("analysis.empty")} />
+                </TabsContent>
+                <TabsContent value="security" className="m-0 flex-1 overflow-auto px-4 pb-4">
+                  <ExplanationView text={securityText} placeholder={t("analysis.empty")} />
                 </TabsContent>
               </Tabs>
               <div className="border-t border-border px-3 py-2 text-[10px] text-muted-foreground">
@@ -330,9 +478,9 @@ function WorkspacePage() {
   );
 }
 
-function ExplanationView({ text }: { text: string }) {
+function ExplanationView({ text, placeholder }: { text: string; placeholder?: string }) {
   if (!text) {
-    return <p className="text-sm text-muted-foreground">—</p>;
+    return <p className="text-sm text-muted-foreground">{placeholder ?? "—"}</p>;
   }
   return (
     <pre className="whitespace-pre-wrap text-sm leading-relaxed text-foreground">{text}</pre>
