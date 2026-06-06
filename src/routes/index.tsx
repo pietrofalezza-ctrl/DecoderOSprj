@@ -116,21 +116,23 @@ function Landing() {
               <Badge icon={<Bot className="h-3 w-3" />} label={t("landing.heroBadgeAiEra")} />
             </div>
             <h1 className="text-balance text-4xl font-semibold leading-[1.1] tracking-tight md:text-6xl">
-              {t("landing.heroLine1")}{" "}
-              <span
-                className="bg-clip-text text-transparent"
-                style={{ backgroundImage: "var(--gradient-accent)" }}
-              >
-                {t("landing.heroLine1Accent")}
-              </span>
-              {t("landing.heroLine2")}{" "}
-              <span
-                className="bg-clip-text text-transparent"
-                style={{ backgroundImage: "var(--gradient-accent)" }}
-              >
-                {t("landing.heroLine2Accent")}
-              </span>
-              .
+              <Trans
+                i18nKey="landing.hero"
+                components={{
+                  1: (
+                    <span
+                      className="bg-clip-text text-transparent"
+                      style={{ backgroundImage: "var(--gradient-accent)" }}
+                    />
+                  ),
+                  2: (
+                    <span
+                      className="bg-clip-text text-transparent"
+                      style={{ backgroundImage: "var(--gradient-accent)" }}
+                    />
+                  ),
+                }}
+              />
             </h1>
             <p className="mt-6 max-w-xl text-balance text-base text-muted-foreground md:text-lg">
               {t("landing.heroSubtitle")}
