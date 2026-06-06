@@ -327,6 +327,7 @@
     "running": "Scanning codebase…",
     "runningHint": "Analyzing source files in batches. This may take a minute.",
     "needsCloud": "A cloud AI provider is required to scan the whole repo.",
+    "needsCloudLong": "A cloud provider (free Lovable AI or your own key) is required to analyze the codebase.",
     "repoScore": "Repository score",
     "bucket": {
       "human": "Likely human",
