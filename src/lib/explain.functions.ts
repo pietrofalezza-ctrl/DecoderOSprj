@@ -3,7 +3,7 @@ import { z } from "zod";
 
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 
-const Provider = z.enum(["openai", "anthropic", "gemini", "openrouter"]);
+const Provider = z.enum(["lovable", "openai", "anthropic", "gemini", "openrouter"]);
 const Proficiency = z.enum([
   "nontech",
   "junior",
@@ -54,15 +54,21 @@ export const explainFile = createServerFn({ method: "POST" })
       return { content: cached.content, provider: cached.provider, model: cached.model, cached: true };
     }
 
-    // Load credential
-    const { data: cred, error: cErr } = await context.supabase
-      .from("user_ai_credentials")
-      .select("encrypted_key")
-      .eq("provider", data.provider)
-      .maybeSingle();
-    if (cErr || !cred) throw new Error("no_credential_for_provider");
-
-    const apiKey = decryptSecret(cred.encrypted_key);
+    // Load credential (skip for Lovable AI which uses the server-side gateway key).
+    let apiKey: string;
+    if (data.provider === "lovable") {
+      const k = process.env.LOVABLE_API_KEY;
+      if (!k) throw new Error("lovable_ai_not_configured");
+      apiKey = k;
+    } else {
+      const { data: cred, error: cErr } = await context.supabase
+        .from("user_ai_credentials")
+        .select("encrypted_key")
+        .eq("provider", data.provider)
+        .maybeSingle();
+      if (cErr || !cred) throw new Error("no_credential_for_provider");
+      apiKey = decryptSecret(cred.encrypted_key);
+    }
 
     // Load file content via admin client (file is RLS-validated above)
     const { data: blob, error: dlErr } = await supabaseAdmin.storage
