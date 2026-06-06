@@ -1,45 +1,36 @@
-## Problema
+## Piano
 
-Nella pagina di un progetto, accanto a ogni repository ci sono due pulsanti — **"Apri file e commenti"** e **"Analizza la codebase"** — che non fanno nulla al click.
+1. **Sbloccare i pulsanti “Apri file e commenti” e “Analizza codebase”**
+   - Correggere l’architettura delle route: oggi il click cambia URL verso `/projects/:projectId/repos/:repoId`, ma la pagina del progetto resta visibile perché la route parent del progetto non renderizza i figli.
+   - Trasformare `projects.$projectId.tsx` in layout con `<Outlet />`.
+   - Spostare l’attuale contenuto della pagina progetto in una nuova route index dedicata (`projects.$projectId.index.tsx`).
+   - Mantenere invariati i due pulsanti già corretti con `Button asChild + Link`.
 
-## Causa
+2. **Verificare la pagina repository**
+   - Dopo la correzione, “Apri file e commenti” dovrà mostrare workspace, file tree, viewer codice e pannello commenti/analisi.
+   - “Analizza codebase” dovrà aprire la stessa pagina repo con il pannello di analisi codebase già visibile tramite `?view=analyze`.
 
-In `src/routes/_authenticated/projects.$projectId.tsx` (righe ~210–228) ogni pulsante è strutturato così:
+3. **Rendere BYOK e uso locale più evidenti dopo il login**
+   - Aggiungere una sezione/banner operativo nella dashboard o pagina progetto: “Scegli come usare l’AI”.
+   - Evidenziare tre modalità:
+     - Lovable AI predefinita senza configurazione.
+     - BYOK: aggiungi la tua chiave in Impostazioni → Chiavi API.
+     - Locale: usa Ollama / LM Studio dal tuo computer.
+   - Inserire CTA dirette verso Impostazioni, già nella zona in cui l’utente lavora dopo il login.
 
-```tsx
-<Link to="..." params={...}>
-  <Button size="sm">…</Button>
-</Link>
-```
+4. **Chiarire dove “scaricare” o installare la web app**
+   - Aggiungere testo e/o card “Installa Decoder” nella documentazione e/o impostazioni.
+   - Spiegare che Decoder è una web app installabile dal browser, non un file da scaricare: su Chrome/Edge tramite icona installa nella barra indirizzi; su iOS tramite Condividi → Aggiungi alla schermata Home.
+   - Mantenere il manifest già presente e correggere solo se serve per l’installabilità.
 
-Questo annida un `<button>` dentro un `<a>` (HTML non valido). Il `<button>` cattura il click e impedisce all'`<a>` esterno di navigare → nessuna azione visibile.
+5. **Aggiornare le traduzioni**
+   - Aggiornare almeno italiano, inglese e cinese per i nuovi testi BYOK/locale/installazione.
 
-## Soluzione
+## Dettagli tecnici
 
-Invertire la composizione usando il pattern `asChild` di shadcn, che fa renderizzare il `Button` come il `Link` figlio (mantenendo gli stili del bottone ma usando l'elemento `<a>` del router):
-
-```tsx
-<Button size="sm" asChild>
-  <Link to="/projects/$projectId/repos/$repoId" params={{ projectId, repoId: r.id }}>
-    <FileText className="mr-1.5 h-3.5 w-3.5" />
-    {t("project.openFiles")}
-  </Link>
-</Button>
-
-<Button size="sm" variant="secondary" asChild>
-  <Link
-    to="/projects/$projectId/repos/$repoId"
-    params={{ projectId, repoId: r.id }}
-    search={{ view: "analyze" }}
-  >
-    <ScanSearch className="mr-1.5 h-3.5 w-3.5" />
-    {t("project.analyzeCodebase")}
-  </Link>
-</Button>
-```
-
-## File modificati
-
-- `src/routes/_authenticated/projects.$projectId.tsx` — solo il blocco dei due pulsanti per repository (righe ~210–228).
-
-Nessuna modifica a backend, i18n o altri componenti.
+- Modifiche principali previste:
+  - `src/routes/_authenticated/projects.$projectId.tsx`
+  - nuovo `src/routes/_authenticated/projects.$projectId.index.tsx`
+  - possibile update a `src/routes/_authenticated/dashboard.tsx`, `src/routes/_authenticated/settings.tsx` o `src/routes/docs.tsx`
+  - `src/i18n/locales/*/common.json`
+- Non sono previste modifiche al backend o al database.
