@@ -17,7 +17,9 @@
     "signIn": "登录",
     "docs": "文档",
     "admin": "管理",
-    "manifesto": "宣言"
+    "manifesto": "宣言",
+    "account": "账户",
+    "signedInAs": "登录身份"
   },
   "languages": {
     "en": "English",
@@ -256,7 +258,9 @@
     "capabilityQuality": "质量与安全",
     "capabilityQualityBody": "代码异味、无用代码、潜在缺陷与安全审查。",
     "capabilityAiOrigin": "AI 来源评分",
-    "capabilityAiOriginBody": "估计代码库——或其中部分——由 AI 生成的可能性。"
+    "capabilityAiOriginBody": "估计代码库——或其中部分——由 AI 生成的可能性。",
+    "openFiles": "打开文件与注释",
+    "howToHint": "打开一个仓库，选择文件，在 摘要 / 质量 / 安全 / AI 来源 标签中查看生成的注释。"
   },
   "workspace": {
     "files": "文件",

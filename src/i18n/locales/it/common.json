@@ -17,7 +17,9 @@
     "signIn": "Accedi",
     "docs": "Documentazione",
     "admin": "Amministrazione",
-    "manifesto": "Manifesto"
+    "manifesto": "Manifesto",
+    "account": "Account",
+    "signedInAs": "Connesso come"
   },
   "languages": {
     "en": "English",
@@ -256,7 +258,9 @@
     "capabilityQuality": "Qualità & sicurezza",
     "capabilityQualityBody": "Code smell, codice morto, possibili bug e revisione di sicurezza.",
     "capabilityAiOrigin": "Probabilità AI",
-    "capabilityAiOriginBody": "Stima la probabilità che la codebase — o parti di essa — sia stata generata da una AI."
+    "capabilityAiOriginBody": "Stima la probabilità che la codebase — o parti di essa — sia stata generata da una AI.",
+    "openFiles": "Apri file e commenti",
+    "howToHint": "Apri un repository, seleziona un file e leggi i commenti generati nelle tab Riassunto / Qualità / Sicurezza / Origine AI."
   },
   "workspace": {
     "files": "File",
