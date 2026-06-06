@@ -4,7 +4,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
-import { ShieldCheck } from "lucide-react";
+import { ShieldCheck, Sparkles, Download, Trash2 } from "lucide-react";
 
 import { AppShell } from "@/components/AppShell";
 import { Button } from "@/components/ui/button";
@@ -30,6 +30,8 @@ import {
   claimFirstAdmin,
   isAdmin,
 } from "@/lib/admin.functions";
+import { exportMyData, deleteMyAccount } from "@/lib/account.functions";
+import { supabase } from "@/integrations/supabase/client";
 
 type Provider = "openai" | "anthropic" | "gemini" | "openrouter";
 const PROVIDERS: Provider[] = ["openai", "anthropic", "gemini", "openrouter"];
