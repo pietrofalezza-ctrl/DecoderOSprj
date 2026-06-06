@@ -1,11 +1,11 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 import { z } from "zod";
-import { Sparkles, Copy, Download, ShieldCheck, FileDown, BugPlay, Bot, ScanSearch } from "lucide-react";
+import { Sparkles, Copy, Download, ShieldCheck, FileDown, BugPlay, Bot, ScanSearch, ArrowLeft, ArrowRight, KeyRound, CheckCircle2, AlertCircle, Play } from "lucide-react";
 
 import { AppShell } from "@/components/AppShell";
 import { FileTree } from "@/components/FileTree";
