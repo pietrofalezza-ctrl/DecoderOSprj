@@ -4,7 +4,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
-import { ShieldCheck } from "lucide-react";
+import { ShieldCheck, Sparkles, Download, Trash2 } from "lucide-react";
 
 import { AppShell } from "@/components/AppShell";
 import { Button } from "@/components/ui/button";
@@ -30,6 +30,8 @@ import {
   claimFirstAdmin,
   isAdmin,
 } from "@/lib/admin.functions";
+import { exportMyData, deleteMyAccount } from "@/lib/account.functions";
+import { supabase } from "@/integrations/supabase/client";
 
 type Provider = "openai" | "anthropic" | "gemini" | "openrouter";
 const PROVIDERS: Provider[] = ["openai", "anthropic", "gemini", "openrouter"];
@@ -79,6 +81,21 @@ function SettingsPage() {
         <h1 className="text-2xl font-semibold">{t("settings.title")}</h1>
 
         <AdminBootstrapBanner />
+
+        <section className="space-y-3 rounded-lg border border-primary/40 bg-primary/5 p-5">
+          <div className="flex items-start gap-3">
+            <Sparkles className="mt-0.5 h-5 w-5 shrink-0 text-primary" />
+            <div>
+              <h2 className="text-sm font-semibold">{t("settings.lovableSection")}</h2>
+              <p className="mt-1 text-xs text-muted-foreground">{t("settings.lovableIntro")}</p>
+              <p className="mt-2 inline-flex items-center gap-1 rounded-full bg-primary/10 px-2 py-0.5 text-[11px] font-medium text-primary">
+                <ShieldCheck className="h-3 w-3" />
+                {t("settings.lovableBadge")}
+              </p>
+            </div>
+          </div>
+        </section>
+
 
 
 
@@ -166,11 +183,79 @@ function SettingsPage() {
           </div>
         </section>
 
+        <AccountPrivacySection />
+
         <p className="text-center text-xs text-muted-foreground">{t("footer.ownership")}</p>
       </div>
     </AppShell>
   );
 }
+
+function AccountPrivacySection() {
+  const { t } = useTranslation();
+  const exportFn = useServerFn(exportMyData);
+  const deleteFn = useServerFn(deleteMyAccount);
+  const navigate = useNavigate();
+
+  const exportMut = useMutation({
+    mutationFn: () => exportFn(),
+    onSuccess: (data) => {
+      const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `decoder-data-${new Date().toISOString().slice(0, 10)}.json`;
+      a.click();
+      URL.revokeObjectURL(url);
+      toast.success(t("settings.saved"));
+    },
+    onError: (e: any) => toast.error(e?.message ?? t("errors.generic")),
+  });
+
+  const deleteMut = useMutation({
+    mutationFn: async () => {
+      await deleteFn();
+      await supabase.auth.signOut();
+    },
+    onSuccess: () => {
+      toast.success(t("settings.deleteDone"));
+      setTimeout(() => navigate({ to: "/" }), 500);
+    },
+    onError: (e: any) => toast.error(e?.message ?? t("errors.generic")),
+  });
+
+  return (
+    <section className="space-y-4 rounded-lg border border-border bg-card p-5">
+      <h2 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
+        {t("settings.accountSection")}
+      </h2>
+      <p className="text-xs text-muted-foreground">{t("settings.accountIntro")}</p>
+      <div className="flex flex-wrap gap-2">
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => exportMut.mutate()}
+          disabled={exportMut.isPending}
+        >
+          <Download className="mr-2 h-4 w-4" />
+          {exportMut.isPending ? t("settings.exporting") : t("settings.exportData")}
+        </Button>
+        <Button
+          variant="destructive"
+          size="sm"
+          onClick={() => {
+            if (window.confirm(t("settings.deleteConfirm"))) deleteMut.mutate();
+          }}
+          disabled={deleteMut.isPending}
+        >
+          <Trash2 className="mr-2 h-4 w-4" />
+          {deleteMut.isPending ? t("settings.deleting") : t("settings.deleteAccount")}
+        </Button>
+      </div>
+    </section>
+  );
+}
+
 
 function AdminBootstrapBanner() {
   const { t } = useTranslation();

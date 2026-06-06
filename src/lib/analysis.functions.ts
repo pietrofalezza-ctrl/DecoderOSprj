@@ -3,7 +3,7 @@ import { z } from "zod";
 
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 
-const Provider = z.enum(["openai", "anthropic", "gemini", "openrouter"]);
+const Provider = z.enum(["lovable", "openai", "anthropic", "gemini", "openrouter"]);
 const Language = z.enum(["en", "it", "zh"]);
 const Kind = z.enum(["smells", "deadcode", "bugs", "security"]);
 
@@ -45,14 +45,20 @@ export const runAnalysis = createServerFn({ method: "POST" })
       .maybeSingle();
     if (cached) return { content: cached.content, cached: true };
 
-    const { data: cred, error: cErr } = await context.supabase
-      .from("user_ai_credentials")
-      .select("encrypted_key")
-      .eq("provider", data.provider)
-      .maybeSingle();
-    if (cErr || !cred) throw new Error("no_credential_for_provider");
-
-    const apiKey = decryptSecret(cred.encrypted_key);
+    let apiKey: string;
+    if (data.provider === "lovable") {
+      const k = process.env.LOVABLE_API_KEY;
+      if (!k) throw new Error("lovable_ai_not_configured");
+      apiKey = k;
+    } else {
+      const { data: cred, error: cErr } = await context.supabase
+        .from("user_ai_credentials")
+        .select("encrypted_key")
+        .eq("provider", data.provider)
+        .maybeSingle();
+      if (cErr || !cred) throw new Error("no_credential_for_provider");
+      apiKey = decryptSecret(cred.encrypted_key);
+    }
 
     const { data: blob, error: dlErr } = await supabaseAdmin.storage
       .from("repositories")

@@ -107,6 +107,31 @@
     "analyzedCodeBody": "通过 De-coder 上传或分析的任何源代码仍归各自所有者所有。De-coder 不会就你的代码或生成的文档获取任何权利。",
     "contributionsTitle": "贡献",
     "contributionsBody": "提交给 De-coder 项目的贡献（拉取请求、问题、代码补丁、文档）可由维护者自行决定进行审核、合并并纳入未来版本。提交贡献即表示你同意按照与项目相同的条款（MIT 许可证）进行授权。",
+    "dataCollectedTitle": "我们收集的数据",
+    "dataCollectedIntro": "De-coder 仅存储运行服务所必需的数据：",
+    "dataCollected": {
+      "account": "账户：邮箱、显示名、角色与创建时间（由认证模块管理）。",
+      "content": "内容：上传的文件（私有存储，仅所有者可读）、元数据（路径、大小、sha256、语言）以及生成的 AI 解释。",
+      "credentials": "用户 API 密钥：使用 AES-256-GCM 静态加密，永不返回浏览器。BYOK 可选，Lovable AI 无需配置即可使用。",
+      "notracking": "无广告追踪、无第三方分析、无用户画像。"
+    },
+    "gdprTitle": "GDPR 合规（欧盟 2016/679 法规）",
+    "gdprIntro": "De-coder 旨在符合欧盟通用数据保护条例。",
+    "gdpr": {
+      "lawful": "合法基础：履行服务合同（第 6.1.b 条）以及使用外部 AI 提供商时的明示同意（第 6.1.a 条）。",
+      "rights": "数据主体权利：访问、更正、删除、可携带、反对与限制处理。可在「设置 → 账户」中导出或删除数据。",
+      "transfers": "欧盟外传输：仅当选择位于欧盟以外的 AI 提供商时（如 OpenAI、Anthropic、Lovable AI），并在请求前明确显示。",
+      "retention": "保留期：数据保留至你明确删除账户或单项内容为止。",
+      "contact": "如需行使权利或报告事件，请通过项目 GitHub 仓库联系维护者。"
+    },
+    "aiActTitle": "欧盟人工智能法案合规（欧盟 2024/1689 法规）",
+    "aiActIntro": "De-coder 是被归类为有限风险的代码理解助手。",
+    "aiAct": {
+      "risk": "分类：下游 GPAI 系统，有限风险。不对个人作自动决策、不评估员工、不进行用户画像。",
+      "transparency": "透明（第 50 条）：所有输出明确标注为 AI 生成，可能存在错误，须由人类核实。",
+      "prohibited": "禁止用途（第 5 条）：不得用于生物识别、社会评分、潜意识操纵或利用弱势群体。",
+      "humanOversight": "人为监督：用户完全掌控何时调用 AI、使用哪个提供商以及是否接受输出。"
+    },
     "disclaimerTitle": "免责声明",
     "disclaimerBody": "本软件按「原样」提供，不提供任何明示或暗示的担保，包括但不限于适销性、特定用途适用性和不侵权的担保。在任何情况下，作者或版权持有者均不对因本软件或与本软件相关的使用或其他交易而产生的任何索赔、损害或其他责任负责，无论是基于合同、侵权还是其他原因。"
   },
@@ -249,6 +274,7 @@
     "configured": "已配置",
     "notConfigured": "未配置",
     "providers": {
+      "lovable": "Lovable AI（默认）",
       "openai": "OpenAI",
       "anthropic": "Anthropic",
       "gemini": "Google Gemini",
@@ -258,12 +284,23 @@
       "ollama": "Ollama(本地)",
       "lmstudio": "LM Studio(本地)"
     },
+    "lovableSection": "默认 AI 提供商",
+    "lovableIntro": "Lovable AI 已在服务器端预先配置，无需任何密钥即可开始使用 De-coder。仅当你希望使用其他提供商时再在下方添加密钥。",
+    "lovableBadge": "可立即测试 — 无需密钥",
     "localSection": "本地 AI 端点",
-    "localIntro": "本地模式完全在浏览器中调用你的 localhost,源代码不会发送到我们的服务器。",
+    "localIntro": "本地模式完全在浏览器中调用你的 localhost，源代码不会发送到我们的服务器。",
     "endpointKind": "类型",
     "endpointUrl": "Base URL",
     "endpointModel": "默认模型",
-    "addEndpoint": "保存端点"
+    "addEndpoint": "保存端点",
+    "accountSection": "账户与隐私（GDPR）",
+    "accountIntro": "随时以 JSON 导出我们持有的全部数据，或永久删除账户。",
+    "exportData": "导出我的数据",
+    "exporting": "导出中…",
+    "deleteAccount": "删除账户",
+    "deleting": "删除中…",
+    "deleteConfirm": "确认删除？账户、项目、文件、解释和密钥都将被清除，且无法恢复。",
+    "deleteDone": "账户已删除。"
   },
   "adminBootstrap": {
     "title": "成为第一位管理员",

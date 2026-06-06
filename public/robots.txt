@@ -1,0 +1,10 @@
+User-agent: *
+Allow: /
+Disallow: /auth
+Disallow: /_authenticated
+Disallow: /dashboard
+Disallow: /admin
+Disallow: /settings
+Disallow: /projects
+
+Sitemap: https://decoder.lovable.app/sitemap.xml

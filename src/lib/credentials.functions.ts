@@ -16,7 +16,18 @@ export const listProviders = createServerFn({ method: "GET" })
       .from("user_local_endpoints")
       .select("kind, base_url, default_model");
     if (eErr) throw eErr;
-    return { keys: keys ?? [], endpoints: endpoints ?? [] };
+
+    // Lovable AI is always available — no user key required.
+    const lovableAvailable = Boolean(process.env.LOVABLE_API_KEY);
+    const synthetic = lovableAvailable
+      ? [{ provider: "lovable", key_hint: "managed", updated_at: new Date().toISOString() }]
+      : [];
+
+    return {
+      keys: [...synthetic, ...(keys ?? [])],
+      endpoints: endpoints ?? [],
+      lovableAvailable,
+    };
   });
 
 export const saveProviderKey = createServerFn({ method: "POST" })

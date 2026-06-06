@@ -107,6 +107,31 @@
     "analyzedCodeBody": "Any source code uploaded or analyzed via De-coder remains the property of its respective owners. De-coder does not acquire any rights over your code or the generated documentation.",
     "contributionsTitle": "Contributions",
     "contributionsBody": "Contributions submitted to the De-coder project (pull requests, issues, code patches, documentation) may be reviewed, merged and included in future releases at the discretion of the maintainers. By submitting a contribution you agree to license it under the same terms as the project (MIT License).",
+    "dataCollectedTitle": "Data we collect",
+    "dataCollectedIntro": "De-coder only stores the data strictly required to operate the service:",
+    "dataCollected": {
+      "account": "Account: email, display name, role and creation timestamp (managed by the auth module).",
+      "content": "Content: uploaded files (private storage, only the owner can read), metadata (path, size, sha256, language) and AI explanations.",
+      "credentials": "User API keys: encrypted at rest with AES-256-GCM and never returned to the browser. BYOK is optional — Lovable AI works without configuration.",
+      "notracking": "No advertising trackers, no third-party analytics, no profiling."
+    },
+    "gdprTitle": "GDPR compliance (EU Reg. 2016/679)",
+    "gdprIntro": "De-coder is designed to comply with the EU General Data Protection Regulation.",
+    "gdpr": {
+      "lawful": "Lawful basis: performance of the service contract (art. 6.1.b) and explicit consent (art. 6.1.a) when using external AI providers.",
+      "rights": "Data subject rights: access, rectification, erasure, portability, objection and restriction. Export or delete your data from Settings → Account.",
+      "transfers": "Non-EU transfers: only when you choose an AI provider hosted outside the EU (e.g. OpenAI, Anthropic, Lovable AI). The provider is always shown before the request runs.",
+      "retention": "Retention: data is kept until you explicitly delete your account or individual items.",
+      "contact": "To exercise your rights or report an incident, contact the maintainer via the project's GitHub repository."
+    },
+    "aiActTitle": "EU AI Act compliance (EU Reg. 2024/1689)",
+    "aiActIntro": "De-coder is a code-comprehension assistant classified as a limited-risk AI system.",
+    "aiAct": {
+      "risk": "Classification: downstream GPAI system, limited risk. No automated decisions about people, no worker scoring, no user profiling.",
+      "transparency": "Transparency (art. 50): every output is clearly labelled as AI-generated, may contain errors and must be verified by a human.",
+      "prohibited": "Prohibited uses (art. 5): no biometric inference, social scoring, subliminal manipulation or exploitation of vulnerabilities.",
+      "humanOversight": "Human oversight: you stay in full control of when to call the AI, which provider to use and whether to accept the output."
+    },
     "disclaimerTitle": "Disclaimer",
     "disclaimerBody": "THE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE."
   },
@@ -249,6 +274,7 @@
     "configured": "Configured",
     "notConfigured": "Not configured",
     "providers": {
+      "lovable": "Lovable AI (default)",
       "openai": "OpenAI",
       "anthropic": "Anthropic",
       "gemini": "Google Gemini",
@@ -258,12 +284,23 @@
       "ollama": "Ollama (local)",
       "lmstudio": "LM Studio (local)"
     },
+    "lovableSection": "Default AI provider",
+    "lovableIntro": "Lovable AI is pre-configured server-side. You can start using De-coder without entering any key. Add your own keys below only if you want a different provider.",
+    "lovableBadge": "Ready to test — no key required",
     "localSection": "Local AI endpoints",
     "localIntro": "Local mode runs entirely in your browser against your localhost. Source code never reaches our servers.",
     "endpointKind": "Type",
     "endpointUrl": "Base URL",
     "endpointModel": "Default model",
-    "addEndpoint": "Save endpoint"
+    "addEndpoint": "Save endpoint",
+    "accountSection": "Account & privacy (GDPR)",
+    "accountIntro": "Export everything we hold about you as JSON, or permanently delete your account at any time.",
+    "exportData": "Export my data",
+    "exporting": "Exporting…",
+    "deleteAccount": "Delete account",
+    "deleting": "Deleting…",
+    "deleteConfirm": "Are you sure? Your account, projects, files, explanations and keys will be erased. This cannot be undone.",
+    "deleteDone": "Account deleted."
   },
   "adminBootstrap": {
     "title": "Become the first administrator",
