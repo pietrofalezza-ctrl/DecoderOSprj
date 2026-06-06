@@ -188,6 +188,8 @@ function ProjectPage() {
           />
         </div>
 
+        <p className="mt-3 text-xs text-muted-foreground">{t("project.howToHint")}</p>
+
         <h2 className="mt-8 text-sm font-medium text-muted-foreground">
           {t("project.repos")}
         </h2>
@@ -200,24 +202,31 @@ function ProjectPage() {
               key={r.id}
               className="flex items-center justify-between gap-3 rounded-md border border-border bg-card p-3 text-sm transition-colors hover:border-primary/60"
             >
-              <Link
-                to="/projects/$projectId/repos/$repoId"
-                params={{ projectId, repoId: r.id }}
-                className="flex flex-1 items-center justify-between gap-3"
-              >
-                <span className="font-medium">{r.name}</span>
-                <span className="text-xs text-muted-foreground">{r.file_count} files</span>
-              </Link>
-              <Link
-                to="/projects/$projectId/repos/$repoId"
-                params={{ projectId, repoId: r.id }}
-                search={{ view: "analyze" }}
-              >
-                <Button size="sm" variant="secondary" className="shrink-0">
-                  <ScanSearch className="mr-1.5 h-3.5 w-3.5" />
-                  {t("project.analyzeCodebase")}
-                </Button>
-              </Link>
+              <div className="flex flex-1 items-center justify-between gap-3 min-w-0">
+                <span className="font-medium truncate">{r.name}</span>
+                <span className="shrink-0 text-xs text-muted-foreground">{r.file_count} files</span>
+              </div>
+              <div className="flex shrink-0 items-center gap-2">
+                <Link
+                  to="/projects/$projectId/repos/$repoId"
+                  params={{ projectId, repoId: r.id }}
+                >
+                  <Button size="sm">
+                    <FileText className="mr-1.5 h-3.5 w-3.5" />
+                    {t("project.openFiles")}
+                  </Button>
+                </Link>
+                <Link
+                  to="/projects/$projectId/repos/$repoId"
+                  params={{ projectId, repoId: r.id }}
+                  search={{ view: "analyze" }}
+                >
+                  <Button size="sm" variant="secondary">
+                    <ScanSearch className="mr-1.5 h-3.5 w-3.5" />
+                    {t("project.analyzeCodebase")}
+                  </Button>
+                </Link>
+              </div>
             </div>
           ))}
         </div>
