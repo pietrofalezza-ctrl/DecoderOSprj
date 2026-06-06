@@ -430,6 +430,7 @@
     "boundaryTitle": "This page didn't load"
   },
   "footer": {
-    "ownership": "Your code and generated documentation belong to you. Decoder never trains on your repositories."
+    "ownership": "Your code and generated documentation belong to you. Decoder never trains on your repositories.",
+    "disclaimer": "Decoder is an open-source code understanding tool. AI-generated explanations may be inaccurate and should be reviewed by a qualified human before being used for technical, security, legal or production decisions."
   }
 }

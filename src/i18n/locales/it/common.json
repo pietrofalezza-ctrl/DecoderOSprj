@@ -430,6 +430,7 @@
     "boundaryTitle": "Questa pagina non si è caricata"
   },
   "footer": {
-    "ownership": "Il tuo codice e la documentazione generata appartengono a te. Decoder non addestra modelli sulle tue repository."
+    "ownership": "Il tuo codice e la documentazione generata appartengono a te. Decoder non addestra modelli sulle tue repository.",
+    "disclaimer": "Decoder è uno strumento open source per la comprensione del codice. Le spiegazioni generate dall'AI possono contenere errori e devono essere verificate da una persona qualificata prima di essere usate per decisioni tecniche, di sicurezza, legali o di produzione."
   }
 }
