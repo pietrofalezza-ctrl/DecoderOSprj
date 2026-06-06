@@ -285,6 +285,18 @@
     "exporting": "导出中…",
     "noProvider": "请在设置中添加 API 密钥以启用 AI 解释。",
     "analyzeWholeRepo": "扫描整个仓库",
+    "runFile": "对此文件运行分析",
+    "howTo": {
+      "title": "如何开始分析",
+      "step1": "在左侧文件树中选择一个文件",
+      "step2": "在右侧选择 AI 提供商",
+      "step3": "按 \"对此文件运行分析\""
+    },
+    "status": {
+      "ready": "就绪：点击运行",
+      "needFile": "请在左侧选择文件",
+      "needProvider": "请配置 AI 提供商"
+    },
     "tabs": {
       "summary": "摘要",
       "human": "通俗摘要",
