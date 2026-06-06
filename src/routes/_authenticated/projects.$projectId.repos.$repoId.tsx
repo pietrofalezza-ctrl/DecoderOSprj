@@ -44,7 +44,7 @@ import { callLocalProvider, type LocalKind } from "@/lib/local-ai";
 import { buildPrompt, type Proficiency } from "@/lib/prompt";
 import { buildAnalysisPrompt, type AnalysisKind } from "@/lib/analysis-prompt";
 
-type CloudProvider = "openai" | "anthropic" | "gemini" | "openrouter";
+type CloudProvider = "lovable" | "openai" | "anthropic" | "gemini" | "openrouter";
 type ProviderValue = `cloud:${CloudProvider}` | `local:${LocalKind}`;
 type MainTab = "summary" | "quality" | "security" | "ai_origin";
 type SummarySub = "human" | "technical";
@@ -120,6 +120,23 @@ function WorkspacePage() {
   useEffect(() => {
     if (search.view === "analyze") setRepoSheetOpen(true);
   }, [search.view]);
+
+  // Auto-start the repo scan when the sheet opens via ?view=analyze
+  // as soon as a provider is ready and no result yet.
+  const [autoStarted, setAutoStarted] = useState(false);
+  useEffect(() => {
+    if (
+      search.view === "analyze" &&
+      repoSheetOpen &&
+      !autoStarted &&
+      !repoAiResult &&
+      providerValue.startsWith("cloud:")
+    ) {
+      setAutoStarted(true);
+      repoAiMut.mutate();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [search.view, repoSheetOpen, providerValue, autoStarted, repoAiResult]);
 
 
   const isLocal = providerValue.startsWith("local:");

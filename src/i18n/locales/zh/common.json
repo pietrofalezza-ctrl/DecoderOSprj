@@ -19,7 +19,8 @@
     "admin": "管理",
     "manifesto": "宣言",
     "account": "账户",
-    "signedInAs": "登录身份"
+    "signedInAs": "登录身份",
+    "apiKeys": "API 密钥"
   },
   "languages": {
     "en": "English",
@@ -326,7 +327,8 @@
     "sampled": "已分析 {{sampled}} / {{total}} 个代码文件",
     "unsampledNote": "为控制成本,有 {{count}} 个额外代码文件未被扫描。",
     "noResults": "无可评分的代码文件。",
-    "fileEmpty": "在此文件上运行 AI 来源分析以查看分数。"
+    "fileEmpty": "在此文件上运行 AI 来源分析以查看分数。",
+    "configureKey": "配置 API 密钥"
   },
   "proficiency": {
     "nontech": "非技术读者",

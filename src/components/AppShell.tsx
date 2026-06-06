@@ -10,6 +10,7 @@ import {
   ShieldCheck,
   Sparkles,
   ChevronDown,
+  KeyRound,
 } from "lucide-react";
 import type { ReactNode } from "react";
 
@@ -114,6 +115,12 @@ export function AppShell({ children }: { children: ReactNode }) {
                   <Link to="/dashboard">
                     <LayoutDashboard className="mr-2 h-4 w-4" />
                     {t("nav.dashboard")}
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link to="/settings" hash="byok">
+                    <KeyRound className="mr-2 h-4 w-4" />
+                    {t("nav.apiKeys")}
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>

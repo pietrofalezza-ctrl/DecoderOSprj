@@ -125,7 +125,7 @@ function SettingsPage() {
           </Button>
         </section>
 
-        <section className="space-y-4 rounded-lg border border-border bg-card p-5">
+        <section id="byok" className="space-y-4 rounded-lg border border-border bg-card p-5 scroll-mt-20">
           <h2 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
             {t("settings.byokSection")}
           </h2>

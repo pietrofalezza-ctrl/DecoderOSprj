@@ -1,5 +1,6 @@
 import { useTranslation } from "react-i18next";
-import { ShieldAlert, Bot, User2, AlertTriangle } from "lucide-react";
+import { Link } from "@tanstack/react-router";
+import { ShieldAlert, Bot, User2, AlertTriangle, KeyRound } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
@@ -52,12 +53,21 @@ export function AiOriginPanel({
           <AlertTriangle className="mt-0.5 h-3.5 w-3.5 shrink-0" />
           {t("aiOrigin.disclaimer")}
         </p>
-        <Button onClick={onRun} disabled={!canRun || isRunning}>
-          <ShieldAlert className="mr-2 h-4 w-4" />
-          {t("aiOrigin.run")}
-        </Button>
-        {!canRun && (
-          <p className="text-xs text-muted-foreground">{t("aiOrigin.needsCloud")}</p>
+        {canRun ? (
+          <Button onClick={onRun} disabled={isRunning}>
+            <ShieldAlert className="mr-2 h-4 w-4" />
+            {t("aiOrigin.run")}
+          </Button>
+        ) : (
+          <div className="w-full space-y-2 rounded-md border border-border bg-muted/40 p-3">
+            <p className="text-xs text-muted-foreground">{t("aiOrigin.needsCloud")}</p>
+            <Button asChild size="sm" variant="secondary">
+              <Link to="/settings">
+                <KeyRound className="mr-2 h-4 w-4" />
+                {t("aiOrigin.configureKey")}
+              </Link>
+            </Button>
+          </div>
         )}
       </div>
     );
