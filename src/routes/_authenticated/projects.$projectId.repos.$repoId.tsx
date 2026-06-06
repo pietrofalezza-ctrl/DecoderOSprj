@@ -59,8 +59,9 @@ export const Route = createFileRoute("/_authenticated/projects/$projectId/repos/
 });
 
 function WorkspacePage() {
-  const { repoId } = Route.useParams();
+  const { repoId, projectId } = Route.useParams();
   const { t, i18n } = useTranslation();
+  const navigate = useNavigate();
   const getRepo = useServerFn(getRepository);
   const getContent = useServerFn(getFileContent);
   const providersFn = useServerFn(listProviders);
