@@ -555,6 +555,18 @@ function WorkspacePage() {
                 <TabsContent value="security" className="m-0 flex-1 overflow-auto px-4 pb-4">
                   <ExplanationView text={securityText} placeholder={t("analysis.empty")} />
                 </TabsContent>
+                <TabsContent value="ai_origin" className="m-0 flex-1 overflow-auto px-4 pb-4">
+                  {aiOriginText ? (
+                    <ExplanationView text={aiOriginText} />
+                  ) : (
+                    <div className="space-y-2 pt-3">
+                      <p className="text-sm text-muted-foreground">{t("aiOrigin.fileEmpty")}</p>
+                      <p className="text-xs text-amber-600 dark:text-amber-400">
+                        {t("aiOrigin.disclaimer")}
+                      </p>
+                    </div>
+                  )}
+                </TabsContent>
               </Tabs>
               <div className="border-t border-border px-3 py-2 text-[10px] text-muted-foreground">
                 {t("footer.ownership")}
