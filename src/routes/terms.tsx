@@ -38,8 +38,7 @@ function TermsPage() {
   ] as const;
   const forbidden = [
     "claimCreator",
-    "useTrademark",
-    "presentOfficial",
+    "attribution",
   ] as const;
 
   return (
@@ -216,7 +215,7 @@ function TermsPage() {
               {t("landing.nav.docs")}
             </Link>
             <a
-              href="https://github.com"
+              href={t("common.repoUrl")}
               target="_blank"
               rel="noreferrer"
               className="hover:text-foreground"
