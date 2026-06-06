@@ -1,6 +1,12 @@
-export type CloudProvider = "openai" | "anthropic" | "gemini" | "openrouter";
+export type CloudProvider =
+  | "lovable"
+  | "openai"
+  | "anthropic"
+  | "gemini"
+  | "openrouter";
 
 const DEFAULT_MODELS: Record<CloudProvider, string> = {
+  lovable: "google/gemini-3-flash-preview",
   openai: "gpt-4o-mini",
   anthropic: "claude-3-5-haiku-latest",
   gemini: "gemini-2.0-flash",
@@ -20,6 +26,28 @@ export async function callCloudProvider(args: {
 }): Promise<string> {
   const model = args.model || defaultModelFor(args.provider);
   const { provider, apiKey, system, user } = args;
+
+  if (provider === "lovable") {
+    const r = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${apiKey}`,
+      },
+      body: JSON.stringify({
+        model,
+        messages: [
+          { role: "system", content: system },
+          { role: "user", content: user },
+        ],
+      }),
+    });
+    if (r.status === 429) throw new Error("Rate limit reached on Lovable AI Gateway. Try again shortly.");
+    if (r.status === 402) throw new Error("Lovable AI credits exhausted. Add credits in workspace settings.");
+    if (!r.ok) throw new Error(`Lovable AI ${r.status}: ${await r.text()}`);
+    const j = await r.json();
+    return j.choices?.[0]?.message?.content ?? "";
+  }
 
   if (provider === "openai") {
     const r = await fetch("https://api.openai.com/v1/chat/completions", {
