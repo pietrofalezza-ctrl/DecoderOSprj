@@ -19,7 +19,8 @@
     "admin": "Admin",
     "manifesto": "Manifesto",
     "account": "Account",
-    "signedInAs": "Signed in as"
+    "signedInAs": "Signed in as",
+    "apiKeys": "API keys"
   },
   "languages": {
     "en": "English",
@@ -326,7 +327,8 @@
     "sampled": "Sampled {{sampled}} of {{total}} code files",
     "unsampledNote": "{{count}} additional code files were not scanned to control cost.",
     "noResults": "No code files were scoreable.",
-    "fileEmpty": "Run the AI-origin analysis on this file to see a score."
+    "fileEmpty": "Run the AI-origin analysis on this file to see a score.",
+    "configureKey": "Configure an API key"
   },
   "proficiency": {
     "nontech": "Non-technical reader",

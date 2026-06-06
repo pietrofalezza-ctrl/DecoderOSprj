@@ -19,7 +19,8 @@
     "admin": "Amministrazione",
     "manifesto": "Manifesto",
     "account": "Account",
-    "signedInAs": "Connesso come"
+    "signedInAs": "Connesso come",
+    "apiKeys": "Chiavi API"
   },
   "languages": {
     "en": "English",
@@ -326,7 +327,8 @@
     "sampled": "Analizzati {{sampled}} di {{total}} file di codice",
     "unsampledNote": "{{count}} ulteriori file di codice non sono stati analizzati per contenere i costi.",
     "noResults": "Nessun file di codice analizzabile.",
-    "fileEmpty": "Esegui l'analisi origine-AI su questo file per vedere un punteggio."
+    "fileEmpty": "Esegui l'analisi origine-AI su questo file per vedere un punteggio.",
+    "configureKey": "Configura una chiave API"
   },
   "proficiency": {
     "nontech": "Lettore non tecnico",
