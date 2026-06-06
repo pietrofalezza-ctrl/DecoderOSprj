@@ -4,7 +4,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
-import { Upload, Github, ScanSearch, Sparkles, Bot, ShieldAlert } from "lucide-react";
+import { Upload, Github, ScanSearch, Sparkles, Bot, ShieldAlert, FileText } from "lucide-react";
 
 import { AppShell } from "@/components/AppShell";
 import { Button } from "@/components/ui/button";
