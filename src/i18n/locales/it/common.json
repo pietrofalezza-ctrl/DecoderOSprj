@@ -274,6 +274,7 @@
     "configured": "Configurato",
     "notConfigured": "Non configurato",
     "providers": {
+      "lovable": "Lovable AI (predefinito)",
       "openai": "OpenAI",
       "anthropic": "Anthropic",
       "gemini": "Google Gemini",
@@ -283,12 +284,23 @@
       "ollama": "Ollama (locale)",
       "lmstudio": "LM Studio (locale)"
     },
+    "lovableSection": "Provider AI predefinito",
+    "lovableIntro": "Lovable AI è già configurato lato server. Puoi iniziare a usare De-coder senza inserire alcuna chiave. Configura le tue chiavi solo se vuoi usare un provider diverso.",
+    "lovableBadge": "Pronto per i test — nessuna chiave richiesta",
     "localSection": "Endpoint AI locali",
     "localIntro": "La modalità locale gira interamente nel browser verso il tuo localhost. Il codice non raggiunge mai i nostri server.",
     "endpointKind": "Tipo",
     "endpointUrl": "Base URL",
     "endpointModel": "Modello predefinito",
-    "addEndpoint": "Salva endpoint"
+    "addEndpoint": "Salva endpoint",
+    "accountSection": "Account e privacy (GDPR)",
+    "accountIntro": "Esporta tutti i tuoi dati in formato JSON o cancella definitivamente il tuo account in qualsiasi momento.",
+    "exportData": "Esporta i miei dati",
+    "exporting": "Esportazione…",
+    "deleteAccount": "Elimina account",
+    "deleting": "Eliminazione…",
+    "deleteConfirm": "Sei sicuro? Verranno cancellati account, progetti, file, spiegazioni e chiavi. Operazione irreversibile.",
+    "deleteDone": "Account eliminato."
   },
   "adminBootstrap": {
     "title": "Diventa il primo amministratore",
