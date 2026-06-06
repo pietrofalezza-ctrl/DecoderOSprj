@@ -10,6 +10,7 @@ import {
   ShieldCheck,
   Sparkles,
   ChevronDown,
+  KeyRound,
 } from "lucide-react";
 import type { ReactNode } from "react";
 
