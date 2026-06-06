@@ -1,64 +1,78 @@
 ## Diagnosi
 
-L'utente **non viene realmente sloggato**. La sessione Supabase resta valida (persistita in `localStorage`). Il problema è puramente di UX/percezione:
+Dallo screenshot e dal codice emergono 3 problemi:
 
-- `/manifesto` e `/` sono route **pubbliche** e usano un loro header (non `AppShell`).
-- Entrambi gli header mostrano **sempre** il CTA "Inizia" → `/auth`, indipendentemente dallo stato di sessione.
-- Quando un utente autenticato clicca "Manifesto" dall'`AppShell`, atterra su un layout senza nav autenticata, nessun avatar/menu, nessun link a `/dashboard`. Visivamente sembra essere stato sloggato.
-- Cliccando "Home" dal manifesto va a `/` (stesso layout pubblico) → conferma la percezione di logout + "redirect alla home".
+1. **Auth poco distinto** (`src/routes/auth.tsx`): un'unica form con uno switch testuale in fondo ("Don't have an account? Sign up"). Visivamente login e signup sembrano lo stesso flusso — manca un'affordance chiara.
 
-Anche `auth.tsx` ha lo stesso pattern: se già loggato, redirige a `/dashboard`, quindi l'utente che clicca "Inizia" finisce sulla dashboard — ma è confondente.
+2. **Analisi invisibile a livello repo** (`src/routes/_authenticated/projects.$projectId.tsx` — la pagina dello screenshot): mostra solo la lista dei file. L'analisi (smells, dead code, bugs, security) esiste ma è **solo per singolo file**, dentro la workspace, e l'utente non riesce ad attivarla dalla repo card. Sembra che la funzione non esista.
 
-## Piano di intervento
+3. **Indice "AI-generated probability"**: non esiste. Va aggiunto come nuovo tipo di analisi sia per singolo file sia aggregato per l'intera codebase.
 
-### 1. Rendere gli header pubblici "session-aware"
+## Piano
 
-Nuovo componente `src/components/PublicHeaderAuthSlot.tsx`:
-- Hook leggero che legge `supabase.auth.getSession()` al mount + si sottoscrive a `onAuthStateChange` per `SIGNED_IN`/`SIGNED_OUT`/`USER_UPDATED`.
-- Stato `signed-in | signed-out | loading` (loading = skeleton 1 bottone, no flicker).
-- **Se signed-out**: bottone "Inizia" → `/auth` (comportamento attuale).
-- **Se signed-in**: due bottoni → "Dashboard" (`/dashboard`) + DropdownMenu con avatar (Settings, Sign out). Riusa pattern di `AppShell`.
+### 1. Auth: separare visivamente Sign-in e Sign-up
 
-Inserirlo in:
-- `src/routes/index.tsx` (header)
-- `src/routes/manifesto.tsx` (header + footer-like CTA in fondo che oggi dice "Inizia")
-- `src/routes/terms.tsx` e `src/routes/docs.tsx` (per coerenza)
+In `src/routes/auth.tsx`:
+- Trasformare lo switch in **Tabs** (`Sign in` / `Sign up`) in cima al form, come pattern standard.
+- Sign-up: aggiungere un campo opzionale "Confirm password" e copy distinta ("Create your account" + breve descrizione "Get an AI-aware code companion").
+- Sign-in: mantenere flusso attuale con copy "Welcome back".
+- Il disclaimer T&C e il bottone Google restano condivisi (sotto le tab).
+- Mantenere la query string `mode` → `?mode=signup` per link diretti dal landing/manifesto.
 
-### 2. Migliorare la nav dell'`AppShell` verso /manifesto
+### 2. Rendere visibile l'analisi a livello repository
 
-Quando un utente loggato clicca "Manifesto" da `AppShell`, ora perde completamente la chrome autenticata. Opzioni:
-- **Scelta**: mantenere il manifesto come route pubblica (necessario per SEO/condivisione) ma con header session-aware (vedi punto 1). Questo è sufficiente: l'utente vede "Dashboard" + avatar in alto, non si sente sloggato.
+In `src/routes/_authenticated/projects.$projectId.tsx`:
+- Aggiungere su ogni `Link` repo card un secondo CTA visibile: **"Analyze codebase"** con icona `ScanSearch` che linka a `/projects/$projectId/repos/$repoId?view=analyze`.
+- Aggiungere una sezione hero "What can you do" con 3 chip illustrative: *Explain*, *Quality scan*, *AI-origin score* — per chiarire le capacità prima ancora di aprire un repo.
 
-### 3. Test E2E di usability (browser tool)
+In `src/routes/_authenticated/projects.$projectId.repos.$repoId.tsx`:
+- Estrarre dal parametro `?view=analyze` per pre-selezionare il tab "quality" o "ai-origin".
+- Aggiungere in alto a destra (accanto a `exportAll`) un **bottone primario "Analyze whole repo"** che apre un drawer con i risultati aggregati.
 
-Eseguo il flow reale come utente:
-1. `view_preview /` → screenshot stato logged-out.
-2. Vado su `/auth`, simulo login con credenziali email/password di un **account di test** (creo via `supabase--insert` un utente in `auth.users` non è possibile direttamente — uso invece `supabase.auth.signUp` via UI, accettando T&C, con un email tipo `e2e-test-<timestamp>@decoder.local`).
-   - Se la signup richiede email confirmation, uso `supabase--configure_auth` per verificarne lo stato; se attiva, considero un account già esistente fornito o disabilito temporaneamente il flag in dev.
-3. Verifico atterraggio su `/dashboard`.
-4. Clicco link "Manifesto" dall'`AppShell`.
-5. **Verifica**: header mostra "Dashboard" + avatar (post-fix), non "Inizia".
-6. Clicco "Home" (logo o link).
-7. **Verifica**: su `/` header sempre session-aware; nessun redirect forzato a `/auth`; sessione intatta (controllo console / `localStorage`).
-8. Clicco "Dashboard" dal header pubblico → torno su `/dashboard` senza re-login.
-9. Logout esplicito dal menu → verifico che ORA gli header mostrino "Inizia".
-10. Screenshot finale + report.
+### 3. Nuova feature: AI-generation probability score
+
+#### Backend
+- Aggiungere `analysis-prompt.ts`: nuovo kind `"ai_origin"` con system prompt che chiede al modello di stimare la probabilità (0–100%) che il file sia stato generato da AI, con breakdown dei segnali (naming patterns, commento style, idiomaticità, boilerplate excessivo, mancanza di hack/debug residui, ecc.) e un **score numerico in cima** in formato parseable: `SCORE: NN` su prima riga, poi reasoning markdown.
+- Aggiungere `kind: "ai_origin"` in `src/lib/analysis.functions.ts` (zod enum) e nei prompt builder; nessuna nuova migrazione DB (riusa la tabella `explanations` con `explanation_type = "analysis:ai_origin"`).
+- Nuova server function `analyzeRepoAiOrigin` in `src/lib/analysis.functions.ts`:
+  - Itera (max ~30) sui file di codice del repo, riusa cache per file già analizzati.
+  - Per file non in cache: chiama il modello con prompt `ai_origin` (più conciso per ridurre costo).
+  - Aggrega: `repo_score = weighted_avg(per_file_score, by_loc)`, restituisce array `{ file_path, score, summary }` + score totale + distribuzione (bucket: human-likely <30, mixed 30–70, ai-likely >70).
+  - **Limite e costi**: cap a 30 file per evitare blow-up (i file rimanenti contribuiscono come "unsampled"); messaggio chiaro in UI.
+
+#### Frontend
+- In `repos.$repoId.tsx`:
+  - Aggiungere quarto tab **"AI origin"** accanto a summary/quality/security per il singolo file.
+  - Nel pannello destro/drawer "Analyze whole repo": progress bar live + lista file con score colorato (verde/giallo/rosso), score aggregato grosso in cima, e disclaimer "This is a probabilistic estimate, not proof".
+- In `projects.$projectId.tsx`: se la repo ha già uno score aggregato cached, mostrare badge "AI-origin: NN%" sulla card.
+
+#### i18n
+- Nuove chiavi in `en/it/zh common.json`:
+  - `auth.tabs.signIn`, `auth.tabs.signUp`, `auth.signUpHeadline`, `auth.signInHeadline`
+  - `project.analyzeCodebase`, `project.capabilityExplain`, `project.capabilityQuality`, `project.capabilityAiOrigin`
+  - `analysis.kind.ai_origin`, `analysis.aiOrigin.*` (titolo, disclaimer, bucket labels, "unsampled files")
+  - `workspace.analyzeWholeRepo`, `workspace.aiOriginScore`
 
 ### 4. File da toccare
 
-- **Nuovo**: `src/components/PublicHeaderAuthSlot.tsx`
-- **Modifica**: `src/routes/index.tsx`, `src/routes/manifesto.tsx`, `src/routes/terms.tsx`, `src/routes/docs.tsx` (sostituire il bottone CTA fisso con `<PublicHeaderAuthSlot />`)
-- **i18n**: nuove chiavi `nav.dashboard` (già esistente in `common.json`), eventualmente `nav.openDashboard` in `en/it/zh`
+**Modifiche**
+- `src/routes/auth.tsx` — tabs sign-in/sign-up
+- `src/routes/_authenticated/projects.$projectId.tsx` — CTA analisi + capability chips
+- `src/routes/_authenticated/projects.$projectId.repos.$repoId.tsx` — tab "AI origin" + drawer "Analyze whole repo"
+- `src/lib/analysis-prompt.ts` — kind `ai_origin`
+- `src/lib/analysis.functions.ts` — kind enum + nuova fn `analyzeRepoAiOrigin`
+- `src/i18n/locales/{en,it,zh}/common.json` — nuove chiavi
+
+**Nuovi**
+- `src/components/AiOriginPanel.tsx` — UI dello score aggregato + tabella per-file
+- `src/lib/ai-origin.ts` — parser `SCORE: NN` + helper bucketization
 
 ### Fuori scope
 
-- Nessuna modifica al backend, RLS, server functions, schema DB.
-- Nessuna modifica alla logica di `/auth` o `_authenticated/route.tsx`.
-- Nessuna nuova dipendenza.
+- Nessuna migrazione DB nuova (riuso `explanations`).
+- Nessun cambio a auth providers/RLS.
+- Niente vector embeddings o ML model proprietario: lo score viene dal LLM via prompt strutturato.
 
-### Domanda di conferma
+### Note di accuratezza
 
-Per il test e2e ho bisogno di un account. Preferisci:
-- **(a)** che crei al volo un account di test via signup email/password (rimane in DB), oppure
-- **(b)** mi fornisci credenziali di un account esistente da usare, oppure
-- **(c)** salto il login reale e simulo solo il flow client-side mockando la sessione?
+L'AI-origin score basato su LLM è **euristico** e va presentato come tale: copy disclaimer obbligatorio in UI ("Estimate, not proof. False positives common on idiomatic boilerplate."). Non è un detector forense.
