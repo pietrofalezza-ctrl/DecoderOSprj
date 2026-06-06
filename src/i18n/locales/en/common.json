@@ -196,7 +196,11 @@
     "githubNote": "GitHub OAuth login isn't available in this build yet.",
     "switchToSignUp": "No account? Create one",
     "switchToSignIn": "Already have an account? Sign in",
-    "checkEmail": "Check your email to confirm your account."
+    "checkEmail": "Check your email to confirm your account.",
+    "disclaimerAcceptPrefix": "I have read and accept the ",
+    "disclaimerAcceptLink": "Terms and liability waiver",
+    "disclaimerAcceptSuffix": " — including the limitations on AI output, analyzed code, security and non-compliant use.",
+    "disclaimerRequired": "You must accept the liability waiver to continue."
   },
   "dashboard": {
     "title": "Your projects",

@@ -196,7 +196,11 @@
     "githubNote": "当前版本暂不支持 GitHub OAuth 登录。",
     "switchToSignUp": "还没有账户?去注册",
     "switchToSignIn": "已有账户?去登录",
-    "checkEmail": "请查收邮件以确认你的账户。"
+    "checkEmail": "请查收邮件以确认你的账户。",
+    "disclaimerAcceptPrefix": "我已阅读并接受 ",
+    "disclaimerAcceptLink": "条款及责任豁免",
+    "disclaimerAcceptSuffix": "——包括对 AI 输出、被分析代码、安全和不合规使用的限制。",
+    "disclaimerRequired": "你必须接受责任豁免才能继续。"
   },
   "dashboard": {
     "title": "你的项目",

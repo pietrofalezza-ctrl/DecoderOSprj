@@ -196,7 +196,11 @@
     "githubNote": "Il login con GitHub OAuth non è ancora disponibile in questa build.",
     "switchToSignUp": "Nessun account? Creane uno",
     "switchToSignIn": "Hai già un account? Accedi",
-    "checkEmail": "Controlla la tua email per confermare l'account."
+    "checkEmail": "Controlla la tua email per confermare l'account.",
+    "disclaimerAcceptPrefix": "Ho letto e accetto i ",
+    "disclaimerAcceptLink": "Termini e l'esonero di responsabilità",
+    "disclaimerAcceptSuffix": " — comprese le limitazioni su output IA, codice analizzato, sicurezza e usi non conformi.",
+    "disclaimerRequired": "Devi accettare l'esonero di responsabilità per continuare."
   },
   "dashboard": {
     "title": "I tuoi progetti",
