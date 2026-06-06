@@ -207,25 +207,25 @@ function ProjectPage() {
                 <span className="shrink-0 text-xs text-muted-foreground">{r.file_count} files</span>
               </div>
               <div className="flex shrink-0 items-center gap-2">
-                <Link
-                  to="/projects/$projectId/repos/$repoId"
-                  params={{ projectId, repoId: r.id }}
-                >
-                  <Button size="sm">
+                <Button size="sm" asChild>
+                  <Link
+                    to="/projects/$projectId/repos/$repoId"
+                    params={{ projectId, repoId: r.id }}
+                  >
                     <FileText className="mr-1.5 h-3.5 w-3.5" />
                     {t("project.openFiles")}
-                  </Button>
-                </Link>
-                <Link
-                  to="/projects/$projectId/repos/$repoId"
-                  params={{ projectId, repoId: r.id }}
-                  search={{ view: "analyze" }}
-                >
-                  <Button size="sm" variant="secondary">
+                  </Link>
+                </Button>
+                <Button size="sm" variant="secondary" asChild>
+                  <Link
+                    to="/projects/$projectId/repos/$repoId"
+                    params={{ projectId, repoId: r.id }}
+                    search={{ view: "analyze" }}
+                  >
                     <ScanSearch className="mr-1.5 h-3.5 w-3.5" />
                     {t("project.analyzeCodebase")}
-                  </Button>
-                </Link>
+                  </Link>
+                </Button>
               </div>
             </div>
           ))}

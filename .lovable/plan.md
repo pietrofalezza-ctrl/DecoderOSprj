@@ -1,25 +1,45 @@
-## Obiettivo
-Cambiare il testo dell’H1 della hero in italiano da “Sempre più codice è scritto dall’ IA. Tu devi ancora capirlo.” a “ma, tu hai ancora bisogno di comprenderlo”, con solo la parola **ma** in evidenzia gradiente. Ristrutturare il componente in modo che ogni lingua possa controllare autonomamente quali parole ricevono l’accento.
+## Problema
 
-## Cosa viene modificato
+Nella pagina di un progetto, accanto a ogni repository ci sono due pulsanti — **"Apri file e commenti"** e **"Analizza la codebase"** — che non fanno nulla al click.
 
-### `src/routes/index.tsx`
-- Sostituire le 4 chiavi `landing.heroLine1` / `heroLine1Accent` / `heroLine2` / `heroLine2Accent` con una singola chiave `landing.hero` gestita tramite `<Trans>` di `react-i18next`.
-- L’H1 renderà la stringa i18n interpretando i tag `<1>` … `</1>`, `<2>` … `</2>` come span con lo stile gradiente esistente (`bg-clip-text text-transparent` + `var(--gradient-accent)`).
-- Il punto finale rimane dentro la stringa i18n, non hardcoded nel componente.
+## Causa
 
-### `src/i18n/locales/it/common.json`
-- Nuova chiave: `landing.hero`: `"<1>ma</1>, tu hai ancora bisogno di comprenderlo."`
-- Rimozione delle vecchie chiavi `heroLine1`, `heroLine1Accent`, `heroLine2`, `heroLine2Accent`.
+In `src/routes/_authenticated/projects.$projectId.tsx` (righe ~210–228) ogni pulsante è strutturato così:
 
-### `src/i18n/locales/en/common.json`
-- Nuova chiave: `landing.hero`: `"More and more code is written by <1>AI</1>. You still need to <2>understand it</2>."`
-- Rimozione delle vecchie chiavi.
+```tsx
+<Link to="..." params={...}>
+  <Button size="sm">…</Button>
+</Link>
+```
 
-### `src/i18n/locales/zh/common.json`
-- Nuova chiave: `landing.hero`: (traduzione cinese con marcatori per le parole accentuate)
-- Rimozione delle vecchie chiavi.
+Questo annida un `<button>` dentro un `<a>` (HTML non valido). Il `<button>` cattura il click e impedisce all'`<a>` esterno di navigare → nessuna azione visibile.
 
-## Note tecniche
-- `react-i18next` è già usato nel progetto (hook `useTranslation`), quindi `<Trans>` è disponibile senza installare dipendenze.
-- Nessuna modifica al backend, RLS o schema.
+## Soluzione
+
+Invertire la composizione usando il pattern `asChild` di shadcn, che fa renderizzare il `Button` come il `Link` figlio (mantenendo gli stili del bottone ma usando l'elemento `<a>` del router):
+
+```tsx
+<Button size="sm" asChild>
+  <Link to="/projects/$projectId/repos/$repoId" params={{ projectId, repoId: r.id }}>
+    <FileText className="mr-1.5 h-3.5 w-3.5" />
+    {t("project.openFiles")}
+  </Link>
+</Button>
+
+<Button size="sm" variant="secondary" asChild>
+  <Link
+    to="/projects/$projectId/repos/$repoId"
+    params={{ projectId, repoId: r.id }}
+    search={{ view: "analyze" }}
+  >
+    <ScanSearch className="mr-1.5 h-3.5 w-3.5" />
+    {t("project.analyzeCodebase")}
+  </Link>
+</Button>
+```
+
+## File modificati
+
+- `src/routes/_authenticated/projects.$projectId.tsx` — solo il blocco dei due pulsanti per repository (righe ~210–228).
+
+Nessuna modifica a backend, i18n o altri componenti.
