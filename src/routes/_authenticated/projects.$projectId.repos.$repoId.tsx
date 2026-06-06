@@ -509,6 +509,10 @@ function WorkspacePage() {
                     <TabsTrigger value="summary">{t("workspace.tabs.summary")}</TabsTrigger>
                     <TabsTrigger value="quality">{t("workspace.tabs.quality")}</TabsTrigger>
                     <TabsTrigger value="security">{t("workspace.tabs.security")}</TabsTrigger>
+                    <TabsTrigger value="ai_origin" className="gap-1">
+                      <Bot className="h-3 w-3" />
+                      {t("workspace.tabs.aiOrigin")}
+                    </TabsTrigger>
                   </TabsList>
                   <div className="flex items-center gap-1">
                     <Button
