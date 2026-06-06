@@ -1,67 +1,64 @@
-## Obiettivo
+## Diagnosi
 
-Tre interventi distinti, tutti nel frontend/presentazione (nessun cambio di logica, DB o server fn):
+L'utente **non viene realmente sloggato**. La sessione Supabase resta valida (persistita in `localStorage`). Il problema è puramente di UX/percezione:
 
-1. **SEO**: avviare la review SEO integrata di Lovable e migliorare i meta tag.
-2. **T&C evidenti al login Google**: rendere visivamente ovvio che la checkbox è obbligatoria anche per il login con Google (non solo email/password).
-3. **Claim potenziato**: posizionare De-coder come strumento essenziale in un mondo dove sempre più codice è generato da IA.
+- `/manifesto` e `/` sono route **pubbliche** e usano un loro header (non `AppShell`).
+- Entrambi gli header mostrano **sempre** il CTA "Inizia" → `/auth`, indipendentemente dallo stato di sessione.
+- Quando un utente autenticato clicca "Manifesto" dall'`AppShell`, atterra su un layout senza nav autenticata, nessun avatar/menu, nessun link a `/dashboard`. Visivamente sembra essere stato sloggato.
+- Cliccando "Home" dal manifesto va a `/` (stesso layout pubblico) → conferma la percezione di logout + "redirect alla home".
 
----
+Anche `auth.tsx` ha lo stesso pattern: se già loggato, redirige a `/dashboard`, quindi l'utente che clicca "Inizia" finisce sulla dashboard — ma è confondente.
 
-## 1. SEO
+## Piano di intervento
 
-- Avviare la review SEO Lovable (`seo_chat--trigger_scan`) — richiede approvazione utente, mostra i risultati nel pannello SEO dopo ~1 minuto.
-- In parallelo, migliorare i meta sitewide in `src/routes/__root.tsx`:
-  - `title`: "De-coder — Capisci il codice generato dall'IA, in qualsiasi linguaggio"
-  - `description`: orientata al positioning anti-AI-slop, ~155 char, con keyword "AI-generated code", "code understanding", "open source".
-  - Aggiungere `og:url`, `twitter:title`, `twitter:description`.
-- Aggiungere `head()` con meta dedicati ai route pubblici che oggi non li hanno (verificare `index.tsx`, `manifesto.tsx` — `terms.tsx` e `docs.tsx` già coperti). Ogni route avrà titolo e description unici (no duplicati).
-- Canonical: aggiungere `<link rel="canonical">` per-route sui leaf (non in `__root.tsx`, regola TanStack).
-- Aggiungere JSON-LD `SoftwareApplication` su `index.tsx` (nome, descrizione, applicationCategory: DeveloperApplication, offers free, license MIT).
-- Dopo il fix, marcare i finding risolti tramite `seo_chat--update_findings`.
+### 1. Rendere gli header pubblici "session-aware"
 
-## 2. Checkbox T&C evidente per Google login
+Nuovo componente `src/components/PublicHeaderAuthSlot.tsx`:
+- Hook leggero che legge `supabase.auth.getSession()` al mount + si sottoscrive a `onAuthStateChange` per `SIGNED_IN`/`SIGNED_OUT`/`USER_UPDATED`.
+- Stato `signed-in | signed-out | loading` (loading = skeleton 1 bottone, no flicker).
+- **Se signed-out**: bottone "Inizia" → `/auth` (comportamento attuale).
+- **Se signed-in**: due bottoni → "Dashboard" (`/dashboard`) + DropdownMenu con avatar (Settings, Sign out). Riusa pattern di `AppShell`.
 
-Problema: oggi la checkbox è in basso vicino al pulsante "Accedi" email; il pulsante Google sta sotto e visualmente sembra slegato. Utenti non capiscono perché Google è grigio.
+Inserirlo in:
+- `src/routes/index.tsx` (header)
+- `src/routes/manifesto.tsx` (header + footer-like CTA in fondo che oggi dice "Inizia")
+- `src/routes/terms.tsx` e `src/routes/docs.tsx` (per coerenza)
 
-Modifiche a `src/routes/auth.tsx`:
-- **Spostare il blocco checkbox T&C in cima al form**, sopra entrambe le sezioni (email/password e Google), con stile più visibile: bordo `border-primary/40` invece di `border/60`, background `bg-primary/5`, label leggermente più grande.
-- Aggiungere accanto al pulsante Google (e al submit email) un **hint dinamico**: quando `!accepted`, mostrare sotto i pulsanti il testo "↑ Accetta prima i Termini per continuare" in colore `text-destructive/muted-foreground`.
-- Quando l'utente clicca Google senza accettare, oltre al toast attuale, **far lampeggiare/evidenziare brevemente la checkbox** (animazione 2s con ring-destructive) tramite uno stato `highlightDisclaimer`.
-- Aggiungere `aria-describedby` sui pulsanti che puntano al testo della checkbox per accessibilità.
-- Aggiungere nuove chiavi i18n in EN/IT/ZH:
-  - `auth.disclaimerRequiredHint`: "Accetta prima i Termini per continuare ↑"
-  - `auth.disclaimerHeader`: "Prima di continuare" (titolo del box T&C)
+### 2. Migliorare la nav dell'`AppShell` verso /manifesto
 
-## 3. Claim "Capire il codice nell'era dell'IA"
+Quando un utente loggato clicca "Manifesto" da `AppShell`, ora perde completamente la chrome autenticata. Opzioni:
+- **Scelta**: mantenere il manifesto come route pubblica (necessario per SEO/condivisione) ma con header session-aware (vedi punto 1). Questo è sufficiente: l'utente vede "Dashboard" + avatar in alto, non si sente sloggato.
 
-Riposizionamento del messaging in `src/routes/index.tsx` e i18n:
-- **Nuovo hero (heroLine1/Accent/Line2/Accent)** in IT/EN/ZH:
-  - IT: "Sempre più codice è scritto dall'**IA**. Tu devi ancora **capirlo**."
-  - EN: "More and more code is written by **AI**. You still need to **understand it**."
-  - ZH: "越来越多的代码由**AI**编写。你仍然需要**理解它**。"
-- **Nuovo heroSubtitle**: enfasi su review di codice AI-generated, audit di sicurezza su PR di Copilot/Cursor/Lovable, onboarding su codebase scritte parzialmente da agenti.
-- **Nuovo badge hero** sostituire `heroBadgeAI` ("AI Powered") con `heroBadgeAiEra` ("Per l'era del codice IA") — più sull'utilità che sulla buzzword.
-- **Nuova sezione "Perché ora"** (componente `WhyNow`) inserita tra Hero e Features:
-  - 3 bullet con icone: "Il 40%+ del codice nei nuovi progetti è generato da IA", "Le PR si moltiplicano, le review umane no", "Capire ≠ generare: serve un layer di comprensione".
-  - Tono fattuale, niente claim numerici non verificabili: riformulare in modo qualitativo ("una porzione crescente", "un volume crescente").
-- **Aggiornare le 3 Feature card** mantenendo le icone ma riallineando i body al nuovo claim (feature2Body cita esplicitamente "spiegare codice generato da agenti IA").
-- Aggiornare la meta description sitewide (vedi punto 1) per coerenza.
+### 3. Test E2E di usability (browser tool)
 
----
+Eseguo il flow reale come utente:
+1. `view_preview /` → screenshot stato logged-out.
+2. Vado su `/auth`, simulo login con credenziali email/password di un **account di test** (creo via `supabase--insert` un utente in `auth.users` non è possibile direttamente — uso invece `supabase.auth.signUp` via UI, accettando T&C, con un email tipo `e2e-test-<timestamp>@decoder.local`).
+   - Se la signup richiede email confirmation, uso `supabase--configure_auth` per verificarne lo stato; se attiva, considero un account già esistente fornito o disabilito temporaneamente il flag in dev.
+3. Verifico atterraggio su `/dashboard`.
+4. Clicco link "Manifesto" dall'`AppShell`.
+5. **Verifica**: header mostra "Dashboard" + avatar (post-fix), non "Inizia".
+6. Clicco "Home" (logo o link).
+7. **Verifica**: su `/` header sempre session-aware; nessun redirect forzato a `/auth`; sessione intatta (controllo console / `localStorage`).
+8. Clicco "Dashboard" dal header pubblico → torno su `/dashboard` senza re-login.
+9. Logout esplicito dal menu → verifico che ORA gli header mostrino "Inizia".
+10. Screenshot finale + report.
 
-## File toccati
+### 4. File da toccare
 
-- `src/routes/__root.tsx` — meta SEO sitewide
-- `src/routes/index.tsx` — nuovo claim, sezione "Perché ora", head() per-route, JSON-LD
-- `src/routes/manifesto.tsx` — head() per-route con meta dedicati
-- `src/routes/auth.tsx` — checkbox riposizionata, hint, animazione highlight
-- `src/i18n/locales/{en,it,zh}/common.json` — nuove chiavi hero, whyNow, disclaimer hint/header
+- **Nuovo**: `src/components/PublicHeaderAuthSlot.tsx`
+- **Modifica**: `src/routes/index.tsx`, `src/routes/manifesto.tsx`, `src/routes/terms.tsx`, `src/routes/docs.tsx` (sostituire il bottone CTA fisso con `<PublicHeaderAuthSlot />`)
+- **i18n**: nuove chiavi `nav.dashboard` (già esistente in `common.json`), eventualmente `nav.openDashboard` in `en/it/zh`
 
-Nessuna migrazione DB, nessun nuovo server fn, nessuna dipendenza nuova.
+### Fuori scope
 
-## Fuori scope
+- Nessuna modifica al backend, RLS, server functions, schema DB.
+- Nessuna modifica alla logica di `/auth` o `_authenticated/route.tsx`.
+- Nessuna nuova dipendenza.
 
-- Generazione `og:image` (può essere aggiunta dopo con imagegen se l'utente lo richiede).
-- Modifiche al copy del manifesto (resta com'è — già allineato).
-- Cambio del flusso di autenticazione (la checkbox resta blocking come deciso in precedenza).
+### Domanda di conferma
+
+Per il test e2e ho bisogno di un account. Preferisci:
+- **(a)** che crei al volo un account di test via signup email/password (rimane in DB), oppure
+- **(b)** mi fornisci credenziali di un account esistente da usare, oppure
+- **(c)** salto il login reale e simulo solo il flow client-side mockando la sessione?
