@@ -116,8 +116,28 @@ function ManifestoPage() {
       </main>
 
       <footer className="border-t border-border/60">
-        <div className="mx-auto max-w-5xl px-6 py-8 text-center text-xs text-muted-foreground">
-          {t("footer.ownership")}
+        <div className="mx-auto flex max-w-5xl flex-col items-center justify-between gap-3 px-6 py-8 text-xs text-muted-foreground md:flex-row">
+          <Logo />
+          <nav className="flex gap-5">
+            <Link to="/manifesto" className="hover:text-foreground">
+              {t("landing.nav.manifesto")}
+            </Link>
+            <Link to="/docs" className="hover:text-foreground">
+              {t("landing.nav.docs")}
+            </Link>
+            <Link to="/terms" className="hover:text-foreground">
+              {t("landing.nav.terms")}
+            </Link>
+            <a
+              href="https://github.com"
+              target="_blank"
+              rel="noreferrer"
+              className="hover:text-foreground"
+            >
+              GitHub
+            </a>
+          </nav>
+          <span>{t("footer.ownership")}</span>
         </div>
       </footer>
     </div>

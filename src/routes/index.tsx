@@ -223,6 +223,9 @@ function Landing() {
             <Link to="/docs" className="hover:text-foreground">
               {t("landing.nav.docs")}
             </Link>
+            <Link to="/terms" className="hover:text-foreground">
+              {t("landing.nav.terms")}
+            </Link>
             <a
               href="https://github.com"
               target="_blank"
