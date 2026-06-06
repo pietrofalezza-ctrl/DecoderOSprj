@@ -200,12 +200,23 @@
   "auth": {
     "title": "Accedi a De-coder",
     "subtitle": "Email/password, Google, oppure continua in locale.",
+    "tabs": {
+      "signIn": "Accedi",
+      "signUp": "Registrati"
+    },
+    "signInHeadline": "Bentornato",
+    "signInSubline": "Accedi per continuare ad analizzare codice generato da AI.",
+    "signUpHeadline": "Crea il tuo account",
+    "signUpSubline": "Ottieni un assistente AI-aware per il codice che non hai scritto tu.",
     "emailLabel": "Email",
     "passwordLabel": "Password",
+    "confirmPasswordLabel": "Conferma password",
+    "passwordMismatch": "Le password non coincidono.",
     "signIn": "Accedi",
     "signUp": "Crea account",
     "or": "oppure",
-    "withGoogle": "Continua con Google",
+    "withGoogle": "Accedi con Google",
+    "signUpWithGoogle": "Registrati con Google",
     "githubNote": "Il login con GitHub OAuth non è ancora disponibile in questa build.",
     "switchToSignUp": "Nessun account? Creane uno",
     "switchToSignIn": "Hai già un account? Accedi",
@@ -215,7 +226,7 @@
     "disclaimerAcceptSuffix": " — comprese le limitazioni su output IA, codice analizzato, sicurezza e usi non conformi.",
     "disclaimerRequired": "Devi accettare l'esonero di responsabilità per continuare.",
     "disclaimerHeader": "Prima di continuare",
-    "disclaimerRequiredHint": "Spunta questa casella per attivare l'accesso (email o Google)."
+    "disclaimerRequiredHint": "Spunta questa casella per attivare accesso e registrazione (email o Google)."
   },
   "dashboard": {
     "title": "I tuoi progetti",
@@ -238,7 +249,14 @@
     "githubRef": "Branch / tag (opzionale)",
     "githubRefPlaceholder": "main",
     "githubOnlyPublic": "In questa build sono supportate solo repository pubbliche.",
-    "import": "Importa"
+    "import": "Importa",
+    "analyzeCodebase": "Analizza la codebase",
+    "capabilityExplain": "Spiega ogni file",
+    "capabilityExplainBody": "Riassunti umani o tecnici, calibrati sul tuo livello.",
+    "capabilityQuality": "Qualità & sicurezza",
+    "capabilityQualityBody": "Code smell, codice morto, possibili bug e revisione di sicurezza.",
+    "capabilityAiOrigin": "Probabilità AI",
+    "capabilityAiOriginBody": "Stima la probabilità che la codebase — o parti di essa — sia stata generata da una AI."
   },
   "workspace": {
     "files": "File",
@@ -261,12 +279,14 @@
     "exportAll": "Esporta tutto (.zip)",
     "exporting": "Esportazione…",
     "noProvider": "Aggiungi una chiave API in Impostazioni per attivare le spiegazioni AI.",
+    "analyzeWholeRepo": "Scansiona repo",
     "tabs": {
       "summary": "Riassunto",
       "human": "Riassunto umano",
       "technical": "Riassunto tecnico",
       "quality": "Qualità",
-      "security": "Sicurezza"
+      "security": "Sicurezza",
+      "aiOrigin": "Origine AI"
     }
   },
   "analysis": {
@@ -274,11 +294,35 @@
       "smells": "Code smell",
       "deadcode": "Codice morto",
       "bugs": "Possibili bug",
-      "security": "Revisione di sicurezza"
+      "security": "Revisione di sicurezza",
+      "ai_origin": "Probabilità origine AI"
     },
     "runOn": "Esegui su questo file",
     "needsCloud": "L'analisi del codice richiede un provider cloud in questa build.",
     "empty": "Esegui un'analisi per vedere i risultati qui."
+  },
+  "aiOrigin": {
+    "title": "Probabilità origine AI",
+    "intro": "Stima quanto è probabile che questa codebase — o parti di essa — sia stata generata da un assistente AI.",
+    "disclaimer": "Stima euristica, non una prova. Codice umano pulito può ottenere punteggi alti; codice AI disordinato può ottenere punteggi bassi.",
+    "run": "Scansiona codebase",
+    "rerun": "Riesegui",
+    "running": "Scansione in corso…",
+    "runningHint": "Analizzo i file sorgente a lotti. Può richiedere un minuto.",
+    "needsCloud": "Per scansionare l'intera repo serve un provider AI cloud.",
+    "repoScore": "Punteggio repository",
+    "bucket": {
+      "human": "Probabilmente umano",
+      "mixed": "Segnali misti",
+      "ai": "Probabilmente AI"
+    },
+    "human": "Umano",
+    "mixed": "Misto",
+    "ai": "AI",
+    "sampled": "Analizzati {{sampled}} di {{total}} file di codice",
+    "unsampledNote": "{{count}} ulteriori file di codice non sono stati analizzati per contenere i costi.",
+    "noResults": "Nessun file di codice analizzabile.",
+    "fileEmpty": "Esegui l'analisi origine-AI su questo file per vedere un punteggio."
   },
   "proficiency": {
     "nontech": "Lettore non tecnico",

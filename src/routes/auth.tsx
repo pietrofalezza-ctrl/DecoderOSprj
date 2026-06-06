@@ -2,13 +2,14 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
-import { AlertCircle } from "lucide-react";
+import { AlertCircle, LogIn, UserPlus } from "lucide-react";
 import { z } from "zod";
 
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { LangSwitcher } from "@/components/LangSwitcher";
 import { Logo } from "@/components/Logo";
 import { supabase } from "@/integrations/supabase/client";
@@ -16,6 +17,7 @@ import { lovable } from "@/integrations/lovable/index";
 
 const SearchSchema = z.object({
   redirect: z.string().optional(),
+  mode: z.enum(["signin", "signup"]).optional(),
 });
 
 export const Route = createFileRoute("/auth")({
@@ -35,9 +37,10 @@ function AuthPage() {
   const search = Route.useSearch();
   const target = safeRedirect(search.redirect);
 
-  const [mode, setMode] = useState<"signin" | "signup">("signin");
+  const [mode, setMode] = useState<"signin" | "signup">(search.mode ?? "signin");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [accepted, setAccepted] = useState(false);
   const [highlight, setHighlight] = useState(false);
@@ -77,6 +80,10 @@ function AuthPage() {
     e.preventDefault();
     if (!accepted) {
       flagMissing();
+      return;
+    }
+    if (mode === "signup" && password !== confirmPassword) {
+      toast.error(t("auth.passwordMismatch"));
       return;
     }
     persistAcceptance();
@@ -123,6 +130,11 @@ function AuthPage() {
     }
   };
 
+  const headline =
+    mode === "signup" ? t("auth.signUpHeadline") : t("auth.signInHeadline");
+  const subline =
+    mode === "signup" ? t("auth.signUpSubline") : t("auth.signInSubline");
+
   return (
     <div className="flex min-h-screen flex-col bg-background text-foreground">
       <header className="flex h-14 items-center justify-between px-6">
@@ -133,10 +145,28 @@ function AuthPage() {
       </header>
       <main className="flex flex-1 items-center justify-center px-6 py-8">
         <div className="w-full max-w-sm rounded-lg border border-border bg-card p-6">
-          <h1 className="text-xl font-semibold">{t("auth.title")}</h1>
-          <p className="mt-1 text-sm text-muted-foreground">{t("auth.subtitle")}</p>
+          {/* Clear Sign-in / Sign-up tabs */}
+          <Tabs
+            value={mode}
+            onValueChange={(v) => setMode(v as "signin" | "signup")}
+            className="w-full"
+          >
+            <TabsList className="grid w-full grid-cols-2">
+              <TabsTrigger value="signin" className="gap-1.5">
+                <LogIn className="h-3.5 w-3.5" />
+                {t("auth.tabs.signIn")}
+              </TabsTrigger>
+              <TabsTrigger value="signup" className="gap-1.5">
+                <UserPlus className="h-3.5 w-3.5" />
+                {t("auth.tabs.signUp")}
+              </TabsTrigger>
+            </TabsList>
+          </Tabs>
 
-          {/* Disclaimer — moved to top, applies to BOTH email and Google */}
+          <h1 className="mt-5 text-xl font-semibold">{headline}</h1>
+          <p className="mt-1 text-sm text-muted-foreground">{subline}</p>
+
+          {/* Disclaimer — shared between both modes */}
           <div
             ref={disclaimerRef}
             id="disclaimer-block"
@@ -207,6 +237,19 @@ function AuthPage() {
                 onChange={(e) => setPassword(e.target.value)}
               />
             </div>
+            {mode === "signup" && (
+              <div className="space-y-1">
+                <Label htmlFor="confirm">{t("auth.confirmPasswordLabel")}</Label>
+                <Input
+                  id="confirm"
+                  type="password"
+                  required
+                  minLength={6}
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                />
+              </div>
+            )}
 
             <Button
               type="submit"
@@ -214,7 +257,17 @@ function AuthPage() {
               disabled={loading || !accepted}
               aria-describedby="disclaimer-block"
             >
-              {mode === "signin" ? t("auth.signIn") : t("auth.signUp")}
+              {mode === "signin" ? (
+                <>
+                  <LogIn className="mr-2 h-3.5 w-3.5" />
+                  {t("auth.signIn")}
+                </>
+              ) : (
+                <>
+                  <UserPlus className="mr-2 h-3.5 w-3.5" />
+                  {t("auth.signUp")}
+                </>
+              )}
             </Button>
           </form>
 
@@ -231,17 +284,9 @@ function AuthPage() {
             disabled={loading || !accepted}
             aria-describedby="disclaimer-block"
           >
-            {t("auth.withGoogle")}
+            {mode === "signup" ? t("auth.signUpWithGoogle") : t("auth.withGoogle")}
           </Button>
           <p className="mt-3 text-xs text-muted-foreground">{t("auth.githubNote")}</p>
-
-          <button
-            type="button"
-            onClick={() => setMode(mode === "signin" ? "signup" : "signin")}
-            className="mt-6 w-full text-center text-xs text-muted-foreground hover:text-foreground"
-          >
-            {mode === "signin" ? t("auth.switchToSignUp") : t("auth.switchToSignIn")}
-          </button>
 
           <div className="mt-6 text-center">
             <Link to="/" className="text-xs text-muted-foreground hover:text-foreground">

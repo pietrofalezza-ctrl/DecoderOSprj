@@ -200,12 +200,23 @@
   "auth": {
     "title": "登录 De-coder",
     "subtitle": "邮箱密码、Google,或者本地继续。",
+    "tabs": {
+      "signIn": "登录",
+      "signUp": "注册"
+    },
+    "signInHeadline": "欢迎回来",
+    "signInSubline": "登录以继续审计 AI 生成的代码。",
+    "signUpHeadline": "创建你的账户",
+    "signUpSubline": "为你没写过的代码,获得一个 AI 感知的助手。",
     "emailLabel": "邮箱",
     "passwordLabel": "密码",
+    "confirmPasswordLabel": "确认密码",
+    "passwordMismatch": "两次密码不一致。",
     "signIn": "登录",
     "signUp": "创建账户",
     "or": "或",
     "withGoogle": "使用 Google 登录",
+    "signUpWithGoogle": "使用 Google 注册",
     "githubNote": "当前版本暂不支持 GitHub OAuth 登录。",
     "switchToSignUp": "还没有账户?去注册",
     "switchToSignIn": "已有账户?去登录",
@@ -215,7 +226,7 @@
     "disclaimerAcceptSuffix": "——包括对 AI 输出、被分析代码、安全和不合规使用的限制。",
     "disclaimerRequired": "你必须接受责任豁免才能继续。",
     "disclaimerHeader": "在继续之前",
-    "disclaimerRequiredHint": "勾选此框以启用登录(邮箱或 Google)。"
+    "disclaimerRequiredHint": "勾选此框以启用登录和注册(邮箱或 Google)。"
   },
   "dashboard": {
     "title": "你的项目",
@@ -238,7 +249,14 @@
     "githubRef": "分支 / 标签(可选)",
     "githubRefPlaceholder": "main",
     "githubOnlyPublic": "此版本仅支持公开仓库。",
-    "import": "导入"
+    "import": "导入",
+    "analyzeCodebase": "分析代码库",
+    "capabilityExplain": "解释任何文件",
+    "capabilityExplainBody": "根据你的水平,提供通俗或技术性的摘要。",
+    "capabilityQuality": "质量与安全",
+    "capabilityQualityBody": "代码异味、无用代码、潜在缺陷与安全审查。",
+    "capabilityAiOrigin": "AI 来源评分",
+    "capabilityAiOriginBody": "估计代码库——或其中部分——由 AI 生成的可能性。"
   },
   "workspace": {
     "files": "文件",
@@ -261,12 +279,14 @@
     "exportAll": "全部导出 (.zip)",
     "exporting": "导出中…",
     "noProvider": "请在设置中添加 API 密钥以启用 AI 解释。",
+    "analyzeWholeRepo": "扫描整个仓库",
     "tabs": {
       "summary": "摘要",
       "human": "通俗摘要",
       "technical": "技术摘要",
       "quality": "质量",
-      "security": "安全"
+      "security": "安全",
+      "aiOrigin": "AI 来源"
     }
   },
   "analysis": {
@@ -274,11 +294,35 @@
       "smells": "代码异味",
       "deadcode": "无用代码",
       "bugs": "可能的缺陷",
-      "security": "安全审查"
+      "security": "安全审查",
+      "ai_origin": "AI 来源评分"
     },
     "runOn": "在此文件上运行",
     "needsCloud": "此版本中代码分析需要使用云端提供商。",
     "empty": "运行分析以在此查看结果。"
+  },
+  "aiOrigin": {
+    "title": "AI 来源概率",
+    "intro": "估计该代码库——或其中部分——由 AI 编码助手生成的可能性。",
+    "disclaimer": "启发式估计,并非证据。整洁的人类代码可能得高分;混乱的 AI 代码可能得低分。",
+    "run": "扫描代码库",
+    "rerun": "重新扫描",
+    "running": "正在扫描代码库…",
+    "runningHint": "正在分批分析源文件,可能需要一分钟。",
+    "needsCloud": "扫描整个仓库需要使用云端 AI 提供商。",
+    "repoScore": "仓库评分",
+    "bucket": {
+      "human": "可能为人类",
+      "mixed": "信号混合",
+      "ai": "可能为 AI"
+    },
+    "human": "人类",
+    "mixed": "混合",
+    "ai": "AI",
+    "sampled": "已分析 {{sampled}} / {{total}} 个代码文件",
+    "unsampledNote": "为控制成本,有 {{count}} 个额外代码文件未被扫描。",
+    "noResults": "无可评分的代码文件。",
+    "fileEmpty": "在此文件上运行 AI 来源分析以查看分数。"
   },
   "proficiency": {
     "nontech": "非技术读者",

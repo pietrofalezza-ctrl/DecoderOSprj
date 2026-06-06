@@ -4,7 +4,8 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
-import { Sparkles, Copy, Download, ShieldCheck, FileDown, BugPlay } from "lucide-react";
+import { z } from "zod";
+import { Sparkles, Copy, Download, ShieldCheck, FileDown, BugPlay, Bot, ScanSearch } from "lucide-react";
 
 import { AppShell } from "@/components/AppShell";
 import { FileTree } from "@/components/FileTree";
@@ -26,10 +27,18 @@ import {
   ResizablePanelGroup,
 } from "@/components/ui/resizable";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
+import { AiOriginPanel, type RepoAiOriginResult } from "@/components/AiOriginPanel";
 import { getRepository, getFileContent } from "@/lib/repos.functions";
 import { listProviders } from "@/lib/credentials.functions";
 import { explainFile, saveLocalExplanation } from "@/lib/explain.functions";
-import { runAnalysis, saveLocalAnalysis } from "@/lib/analysis.functions";
+import { runAnalysis, saveLocalAnalysis, analyzeRepoAiOrigin } from "@/lib/analysis.functions";
 import { exportRepoMarkdown } from "@/lib/export.functions";
 import { callLocalProvider, type LocalKind } from "@/lib/local-ai";
 import { buildPrompt, type Proficiency } from "@/lib/prompt";
@@ -37,10 +46,15 @@ import { buildAnalysisPrompt, type AnalysisKind } from "@/lib/analysis-prompt";
 
 type CloudProvider = "openai" | "anthropic" | "gemini" | "openrouter";
 type ProviderValue = `cloud:${CloudProvider}` | `local:${LocalKind}`;
-type MainTab = "summary" | "quality" | "security";
+type MainTab = "summary" | "quality" | "security" | "ai_origin";
 type SummarySub = "human" | "technical";
 
+const SearchSchema = z.object({
+  view: z.enum(["analyze"]).optional(),
+});
+
 export const Route = createFileRoute("/_authenticated/projects/$projectId/repos/$repoId")({
+  validateSearch: (s) => SearchSchema.parse(s),
   component: WorkspacePage,
 });
 
@@ -55,6 +69,8 @@ function WorkspacePage() {
   const analyze = useServerFn(runAnalysis);
   const saveLocalA = useServerFn(saveLocalAnalysis);
   const exportFn = useServerFn(exportRepoMarkdown);
+  const repoAiOriginFn = useServerFn(analyzeRepoAiOrigin);
+  const search = Route.useSearch();
 
   const repo = useQuery({ queryKey: ["repo", repoId], queryFn: () => getRepo({ data: { id: repoId } }) });
   const provs = useQuery({ queryKey: ["providers"], queryFn: () => providersFn() });
@@ -64,11 +80,16 @@ function WorkspacePage() {
   const [providerValue, setProviderValue] = useState<ProviderValue | "">("");
   const [mainTab, setMainTab] = useState<MainTab>("summary");
   const [summarySub, setSummarySub] = useState<SummarySub>("human");
-  const [qualityKind, setQualityKind] = useState<AnalysisKind>("smells");
+  const [qualityKind, setQualityKind] = useState<Exclude<AnalysisKind, "ai_origin" | "security">>("smells");
 
   const [summaryText, setSummaryText] = useState<string>("");
   const [qualityText, setQualityText] = useState<string>("");
   const [securityText, setSecurityText] = useState<string>("");
+  const [aiOriginText, setAiOriginText] = useState<string>("");
+
+  const [repoSheetOpen, setRepoSheetOpen] = useState(false);
+  const [repoAiResult, setRepoAiResult] = useState<RepoAiOriginResult | null>(null);
+
 
   const cloudKeys = provs.data?.keys ?? [];
   const localEndpoints = provs.data?.endpoints ?? [];
@@ -92,7 +113,14 @@ function WorkspacePage() {
     setSummaryText("");
     setQualityText("");
     setSecurityText("");
+    setAiOriginText("");
   }, [selectedFileId, providerValue]);
+
+  // Open the repo-level AI-origin sheet if landed via ?view=analyze
+  useEffect(() => {
+    if (search.view === "analyze") setRepoSheetOpen(true);
+  }, [search.view]);
+
 
   const isLocal = providerValue.startsWith("local:");
   const lang = (i18n.resolvedLanguage as "en" | "it" | "zh") || "en";
@@ -201,6 +229,24 @@ function WorkspacePage() {
     onError: (e: any) => toast.error(e?.message ?? t("errors.generic")),
   });
 
+  const aiOriginMut = useMutation({
+    mutationFn: () => runAnalysisKind("ai_origin"),
+    onSuccess: (text) => setAiOriginText(text),
+    onError: (e: any) => toast.error(e?.message ?? t("errors.generic")),
+  });
+
+  const repoAiMut = useMutation({
+    mutationFn: async () => {
+      if (!providerValue.startsWith("cloud:")) throw new Error("needs_cloud_provider");
+      const provider = providerValue.slice(6) as CloudProvider;
+      return repoAiOriginFn({
+        data: { repo_id: repoId, provider, language: lang },
+      });
+    },
+    onSuccess: (r) => setRepoAiResult(r as RepoAiOriginResult),
+    onError: (e: any) => toast.error(e?.message ?? t("errors.generic")),
+  });
+
   const exportMut = useMutation({
     mutationFn: () => exportFn({ data: { repo_id: repoId } }),
     onSuccess: (r) => {
@@ -221,8 +267,9 @@ function WorkspacePage() {
   const activeText = useMemo(() => {
     if (mainTab === "summary") return summaryText;
     if (mainTab === "quality") return qualityText;
+    if (mainTab === "ai_origin") return aiOriginText;
     return securityText;
-  }, [mainTab, summaryText, qualityText, securityText]);
+  }, [mainTab, summaryText, qualityText, securityText, aiOriginText]);
 
   const mdFilename = useMemo(() => {
     const base = fileQ.data?.path?.split("/").pop() ?? "explanation";
@@ -231,9 +278,12 @@ function WorkspacePage() {
         ? `${summarySub}.${proficiency}`
         : mainTab === "quality"
           ? `quality.${qualityKind}`
-          : `security`;
+          : mainTab === "ai_origin"
+            ? `ai-origin`
+            : `security`;
     return `${base}.${suffix}.md`;
   }, [fileQ.data?.path, mainTab, summarySub, proficiency, qualityKind]);
+
 
   const onCopy = async () => {
     if (!activeText) return;
@@ -259,12 +309,16 @@ function WorkspacePage() {
   const runMain = () => {
     if (mainTab === "summary") explainMut.mutate();
     else if (mainTab === "quality") qualityMut.mutate();
+    else if (mainTab === "ai_origin") aiOriginMut.mutate();
     else securityMut.mutate();
   };
   const isRunning =
     (mainTab === "summary" && explainMut.isPending) ||
     (mainTab === "quality" && qualityMut.isPending) ||
+    (mainTab === "ai_origin" && aiOriginMut.isPending) ||
     (mainTab === "security" && securityMut.isPending);
+
+  const canRunRepoAi = providerValue.startsWith("cloud:");
 
   return (
     <AppShell>
@@ -272,20 +326,51 @@ function WorkspacePage() {
         <ResizablePanelGroup orientation="horizontal">
           <ResizablePanel defaultSize={20} minSize={14}>
             <div className="flex h-full flex-col border-r border-border bg-sidebar">
-              <div className="flex items-center justify-between border-b border-border px-3 py-2">
-                <span className="text-xs font-medium uppercase text-muted-foreground">
+              <div className="flex items-center justify-between gap-2 border-b border-border px-3 py-2">
+                <span className="truncate text-xs font-medium uppercase text-muted-foreground">
                   {repo.data?.repository?.name ?? t("workspace.files")}
                 </span>
-                <Button
-                  size="sm"
-                  variant="ghost"
-                  onClick={() => exportMut.mutate()}
-                  disabled={exportMut.isPending}
-                  aria-label={t("workspace.exportAll")}
-                  title={t("workspace.exportAll")}
-                >
-                  <FileDown className="h-3.5 w-3.5" />
-                </Button>
+                <div className="flex shrink-0 items-center gap-1">
+                  <Sheet open={repoSheetOpen} onOpenChange={setRepoSheetOpen}>
+                    <SheetTrigger asChild>
+                      <Button
+                        size="sm"
+                        variant="secondary"
+                        className="h-7 px-2 text-[11px]"
+                        title={t("workspace.analyzeWholeRepo")}
+                      >
+                        <ScanSearch className="mr-1 h-3.5 w-3.5" />
+                        {t("workspace.analyzeWholeRepo")}
+                      </Button>
+                    </SheetTrigger>
+                    <SheetContent side="right" className="w-full p-0 sm:max-w-xl">
+                      <SheetHeader className="border-b border-border p-4">
+                        <SheetTitle className="flex items-center gap-2">
+                          <Bot className="h-5 w-5 text-primary" />
+                          {t("aiOrigin.title")}
+                        </SheetTitle>
+                      </SheetHeader>
+                      <div className="h-[calc(100vh-4rem)]">
+                        <AiOriginPanel
+                          result={repoAiResult}
+                          isRunning={repoAiMut.isPending}
+                          onRun={() => repoAiMut.mutate()}
+                          canRun={canRunRepoAi}
+                        />
+                      </div>
+                    </SheetContent>
+                  </Sheet>
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    onClick={() => exportMut.mutate()}
+                    disabled={exportMut.isPending}
+                    aria-label={t("workspace.exportAll")}
+                    title={t("workspace.exportAll")}
+                  >
+                    <FileDown className="h-3.5 w-3.5" />
+                  </Button>
+                </div>
               </div>
               <ScrollArea className="flex-1">
                 <div className="p-2">
@@ -381,7 +466,7 @@ function WorkspacePage() {
                   </p>
                 )}
                 {mainTab === "quality" && (
-                  <Select value={qualityKind} onValueChange={(v) => setQualityKind(v as AnalysisKind)}>
+                  <Select value={qualityKind} onValueChange={(v) => setQualityKind(v as typeof qualityKind)}>
                     <SelectTrigger className="h-8">
                       <SelectValue />
                     </SelectTrigger>
@@ -424,6 +509,10 @@ function WorkspacePage() {
                     <TabsTrigger value="summary">{t("workspace.tabs.summary")}</TabsTrigger>
                     <TabsTrigger value="quality">{t("workspace.tabs.quality")}</TabsTrigger>
                     <TabsTrigger value="security">{t("workspace.tabs.security")}</TabsTrigger>
+                    <TabsTrigger value="ai_origin" className="gap-1">
+                      <Bot className="h-3 w-3" />
+                      {t("workspace.tabs.aiOrigin")}
+                    </TabsTrigger>
                   </TabsList>
                   <div className="flex items-center gap-1">
                     <Button
@@ -465,6 +554,18 @@ function WorkspacePage() {
                 </TabsContent>
                 <TabsContent value="security" className="m-0 flex-1 overflow-auto px-4 pb-4">
                   <ExplanationView text={securityText} placeholder={t("analysis.empty")} />
+                </TabsContent>
+                <TabsContent value="ai_origin" className="m-0 flex-1 overflow-auto px-4 pb-4">
+                  {aiOriginText ? (
+                    <ExplanationView text={aiOriginText} />
+                  ) : (
+                    <div className="space-y-2 pt-3">
+                      <p className="text-sm text-muted-foreground">{t("aiOrigin.fileEmpty")}</p>
+                      <p className="text-xs text-amber-600 dark:text-amber-400">
+                        {t("aiOrigin.disclaimer")}
+                      </p>
+                    </div>
+                  )}
                 </TabsContent>
               </Tabs>
               <div className="border-t border-border px-3 py-2 text-[10px] text-muted-foreground">
