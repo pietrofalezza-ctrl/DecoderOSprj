@@ -14,16 +14,288 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      explanations: {
+        Row: {
+          content: string
+          created_at: string
+          explanation_type: string
+          file_id: string
+          file_sha256: string
+          id: string
+          language: string
+          model: string | null
+          owner_id: string
+          proficiency: string
+          provider: string
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          explanation_type: string
+          file_id: string
+          file_sha256: string
+          id?: string
+          language?: string
+          model?: string | null
+          owner_id: string
+          proficiency: string
+          provider: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          explanation_type?: string
+          file_id?: string
+          file_sha256?: string
+          id?: string
+          language?: string
+          model?: string | null
+          owner_id?: string
+          proficiency?: string
+          provider?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "explanations_file_id_fkey"
+            columns: ["file_id"]
+            isOneToOne: false
+            referencedRelation: "files"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      files: {
+        Row: {
+          created_at: string
+          id: string
+          language: string | null
+          owner_id: string
+          path: string
+          repository_id: string
+          sha256: string
+          size_bytes: number
+          storage_path: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          language?: string | null
+          owner_id: string
+          path: string
+          repository_id: string
+          sha256: string
+          size_bytes?: number
+          storage_path: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          language?: string | null
+          owner_id?: string
+          path?: string
+          repository_id?: string
+          sha256?: string
+          size_bytes?: number
+          storage_path?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "files_repository_id_fkey"
+            columns: ["repository_id"]
+            isOneToOne: false
+            referencedRelation: "repositories"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          created_at: string
+          display_name: string | null
+          id: string
+          preferred_language: string
+          preferred_proficiency: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          display_name?: string | null
+          id: string
+          preferred_language?: string
+          preferred_proficiency?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          display_name?: string | null
+          id?: string
+          preferred_language?: string
+          preferred_proficiency?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      projects: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          name: string
+          owner_id: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          name: string
+          owner_id: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          name?: string
+          owner_id?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      repositories: {
+        Row: {
+          created_at: string
+          file_count: number
+          id: string
+          name: string
+          owner_id: string
+          project_id: string
+          source: string
+        }
+        Insert: {
+          created_at?: string
+          file_count?: number
+          id?: string
+          name: string
+          owner_id: string
+          project_id: string
+          source?: string
+        }
+        Update: {
+          created_at?: string
+          file_count?: number
+          id?: string
+          name?: string
+          owner_id?: string
+          project_id?: string
+          source?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "repositories_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_ai_credentials: {
+        Row: {
+          created_at: string
+          encrypted_key: string
+          id: string
+          key_hint: string | null
+          owner_id: string
+          provider: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          encrypted_key: string
+          id?: string
+          key_hint?: string | null
+          owner_id: string
+          provider: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          encrypted_key?: string
+          id?: string
+          key_hint?: string | null
+          owner_id?: string
+          provider?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      user_local_endpoints: {
+        Row: {
+          base_url: string
+          created_at: string
+          default_model: string | null
+          id: string
+          kind: string
+          owner_id: string
+          updated_at: string
+        }
+        Insert: {
+          base_url: string
+          created_at?: string
+          default_model?: string | null
+          id?: string
+          kind: string
+          owner_id: string
+          updated_at?: string
+        }
+        Update: {
+          base_url?: string
+          created_at?: string
+          default_model?: string | null
+          id?: string
+          kind?: string
+          owner_id?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      user_roles: {
+        Row: {
+          created_at: string
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "admin" | "user"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +422,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["admin", "user"],
+    },
   },
 } as const
