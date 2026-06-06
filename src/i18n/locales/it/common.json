@@ -133,7 +133,15 @@
       "humanOversight": "Supervisione umana: l'utente mantiene controllo totale su quando invocare l'IA, quale provider usare e se accettare l'output."
     },
     "disclaimerTitle": "Esclusione di responsabilità",
-    "disclaimerBody": "IL SOFTWARE VIENE FORNITO \"COSÌ COM'È\", SENZA GARANZIE DI ALCUN TIPO, ESPLICITE O IMPLICITE, INCLUSE, A TITOLO ESEMPLIFICATIVO, LE GARANZIE DI COMMERCIABILITÀ, IDONEITÀ A UNO SCOPO PARTICOLARE E NON VIOLAZIONE. IN NESSUN CASO GLI AUTORI O I TITOLARI DEL COPYRIGHT POTRANNO ESSERE RITENUTI RESPONSABILI PER QUALSIASI RECLAMO, DANNO O ALTRA RESPONSABILITÀ, SIA IN UN'AZIONE CONTRATTUALE CHE EXTRACONTRATTUALE, DERIVANTE DA, IN CONNESSIONE CON O RELATIVAMENTE AL SOFTWARE O ALL'USO O AD ALTRE OPERAZIONI CON IL SOFTWARE."
+    "disclaimerBody": "IL SOFTWARE VIENE FORNITO \"COSÌ COM'È\", SENZA GARANZIE DI ALCUN TIPO, ESPLICITE O IMPLICITE, INCLUSE, A TITOLO ESEMPLIFICATIVO, LE GARANZIE DI COMMERCIABILITÀ, IDONEITÀ A UNO SCOPO PARTICOLARE E NON VIOLAZIONE. IN NESSUN CASO GLI AUTORI O I TITOLARI DEL COPYRIGHT POTRANNO ESSERE RITENUTI RESPONSABILI PER QUALSIASI RECLAMO, DANNO O ALTRA RESPONSABILITÀ, SIA IN UN'AZIONE CONTRATTUALE CHE EXTRACONTRATTUALE, DERIVANTE DA, IN CONNESSIONE CON O RELATIVAMENTE AL SOFTWARE O ALL'USO O AD ALTRE OPERAZIONI CON IL SOFTWARE.",
+    "liabilityTitle": "Esonero esteso di responsabilità",
+    "liabilityIntro": "Nei limiti massimi consentiti dalla legge applicabile, utilizzando De-coder l'utente riconosce e accetta espressamente quanto segue:",
+    "liability": {
+      "aiOutput": "Output IA: le spiegazioni, analisi, riassunti e suggerimenti generati dall'intelligenza artificiale possono contenere errori, omissioni o imprecisioni. L'utente è l'unico responsabile della verifica, interpretazione e utilizzo dell'output. L'autore non risponde di alcuna decisione, azione o conseguenza basata sui contenuti generati.",
+      "ipCode": "Codice analizzato e proprietà intellettuale: l'utente garantisce di possedere i diritti necessari sul codice e sui materiali caricati o di averne ricevuto autorizzazione. L'autore non risponde di violazioni di copyright, licenze open source, brevetti, segreti industriali, NDA o altri diritti di terzi derivanti dal materiale fornito dall'utente.",
+      "security": "Sicurezza e danni: il software è fornito senza garanzie di disponibilità, integrità o sicurezza. L'autore non risponde di danni diretti, indiretti, incidentali, consequenziali o punitivi — inclusi perdita di dati, mancato guadagno, interruzione di attività, bug, vulnerabilità o malfunzionamenti — derivanti dall'uso o dall'impossibilità di usare De-coder.",
+      "unlawful": "Utilizzo illecito o non conforme: l'utente è l'unico responsabile della conformità di ogni utilizzo di De-coder alle leggi, regolamenti, contratti, policy aziendali e diritti di terzi applicabili. L'autore declina ogni responsabilità per usi non autorizzati, illeciti o in violazione di obblighi contrattuali o normativi dell'utente."
+    }
   },
   "manifesto": {
     "kicker": "Manifesto",
@@ -188,7 +196,11 @@
     "githubNote": "Il login con GitHub OAuth non è ancora disponibile in questa build.",
     "switchToSignUp": "Nessun account? Creane uno",
     "switchToSignIn": "Hai già un account? Accedi",
-    "checkEmail": "Controlla la tua email per confermare l'account."
+    "checkEmail": "Controlla la tua email per confermare l'account.",
+    "disclaimerAcceptPrefix": "Ho letto e accetto i ",
+    "disclaimerAcceptLink": "Termini e l'esonero di responsabilità",
+    "disclaimerAcceptSuffix": " — comprese le limitazioni su output IA, codice analizzato, sicurezza e usi non conformi.",
+    "disclaimerRequired": "Devi accettare l'esonero di responsabilità per continuare."
   },
   "dashboard": {
     "title": "I tuoi progetti",

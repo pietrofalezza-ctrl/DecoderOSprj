@@ -178,6 +178,22 @@ function TermsPage() {
           </p>
         </section>
 
+        <section id="liability" className="mt-10 rounded-lg border border-destructive/40 bg-destructive/5 p-6">
+          <h2 className="text-xl font-semibold">{t("terms.liabilityTitle")}</h2>
+          <p className="mt-3 text-sm text-muted-foreground">{t("terms.liabilityIntro")}</p>
+          <ul className="mt-4 space-y-3">
+            {(["aiOutput", "ipCode", "security", "unlawful"] as const).map((k) => (
+              <li
+                key={k}
+                className="flex items-start gap-3 rounded-md border border-border bg-background p-4"
+              >
+                <XCircle className="mt-0.5 h-5 w-5 shrink-0 text-destructive" />
+                <span className="text-sm">{t(`terms.liability.${k}`)}</span>
+              </li>
+            ))}
+          </ul>
+        </section>
+
 
         <div className="mt-14 flex flex-wrap gap-3">
           <Button asChild>
