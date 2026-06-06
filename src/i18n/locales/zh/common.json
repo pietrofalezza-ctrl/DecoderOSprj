@@ -8,7 +8,8 @@
     "settings": "设置",
     "signOut": "退出登录",
     "signIn": "登录",
-    "docs": "文档"
+    "docs": "文档",
+    "admin": "管理"
   },
   "languages": {
     "en": "English",
@@ -53,14 +54,24 @@
     "repos": "代码仓库",
     "uploadZip": "上传 ZIP",
     "uploading": "上传中…",
-    "noRepos": "暂无仓库。上传一个 ZIP 文件开始。",
-    "openRepo": "打开"
+    "noRepos": "暂无仓库。上传 ZIP 或从 GitHub 导入以开始。",
+    "openRepo": "打开",
+    "importGithub": "从 GitHub 导入",
+    "importing": "导入中…",
+    "githubUrl": "GitHub 链接",
+    "githubUrlPlaceholder": "https://github.com/owner/repo",
+    "githubRef": "分支 / 标签(可选)",
+    "githubRefPlaceholder": "main",
+    "githubOnlyPublic": "此版本仅支持公开仓库。",
+    "import": "导入"
   },
   "workspace": {
     "files": "文件",
     "selectFile": "选择一个文件以查看源代码",
     "explain": "解释此文件",
     "explaining": "正在解释…",
+    "analyze": "分析",
+    "analyzing": "分析中…",
     "proficiency": "水平",
     "type": "类型",
     "provider": "提供商",
@@ -71,11 +82,27 @@
     "copy": "复制",
     "copied": "已复制。",
     "download": "下载 .md",
+    "exportAll": "全部导出 (.zip)",
+    "exporting": "导出中…",
     "noProvider": "请在设置中添加 API 密钥以启用 AI 解释。",
     "tabs": {
+      "summary": "摘要",
       "human": "通俗摘要",
-      "technical": "技术摘要"
+      "technical": "技术摘要",
+      "quality": "质量",
+      "security": "安全"
     }
+  },
+  "analysis": {
+    "kind": {
+      "smells": "代码异味",
+      "deadcode": "无用代码",
+      "bugs": "可能的缺陷",
+      "security": "安全审查"
+    },
+    "runOn": "在此文件上运行",
+    "needsCloud": "此版本中代码分析需要使用云端提供商。",
+    "empty": "运行分析以在此查看结果。"
   },
   "proficiency": {
     "nontech": "非技术读者",
@@ -115,11 +142,20 @@
     "endpointModel": "默认模型",
     "addEndpoint": "保存端点"
   },
+  "admin": {
+    "title": "管理",
+    "intro": "提升或移除管理员。可使用 README 中记录的 SQL 助手提升第一位管理员。",
+    "email": "邮箱",
+    "roles": "角色",
+    "actions": "操作",
+    "promote": "提升为管理员",
+    "demote": "移除管理员"
+  },
   "docs": {
     "title": "文档",
     "intro": "De-coder 把源代码转化为可读的知识。可使用页眉中的切换器以你偏好的语言阅读本页。",
     "gettingStartedTitle": "快速开始",
-    "gettingStartedBody": "登录、创建项目、上传任意代码库的 ZIP,在文件树中选择文件,然后点击「解释」。选择你的水平以及通俗或技术摘要。",
+    "gettingStartedBody": "登录、创建项目、上传 ZIP 或导入公开的 GitHub 仓库,在文件树中选择文件,然后点击「解释」。选择你的水平以及通俗或技术摘要。",
     "byokTitle": "自带 AI 密钥",
     "byokBody": "在「设置 → AI 提供商」中粘贴 OpenAI、Anthropic、Google Gemini 或 OpenRouter 的密钥。密钥在服务器端通过 AES-256-GCM 加密,仅在转发你的请求时解密 —— 永远不会返回到浏览器。",
     "localTitle": "本地模式(Ollama / LM Studio)",

@@ -8,7 +8,8 @@
     "settings": "Impostazioni",
     "signOut": "Esci",
     "signIn": "Accedi",
-    "docs": "Documentazione"
+    "docs": "Documentazione",
+    "admin": "Amministrazione"
   },
   "languages": {
     "en": "English",
@@ -53,14 +54,24 @@
     "repos": "Repository",
     "uploadZip": "Carica ZIP",
     "uploading": "Caricamento…",
-    "noRepos": "Nessuna repository. Carica uno ZIP per iniziare.",
-    "openRepo": "Apri"
+    "noRepos": "Nessuna repository. Carica uno ZIP o importa da GitHub per iniziare.",
+    "openRepo": "Apri",
+    "importGithub": "Importa da GitHub",
+    "importing": "Importazione…",
+    "githubUrl": "URL GitHub",
+    "githubUrlPlaceholder": "https://github.com/owner/repo",
+    "githubRef": "Branch / tag (opzionale)",
+    "githubRefPlaceholder": "main",
+    "githubOnlyPublic": "In questa build sono supportate solo repository pubbliche.",
+    "import": "Importa"
   },
   "workspace": {
     "files": "File",
     "selectFile": "Seleziona un file per vederne il sorgente",
     "explain": "Spiega questo file",
     "explaining": "Sto spiegando…",
+    "analyze": "Analizza",
+    "analyzing": "Analisi in corso…",
     "proficiency": "Livello",
     "type": "Tipo",
     "provider": "Provider",
@@ -71,11 +82,27 @@
     "copy": "Copia",
     "copied": "Copiato.",
     "download": "Scarica .md",
+    "exportAll": "Esporta tutto (.zip)",
+    "exporting": "Esportazione…",
     "noProvider": "Aggiungi una chiave API in Impostazioni per attivare le spiegazioni AI.",
     "tabs": {
+      "summary": "Riassunto",
       "human": "Riassunto umano",
-      "technical": "Riassunto tecnico"
+      "technical": "Riassunto tecnico",
+      "quality": "Qualità",
+      "security": "Sicurezza"
     }
+  },
+  "analysis": {
+    "kind": {
+      "smells": "Code smell",
+      "deadcode": "Codice morto",
+      "bugs": "Possibili bug",
+      "security": "Revisione di sicurezza"
+    },
+    "runOn": "Esegui su questo file",
+    "needsCloud": "L'analisi del codice richiede un provider cloud in questa build.",
+    "empty": "Esegui un'analisi per vedere i risultati qui."
   },
   "proficiency": {
     "nontech": "Lettore non tecnico",
@@ -115,11 +142,20 @@
     "endpointModel": "Modello predefinito",
     "addEndpoint": "Salva endpoint"
   },
+  "admin": {
+    "title": "Amministrazione",
+    "intro": "Promuovi o rimuovi amministratori. Promuovi il primo admin con l'helper SQL documentato nel README.",
+    "email": "Email",
+    "roles": "Ruoli",
+    "actions": "Azioni",
+    "promote": "Promuovi ad admin",
+    "demote": "Rimuovi admin"
+  },
   "docs": {
     "title": "Documentazione",
     "intro": "De-coder trasforma il codice sorgente in conoscenza leggibile. Leggi questa pagina nella tua lingua tramite il selettore nell'intestazione.",
     "gettingStartedTitle": "Per iniziare",
-    "gettingStartedBody": "Accedi, crea un progetto, carica uno ZIP di un qualsiasi codebase, seleziona un file nell'albero, poi clicca Spiega. Scegli il tuo livello e il riassunto umano o tecnico.",
+    "gettingStartedBody": "Accedi, crea un progetto, carica uno ZIP o importa una repository pubblica da GitHub, seleziona un file nell'albero, poi clicca Spiega. Scegli il tuo livello e il riassunto umano o tecnico.",
     "byokTitle": "Porta la tua chiave AI",
     "byokBody": "In Impostazioni → Provider AI, incolla una chiave per OpenAI, Anthropic, Google Gemini o OpenRouter. Le chiavi sono cifrate con AES-256-GCM lato server e decifrate solo per inoltrare la tua richiesta — non vengono mai restituite al browser.",
     "localTitle": "Modalità locale (Ollama / LM Studio)",

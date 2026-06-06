@@ -8,7 +8,8 @@
     "settings": "Settings",
     "signOut": "Sign out",
     "signIn": "Sign in",
-    "docs": "Docs"
+    "docs": "Docs",
+    "admin": "Admin"
   },
   "languages": {
     "en": "English",
@@ -53,14 +54,24 @@
     "repos": "Repositories",
     "uploadZip": "Upload ZIP",
     "uploading": "Uploading…",
-    "noRepos": "No repositories yet. Upload a ZIP to get started.",
-    "openRepo": "Open"
+    "noRepos": "No repositories yet. Upload a ZIP or import from GitHub to get started.",
+    "openRepo": "Open",
+    "importGithub": "Import from GitHub",
+    "importing": "Importing…",
+    "githubUrl": "GitHub URL",
+    "githubUrlPlaceholder": "https://github.com/owner/repo",
+    "githubRef": "Branch / tag (optional)",
+    "githubRefPlaceholder": "main",
+    "githubOnlyPublic": "Only public repositories are supported in this build.",
+    "import": "Import"
   },
   "workspace": {
     "files": "Files",
     "selectFile": "Select a file to view its source",
     "explain": "Explain this file",
     "explaining": "Explaining…",
+    "analyze": "Analyze",
+    "analyzing": "Analyzing…",
     "proficiency": "Proficiency",
     "type": "Type",
     "provider": "Provider",
@@ -71,11 +82,27 @@
     "copy": "Copy",
     "copied": "Copied.",
     "download": "Download .md",
+    "exportAll": "Export all (.zip)",
+    "exporting": "Exporting…",
     "noProvider": "Add an API key in Settings to enable AI explanations.",
     "tabs": {
+      "summary": "Summary",
       "human": "Human summary",
-      "technical": "Technical summary"
+      "technical": "Technical summary",
+      "quality": "Quality",
+      "security": "Security"
     }
+  },
+  "analysis": {
+    "kind": {
+      "smells": "Code smells",
+      "deadcode": "Dead code",
+      "bugs": "Bug hints",
+      "security": "Security review"
+    },
+    "runOn": "Run on this file",
+    "needsCloud": "Code analysis requires a cloud provider in this build.",
+    "empty": "Run an analysis to see findings here."
   },
   "proficiency": {
     "nontech": "Non-technical reader",
@@ -115,11 +142,20 @@
     "endpointModel": "Default model",
     "addEndpoint": "Save endpoint"
   },
+  "admin": {
+    "title": "Administration",
+    "intro": "Promote or demote administrators. Bootstrap the first admin via the SQL helper documented in the README.",
+    "email": "Email",
+    "roles": "Roles",
+    "actions": "Actions",
+    "promote": "Promote to admin",
+    "demote": "Remove admin"
+  },
   "docs": {
     "title": "Documentation",
     "intro": "De-coder turns source code into human-readable knowledge. Read this page in your language using the switcher in the header.",
     "gettingStartedTitle": "Getting started",
-    "gettingStartedBody": "Sign in, create a project, upload a ZIP of any codebase, pick a file in the tree, then click Explain. Choose your proficiency level and human or technical summary.",
+    "gettingStartedBody": "Sign in, create a project, upload a ZIP or import any public GitHub repository, pick a file in the tree, then click Explain. Choose your proficiency level and human or technical summary.",
     "byokTitle": "Bring your own AI key",
     "byokBody": "In Settings → AI providers, paste a key for OpenAI, Anthropic, Google Gemini or OpenRouter. Keys are encrypted with AES-256-GCM server-side and decrypted only to forward your request — they are never returned to the browser.",
     "localTitle": "Local mode (Ollama / LM Studio)",
