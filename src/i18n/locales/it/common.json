@@ -107,6 +107,31 @@
     "analyzedCodeBody": "Qualsiasi codice sorgente caricato o analizzato tramite De-coder resta di proprietà dei rispettivi titolari. De-coder non acquisisce alcun diritto sul tuo codice o sulla documentazione generata.",
     "contributionsTitle": "Contributi",
     "contributionsBody": "I contributi inviati al progetto De-coder (pull request, issue, patch di codice, documentazione) possono essere esaminati, integrati e inclusi nelle versioni future a discrezione dei maintainer. Inviando un contributo accetti di rilasciarlo sotto gli stessi termini del progetto (licenza MIT).",
+    "dataCollectedTitle": "Dati raccolti",
+    "dataCollectedIntro": "De-coder raccoglie solo i dati necessari al funzionamento del servizio:",
+    "dataCollected": {
+      "account": "Account: email, nome visualizzato, ruolo e timestamp di creazione (gestiti dal modulo di autenticazione).",
+      "content": "Contenuti: file caricati (storage privato, accessibile solo dal proprietario), metadati (path, dimensione, sha256, linguaggio) e spiegazioni AI generate.",
+      "credentials": "Chiavi API utente: cifrate at-rest con AES-256-GCM e mai restituite al browser. Le chiavi proprie restano opzionali — Lovable AI è disponibile senza configurazione.",
+      "notracking": "Nessun tracker pubblicitario, nessun analytics di terze parti, nessuna profilazione."
+    },
+    "gdprTitle": "Conformità GDPR (Reg. UE 2016/679)",
+    "gdprIntro": "De-coder è progettato per essere conforme al Regolamento europeo sulla protezione dei dati personali.",
+    "gdpr": {
+      "lawful": "Base giuridica: esecuzione del contratto di servizio (art. 6.1.b) e consenso esplicito (art. 6.1.a) per l'uso di provider AI esterni.",
+      "rights": "Diritti dell'interessato: accesso, rettifica, cancellazione, portabilità, opposizione e limitazione del trattamento. Puoi esportare o cancellare i tuoi dati dalla pagina Impostazioni → Account.",
+      "transfers": "Trasferimenti extra-UE: solo se scegli un provider AI con server al di fuori dell'UE (es. OpenAI, Anthropic, Lovable AI). Il provider è sempre indicato chiaramente prima della richiesta.",
+      "retention": "Conservazione: i dati restano archiviati fino alla cancellazione esplicita dell'account o dei singoli contenuti.",
+      "contact": "Per esercitare i tuoi diritti o segnalare un incidente, contatta il maintainer tramite il repository GitHub del progetto."
+    },
+    "aiActTitle": "Conformità EU AI Act (Reg. UE 2024/1689)",
+    "aiActIntro": "De-coder è un assistente di comprensione del codice classificato come sistema IA a rischio limitato.",
+    "aiAct": {
+      "risk": "Classificazione: sistema GPAI downstream a rischio limitato. Non prende decisioni automatizzate su persone, non valuta lavoratori, non profila utenti.",
+      "transparency": "Trasparenza (art. 50): ogni output è chiaramente etichettato come generato da IA e può contenere errori; va sempre verificato da un essere umano.",
+      "prohibited": "Usi vietati (art. 5): nessuna biometria, social scoring, manipolazione subliminale o sfruttamento di vulnerabilità.",
+      "humanOversight": "Supervisione umana: l'utente mantiene controllo totale su quando invocare l'IA, quale provider usare e se accettare l'output."
+    },
     "disclaimerTitle": "Esclusione di responsabilità",
     "disclaimerBody": "IL SOFTWARE VIENE FORNITO \"COSÌ COM'È\", SENZA GARANZIE DI ALCUN TIPO, ESPLICITE O IMPLICITE, INCLUSE, A TITOLO ESEMPLIFICATIVO, LE GARANZIE DI COMMERCIABILITÀ, IDONEITÀ A UNO SCOPO PARTICOLARE E NON VIOLAZIONE. IN NESSUN CASO GLI AUTORI O I TITOLARI DEL COPYRIGHT POTRANNO ESSERE RITENUTI RESPONSABILI PER QUALSIASI RECLAMO, DANNO O ALTRA RESPONSABILITÀ, SIA IN UN'AZIONE CONTRATTUALE CHE EXTRACONTRATTUALE, DERIVANTE DA, IN CONNESSIONE CON O RELATIVAMENTE AL SOFTWARE O ALL'USO O AD ALTRE OPERAZIONI CON IL SOFTWARE."
   },
