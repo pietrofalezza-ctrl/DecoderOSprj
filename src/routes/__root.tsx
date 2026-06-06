@@ -76,21 +76,41 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "De-coder — Understand any codebase" },
+      { title: "De-coder — Understand AI-generated code, in any language" },
       {
         name: "description",
         content:
-          "De-coder is an open-source, multilingual app that turns source code into human-readable knowledge. BYOK cloud AI or fully local with Ollama / LM Studio.",
+          "Open-source code understanding for the AI era. Read, review and audit code written by Copilot, Cursor, Lovable and human teammates. BYOK cloud or fully local.",
       },
-      { property: "og:title", content: "De-coder" },
+      { property: "og:site_name", content: "De-coder" },
+      { property: "og:title", content: "De-coder — Understand AI-generated code" },
       {
         property: "og:description",
-        content: "Open-source, multilingual code understanding. BYOK cloud or local AI.",
+        content:
+          "Open-source code understanding for the AI era. BYOK cloud or fully local with Ollama / LM Studio.",
       },
       { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary" },
+      { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: "De-coder — Understand AI-generated code" },
+      {
+        name: "twitter:description",
+        content: "Open-source code understanding for the AI era. BYOK cloud or fully local.",
+      },
     ],
     links: [{ rel: "stylesheet", href: appCss }],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "WebSite",
+          name: "De-coder",
+          url: "https://decoder.lovable.app",
+          description:
+            "Open-source code understanding for the AI era — read, review and audit AI-generated code.",
+        }),
+      },
+    ],
   }),
   shellComponent: RootShell,
   component: RootComponent,

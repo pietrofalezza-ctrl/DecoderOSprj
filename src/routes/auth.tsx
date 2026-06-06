@@ -1,7 +1,8 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
+import { AlertCircle } from "lucide-react";
 import { z } from "zod";
 
 import { Button } from "@/components/ui/button";
@@ -24,7 +25,6 @@ export const Route = createFileRoute("/auth")({
 
 function safeRedirect(path?: string): string {
   if (!path) return "/dashboard";
-  // Only allow relative same-origin paths.
   if (!path.startsWith("/") || path.startsWith("//")) return "/dashboard";
   return path;
 }
@@ -40,6 +40,8 @@ function AuthPage() {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [accepted, setAccepted] = useState(false);
+  const [highlight, setHighlight] = useState(false);
+  const disclaimerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {
@@ -64,10 +66,17 @@ function AuthPage() {
     }
   };
 
+  const flagMissing = () => {
+    setHighlight(true);
+    disclaimerRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+    toast.error(t("auth.disclaimerRequired"));
+    setTimeout(() => setHighlight(false), 2200);
+  };
+
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!accepted) {
-      toast.error(t("auth.disclaimerRequired"));
+      flagMissing();
       return;
     }
     persistAcceptance();
@@ -95,7 +104,7 @@ function AuthPage() {
 
   const google = async () => {
     if (!accepted) {
-      toast.error(t("auth.disclaimerRequired"));
+      flagMissing();
       return;
     }
     persistAcceptance();
@@ -122,12 +131,61 @@ function AuthPage() {
         </Link>
         <LangSwitcher />
       </header>
-      <main className="flex flex-1 items-center justify-center px-6">
+      <main className="flex flex-1 items-center justify-center px-6 py-8">
         <div className="w-full max-w-sm rounded-lg border border-border bg-card p-6">
           <h1 className="text-xl font-semibold">{t("auth.title")}</h1>
           <p className="mt-1 text-sm text-muted-foreground">{t("auth.subtitle")}</p>
 
-          <form onSubmit={submit} className="mt-6 space-y-3">
+          {/* Disclaimer — moved to top, applies to BOTH email and Google */}
+          <div
+            ref={disclaimerRef}
+            id="disclaimer-block"
+            className={
+              "mt-5 rounded-md border bg-primary/5 p-3 transition-all " +
+              (highlight
+                ? "border-destructive ring-2 ring-destructive animate-pulse"
+                : accepted
+                  ? "border-primary/30"
+                  : "border-primary/40")
+            }
+          >
+            <div className="mb-1.5 text-xs font-semibold uppercase tracking-wide text-primary">
+              {t("auth.disclaimerHeader")}
+            </div>
+            <div className="flex items-start gap-2">
+              <Checkbox
+                id="disclaimer"
+                checked={accepted}
+                onCheckedChange={(v) => {
+                  setAccepted(v === true);
+                  if (v === true) setHighlight(false);
+                }}
+                className="mt-0.5"
+              />
+              <Label
+                htmlFor="disclaimer"
+                className="text-xs font-normal leading-relaxed text-foreground"
+              >
+                {t("auth.disclaimerAcceptPrefix")}
+                <Link
+                  to="/terms"
+                  target="_blank"
+                  className="font-medium text-primary underline-offset-2 hover:underline"
+                >
+                  {t("auth.disclaimerAcceptLink")}
+                </Link>
+                {t("auth.disclaimerAcceptSuffix")}
+              </Label>
+            </div>
+            {!accepted && (
+              <p className="mt-2 flex items-center gap-1.5 text-xs text-muted-foreground">
+                <AlertCircle className="h-3 w-3" />
+                {t("auth.disclaimerRequiredHint")}
+              </p>
+            )}
+          </div>
+
+          <form onSubmit={submit} className="mt-5 space-y-3">
             <div className="space-y-1">
               <Label htmlFor="email">{t("auth.emailLabel")}</Label>
               <Input
@@ -149,30 +207,13 @@ function AuthPage() {
                 onChange={(e) => setPassword(e.target.value)}
               />
             </div>
-            <div className="flex items-start gap-2 rounded-md border border-border/60 bg-muted/30 p-3">
-              <Checkbox
-                id="disclaimer"
-                checked={accepted}
-                onCheckedChange={(v) => setAccepted(v === true)}
-                className="mt-0.5"
-              />
-              <Label
-                htmlFor="disclaimer"
-                className="text-xs font-normal leading-relaxed text-muted-foreground"
-              >
-                {t("auth.disclaimerAcceptPrefix")}
-                <Link
-                  to="/terms"
-                  target="_blank"
-                  className="font-medium text-primary underline-offset-2 hover:underline"
-                >
-                  {t("auth.disclaimerAcceptLink")}
-                </Link>
-                {t("auth.disclaimerAcceptSuffix")}
-              </Label>
-            </div>
 
-            <Button type="submit" className="w-full" disabled={loading || !accepted}>
+            <Button
+              type="submit"
+              className="w-full"
+              disabled={loading || !accepted}
+              aria-describedby="disclaimer-block"
+            >
               {mode === "signin" ? t("auth.signIn") : t("auth.signUp")}
             </Button>
           </form>
@@ -188,6 +229,7 @@ function AuthPage() {
             className="w-full"
             onClick={google}
             disabled={loading || !accepted}
+            aria-describedby="disclaimer-block"
           >
             {t("auth.withGoogle")}
           </Button>

@@ -10,6 +10,9 @@ import {
   Lock,
   Zap,
   Users,
+  Bot,
+  GitPullRequest,
+  Eye,
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -19,6 +22,41 @@ import { Logo } from "@/components/Logo";
 import { LandingMockup } from "@/components/LandingMockup";
 
 export const Route = createFileRoute("/")({
+  head: () => ({
+    meta: [
+      { title: "De-coder — Understand AI-generated code, in any language" },
+      {
+        name: "description",
+        content:
+          "Open-source code understanding for the AI era. Read, review and audit code written by Copilot, Cursor, Lovable and your team. BYOK cloud or fully local.",
+      },
+      { property: "og:title", content: "De-coder — Understand AI-generated code" },
+      {
+        property: "og:description",
+        content:
+          "Open-source code understanding for the AI era. BYOK cloud or fully local with Ollama / LM Studio.",
+      },
+      { property: "og:url", content: "https://decoder.lovable.app/" },
+    ],
+    links: [{ rel: "canonical", href: "https://decoder.lovable.app/" }],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "SoftwareApplication",
+          name: "De-coder",
+          description:
+            "Open-source code understanding for the AI era — read, review and audit AI-generated code.",
+          applicationCategory: "DeveloperApplication",
+          operatingSystem: "Web, Linux, macOS, Windows",
+          url: "https://decoder.lovable.app",
+          license: "https://opensource.org/licenses/MIT",
+          offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+        }),
+      },
+    ],
+  }),
   component: Landing,
 });
 
@@ -79,7 +117,7 @@ function Landing() {
             <div className="mb-5 flex flex-wrap gap-2 text-xs">
               <Badge icon={<Sparkles className="h-3 w-3" />} label={t("landing.heroBadgeOpen")} />
               <Badge icon={<Lock className="h-3 w-3" />} label={t("landing.heroBadgePrivacy")} />
-              <Badge icon={<Zap className="h-3 w-3" />} label={t("landing.heroBadgeAI")} />
+              <Badge icon={<Bot className="h-3 w-3" />} label={t("landing.heroBadgeAiEra")} />
             </div>
             <h1 className="text-balance text-4xl font-semibold leading-[1.1] tracking-tight md:text-6xl">
               {t("landing.heroLine1")}{" "}
@@ -134,8 +172,40 @@ function Landing() {
         </div>
       </section>
 
+      {/* Why now — AI-generated code era */}
+      <section className="border-y border-border/60 bg-card/40">
+        <div className="mx-auto max-w-7xl px-6 py-16">
+          <div className="max-w-2xl">
+            <p className="text-xs font-semibold uppercase tracking-wide text-primary">
+              {t("landing.whyNowKicker")}
+            </p>
+            <h2 className="mt-2 text-3xl font-semibold tracking-tight md:text-4xl">
+              {t("landing.whyNowTitle")}
+            </h2>
+            <p className="mt-3 text-muted-foreground">{t("landing.whyNowIntro")}</p>
+          </div>
+          <div className="mt-10 grid gap-6 md:grid-cols-3">
+            <WhyNowCard
+              icon={<Bot className="h-5 w-5" />}
+              title={t("landing.whyNow1Title")}
+              body={t("landing.whyNow1Body")}
+            />
+            <WhyNowCard
+              icon={<GitPullRequest className="h-5 w-5" />}
+              title={t("landing.whyNow2Title")}
+              body={t("landing.whyNow2Body")}
+            />
+            <WhyNowCard
+              icon={<Eye className="h-5 w-5" />}
+              title={t("landing.whyNow3Title")}
+              body={t("landing.whyNow3Body")}
+            />
+          </div>
+        </div>
+      </section>
+
       {/* Features */}
-      <section id="features" className="mx-auto max-w-7xl px-6 pb-16">
+      <section id="features" className="mx-auto max-w-7xl px-6 py-16">
         <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
           <Feature
             icon={<Globe2 className="h-5 w-5" />}
@@ -302,6 +372,26 @@ function Step({ n, title, body }: { n: number; title: string; body: string }) {
       <h3 className="text-base font-semibold">{title}</h3>
       <p className="mt-2 text-sm text-muted-foreground">{body}</p>
     </li>
+  );
+}
+
+function WhyNowCard({
+  icon,
+  title,
+  body,
+}: {
+  icon: React.ReactNode;
+  title: string;
+  body: string;
+}) {
+  return (
+    <div className="rounded-xl border border-border bg-background p-6">
+      <div className="mb-4 inline-flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary">
+        {icon}
+      </div>
+      <h3 className="text-base font-semibold">{title}</h3>
+      <p className="mt-2 text-sm text-muted-foreground">{body}</p>
+    </div>
   );
 }
 
