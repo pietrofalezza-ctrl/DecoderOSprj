@@ -327,7 +327,9 @@
     "running": "Scansione in corso…",
     "runningHint": "Analizzo i file sorgente a lotti. Può richiedere un minuto.",
     "needsCloud": "Per scansionare l'intera repo serve un provider AI cloud.",
-    "repoScore": "Punteggio repository",
+    "needsCloudLong": "Serve un provider cloud (Lovable AI gratuito o una tua chiave) per analizzare la codebase.",
+    "configureKey": "Configura una chiave API"
+  },
     "bucket": {
       "human": "Probabilmente umano",
       "mixed": "Segnali misti",
