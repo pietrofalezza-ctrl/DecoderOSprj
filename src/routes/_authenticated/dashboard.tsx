@@ -4,7 +4,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
-import { Plus, FolderGit2 } from "lucide-react";
+import { Plus, FolderGit2, Sparkles, KeyRound, Cpu, Download } from "lucide-react";
 
 import { AppShell } from "@/components/AppShell";
 import { Button } from "@/components/ui/button";
@@ -85,6 +85,57 @@ function DashboardPage() {
             </DialogContent>
           </Dialog>
         </div>
+
+        <section className="mt-6 rounded-lg border border-border bg-card p-5">
+          <div className="flex items-center gap-2">
+            <Sparkles className="h-4 w-4 text-primary" />
+            <h2 className="text-sm font-semibold">{t("howToUse.title")}</h2>
+          </div>
+          <p className="mt-1 text-xs text-muted-foreground">{t("howToUse.intro")}</p>
+          <div className="mt-4 grid gap-3 sm:grid-cols-3">
+            <div className="rounded-md border border-primary/40 bg-primary/5 p-3">
+              <div className="flex items-center gap-2 text-sm font-semibold text-primary">
+                <Sparkles className="h-4 w-4" />
+                {t("howToUse.defaultTitle")}
+              </div>
+              <p className="mt-1 text-xs text-muted-foreground">{t("howToUse.defaultBody")}</p>
+            </div>
+            <div className="rounded-md border border-border p-3">
+              <div className="flex items-center gap-2 text-sm font-semibold">
+                <KeyRound className="h-4 w-4 text-primary" />
+                {t("howToUse.byokTitle")}
+              </div>
+              <p className="mt-1 text-xs text-muted-foreground">{t("howToUse.byokBody")}</p>
+              <Link
+                to="/settings"
+                hash="byok"
+                className="mt-2 inline-block text-xs font-medium text-primary hover:underline"
+              >
+                {t("howToUse.byokCta")} →
+              </Link>
+            </div>
+            <div className="rounded-md border border-border p-3">
+              <div className="flex items-center gap-2 text-sm font-semibold">
+                <Cpu className="h-4 w-4 text-primary" />
+                {t("howToUse.localTitle")}
+              </div>
+              <p className="mt-1 text-xs text-muted-foreground">{t("howToUse.localBody")}</p>
+              <Link
+                to="/settings"
+                className="mt-2 inline-block text-xs font-medium text-primary hover:underline"
+              >
+                {t("howToUse.localCta")} →
+              </Link>
+            </div>
+          </div>
+          <div className="mt-4 flex flex-wrap items-start gap-2 rounded-md border border-dashed border-border p-3 text-xs text-muted-foreground">
+            <Download className="mt-0.5 h-3.5 w-3.5 shrink-0 text-primary" />
+            <p>
+              <span className="font-medium text-foreground">{t("howToUse.installTitle")}: </span>
+              {t("howToUse.installBody")}
+            </p>
+          </div>
+        </section>
 
         <div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {projects.data?.projects.length === 0 && (
