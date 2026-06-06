@@ -16,6 +16,37 @@ export const isAdmin = createServerFn({ method: "GET" })
     return { admin: !!data };
   });
 
+export const adminBootstrapStatus = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .handler(async () => {
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { count, error } = await supabaseAdmin
+      .from("user_roles")
+      .select("user_id", { count: "exact", head: true })
+      .eq("role", "admin");
+    if (error) throw error;
+    return { hasAdmin: (count ?? 0) > 0 };
+  });
+
+export const claimFirstAdmin = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    // Atomic-ish check: if any admin exists, refuse.
+    const { count, error: cErr } = await supabaseAdmin
+      .from("user_roles")
+      .select("user_id", { count: "exact", head: true })
+      .eq("role", "admin");
+    if (cErr) throw cErr;
+    if ((count ?? 0) > 0) throw new Error("admin_already_exists");
+
+    const { error: iErr } = await supabaseAdmin
+      .from("user_roles")
+      .insert({ user_id: context.userId, role: "admin" });
+    if (iErr && !String(iErr.message).includes("duplicate")) throw iErr;
+    return { ok: true };
+  });
+
 async function requireAdminCheck(supabase: any, userId: string) {
   const { data, error } = await supabase
     .from("user_roles")

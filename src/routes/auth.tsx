@@ -2,21 +2,38 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
+import { z } from "zod";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { LangSwitcher } from "@/components/LangSwitcher";
+import { Logo } from "@/components/Logo";
 import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable/index";
 
+const SearchSchema = z.object({
+  redirect: z.string().optional(),
+});
+
 export const Route = createFileRoute("/auth")({
+  validateSearch: (s) => SearchSchema.parse(s),
   component: AuthPage,
 });
+
+function safeRedirect(path?: string): string {
+  if (!path) return "/dashboard";
+  // Only allow relative same-origin paths.
+  if (!path.startsWith("/") || path.startsWith("//")) return "/dashboard";
+  return path;
+}
 
 function AuthPage() {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const search = Route.useSearch();
+  const target = safeRedirect(search.redirect);
+
   const [mode, setMode] = useState<"signin" | "signup">("signin");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -24,9 +41,9 @@ function AuthPage() {
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {
-      if (data.session) navigate({ to: "/dashboard", replace: true });
+      if (data.session) navigate({ to: target, replace: true });
     });
-  }, [navigate]);
+  }, [navigate, target]);
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -43,7 +60,7 @@ function AuthPage() {
       } else {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
-        navigate({ to: "/dashboard", replace: true });
+        navigate({ to: target, replace: true });
       }
     } catch (err: any) {
       toast.error(err?.message ?? t("errors.generic"));
@@ -56,12 +73,12 @@ function AuthPage() {
     setLoading(true);
     try {
       const r = await lovable.auth.signInWithOAuth("google", {
-        redirect_uri: window.location.origin + "/auth",
+        redirect_uri: window.location.origin + "/auth?redirect=" + encodeURIComponent(target),
       });
       if (r.error) {
         toast.error(r.error.message ?? t("errors.generic"));
       } else if (!r.redirected) {
-        navigate({ to: "/dashboard", replace: true });
+        navigate({ to: target, replace: true });
       }
     } finally {
       setLoading(false);
@@ -71,9 +88,8 @@ function AuthPage() {
   return (
     <div className="flex min-h-screen flex-col bg-background text-foreground">
       <header className="flex h-14 items-center justify-between px-6">
-        <Link to="/" className="flex items-center gap-2 font-semibold">
-          <span className="inline-block h-2 w-2 rounded-full bg-primary" />
-          <span>{t("brand.name")}</span>
+        <Link to="/">
+          <Logo />
         </Link>
         <LangSwitcher />
       </header>
@@ -127,6 +143,12 @@ function AuthPage() {
           >
             {mode === "signin" ? t("auth.switchToSignUp") : t("auth.switchToSignIn")}
           </button>
+
+          <div className="mt-6 text-center">
+            <Link to="/" className="text-xs text-muted-foreground hover:text-foreground">
+              ← {t("common.home")}
+            </Link>
+          </div>
         </div>
       </main>
     </div>
