@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
 import {
   ArrowRight,
-  PlayCircle,
+  Github,
   Globe2,
   KeyRound,
   ShieldCheck,
@@ -143,9 +143,9 @@ function Landing() {
                 </Link>
               </Button>
               <Button asChild variant="outline" size="lg">
-                <a href="#how-it-works">
-                  {t("landing.ctaDemo")}
-                  <PlayCircle className="ml-2 h-4 w-4" />
+                <a href={t("common.repoUrl")} target="_blank" rel="noreferrer">
+                  {t("landing.ctaGithub")}
+                  <Github className="ml-2 h-4 w-4" />
                 </a>
               </Button>
             </div>

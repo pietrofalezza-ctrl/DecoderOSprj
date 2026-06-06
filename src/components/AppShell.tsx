@@ -8,9 +8,9 @@ import {
   LayoutDashboard,
   BookOpen,
   ShieldCheck,
-  Sparkles,
   ChevronDown,
   KeyRound,
+  Github,
 } from "lucide-react";
 import type { ReactNode } from "react";
 
@@ -62,22 +62,22 @@ export function AppShell({ children }: { children: ReactNode }) {
 
   return (
     <div className="flex min-h-screen flex-col bg-background">
-      <header className="flex h-14 items-center justify-between border-b border-border px-4">
+      <header className="flex h-16 items-center justify-between border-b border-border px-4">
         <Link to="/dashboard" aria-label={t("brand.name")}>
           <Logo />
         </Link>
-        <div className="flex items-center gap-1">
-          <Button asChild variant="ghost" size="sm">
-            <Link to="/manifesto">
-              <Sparkles className="mr-2 h-4 w-4" />
-              {t("nav.manifesto")}
-            </Link>
-          </Button>
-          <Button asChild variant="ghost" size="sm">
+        <div className="flex items-center gap-2">
+          <Button asChild variant="ghost" size="default" className="text-sm font-medium">
             <Link to="/docs">
-              <BookOpen className="mr-2 h-4 w-4" />
+              <BookOpen className="mr-2 h-5 w-5" />
               {t("nav.docs")}
             </Link>
+          </Button>
+          <Button asChild variant="ghost" size="default" className="text-sm font-medium">
+            <a href={t("common.repoUrl")} target="_blank" rel="noreferrer">
+              <Github className="mr-2 h-5 w-5" />
+              GitHub
+            </a>
           </Button>
           <ThemeToggle />
           <LangSwitcher />
@@ -87,15 +87,18 @@ export function AppShell({ children }: { children: ReactNode }) {
                 <TooltipTrigger asChild>
                   <DropdownMenuTrigger asChild>
                     <Button
-                      variant="ghost"
-                      size="sm"
-                      className="ml-1 h-9 gap-1.5 px-1.5"
+                      variant="outline"
+                      size="default"
+                      className="ml-2 h-11 gap-2 px-2.5"
                       aria-label={t("nav.account")}
                     >
-                      <span className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/15 text-sm font-semibold text-primary ring-2 ring-primary/30 transition hover:ring-primary/60">
+                      <span className="flex h-9 w-9 items-center justify-center rounded-full bg-primary/15 text-base font-semibold text-primary ring-2 ring-primary/40 transition hover:ring-primary/70">
                         {initial}
                       </span>
-                      <ChevronDown className="h-3.5 w-3.5 text-muted-foreground" />
+                      <span className="hidden max-w-[160px] truncate text-sm font-medium md:inline">
+                        {email || t("nav.account")}
+                      </span>
+                      <ChevronDown className="h-4 w-4 text-muted-foreground" />
                     </Button>
                   </DropdownMenuTrigger>
                 </TooltipTrigger>
@@ -113,26 +116,26 @@ export function AppShell({ children }: { children: ReactNode }) {
                 <DropdownMenuSeparator />
                 <DropdownMenuItem asChild>
                   <Link to="/dashboard">
-                    <LayoutDashboard className="mr-2 h-4 w-4" />
+                    <LayoutDashboard className="mr-2 h-5 w-5" />
                     {t("nav.dashboard")}
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
                   <Link to="/settings" hash="byok">
-                    <KeyRound className="mr-2 h-4 w-4" />
+                    <KeyRound className="mr-2 h-5 w-5" />
                     {t("nav.apiKeys")}
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
                   <Link to="/settings">
-                    <Settings className="mr-2 h-4 w-4" />
+                    <Settings className="mr-2 h-5 w-5" />
                     {t("nav.settings")}
                   </Link>
                 </DropdownMenuItem>
                 {admin.data?.admin && (
                   <DropdownMenuItem asChild>
                     <Link to="/admin">
-                      <ShieldCheck className="mr-2 h-4 w-4" />
+                      <ShieldCheck className="mr-2 h-5 w-5" />
                       {t("nav.admin")}
                     </Link>
                   </DropdownMenuItem>
@@ -142,7 +145,7 @@ export function AppShell({ children }: { children: ReactNode }) {
                   onSelect={signOut}
                   className="text-destructive focus:text-destructive"
                 >
-                  <LogOut className="mr-2 h-4 w-4" />
+                  <LogOut className="mr-2 h-5 w-5" />
                   {t("nav.signOut")}
                 </DropdownMenuItem>
               </DropdownMenuContent>
