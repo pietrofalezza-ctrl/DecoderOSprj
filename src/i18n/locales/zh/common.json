@@ -3,13 +3,20 @@
     "name": "De-coder",
     "tagline": "把源代码转化为人人可读的知识"
   },
+  "common": {
+    "back": "返回",
+    "home": "首页",
+    "tryAgain": "重试",
+    "goToDashboard": "前往工作台"
+  },
   "nav": {
     "dashboard": "工作台",
     "settings": "设置",
     "signOut": "退出登录",
     "signIn": "登录",
     "docs": "文档",
-    "admin": "管理"
+    "admin": "管理",
+    "manifesto": "宣言"
   },
   "languages": {
     "en": "English",
@@ -17,16 +24,103 @@
     "zh": "简体中文"
   },
   "landing": {
-    "heroTitle": "用你的语言、按你的水平,理解任何代码库",
-    "heroSubtitle": "开源。自带 AI 密钥。云端或完全本地。",
-    "ctaStart": "开始使用",
+    "heroLine1": "理解任何",
+    "heroLine1Accent": "代码库",
+    "heroLine2": ",用你的语言,按",
+    "heroLine2Accent": "你的水平",
+    "heroSubtitle": "De-coder 把复杂代码转化为清晰的解释、智能的注释与架构洞察。面向开发者、管理者与技术团队。",
+    "heroBadgeOpen": "开源",
+    "heroBadgePrivacy": "隐私优先",
+    "heroBadgeAI": "AI 驱动",
+    "ctaStart": "立即开始",
     "ctaSignIn": "登录",
+    "ctaDemo": "查看演示",
+    "providersStrip": "支持你偏好的提供商",
+    "nav": {
+      "features": "功能",
+      "howItWorks": "工作流程",
+      "integrations": "集成",
+      "openSource": "开源",
+      "docs": "文档",
+      "manifesto": "宣言"
+    },
     "feature1Title": "多语言",
-    "feature1Body": "简体中文、English、Italiano — 随时切换。",
+    "feature1Body": "简体中文、English、Italiano 等。一键切换语言。",
     "feature2Title": "自带 AI",
-    "feature2Body": "OpenAI、Anthropic、Gemini、OpenRouter — 或本地 Ollama / LM Studio。",
-    "feature3Title": "本地优先",
-    "feature3Body": "本地模式下,源代码永远不会离开你的电脑。"
+    "feature2Body": "OpenAI、Anthropic、Gemini、OpenRouter,或本地 Ollama / LM Studio。",
+    "feature3Title": "本地且私密",
+    "feature3Body": "本地模式:源代码永远不会离开你的电脑。",
+    "howTitle": "工作流程",
+    "howIntro": "从源代码到知识,只需三步。",
+    "step1Title": "导入代码",
+    "step1Body": "上传 ZIP 或导入公开 GitHub 仓库。文件保留在你的账户中。",
+    "step2Title": "选择提供商",
+    "step2Body": "OpenAI、Anthropic、Gemini、OpenRouter,或本地 Ollama / LM Studio。",
+    "step3Title": "解释与分析",
+    "step3Body": "通俗或技术摘要、质量与安全分析、Markdown 导出。",
+    "integrationsTitle": "集成",
+    "integrationsBody": "支持你已在使用的 AI 提供商以及公开 GitHub 仓库。",
+    "value100Open": "100%",
+    "valueOpenSource": "开源",
+    "valuePrivacy": "隐私优先",
+    "valuePrivacyBody": "数据归你所有",
+    "valueNoLockin": "无供应商锁定",
+    "valueNoLockinBody": "随心选择模型",
+    "valueForAll": "面向所有人",
+    "valueForAllBody": "从初级到 CTO",
+    "mockup": {
+      "projects": "项目",
+      "repository": "仓库",
+      "files": "文件",
+      "analysis": "分析",
+      "summary": "解释",
+      "summaryBody": "此函数通过验证邮箱与密码来鉴别用户。凭据有效时返回用户,否则抛出错误。",
+      "architecture": "架构",
+      "architectureBody": "属于认证模块,与用户数据库交互。",
+      "dependencies": "依赖",
+      "applyComments": "应用注释"
+    }
+  },
+  "manifesto": {
+    "kicker": "宣言",
+    "title": "我们相信代码应当易于理解",
+    "intro": "De-coder 旨在打破编写代码者与需要理解、维护、评估或解释代码者之间的壁垒 —— 同时不辜负使用者的信任。",
+    "principlesTitle": "我们的原则",
+    "principles": {
+      "open": {
+        "title": "真正的开源",
+        "body": "MIT 许可证、公开开发、没有隐藏组件。所见即所运行。"
+      },
+      "privacy": {
+        "title": "隐私设计",
+        "body": "我们绝不使用你的代码训练模型,绝不出售你的数据。API 密钥采用 AES-256-GCM 加密,绝不返回浏览器。"
+      },
+      "byok": {
+        "title": "自带密钥",
+        "body": "无锁定:直接向你选择的 AI 提供商付费。随时切换提供商,所有内容均可导出为 Markdown。"
+      },
+      "localFirst": {
+        "title": "本地优先",
+        "body": "本地模式使用 Ollama 或 LM Studio:源代码不离开你的电脑。浏览器直接与你的 localhost 通信。"
+      },
+      "multilang": {
+        "title": "原生多语言",
+        "body": "界面与解释支持英文、意大利文与简体中文。其他语言将随社区到来。"
+      },
+      "accessible": {
+        "title": "面向每个层次",
+        "body": "从非技术读者到 CTO:选择深度,得到合适的解释。"
+      }
+    },
+    "wontTitle": "我们绝不会做的事",
+    "wont": {
+      "w1": "绝不使用你的代码训练我们或第三方的模型。",
+      "w2": "绝不出售你的数据,也不与数据经纪人共享。",
+      "w3": "绝不在 AI 提供商上设置人为锁定。",
+      "w4": "绝不阻止你导出解释与注释。"
+    },
+    "roadmapTitle": "公开路线图",
+    "roadmapBody": "开发阶段记录在仓库的 README 与 .lovable/plan.md 中。产品决策公开讨论。"
   },
   "auth": {
     "title": "登录 De-coder",
@@ -142,9 +236,17 @@
     "endpointModel": "默认模型",
     "addEndpoint": "保存端点"
   },
+  "adminBootstrap": {
+    "title": "成为第一位管理员",
+    "body": "此实例尚无管理员。认领管理员角色以管理用户、角色与配置。",
+    "cta": "成为管理员",
+    "claiming": "处理中…",
+    "done": "你已成为管理员。正在打开面板…",
+    "notEligible": "已存在管理员。请联系管理员将你提升。"
+  },
   "admin": {
     "title": "管理",
-    "intro": "提升或移除管理员。可使用 README 中记录的 SQL 助手提升第一位管理员。",
+    "intro": "提升或移除管理员。可使用 SQL 助手或「设置」中的「成为第一位管理员」横幅提升第一位管理员。",
     "email": "邮箱",
     "roles": "角色",
     "actions": "操作",
@@ -161,12 +263,17 @@
     "localTitle": "本地模式(Ollama / LM Studio)",
     "localBody": "安装 Ollama(https://ollama.com)或 LM Studio,然后在「设置 → 本地 AI 端点」中添加基础 URL(Ollama:http://localhost:11434,LM Studio:http://localhost:1234)和默认模型。浏览器会直接调用你的电脑 —— 源代码不会发送到我们的服务器。",
     "securityTitle": "安全与所有权",
-    "securityBody": "你的代码、生成的文档和建议的注释归你所有。我们不会使用用户的代码仓库进行模型训练。每张数据表都启用了限定到你账户的行级安全(RLS)。"
+    "securityBody": "你的代码、生成的文档和建议的注释归你所有。我们不会使用用户的代码仓库进行模型训练。每张数据表都启用了限定到你账户的行级安全(RLS)。",
+    "adminTitle": "成为管理员",
+    "adminBody": "如果你是第一位用户,请前往「设置」,在顶部横幅中点击「成为管理员」。或在 Lovable Cloud SQL 编辑器中执行:SELECT public.promote_to_admin('your-email@example.com');"
   },
   "errors": {
     "generic": "出现错误。",
     "zipTooLarge": "ZIP 文件过大。",
-    "noFiles": "ZIP 中未找到可读文件。"
+    "noFiles": "ZIP 中未找到可读文件。",
+    "notFoundTitle": "未找到页面",
+    "notFoundBody": "你打开的地址不存在或已被移动。",
+    "boundaryTitle": "此页面加载失败"
   },
   "footer": {
     "ownership": "你的代码和生成的文档属于你自己。De-coder 不会用你的仓库训练模型。"

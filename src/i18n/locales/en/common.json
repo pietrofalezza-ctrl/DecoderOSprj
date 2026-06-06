@@ -3,13 +3,20 @@
     "name": "De-coder",
     "tagline": "Transform source code into human-readable knowledge"
   },
+  "common": {
+    "back": "Back",
+    "home": "Home",
+    "tryAgain": "Try again",
+    "goToDashboard": "Go to dashboard"
+  },
   "nav": {
     "dashboard": "Dashboard",
     "settings": "Settings",
     "signOut": "Sign out",
     "signIn": "Sign in",
     "docs": "Docs",
-    "admin": "Admin"
+    "admin": "Admin",
+    "manifesto": "Manifesto"
   },
   "languages": {
     "en": "English",
@@ -17,16 +24,103 @@
     "zh": "简体中文"
   },
   "landing": {
-    "heroTitle": "Understand any codebase, in your language, at your level",
-    "heroSubtitle": "Open-source. Bring your own AI key. Cloud or fully local.",
+    "heroLine1": "Understand any",
+    "heroLine1Accent": "codebase",
+    "heroLine2": ", in your language, at",
+    "heroLine2Accent": "your level",
+    "heroSubtitle": "De-coder turns complex code into clear explanations, smart comments and architectural insight. For developers, managers and technical teams.",
+    "heroBadgeOpen": "Open Source",
+    "heroBadgePrivacy": "Privacy First",
+    "heroBadgeAI": "AI Powered",
     "ctaStart": "Get started",
     "ctaSignIn": "Sign in",
+    "ctaDemo": "Watch the demo",
+    "providersStrip": "Works with the providers you prefer",
+    "nav": {
+      "features": "Features",
+      "howItWorks": "How it works",
+      "integrations": "Integrations",
+      "openSource": "Open Source",
+      "docs": "Docs",
+      "manifesto": "Manifesto"
+    },
     "feature1Title": "Multilingual",
-    "feature1Body": "English, Italiano, 简体中文 — switch any time.",
+    "feature1Body": "English, Italiano, 简体中文 and more. Switch language in one click.",
     "feature2Title": "Bring your own AI",
     "feature2Body": "OpenAI, Anthropic, Gemini, OpenRouter — or local with Ollama / LM Studio.",
-    "feature3Title": "Local-first option",
-    "feature3Body": "In Local mode, your source code never leaves your machine."
+    "feature3Title": "Local and private",
+    "feature3Body": "Local mode: your source code never leaves your machine.",
+    "howTitle": "How it works",
+    "howIntro": "Three steps from source to knowledge.",
+    "step1Title": "Import code",
+    "step1Body": "Upload a ZIP or import a public GitHub repository. Files stay in your account.",
+    "step2Title": "Choose a provider",
+    "step2Body": "OpenAI, Anthropic, Gemini, OpenRouter — or local with Ollama / LM Studio.",
+    "step3Title": "Explain and analyze",
+    "step3Body": "Human or technical summaries, quality and security analyses, Markdown export.",
+    "integrationsTitle": "Integrations",
+    "integrationsBody": "Works with the AI providers you already use and with your public GitHub repositories.",
+    "value100Open": "100%",
+    "valueOpenSource": "Open Source",
+    "valuePrivacy": "Privacy First",
+    "valuePrivacyBody": "Your data stays yours",
+    "valueNoLockin": "No Vendor Lock-in",
+    "valueNoLockinBody": "Use the models you prefer",
+    "valueForAll": "For everyone",
+    "valueForAllBody": "From junior to CTO",
+    "mockup": {
+      "projects": "Projects",
+      "repository": "Repository",
+      "files": "Files",
+      "analysis": "Analysis",
+      "summary": "Explanation",
+      "summaryBody": "This function authenticates a user by verifying email and password. Returns the user if credentials are valid, otherwise throws an error.",
+      "architecture": "Architecture",
+      "architectureBody": "Part of the authentication module, interacts with the users database.",
+      "dependencies": "Dependencies",
+      "applyComments": "Apply comments"
+    }
+  },
+  "manifesto": {
+    "kicker": "Manifesto",
+    "title": "We believe code should be understandable",
+    "intro": "De-coder exists to break the barrier between those who write code and those who must understand, maintain, evaluate or explain it — without betraying the trust of the people who use it.",
+    "principlesTitle": "Our principles",
+    "principles": {
+      "open": {
+        "title": "Genuinely open source",
+        "body": "MIT license, public development, no hidden components. What you see is what runs."
+      },
+      "privacy": {
+        "title": "Privacy by design",
+        "body": "We never train models on your code. We never sell your data. API keys are AES-256-GCM encrypted and never returned to the browser."
+      },
+      "byok": {
+        "title": "Bring your own key",
+        "body": "No lock-in: pay your AI provider directly. Swap providers any time, export everything as Markdown."
+      },
+      "localFirst": {
+        "title": "Local-first",
+        "body": "Local mode with Ollama or LM Studio: source code never leaves your machine. The browser talks straight to your localhost."
+      },
+      "multilang": {
+        "title": "Natively multilingual",
+        "body": "UI and explanations in English, Italian and Simplified Chinese. Other languages will come with the community."
+      },
+      "accessible": {
+        "title": "Accessible at every level",
+        "body": "From non-technical readers to CTOs: pick the depth and get a fitting explanation."
+      }
+    },
+    "wontTitle": "What we will NEVER do",
+    "wont": {
+      "w1": "We will never use your code to train models, ours or third-party.",
+      "w2": "We will never sell your data or share it with brokers.",
+      "w3": "We will never add artificial lock-in on AI providers.",
+      "w4": "We will never block the export of your explanations and comments."
+    },
+    "roadmapTitle": "Public roadmap",
+    "roadmapBody": "Development phases live in the README and in .lovable/plan.md in the repository. Product decisions are discussed in the open."
   },
   "auth": {
     "title": "Sign in to De-coder",
@@ -142,9 +236,17 @@
     "endpointModel": "Default model",
     "addEndpoint": "Save endpoint"
   },
+  "adminBootstrap": {
+    "title": "Become the first administrator",
+    "body": "No administrators exist yet for this instance. Claim the admin role to manage users, roles and configuration.",
+    "cta": "Become admin",
+    "claiming": "Claiming…",
+    "done": "You are now admin. Opening the panel…",
+    "notEligible": "An administrator already exists. Ask one to promote you."
+  },
   "admin": {
     "title": "Administration",
-    "intro": "Promote or demote administrators. Bootstrap the first admin via the SQL helper documented in the README.",
+    "intro": "Promote or demote administrators. Bootstrap the first admin via the SQL helper or via the \"Become the first administrator\" banner in Settings.",
     "email": "Email",
     "roles": "Roles",
     "actions": "Actions",
@@ -161,12 +263,17 @@
     "localTitle": "Local mode (Ollama / LM Studio)",
     "localBody": "Install Ollama (https://ollama.com) or LM Studio, then in Settings → Local AI endpoints add the base URL (Ollama: http://localhost:11434, LM Studio: http://localhost:1234) and a default model. The browser calls your machine directly — source code never reaches our servers.",
     "securityTitle": "Security & ownership",
-    "securityBody": "You own your code, generated documentation and suggested comments. We never train on user repositories. Every database table uses Row-Level Security scoped to your account."
+    "securityBody": "You own your code, generated documentation and suggested comments. We never train on user repositories. Every database table uses Row-Level Security scoped to your account.",
+    "adminTitle": "Becoming an administrator",
+    "adminBody": "If you are the first user, go to Settings and click \"Become admin\" in the banner at the top. Or from the Lovable Cloud SQL editor: SELECT public.promote_to_admin('your-email@example.com');"
   },
   "errors": {
     "generic": "Something went wrong.",
     "zipTooLarge": "The ZIP file is too large.",
-    "noFiles": "No readable files found in the ZIP."
+    "noFiles": "No readable files found in the ZIP.",
+    "notFoundTitle": "Page not found",
+    "notFoundBody": "The address you opened doesn't exist or has been moved.",
+    "boundaryTitle": "This page didn't load"
   },
   "footer": {
     "ownership": "Your code and generated documentation belong to you. De-coder never trains on your repositories."

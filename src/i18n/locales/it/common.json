@@ -3,13 +3,20 @@
     "name": "De-coder",
     "tagline": "Trasforma il codice sorgente in conoscenza leggibile"
   },
+  "common": {
+    "back": "Indietro",
+    "home": "Home",
+    "tryAgain": "Riprova",
+    "goToDashboard": "Vai alla dashboard"
+  },
   "nav": {
     "dashboard": "Dashboard",
     "settings": "Impostazioni",
     "signOut": "Esci",
     "signIn": "Accedi",
     "docs": "Documentazione",
-    "admin": "Amministrazione"
+    "admin": "Amministrazione",
+    "manifesto": "Manifesto"
   },
   "languages": {
     "en": "English",
@@ -17,16 +24,103 @@
     "zh": "简体中文"
   },
   "landing": {
-    "heroTitle": "Comprendi qualsiasi codice, nella tua lingua, al tuo livello",
-    "heroSubtitle": "Open source. Porta la tua chiave AI. Cloud o completamente locale.",
-    "ctaStart": "Inizia",
+    "heroLine1": "Comprendi qualsiasi",
+    "heroLine1Accent": "codice",
+    "heroLine2": ", nella tua lingua, al",
+    "heroLine2Accent": "tuo livello",
+    "heroSubtitle": "De-coder trasforma codice complesso in spiegazioni chiare, commenti intelligenti e insight architetturali. Per sviluppatori, manager e team tecnici.",
+    "heroBadgeOpen": "Open Source",
+    "heroBadgePrivacy": "Privacy First",
+    "heroBadgeAI": "AI Powered",
+    "ctaStart": "Inizia ora",
     "ctaSignIn": "Accedi",
+    "ctaDemo": "Guarda la demo",
+    "providersStrip": "Funziona con i provider che preferisci",
+    "nav": {
+      "features": "Funzionalità",
+      "howItWorks": "Come funziona",
+      "integrations": "Integrazioni",
+      "openSource": "Open Source",
+      "docs": "Documentazione",
+      "manifesto": "Manifesto"
+    },
     "feature1Title": "Multilingua",
-    "feature1Body": "Italiano, English, 简体中文 — cambia quando vuoi.",
+    "feature1Body": "Italiano, English, 简体中文 e altri. Passa lingua in un clic.",
     "feature2Title": "Porta la tua AI",
-    "feature2Body": "OpenAI, Anthropic, Gemini, OpenRouter — o locale con Ollama / LM Studio.",
-    "feature3Title": "Local-first",
-    "feature3Body": "In modalità Locale il tuo codice non lascia mai la tua macchina."
+    "feature2Body": "OpenAI, Anthropic, Gemini, OpenRouter oppure locale con Ollama / LM Studio.",
+    "feature3Title": "Locale e privato",
+    "feature3Body": "Modalità locale: il tuo codice non lascia mai la tua macchina.",
+    "howTitle": "Come funziona",
+    "howIntro": "Tre passi dal sorgente alla conoscenza.",
+    "step1Title": "Importa il codice",
+    "step1Body": "Carica uno ZIP o importa una repository pubblica da GitHub. I file restano nel tuo account.",
+    "step2Title": "Scegli il provider",
+    "step2Body": "OpenAI, Anthropic, Gemini, OpenRouter — o locale con Ollama / LM Studio.",
+    "step3Title": "Spiega e analizza",
+    "step3Body": "Riassunti umani o tecnici, analisi qualità e sicurezza, esportazione in Markdown.",
+    "integrationsTitle": "Integrazioni",
+    "integrationsBody": "Funziona con i provider AI che già usi e con i tuoi repository GitHub pubblici.",
+    "value100Open": "100%",
+    "valueOpenSource": "Open Source",
+    "valuePrivacy": "Privacy First",
+    "valuePrivacyBody": "I tuoi dati restano tuoi",
+    "valueNoLockin": "Nessun Vendor Lock-in",
+    "valueNoLockinBody": "Usa i modelli che preferisci",
+    "valueForAll": "Per tutti",
+    "valueForAllBody": "Da junior a CTO",
+    "mockup": {
+      "projects": "Progetti",
+      "repository": "Repository",
+      "files": "File",
+      "analysis": "Analisi",
+      "summary": "Spiegazione",
+      "summaryBody": "Questa funzione autentica un utente verificando email e password. Restituisce l'utente se le credenziali sono valide, altrimenti genera un errore.",
+      "architecture": "Architettura",
+      "architectureBody": "Fa parte del modulo di autenticazione e interagisce con il database utenti.",
+      "dependencies": "Dipendenze",
+      "applyComments": "Applica commenti"
+    }
+  },
+  "manifesto": {
+    "kicker": "Manifesto",
+    "title": "Crediamo che il codice debba essere comprensibile",
+    "intro": "De-coder esiste per abbattere la barriera tra chi scrive il codice e chi lo deve capire, mantenere, valutare o spiegare. Senza tradire la fiducia di chi lo usa.",
+    "principlesTitle": "I nostri principi",
+    "principles": {
+      "open": {
+        "title": "Open source per davvero",
+        "body": "Licenza MIT, sviluppo pubblico, nessun componente nascosto. Quello che vedi è quello che gira."
+      },
+      "privacy": {
+        "title": "Privacy by design",
+        "body": "Non addestriamo modelli sul tuo codice. Non vendiamo i tuoi dati. Le chiavi API sono cifrate AES-256-GCM e mai restituite al browser."
+      },
+      "byok": {
+        "title": "Porta la tua chiave",
+        "body": "Nessun lock-in: paghi direttamente il provider AI che preferisci. Cambia provider quando vuoi, esporta tutto in Markdown."
+      },
+      "localFirst": {
+        "title": "Local-first",
+        "body": "Modalità locale con Ollama o LM Studio: il sorgente non lascia mai la tua macchina. Il browser parla direttamente con il tuo localhost."
+      },
+      "multilang": {
+        "title": "Multilingua nativo",
+        "body": "Interfaccia e spiegazioni in italiano, inglese e cinese semplificato. Altre lingue arrivano con la community."
+      },
+      "accessible": {
+        "title": "Accessibile a tutti i livelli",
+        "body": "Dalla persona non tecnica al CTO: scegli il livello di profondità e ottieni una spiegazione adatta."
+      }
+    },
+    "wontTitle": "Cosa NON faremo",
+    "wont": {
+      "w1": "Non useremo mai il tuo codice per addestrare modelli, nostri o di terzi.",
+      "w2": "Non venderemo i tuoi dati né li condivideremo con broker.",
+      "w3": "Non aggiungeremo lock-in artificiali sui provider AI.",
+      "w4": "Non bloccheremo l'export delle tue spiegazioni e dei tuoi commenti."
+    },
+    "roadmapTitle": "Roadmap pubblica",
+    "roadmapBody": "Le fasi di sviluppo sono documentate nel README e nel file .lovable/plan.md del repository. Le decisioni di prodotto vengono discusse in pubblico."
   },
   "auth": {
     "title": "Accedi a De-coder",
@@ -142,9 +236,17 @@
     "endpointModel": "Modello predefinito",
     "addEndpoint": "Salva endpoint"
   },
+  "adminBootstrap": {
+    "title": "Diventa il primo amministratore",
+    "body": "Non esistono ancora amministratori per questa istanza. Reclama il ruolo admin per gestire utenti, ruoli e configurazione.",
+    "cta": "Diventa admin",
+    "claiming": "In corso…",
+    "done": "Ora sei admin. Apertura del pannello…",
+    "notEligible": "Esiste già almeno un amministratore. Chiedi a un admin di promuoverti."
+  },
   "admin": {
     "title": "Amministrazione",
-    "intro": "Promuovi o rimuovi amministratori. Promuovi il primo admin con l'helper SQL documentato nel README.",
+    "intro": "Promuovi o rimuovi amministratori. Promuovi il primo admin con l'helper SQL o usa il banner \"Diventa il primo amministratore\" in Impostazioni.",
     "email": "Email",
     "roles": "Ruoli",
     "actions": "Azioni",
@@ -161,12 +263,17 @@
     "localTitle": "Modalità locale (Ollama / LM Studio)",
     "localBody": "Installa Ollama (https://ollama.com) o LM Studio, poi in Impostazioni → Endpoint AI locali aggiungi la base URL (Ollama: http://localhost:11434, LM Studio: http://localhost:1234) e un modello predefinito. Il browser chiama direttamente la tua macchina — il codice non raggiunge mai i nostri server.",
     "securityTitle": "Sicurezza e proprietà",
-    "securityBody": "Il tuo codice, la documentazione generata e i commenti suggeriti appartengono a te. Non addestriamo modelli sulle tue repository. Ogni tabella del database usa Row-Level Security scoped al tuo account."
+    "securityBody": "Il tuo codice, la documentazione generata e i commenti suggeriti appartengono a te. Non addestriamo modelli sulle tue repository. Ogni tabella del database usa Row-Level Security scoped al tuo account.",
+    "adminTitle": "Diventare amministratore",
+    "adminBody": "Se sei il primo utente, vai in Impostazioni e clicca \"Diventa admin\" nel banner in alto. In alternativa, dall'SQL editor di Lovable Cloud esegui: SELECT public.promote_to_admin('tua-email@example.com');"
   },
   "errors": {
     "generic": "Qualcosa è andato storto.",
     "zipTooLarge": "Il file ZIP è troppo grande.",
-    "noFiles": "Nessun file leggibile trovato nello ZIP."
+    "noFiles": "Nessun file leggibile trovato nello ZIP.",
+    "notFoundTitle": "Pagina non trovata",
+    "notFoundBody": "L'indirizzo che hai aperto non esiste o è stato spostato.",
+    "boundaryTitle": "Questa pagina non si è caricata"
   },
   "footer": {
     "ownership": "Il tuo codice e la documentazione generata appartengono a te. De-coder non addestra modelli sulle tue repository."

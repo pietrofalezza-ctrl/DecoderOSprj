@@ -2,7 +2,14 @@ import { Link, useNavigate } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { useTranslation } from "react-i18next";
-import { LogOut, Settings, LayoutDashboard, BookOpen, ShieldCheck } from "lucide-react";
+import {
+  LogOut,
+  Settings,
+  LayoutDashboard,
+  BookOpen,
+  ShieldCheck,
+  Sparkles,
+} from "lucide-react";
 import type { ReactNode } from "react";
 
 import { Button } from "@/components/ui/button";
@@ -14,6 +21,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { LangSwitcher } from "./LangSwitcher";
 import { ThemeToggle } from "./ThemeToggle";
+import { Logo } from "./Logo";
 import { supabase } from "@/integrations/supabase/client";
 import { isAdmin } from "@/lib/admin.functions";
 
@@ -29,17 +37,22 @@ export function AppShell({ children }: { children: ReactNode }) {
 
   const signOut = async () => {
     await supabase.auth.signOut();
-    navigate({ to: "/auth", replace: true });
+    navigate({ to: "/", replace: true });
   };
 
   return (
     <div className="flex min-h-screen flex-col bg-background">
       <header className="flex h-14 items-center justify-between border-b border-border px-4">
-        <Link to="/dashboard" className="flex items-center gap-2 font-semibold">
-          <span className="inline-block h-2 w-2 rounded-full bg-primary" />
-          <span>{t("brand.name")}</span>
+        <Link to="/dashboard" aria-label={t("brand.name")}>
+          <Logo />
         </Link>
         <div className="flex items-center gap-1">
+          <Button asChild variant="ghost" size="sm">
+            <Link to="/manifesto">
+              <Sparkles className="mr-2 h-4 w-4" />
+              {t("nav.manifesto")}
+            </Link>
+          </Button>
           <Button asChild variant="ghost" size="sm">
             <Link to="/docs">
               <BookOpen className="mr-2 h-4 w-4" />

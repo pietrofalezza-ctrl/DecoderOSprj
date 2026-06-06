@@ -1,9 +1,10 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
+import { ShieldCheck } from "lucide-react";
 
 import { AppShell } from "@/components/AppShell";
 import { Button } from "@/components/ui/button";
@@ -24,6 +25,11 @@ import {
   saveLocalEndpoint,
   deleteLocalEndpoint,
 } from "@/lib/credentials.functions";
+import {
+  adminBootstrapStatus,
+  claimFirstAdmin,
+  isAdmin,
+} from "@/lib/admin.functions";
 
 type Provider = "openai" | "anthropic" | "gemini" | "openrouter";
 const PROVIDERS: Provider[] = ["openai", "anthropic", "gemini", "openrouter"];
@@ -71,6 +77,10 @@ function SettingsPage() {
     <AppShell>
       <div className="mx-auto max-w-3xl px-6 py-10 space-y-10">
         <h1 className="text-2xl font-semibold">{t("settings.title")}</h1>
+
+        <AdminBootstrapBanner />
+
+
 
         <section className="space-y-4 rounded-lg border border-border bg-card p-5">
           <h2 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
@@ -159,6 +169,64 @@ function SettingsPage() {
         <p className="text-center text-xs text-muted-foreground">{t("footer.ownership")}</p>
       </div>
     </AppShell>
+  );
+}
+
+function AdminBootstrapBanner() {
+  const { t } = useTranslation();
+  const navigate = useNavigate();
+  const qc = useQueryClient();
+  const statusFn = useServerFn(adminBootstrapStatus);
+  const isAdminFn = useServerFn(isAdmin);
+  const claimFn = useServerFn(claimFirstAdmin);
+
+  const status = useQuery({
+    queryKey: ["admin", "bootstrap-status"],
+    queryFn: () => statusFn(),
+    staleTime: 30_000,
+  });
+  const admin = useQuery({
+    queryKey: ["me", "admin"],
+    queryFn: () => isAdminFn(),
+    staleTime: 30_000,
+  });
+
+  const claim = useMutation({
+    mutationFn: () => claimFn(),
+    onSuccess: () => {
+      toast.success(t("adminBootstrap.done"));
+      qc.invalidateQueries({ queryKey: ["me", "admin"] });
+      qc.invalidateQueries({ queryKey: ["admin", "bootstrap-status"] });
+      setTimeout(() => navigate({ to: "/admin" }), 400);
+    },
+    onError: (e: any) => {
+      if (String(e?.message).includes("admin_already_exists")) {
+        toast.error(t("adminBootstrap.notEligible"));
+        qc.invalidateQueries({ queryKey: ["admin", "bootstrap-status"] });
+      } else {
+        toast.error(e?.message ?? t("errors.generic"));
+      }
+    },
+  });
+
+  if (admin.data?.admin) return null;
+  if (status.data?.hasAdmin !== false) return null;
+
+  return (
+    <section className="flex flex-col gap-3 rounded-lg border border-primary/40 bg-primary/5 p-5 sm:flex-row sm:items-center sm:justify-between">
+      <div className="flex items-start gap-3">
+        <ShieldCheck className="mt-0.5 h-5 w-5 shrink-0 text-primary" />
+        <div>
+          <h2 className="text-sm font-semibold">{t("adminBootstrap.title")}</h2>
+          <p className="mt-1 text-xs text-muted-foreground">
+            {t("adminBootstrap.body")}
+          </p>
+        </div>
+      </div>
+      <Button onClick={() => claim.mutate()} disabled={claim.isPending} size="sm">
+        {claim.isPending ? t("adminBootstrap.claiming") : t("adminBootstrap.cta")}
+      </Button>
+    </section>
   );
 }
 
