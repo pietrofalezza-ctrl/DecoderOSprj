@@ -42,7 +42,8 @@
       "integrations": "Integrations",
       "openSource": "Open Source",
       "docs": "Docs",
-      "manifesto": "Manifesto"
+      "manifesto": "Manifesto",
+      "terms": "Terms"
     },
     "feature1Title": "Multilingual",
     "feature1Body": "English, Italiano, 简体中文 and more. Switch language in one click.",
