@@ -402,7 +402,7 @@ function WorkspacePage() {
                   </p>
                 )}
                 {mainTab === "quality" && (
-                  <Select value={qualityKind} onValueChange={(v) => setQualityKind(v as AnalysisKind)}>
+                  <Select value={qualityKind} onValueChange={(v) => setQualityKind(v as typeof qualityKind)}>
                     <SelectTrigger className="h-8">
                       <SelectValue />
                     </SelectTrigger>
