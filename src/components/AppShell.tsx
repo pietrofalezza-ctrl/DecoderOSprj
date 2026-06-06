@@ -98,7 +98,7 @@ export function AppShell({ children }: { children: ReactNode }) {
                       <span className="hidden max-w-[160px] truncate text-sm font-medium md:inline">
                         {email || t("nav.account")}
                       </span>
-                      <ChevronDown className="h-4 w-4 text-muted-foreground" />
+                      <ChevronDown className="h-5 w-5 text-muted-foreground" />
                     </Button>
                   </DropdownMenuTrigger>
                 </TooltipTrigger>
@@ -116,26 +116,26 @@ export function AppShell({ children }: { children: ReactNode }) {
                 <DropdownMenuSeparator />
                 <DropdownMenuItem asChild>
                   <Link to="/dashboard">
-                    <LayoutDashboard className="mr-2 h-4 w-4" />
+                    <LayoutDashboard className="mr-2 h-5 w-5" />
                     {t("nav.dashboard")}
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
                   <Link to="/settings" hash="byok">
-                    <KeyRound className="mr-2 h-4 w-4" />
+                    <KeyRound className="mr-2 h-5 w-5" />
                     {t("nav.apiKeys")}
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
                   <Link to="/settings">
-                    <Settings className="mr-2 h-4 w-4" />
+                    <Settings className="mr-2 h-5 w-5" />
                     {t("nav.settings")}
                   </Link>
                 </DropdownMenuItem>
                 {admin.data?.admin && (
                   <DropdownMenuItem asChild>
                     <Link to="/admin">
-                      <ShieldCheck className="mr-2 h-4 w-4" />
+                      <ShieldCheck className="mr-2 h-5 w-5" />
                       {t("nav.admin")}
                     </Link>
                   </DropdownMenuItem>
@@ -145,7 +145,7 @@ export function AppShell({ children }: { children: ReactNode }) {
                   onSelect={signOut}
                   className="text-destructive focus:text-destructive"
                 >
-                  <LogOut className="mr-2 h-4 w-4" />
+                  <LogOut className="mr-2 h-5 w-5" />
                   {t("nav.signOut")}
                 </DropdownMenuItem>
               </DropdownMenuContent>
