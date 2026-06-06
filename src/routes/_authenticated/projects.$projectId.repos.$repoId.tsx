@@ -69,6 +69,8 @@ function WorkspacePage() {
   const analyze = useServerFn(runAnalysis);
   const saveLocalA = useServerFn(saveLocalAnalysis);
   const exportFn = useServerFn(exportRepoMarkdown);
+  const repoAiOriginFn = useServerFn(analyzeRepoAiOrigin);
+  const search = Route.useSearch();
 
   const repo = useQuery({ queryKey: ["repo", repoId], queryFn: () => getRepo({ data: { id: repoId } }) });
   const provs = useQuery({ queryKey: ["providers"], queryFn: () => providersFn() });
@@ -78,11 +80,16 @@ function WorkspacePage() {
   const [providerValue, setProviderValue] = useState<ProviderValue | "">("");
   const [mainTab, setMainTab] = useState<MainTab>("summary");
   const [summarySub, setSummarySub] = useState<SummarySub>("human");
-  const [qualityKind, setQualityKind] = useState<AnalysisKind>("smells");
+  const [qualityKind, setQualityKind] = useState<Exclude<AnalysisKind, "ai_origin" | "security">>("smells");
 
   const [summaryText, setSummaryText] = useState<string>("");
   const [qualityText, setQualityText] = useState<string>("");
   const [securityText, setSecurityText] = useState<string>("");
+  const [aiOriginText, setAiOriginText] = useState<string>("");
+
+  const [repoSheetOpen, setRepoSheetOpen] = useState(false);
+  const [repoAiResult, setRepoAiResult] = useState<RepoAiOriginResult | null>(null);
+
 
   const cloudKeys = provs.data?.keys ?? [];
   const localEndpoints = provs.data?.endpoints ?? [];
