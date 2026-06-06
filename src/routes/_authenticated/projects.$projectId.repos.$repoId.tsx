@@ -309,12 +309,16 @@ function WorkspacePage() {
   const runMain = () => {
     if (mainTab === "summary") explainMut.mutate();
     else if (mainTab === "quality") qualityMut.mutate();
+    else if (mainTab === "ai_origin") aiOriginMut.mutate();
     else securityMut.mutate();
   };
   const isRunning =
     (mainTab === "summary" && explainMut.isPending) ||
     (mainTab === "quality" && qualityMut.isPending) ||
+    (mainTab === "ai_origin" && aiOriginMut.isPending) ||
     (mainTab === "security" && securityMut.isPending);
+
+  const canRunRepoAi = providerValue.startsWith("cloud:");
 
   return (
     <AppShell>
