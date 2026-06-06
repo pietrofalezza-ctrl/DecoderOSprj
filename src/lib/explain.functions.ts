@@ -103,3 +103,41 @@ export const explainFile = createServerFn({ method: "POST" })
 
     return { content: text, provider: data.provider, model: data.model ?? null, cached: false };
   });
+
+// Persist a locally-computed explanation (Ollama / LM Studio mode). The
+// model call already happened in the browser; we only save the result so it
+// shows up in the cache and is portable across devices.
+export const saveLocalExplanation = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator(
+    z.object({
+      file_id: z.string().uuid(),
+      proficiency: Proficiency,
+      explanation_type: ExplanationType,
+      language: Language,
+      content: z.string().min(1).max(50_000),
+      kind: z.enum(["ollama", "lmstudio"]),
+      model: z.string().trim().max(160).optional(),
+    }),
+  )
+  .handler(async ({ context, data }) => {
+    const { data: file, error: fErr } = await context.supabase
+      .from("files")
+      .select("id, sha256")
+      .eq("id", data.file_id)
+      .maybeSingle();
+    if (fErr || !file) throw fErr ?? new Error("file_not_found");
+
+    await context.supabase.from("explanations").insert({
+      owner_id: context.userId,
+      file_id: file.id,
+      proficiency: data.proficiency,
+      explanation_type: data.explanation_type,
+      language: data.language,
+      provider: data.kind, // "ollama" | "lmstudio"
+      model: data.model ?? null,
+      content: data.content,
+      file_sha256: file.sha256,
+    });
+    return { ok: true };
+  });
