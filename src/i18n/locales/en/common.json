@@ -285,6 +285,18 @@
     "exporting": "Exporting…",
     "noProvider": "Add an API key in Settings to enable AI explanations.",
     "analyzeWholeRepo": "Scan whole repo",
+    "runFile": "Run analysis on this file",
+    "howTo": {
+      "title": "How to start an analysis",
+      "step1": "Pick a file from the tree on the left",
+      "step2": "Pick an AI provider on the right",
+      "step3": "Press \"Run analysis on this file\""
+    },
+    "status": {
+      "ready": "Ready: click Run",
+      "needFile": "Select a file on the left",
+      "needProvider": "Configure an AI provider"
+    },
     "tabs": {
       "summary": "Summary",
       "human": "Human summary",
