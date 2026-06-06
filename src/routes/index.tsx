@@ -25,13 +25,13 @@ import { PublicHeaderAuthSlot } from "@/components/PublicHeaderAuthSlot";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "De-coder — Understand AI-generated code, in any language" },
+      { title: "Decoder — Understand AI-generated code, in any language" },
       {
         name: "description",
         content:
           "Open-source code understanding for the AI era. Read, review and audit code written by Copilot, Cursor, Lovable and your team. BYOK cloud or fully local.",
       },
-      { property: "og:title", content: "De-coder — Understand AI-generated code" },
+      { property: "og:title", content: "Decoder — Understand AI-generated code" },
       {
         property: "og:description",
         content:
@@ -46,7 +46,7 @@ export const Route = createFileRoute("/")({
         children: JSON.stringify({
           "@context": "https://schema.org",
           "@type": "SoftwareApplication",
-          name: "De-coder",
+          name: "Decoder",
           description:
             "Open-source code understanding for the AI era — read, review and audit AI-generated code.",
           applicationCategory: "DeveloperApplication",

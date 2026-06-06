@@ -47,7 +47,7 @@ End with one sentence reminding the reader this is a heuristic estimate, not pro
     : `If no issues are found, say so plainly — do not invent findings.
 Keep it under ~500 words.`;
 
-  const system = `You are De-coder, performing a focused source-code review.
+  const system = `You are Decoder, performing a focused source-code review.
 Reply in ${langName}, using Markdown with clear headings.
 ${FOCUS[args.kind]}
 ${formatRules}

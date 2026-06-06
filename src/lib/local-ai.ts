@@ -1,5 +1,5 @@
 // Browser-side calls to local LLM endpoints. Source code never leaves the
-// user's machine — the De-coder server is not involved on the request path.
+// user's machine — the Decoder server is not involved on the request path.
 
 export type LocalKind = "ollama" | "lmstudio";
 

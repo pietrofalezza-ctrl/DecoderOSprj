@@ -1,4 +1,4 @@
-// Shared client/server prompt builder for De-coder explanations.
+// Shared client/server prompt builder for Decoder explanations.
 // Pure function — no runtime imports — safe to import from browser code.
 
 export type Proficiency =
@@ -38,7 +38,7 @@ export function buildPrompt(args: {
       ? "Explain in plain language what this file does and why it exists. Avoid jargon."
       : "Give a precise technical summary: responsibilities, key functions/classes, inputs/outputs, side effects, and notable patterns.";
 
-  const system = `You are De-coder, an assistant that helps people understand source code.
+  const system = `You are Decoder, an assistant that helps people understand source code.
 Audience: ${audience[args.proficiency]}.
 Reply in ${langName}.
 ${focus}

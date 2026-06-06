@@ -8,7 +8,7 @@ import {
 } from "lucide-react";
 
 /**
- * Purely decorative mockup of the De-coder workspace, used on the landing.
+ * Purely decorative mockup of the Decoder workspace, used on the landing.
  * Static — no network, no state. Inspired by the reference screenshot but
  * built entirely with semantic design tokens so it follows the active theme.
  */
