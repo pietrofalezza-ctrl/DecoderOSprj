@@ -165,7 +165,7 @@ function Landing() {
             </div>
           </div>
           <div className="relative flex items-center">
-            <LandingMockup />
+            <HeroIllustration />
           </div>
         </div>
       </section>
