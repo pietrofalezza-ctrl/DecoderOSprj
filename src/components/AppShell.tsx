@@ -98,7 +98,7 @@ export function AppShell({ children }: { children: ReactNode }) {
                       <span className="hidden max-w-[160px] truncate text-sm font-medium md:inline">
                         {email || t("nav.account")}
                       </span>
-                      <ChevronDown className="h-5 w-5 text-muted-foreground" />
+                      <ChevronDown className="h-4 w-4 text-muted-foreground" />
                     </Button>
                   </DropdownMenuTrigger>
                 </TooltipTrigger>
