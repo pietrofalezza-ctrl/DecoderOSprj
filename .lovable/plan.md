@@ -1,117 +1,76 @@
+# Phase 1 — Finish & Harden
 
-# De-coder — Phase 1 Plan
+The foundation (DB, auth, i18n, three-pane workspace, server fns for credentials/projects/repos/explain) is in place. This plan closes the remaining gaps so an end-to-end flow works: sign in → save API key → create project → upload ZIP → browse files → get explanation in EN/IT/ZH.
 
-A multilingual (IT / EN / 简体中文), dark-mode, open-source code-understanding app. Phase 1 lands the foundation end-to-end for one workflow: **upload a ZIP → browse files → get AI explanation at your chosen proficiency level**, using either a cloud BYOK provider or a local Ollama/LM Studio endpoint.
+## 1. Fix runtime errors (blocking)
 
-Future phases (not in this plan): GitHub sync, AI code-smell detection, suggestion review workflow, export to ZIP/Markdown/PR, additional proficiency outputs (architecture, dependencies, security, perf, maintainability — phase 1 ships only Human + Technical summaries).
+- **Hydration mismatch on `LangSwitcher`**: SSR renders `en`, client renders `it`. Cause: i18n language is read from `localStorage`/browser at hydration. Fix by:
+  - Render the language label only after mount (guarded `useEffect` + state), or wrap the switcher trigger in `<ClientOnly>`.
+  - Keep i18n init deterministic on server (always `en` during SSR), let client switch post-hydration.
+- **"SSR rendering failed" / dynamic import failure**: likely caused by a server-only import leaking into a client-reachable module. Audit imports of `*.server.ts` from `.functions.ts` (must be `await import(...)` inside handlers, not top-level). Fix any offenders.
 
----
+## 2. Settings page: BYOK key vault UI
 
-## What ships in phase 1
+`src/routes/_authenticated/settings.tsx` currently is a stub. Build:
+- List configured providers (OpenAI, Anthropic, Gemini, OpenRouter) with key hint (`sk-…abcd`) and "Replace" / "Remove" actions.
+- "Add key" form per provider — calls `saveCredential` server fn (already exists) which encrypts via `crypto.server.ts`.
+- Local AI section: list/add `user_local_endpoints` (Ollama / LM Studio) with base URL + default model. Pure browser-side use; nothing leaves the machine.
+- Preferred language + proficiency saved on `profiles`.
+- All copy via i18n (EN/IT/ZH).
 
-### 1. Multilingual shell (IT / EN / ZH)
-- `react-i18next` with locale JSON files for `en`, `it`, `zh`.
-- Language switcher in the top bar; choice persisted to `localStorage` and to the user profile when logged in.
-- Every visible string, toast, and error goes through `t()` — no hardcoded copy.
+## 3. Projects + ZIP upload flow
 
-### 2. Dark-mode three-pane UI
-Layout used on the workspace route:
-```text
-+----------------------------------------------------------+
-| Top bar: logo · project picker · lang · user menu        |
-+-----------+-----------------------------+----------------+
-| Sidebar   |  Center: Code Viewer        |  Right Panel  |
-| Projects  |  (Monaco, syntax highlight, |  AI tabs:     |
-| Repos     |   read-only)                |  Human /      |
-| File tree |                             |  Technical    |
-+-----------+-----------------------------+----------------+
-```
-Sidebar = projects → repositories → file tree. Resizable panels. Dark by default, light theme available later.
+- `_authenticated/dashboard.tsx`: list projects (already wired) + "New project" dialog (name, description).
+- Project detail (`projects.$projectId.tsx`): list repositories + ZIP upload dropzone.
+  - Client reads file → posts to a server fn that streams to Supabase Storage `repositories` bucket → server fn extracts via `fflate` (`zip.server.ts`) → inserts `files` rows with sha256 + storage_path.
+  - Show progress + per-file count on completion. Toast on error.
+- Open repo navigates to the existing workspace route.
 
-### 3. Auth (Lovable Cloud)
-- Email + password
-- Google (managed)
-- GitHub OAuth (needs Supabase dashboard config — I'll wire the code and tell you the redirect URL + steps to enable it in the Supabase provider settings; phase 1 only uses GitHub OAuth for login, not repo sync)
-- `/auth` page with sign-in / sign-up tabs. Protected routes under `_authenticated/`.
-- `profiles` table auto-created on signup (display name, preferred language, preferred proficiency level).
+## 4. Workspace polish
 
-### 4. BYOK key vault (server-side encrypted)
-- Table `user_ai_credentials` storing encrypted API keys per provider per user.
-- Encryption with `pgsodium`/`vault` (AES-GCM via a server-held key); keys are decrypted only inside server functions, never sent back to the browser.
-- Settings page lets a user add/remove keys for: OpenAI, Anthropic, Google Gemini, OpenRouter.
-- Local mode: user saves an Ollama or LM Studio base URL (e.g. `http://localhost:11434`). For local mode, the AI call runs **in the browser** directly against localhost (so source code never reaches our server) — clearly labeled in the UI.
+- File tree: persist expanded folders per repo (localStorage).
+- Code viewer: language detection by extension; read-only confirmed.
+- AI panel:
+  - Two tabs: **Human summary** / **Technical summary** (proficiency selector drives prompt).
+  - Provider selector lists only configured providers (+ local endpoints).
+  - "Explain" button calls `explainFile` server fn (cloud) or browser-side fetch to `http://localhost:11434` (Ollama) when local mode is selected. Cache hits served from `explanations` table.
+  - Localized output: prompt instructs the model to answer in the user's `preferred_language`.
+  - Footer line: "Your code is never used for training." (i18n).
 
-### 5. Projects + ZIP upload
-- `projects` table (name, description, owner).
-- `repositories` table (project_id, name, source = `zip`, created_at).
-- `files` table (repository_id, path, size, language, sha256, storage_path).
-- ZIP upload via Supabase Storage (private bucket `repositories`).
-- Server function extracts the ZIP, walks entries, skips binaries / `node_modules` / `.git` / files > 1 MB, stores each text file as its own object and inserts a `files` row. Language inferred from extension.
+## 5. i18n coverage
 
-### 6. File explorer + code viewer
-- Tree built from `files.path`. Click a file → loads its content via a signed URL.
-- Monaco editor, read-only, with syntax highlight by detected language. Original files never modified.
+- Add missing keys for settings / dashboard / upload / errors across `en`, `it`, `zh`.
+- Verify `LangSwitcher` updates `profiles.preferred_language` server-side too.
 
-### 7. AI explanation
-- Right panel has two tabs for phase 1: **Human summary** and **Technical summary**.
-- Proficiency dropdown: Non-technical · Junior · Intermediate · Senior · Architect · CTO. Choice changes the system prompt.
-- "Explain this file" button calls a server function:
-  - Cloud mode: server function decrypts the user's key for the chosen provider and calls it (OpenAI / Anthropic / Gemini / OpenRouter). Source code is sent to the third-party provider the user chose — not stored, not logged, not used for training.
-  - Local mode: browser calls the user's Ollama/LM Studio endpoint directly; server is bypassed.
-- Response streamed token-by-token into the right panel and cached per (file sha, proficiency, type) in an `explanations` table so re-opening is instant.
+## 6. Security & RLS sanity check
 
-### 8. Security baseline
-- RLS on every table scoped to `auth.uid()`.
-- API keys encrypted at rest, decrypted only in server functions.
-- Storage bucket private; access via signed URLs.
-- A small footer line in Settings: "De-coder never trains on your code. Your repositories and generated documentation belong to you."
+- Confirm RLS on all 7 tables scopes to `auth.uid()` (already done).
+- Confirm `user_ai_credentials` has NO SELECT policy (already correct — keys only decrypted server-side).
+- Storage policies on `repositories` bucket: owner-only read/write via path prefix `{user_id}/...`.
+- Add a brief `SECURITY.md` note in repo: BYOK, encryption-at-rest, no-training pledge.
 
----
+## Technical details
 
-## Technical section
+- Files to add/edit (no DB schema changes needed):
+  - `src/components/LangSwitcher.tsx` — hydration-safe render.
+  - `src/routes/_authenticated/settings.tsx` — full UI.
+  - `src/routes/_authenticated/dashboard.tsx` — "New project" dialog.
+  - `src/routes/_authenticated/projects.$projectId.tsx` — upload UI.
+  - `src/lib/repos.functions.ts` — `uploadZip` server fn (multipart or base64-chunked).
+  - `src/lib/profile.functions.ts` — `updatePreferences`.
+  - `src/components/AIPanel.tsx` (split out of workspace) — provider/proficiency/tabs.
+  - `src/lib/local-ai.client.ts` — browser-side Ollama call.
+  - `src/i18n/locales/{en,it,zh}/common.json` — new keys.
+- No new secrets, no new tables, no new buckets.
 
-**Stack confirmation:** TanStack Start (existing template) + React + TS + Tailwind + shadcn/ui + Lovable Cloud (Supabase). Monaco for the viewer. `react-i18next` for locales. `fflate` for in-browser/server ZIP extraction.
+## Deferred (still out of scope)
 
-**Routes**
-- `/` — marketing/landing (one screen, i18n, CTA to /auth)
-- `/auth` — sign in / sign up
-- `/_authenticated/dashboard` — projects list
-- `/_authenticated/projects/$projectId` — repositories list, ZIP upload
-- `/_authenticated/projects/$projectId/repos/$repoId` — three-pane workspace
-- `/_authenticated/settings` — profile, language, BYOK keys, local endpoints
+GitHub repo sync, light theme, code-smell / dead-code / bug-hint / architecture / dependency / security / perf / maintainability tabs, suggested-comment review workflow, export to ZIP/MD/PR.
 
-**Server functions (`*.functions.ts`)**
-- `createProject`, `listProjects`
-- `createRepositoryFromZip` (validates upload, extracts, inserts files)
-- `listRepositoryFiles`, `getFileContentUrl`
-- `saveAiCredential` (encrypts before insert), `listAiProviders` (returns which are configured, never the key)
-- `explainFile` — streamed; takes `{ fileId, proficiency, type, provider }`, decrypts key, calls provider, persists into `explanations`, returns stream.
+## Open question
 
-**Tables (all with RLS on `auth.uid() = owner_id`)**
-`profiles`, `projects`, `repositories`, `files`, `explanations`, `user_ai_credentials`, `user_local_endpoints`. Plus `user_roles` + `has_role()` for future admin features (created now to avoid a refactor later).
+GitHub OAuth: not natively supported by Lovable Cloud's managed auth. Options:
+1. Skip GitHub login for Phase 1 (Email + Google only) — recommended, fastest.
+2. Migrate auth to direct Supabase integration so GitHub provider can be enabled in the Supabase dashboard.
 
-**i18n file layout**
-```text
-src/i18n/
-  index.ts
-  locales/
-    en/common.json
-    it/common.json
-    zh/common.json
-```
-
-**Explicitly deferred to later phases**
-- GitHub repo sync, branch picking, pull-request export
-- AI code smell / AI-generated detection, dead-code, bug hints
-- Architecture / dependencies / security / perf / maintainability explanation tabs
-- Suggested inline comments + accept/reject/edit review workflow
-- Export to ZIP and Markdown docs
-- Light theme polish, custom domain branding
-
----
-
-## What I need from you before building
-1. **GitHub OAuth**: I'll set up the code; you'll need to paste a Client ID/Secret into the Supabase auth provider config after I give you the callback URL. OK to proceed on that basis?
-2. **Encryption approach**: I'll use Supabase Vault (`pgsodium`) to encrypt API keys. If you'd rather encrypt with a `LOVABLE`-stored master key in a server function instead, say so.
-
-If both are fine, approving this plan will kick off phase 1 implementation.
+Pick (1) unless you tell me otherwise.
