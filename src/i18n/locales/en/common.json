@@ -1,0 +1,115 @@
+{
+  "brand": {
+    "name": "De-coder",
+    "tagline": "Transform source code into human-readable knowledge"
+  },
+  "nav": {
+    "dashboard": "Dashboard",
+    "settings": "Settings",
+    "signOut": "Sign out",
+    "signIn": "Sign in"
+  },
+  "languages": {
+    "en": "English",
+    "it": "Italiano",
+    "zh": "简体中文"
+  },
+  "landing": {
+    "heroTitle": "Understand any codebase, in your language, at your level",
+    "heroSubtitle": "Open-source. Bring your own AI key. Cloud or fully local.",
+    "ctaStart": "Get started",
+    "ctaSignIn": "Sign in",
+    "feature1Title": "Multilingual",
+    "feature1Body": "English, Italiano, 简体中文 — switch any time.",
+    "feature2Title": "Bring your own AI",
+    "feature2Body": "OpenAI, Anthropic, Gemini, OpenRouter — or local with Ollama / LM Studio.",
+    "feature3Title": "Local-first option",
+    "feature3Body": "In Local mode, your source code never leaves your machine."
+  },
+  "auth": {
+    "title": "Sign in to De-coder",
+    "subtitle": "Email/password, Google, or continue locally.",
+    "emailLabel": "Email",
+    "passwordLabel": "Password",
+    "signIn": "Sign in",
+    "signUp": "Create account",
+    "or": "or",
+    "withGoogle": "Continue with Google",
+    "githubNote": "GitHub OAuth login isn't available in this build yet.",
+    "switchToSignUp": "No account? Create one",
+    "switchToSignIn": "Already have an account? Sign in",
+    "checkEmail": "Check your email to confirm your account."
+  },
+  "dashboard": {
+    "title": "Your projects",
+    "newProject": "New project",
+    "empty": "You don't have any projects yet.",
+    "projectNamePlaceholder": "Project name",
+    "projectDescPlaceholder": "Optional description",
+    "create": "Create"
+  },
+  "project": {
+    "repos": "Repositories",
+    "uploadZip": "Upload ZIP",
+    "uploading": "Uploading…",
+    "noRepos": "No repositories yet. Upload a ZIP to get started.",
+    "openRepo": "Open"
+  },
+  "workspace": {
+    "files": "Files",
+    "selectFile": "Select a file to view its source",
+    "explain": "Explain this file",
+    "explaining": "Explaining…",
+    "proficiency": "Proficiency",
+    "type": "Type",
+    "provider": "Provider",
+    "model": "Model",
+    "noProvider": "Add an API key in Settings to enable AI explanations.",
+    "tabs": {
+      "human": "Human summary",
+      "technical": "Technical summary"
+    }
+  },
+  "proficiency": {
+    "nontech": "Non-technical reader",
+    "junior": "Junior developer",
+    "intermediate": "Intermediate developer",
+    "senior": "Senior developer",
+    "architect": "Software architect",
+    "cto": "CTO / Technical executive"
+  },
+  "settings": {
+    "title": "Settings",
+    "profileSection": "Profile",
+    "displayName": "Display name",
+    "language": "Preferred language",
+    "save": "Save",
+    "saved": "Saved.",
+    "byokSection": "AI providers (BYOK)",
+    "byokIntro": "De-coder never stores your keys in plain text. Your code is never used for training.",
+    "addKey": "Save key",
+    "removeKey": "Remove",
+    "configured": "Configured",
+    "notConfigured": "Not configured",
+    "providers": {
+      "openai": "OpenAI",
+      "anthropic": "Anthropic",
+      "gemini": "Google Gemini",
+      "openrouter": "OpenRouter"
+    },
+    "localSection": "Local AI endpoints",
+    "localIntro": "Local mode runs entirely in your browser against your localhost. Source code never reaches our servers.",
+    "endpointKind": "Type",
+    "endpointUrl": "Base URL",
+    "endpointModel": "Default model",
+    "addEndpoint": "Save endpoint"
+  },
+  "errors": {
+    "generic": "Something went wrong.",
+    "zipTooLarge": "The ZIP file is too large.",
+    "noFiles": "No readable files found in the ZIP."
+  },
+  "footer": {
+    "ownership": "Your code and generated documentation belong to you. De-coder never trains on your repositories."
+  }
+}

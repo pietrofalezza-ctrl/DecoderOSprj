@@ -1,0 +1,115 @@
+{
+  "brand": {
+    "name": "De-coder",
+    "tagline": "把源代码转化为人人可读的知识"
+  },
+  "nav": {
+    "dashboard": "工作台",
+    "settings": "设置",
+    "signOut": "退出登录",
+    "signIn": "登录"
+  },
+  "languages": {
+    "en": "English",
+    "it": "Italiano",
+    "zh": "简体中文"
+  },
+  "landing": {
+    "heroTitle": "用你的语言、按你的水平,理解任何代码库",
+    "heroSubtitle": "开源。自带 AI 密钥。云端或完全本地。",
+    "ctaStart": "开始使用",
+    "ctaSignIn": "登录",
+    "feature1Title": "多语言",
+    "feature1Body": "简体中文、English、Italiano — 随时切换。",
+    "feature2Title": "自带 AI",
+    "feature2Body": "OpenAI、Anthropic、Gemini、OpenRouter — 或本地 Ollama / LM Studio。",
+    "feature3Title": "本地优先",
+    "feature3Body": "本地模式下,源代码永远不会离开你的电脑。"
+  },
+  "auth": {
+    "title": "登录 De-coder",
+    "subtitle": "邮箱密码、Google,或者本地继续。",
+    "emailLabel": "邮箱",
+    "passwordLabel": "密码",
+    "signIn": "登录",
+    "signUp": "创建账户",
+    "or": "或",
+    "withGoogle": "使用 Google 登录",
+    "githubNote": "当前版本暂不支持 GitHub OAuth 登录。",
+    "switchToSignUp": "还没有账户?去注册",
+    "switchToSignIn": "已有账户?去登录",
+    "checkEmail": "请查收邮件以确认你的账户。"
+  },
+  "dashboard": {
+    "title": "你的项目",
+    "newProject": "新建项目",
+    "empty": "你还没有任何项目。",
+    "projectNamePlaceholder": "项目名称",
+    "projectDescPlaceholder": "描述(可选)",
+    "create": "创建"
+  },
+  "project": {
+    "repos": "代码仓库",
+    "uploadZip": "上传 ZIP",
+    "uploading": "上传中…",
+    "noRepos": "暂无仓库。上传一个 ZIP 文件开始。",
+    "openRepo": "打开"
+  },
+  "workspace": {
+    "files": "文件",
+    "selectFile": "选择一个文件以查看源代码",
+    "explain": "解释此文件",
+    "explaining": "正在解释…",
+    "proficiency": "水平",
+    "type": "类型",
+    "provider": "提供商",
+    "model": "模型",
+    "noProvider": "请在设置中添加 API 密钥以启用 AI 解释。",
+    "tabs": {
+      "human": "通俗摘要",
+      "technical": "技术摘要"
+    }
+  },
+  "proficiency": {
+    "nontech": "非技术读者",
+    "junior": "初级开发者",
+    "intermediate": "中级开发者",
+    "senior": "高级开发者",
+    "architect": "软件架构师",
+    "cto": "CTO / 技术高管"
+  },
+  "settings": {
+    "title": "设置",
+    "profileSection": "个人资料",
+    "displayName": "显示名称",
+    "language": "首选语言",
+    "save": "保存",
+    "saved": "已保存。",
+    "byokSection": "AI 提供商(自带密钥)",
+    "byokIntro": "De-coder 不会以明文保存你的密钥。你的代码不会被用于训练模型。",
+    "addKey": "保存密钥",
+    "removeKey": "移除",
+    "configured": "已配置",
+    "notConfigured": "未配置",
+    "providers": {
+      "openai": "OpenAI",
+      "anthropic": "Anthropic",
+      "gemini": "Google Gemini",
+      "openrouter": "OpenRouter"
+    },
+    "localSection": "本地 AI 端点",
+    "localIntro": "本地模式完全在浏览器中调用你的 localhost,源代码不会发送到我们的服务器。",
+    "endpointKind": "类型",
+    "endpointUrl": "Base URL",
+    "endpointModel": "默认模型",
+    "addEndpoint": "保存端点"
+  },
+  "errors": {
+    "generic": "出现错误。",
+    "zipTooLarge": "ZIP 文件过大。",
+    "noFiles": "ZIP 中未找到可读文件。"
+  },
+  "footer": {
+    "ownership": "你的代码和生成的文档属于你自己。De-coder 不会用你的仓库训练模型。"
+  }
+}
