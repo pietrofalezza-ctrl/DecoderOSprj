@@ -1,31 +1,48 @@
-## Problema
+## Cosa cambio (solo UI/discoverability del workspace repo)
 
-Dallo screenshot della pagina progetto:
-1. Il **logout** esiste ma è nascosto dietro un pulsante `⋯` senza etichetta in alto a destra (`src/components/AppShell.tsx`, riga 67). Non è riconoscibile come menu account.
-2. I **commenti / analisi per singolo file** (riassunti umano/tecnico, qualità, sicurezza, AI origin) esistono nella workspace del repo (`projects.$projectId.repos.$repoId.tsx`), ma dalla pagina progetto l'unica CTA visibile è "Analizza la codebase", che apre direttamente il pannello AI-origin a livello di repo. Non c'è un invito esplicito ad aprire i file e leggerne i commenti.
+Tre problemi distinti, tre fix mirati nel file `src/routes/_authenticated/projects.$projectId.repos.$repoId.tsx` (+ traduzioni e un piccolo tocco a `AppShell`).
 
-## Modifiche (solo frontend / i18n)
+### 1. "Non capisco da dove parte l'analisi di un singolo file"
 
-### 1. `src/components/AppShell.tsx` — menu account riconoscibile
-- Sostituire il trigger `⋯` con un pulsante avatar: cerchio con le iniziali dell'utente (prima lettera dell'email) + icona `ChevronDown`.
-- Tooltip con email completa sull'avatar.
-- Header del dropdown con email utente in piccolo (non cliccabile), poi le voci esistenti (Dashboard, Impostazioni, eventuale Admin) seguite da un separatore e dalla voce **Esci** evidenziata (icona `LogOut` + testo, variante destructive sul testo).
-- Leggere l'email da `supabase.auth.getUser()` con un piccolo `useQuery` (`["me","email"]`).
+Nel pannello centrale (codice) e nel pannello destro:
+- Quando **nessun file è selezionato**, sostituire l'attuale testo "Seleziona un file" con un riquadro guida grande con 3 step numerati: **1) Scegli un file a sinistra → 2) Scegli un provider AI → 3) Premi Esegui**, con frecce visive (`ArrowLeft`, `ArrowRight`) che puntano ai pannelli laterali.
+- Sopra il bottone "Esegui" aggiungere un **indicatore di stato** sempre visibile:
+  - ✅ "Pronto" (verde) quando file + provider OK
+  - ⚠ "Seleziona un file" / "Configura un provider" (ambra) quando manca qualcosa, con link diretto a `/settings#byok` nel secondo caso.
+- Il bottone Esegui passa da `size="sm"` a `size="default"`, full-width, leggermente più alto e con un'etichetta chiara: **"Esegui analisi su questo file"** invece del generico "Esegui/Analizza".
 
-### 2. `src/routes/_authenticated/projects.$projectId.tsx` — accesso ai commenti per file
-- Nella riga di ogni repository, accanto al conteggio file, aggiungere una CTA primaria **"Apri file e commenti"** (icona `FileText`) che naviga a `/projects/$projectId/repos/$repoId` (senza `?view=analyze`), così l'utente atterra sull'albero file + tab analisi del singolo file.
-- Mantenere "Analizza la codebase" come azione secondaria (per il punteggio AI a livello di repo).
-- Sotto le capability chip ("Spiega ogni file", "Qualità & sicurezza", "Probabilità AI") aggiungere una micro-istruzione: *"Apri un repository, seleziona un file e leggi i commenti generati nelle tab Riassunto / Qualità / Sicurezza / Origine AI."*
+### 2. "Il pannello di destra non si vede / è tagliato"
 
-### 3. `src/i18n/locales/{en,it,zh}/common.json`
-- Nuove chiavi:
-  - `nav.account` → "Account" / "Account" / "账户"
-  - `nav.signedInAs` → "Signed in as" / "Connesso come" / "登录身份"
-  - `project.openFiles` → "Open files & comments" / "Apri file e commenti" / "打开文件与注释"
-  - `project.howToHint` → testo della micro-istruzione sopra.
-- Riutilizzare `nav.signOut` esistente.
+A 1433 px la divisione 20/50/30 lascia ~430 px al pannello destro, ma con i 2 select affiancati a `grid-cols-2` il contenuto si comprime e il bottone Esegui può finire sotto la fold senza scroll evidente.
+- Cambiare il pannello destro: i due `Select` (Proficiency + Provider) da `grid-cols-2` a stack verticale `space-y-2`, così il bottone Esegui resta sempre visibile in alto.
+- Aumentare `defaultSize` del pannello destro da `30` a `34` e `minSize` da `22` a `26`.
+- Avvolgere l'intera intestazione del pannello destro (selettori + bottone) in uno sticky-top per non perderlo durante lo scroll dei tab.
 
-## Fuori scope
-- Nessun cambio a backend, schema DB, RLS, server functions o logica di analisi.
-- Nessuna modifica al flusso `/auth` o al gate `_authenticated/route.tsx`.
-- Nessuna nuova dipendenza.
+### 3. "Analizza la codebase non apre il pannello laterale"
+
+Causa: l'effetto auto-apertura controlla solo `search.view === "analyze"` e setta `repoSheetOpen=true`, ma la `Sheet` è figlia del **pannello resizable a 20%** della sidebar sinistra. Se quel pannello non è ancora montato/idratato (SSR + lazy), lo sheet può non aprirsi. Inoltre, se l'utente entra direttamente con `?view=analyze` e `providerValue` è ancora vuoto, l'auto-start non scatta e si vede solo lo schermo vuoto.
+
+Fix:
+- Spostare la `<Sheet>` fuori dal `ResizablePanel`, al livello dello shell (subito sotto `<AppShell>`), così l'apertura non dipende dalla sidebar.
+- Sostituire `useEffect` di apertura con apertura sincrona in fase di render basata su `search.view`, con `onOpenChange` che fa anche `navigate({ search: {} })` quando si chiude (così riaprire funziona).
+- Nell'effetto di auto-start, attendere `provs.isSuccess` prima di valutare `providerValue`; aggiungere fallback toast esplicativo se nessun provider cloud è disponibile (con link a Settings).
+- Nel `AiOriginPanel` quando `canRun=false`, oltre al link a Settings già presente, mostrare anche la ragione: "Serve un provider cloud (Lovable AI o BYOK)".
+
+### 4. Avatar più evidente (richiesta esplicita)
+
+In `src/components/AppShell.tsx`:
+- Aumentare l'avatar da `h-7 w-7` a `h-8 w-8`, aggiungere `ring-2 ring-primary/30 hover:ring-primary/60`, e un piccolo badge "Account" testuale accanto su `md:` e superiori, così non è più solo un'iniziale ambigua.
+- Tenere il `Tooltip` con email (già presente).
+
+### File modificati
+
+- `src/routes/_authenticated/projects.$projectId.repos.$repoId.tsx` — empty state guidato, indicatore di stato, stack verticale dei select, sticky toolbar, sheet a livello root, auto-open robusto.
+- `src/components/AppShell.tsx` — avatar più evidente.
+- `src/components/AiOriginPanel.tsx` — messaggio "Serve provider cloud" più chiaro.
+- `src/i18n/locales/{en,it,zh}/common.json` — nuove chiavi: `workspace.howTo.step1/2/3`, `workspace.status.ready`, `workspace.status.needFile`, `workspace.status.needProvider`, `workspace.runFile`, `aiOrigin.needsCloudLong`.
+
+### Fuori scope
+
+- Nessun cambio a backend / server functions / RLS / schema.
+- La landing pubblica non viene toccata (per quella domanda servirebbe uno screenshot specifico — la affrontiamo separatamente se vuoi).
+- Nessuna nuova dipendenza npm.
