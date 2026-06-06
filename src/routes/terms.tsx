@@ -38,8 +38,7 @@ function TermsPage() {
   ] as const;
   const forbidden = [
     "claimCreator",
-    "useTrademark",
-    "presentOfficial",
+    "attribution",
   ] as const;
 
   return (
@@ -144,8 +143,14 @@ function TermsPage() {
             <li>{t("terms.dataCollected.account")}</li>
             <li>{t("terms.dataCollected.content")}</li>
             <li>{t("terms.dataCollected.credentials")}</li>
+            <li>{t("terms.dataCollected.usage")}</li>
             <li>{t("terms.dataCollected.notracking")}</li>
           </ul>
+        </section>
+
+        <section className="mt-10">
+          <h2 className="text-2xl font-semibold">{t("terms.managedAiTitle")}</h2>
+          <p className="mt-3 text-sm text-muted-foreground">{t("terms.managedAiBody")}</p>
         </section>
 
         <section className="mt-10">
@@ -182,7 +187,7 @@ function TermsPage() {
           <h2 className="text-xl font-semibold">{t("terms.liabilityTitle")}</h2>
           <p className="mt-3 text-sm text-muted-foreground">{t("terms.liabilityIntro")}</p>
           <ul className="mt-4 space-y-3">
-            {(["aiOutput", "ipCode", "security", "unlawful"] as const).map((k) => (
+            {(["aiOutput", "ipCode", "dataTransfer", "security", "unlawful"] as const).map((k) => (
               <li
                 key={k}
                 className="flex items-start gap-3 rounded-md border border-border bg-background p-4"
@@ -216,7 +221,7 @@ function TermsPage() {
               {t("landing.nav.docs")}
             </Link>
             <a
-              href="https://github.com"
+              href={t("common.repoUrl")}
               target="_blank"
               rel="noreferrer"
               className="hover:text-foreground"

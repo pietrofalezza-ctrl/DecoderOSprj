@@ -129,7 +129,7 @@ function ManifestoPage() {
               {t("landing.nav.terms")}
             </Link>
             <a
-              href="https://github.com"
+              href={t("common.repoUrl")}
               target="_blank"
               rel="noreferrer"
               className="hover:text-foreground"

@@ -483,6 +483,19 @@ function ExplanationView({ text, placeholder }: { text: string; placeholder?: st
     return <p className="text-sm text-muted-foreground">{placeholder ?? "—"}</p>;
   }
   return (
-    <pre className="whitespace-pre-wrap text-sm leading-relaxed text-foreground">{text}</pre>
+    <div className="space-y-2">
+      <AiBadge />
+      <pre className="whitespace-pre-wrap text-sm leading-relaxed text-foreground">{text}</pre>
+    </div>
+  );
+}
+
+function AiBadge() {
+  const { t } = useTranslation();
+  return (
+    <div className="inline-flex items-center gap-1.5 rounded-full border border-primary/40 bg-primary/10 px-2.5 py-0.5 text-[11px] font-medium text-primary">
+      <Sparkles className="h-3 w-3" />
+      {t("workspace.aiGeneratedBadge")}
+    </div>
   );
 }
