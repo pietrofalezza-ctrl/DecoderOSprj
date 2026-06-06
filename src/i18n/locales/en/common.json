@@ -7,7 +7,8 @@
     "dashboard": "Dashboard",
     "settings": "Settings",
     "signOut": "Sign out",
-    "signIn": "Sign in"
+    "signIn": "Sign in",
+    "docs": "Docs"
   },
   "languages": {
     "en": "English",
@@ -64,6 +65,12 @@
     "type": "Type",
     "provider": "Provider",
     "model": "Model",
+    "cloud": "Cloud",
+    "local": "Local",
+    "localPledge": "Local mode — source code stays on your machine.",
+    "copy": "Copy",
+    "copied": "Copied.",
+    "download": "Download .md",
     "noProvider": "Add an API key in Settings to enable AI explanations.",
     "tabs": {
       "human": "Human summary",
@@ -97,12 +104,28 @@
       "gemini": "Google Gemini",
       "openrouter": "OpenRouter"
     },
+    "endpoints": {
+      "ollama": "Ollama (local)",
+      "lmstudio": "LM Studio (local)"
+    },
     "localSection": "Local AI endpoints",
     "localIntro": "Local mode runs entirely in your browser against your localhost. Source code never reaches our servers.",
     "endpointKind": "Type",
     "endpointUrl": "Base URL",
     "endpointModel": "Default model",
     "addEndpoint": "Save endpoint"
+  },
+  "docs": {
+    "title": "Documentation",
+    "intro": "De-coder turns source code into human-readable knowledge. Read this page in your language using the switcher in the header.",
+    "gettingStartedTitle": "Getting started",
+    "gettingStartedBody": "Sign in, create a project, upload a ZIP of any codebase, pick a file in the tree, then click Explain. Choose your proficiency level and human or technical summary.",
+    "byokTitle": "Bring your own AI key",
+    "byokBody": "In Settings → AI providers, paste a key for OpenAI, Anthropic, Google Gemini or OpenRouter. Keys are encrypted with AES-256-GCM server-side and decrypted only to forward your request — they are never returned to the browser.",
+    "localTitle": "Local mode (Ollama / LM Studio)",
+    "localBody": "Install Ollama (https://ollama.com) or LM Studio, then in Settings → Local AI endpoints add the base URL (Ollama: http://localhost:11434, LM Studio: http://localhost:1234) and a default model. The browser calls your machine directly — source code never reaches our servers.",
+    "securityTitle": "Security & ownership",
+    "securityBody": "You own your code, generated documentation and suggested comments. We never train on user repositories. Every database table uses Row-Level Security scoped to your account."
   },
   "errors": {
     "generic": "Something went wrong.",
