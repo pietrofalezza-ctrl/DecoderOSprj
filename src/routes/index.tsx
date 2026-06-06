@@ -10,6 +10,9 @@ import {
   Lock,
   Zap,
   Users,
+  Bot,
+  GitPullRequest,
+  Eye,
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -19,6 +22,41 @@ import { Logo } from "@/components/Logo";
 import { LandingMockup } from "@/components/LandingMockup";
 
 export const Route = createFileRoute("/")({
+  head: () => ({
+    meta: [
+      { title: "De-coder — Understand AI-generated code, in any language" },
+      {
+        name: "description",
+        content:
+          "Open-source code understanding for the AI era. Read, review and audit code written by Copilot, Cursor, Lovable and your team. BYOK cloud or fully local.",
+      },
+      { property: "og:title", content: "De-coder — Understand AI-generated code" },
+      {
+        property: "og:description",
+        content:
+          "Open-source code understanding for the AI era. BYOK cloud or fully local with Ollama / LM Studio.",
+      },
+      { property: "og:url", content: "https://decoder.lovable.app/" },
+    ],
+    links: [{ rel: "canonical", href: "https://decoder.lovable.app/" }],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "SoftwareApplication",
+          name: "De-coder",
+          description:
+            "Open-source code understanding for the AI era — read, review and audit AI-generated code.",
+          applicationCategory: "DeveloperApplication",
+          operatingSystem: "Web, Linux, macOS, Windows",
+          url: "https://decoder.lovable.app",
+          license: "https://opensource.org/licenses/MIT",
+          offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+        }),
+      },
+    ],
+  }),
   component: Landing,
 });
 
