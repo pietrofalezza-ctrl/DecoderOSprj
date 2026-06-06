@@ -28,10 +28,7 @@
     "zh": "简体中文"
   },
   "landing": {
-    "heroLine1": "越来越多的代码由",
-    "heroLine1Accent": "AI",
-    "heroLine2": "编写。你仍然需要",
-    "heroLine2Accent": "理解它",
+    "hero": "越来越多的代码由 <1>AI</1> 编写。你仍然需要 <2>理解它</2>。",
     "heroSubtitle": "De-coder 是 AI 时代的代码理解层。阅读、审查并审计 Copilot、Cursor、Lovable 或团队成员生成的代码——用你的语言,按你的深度。",
     "heroBadgeOpen": "开源",
     "heroBadgePrivacy": "隐私优先",

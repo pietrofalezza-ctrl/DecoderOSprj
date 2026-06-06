@@ -1,48 +1,25 @@
-## Cosa cambio (solo UI/discoverability del workspace repo)
+## Obiettivo
+Cambiare il testo dell’H1 della hero in italiano da “Sempre più codice è scritto dall’ IA. Tu devi ancora capirlo.” a “ma, tu hai ancora bisogno di comprenderlo”, con solo la parola **ma** in evidenzia gradiente. Ristrutturare il componente in modo che ogni lingua possa controllare autonomamente quali parole ricevono l’accento.
 
-Tre problemi distinti, tre fix mirati nel file `src/routes/_authenticated/projects.$projectId.repos.$repoId.tsx` (+ traduzioni e un piccolo tocco a `AppShell`).
+## Cosa viene modificato
 
-### 1. "Non capisco da dove parte l'analisi di un singolo file"
+### `src/routes/index.tsx`
+- Sostituire le 4 chiavi `landing.heroLine1` / `heroLine1Accent` / `heroLine2` / `heroLine2Accent` con una singola chiave `landing.hero` gestita tramite `<Trans>` di `react-i18next`.
+- L’H1 renderà la stringa i18n interpretando i tag `<1>` … `</1>`, `<2>` … `</2>` come span con lo stile gradiente esistente (`bg-clip-text text-transparent` + `var(--gradient-accent)`).
+- Il punto finale rimane dentro la stringa i18n, non hardcoded nel componente.
 
-Nel pannello centrale (codice) e nel pannello destro:
-- Quando **nessun file è selezionato**, sostituire l'attuale testo "Seleziona un file" con un riquadro guida grande con 3 step numerati: **1) Scegli un file a sinistra → 2) Scegli un provider AI → 3) Premi Esegui**, con frecce visive (`ArrowLeft`, `ArrowRight`) che puntano ai pannelli laterali.
-- Sopra il bottone "Esegui" aggiungere un **indicatore di stato** sempre visibile:
-  - ✅ "Pronto" (verde) quando file + provider OK
-  - ⚠ "Seleziona un file" / "Configura un provider" (ambra) quando manca qualcosa, con link diretto a `/settings#byok` nel secondo caso.
-- Il bottone Esegui passa da `size="sm"` a `size="default"`, full-width, leggermente più alto e con un'etichetta chiara: **"Esegui analisi su questo file"** invece del generico "Esegui/Analizza".
+### `src/i18n/locales/it/common.json`
+- Nuova chiave: `landing.hero`: `"<1>ma</1>, tu hai ancora bisogno di comprenderlo."`
+- Rimozione delle vecchie chiavi `heroLine1`, `heroLine1Accent`, `heroLine2`, `heroLine2Accent`.
 
-### 2. "Il pannello di destra non si vede / è tagliato"
+### `src/i18n/locales/en/common.json`
+- Nuova chiave: `landing.hero`: `"More and more code is written by <1>AI</1>. You still need to <2>understand it</2>."`
+- Rimozione delle vecchie chiavi.
 
-A 1433 px la divisione 20/50/30 lascia ~430 px al pannello destro, ma con i 2 select affiancati a `grid-cols-2` il contenuto si comprime e il bottone Esegui può finire sotto la fold senza scroll evidente.
-- Cambiare il pannello destro: i due `Select` (Proficiency + Provider) da `grid-cols-2` a stack verticale `space-y-2`, così il bottone Esegui resta sempre visibile in alto.
-- Aumentare `defaultSize` del pannello destro da `30` a `34` e `minSize` da `22` a `26`.
-- Avvolgere l'intera intestazione del pannello destro (selettori + bottone) in uno sticky-top per non perderlo durante lo scroll dei tab.
+### `src/i18n/locales/zh/common.json`
+- Nuova chiave: `landing.hero`: (traduzione cinese con marcatori per le parole accentuate)
+- Rimozione delle vecchie chiavi.
 
-### 3. "Analizza la codebase non apre il pannello laterale"
-
-Causa: l'effetto auto-apertura controlla solo `search.view === "analyze"` e setta `repoSheetOpen=true`, ma la `Sheet` è figlia del **pannello resizable a 20%** della sidebar sinistra. Se quel pannello non è ancora montato/idratato (SSR + lazy), lo sheet può non aprirsi. Inoltre, se l'utente entra direttamente con `?view=analyze` e `providerValue` è ancora vuoto, l'auto-start non scatta e si vede solo lo schermo vuoto.
-
-Fix:
-- Spostare la `<Sheet>` fuori dal `ResizablePanel`, al livello dello shell (subito sotto `<AppShell>`), così l'apertura non dipende dalla sidebar.
-- Sostituire `useEffect` di apertura con apertura sincrona in fase di render basata su `search.view`, con `onOpenChange` che fa anche `navigate({ search: {} })` quando si chiude (così riaprire funziona).
-- Nell'effetto di auto-start, attendere `provs.isSuccess` prima di valutare `providerValue`; aggiungere fallback toast esplicativo se nessun provider cloud è disponibile (con link a Settings).
-- Nel `AiOriginPanel` quando `canRun=false`, oltre al link a Settings già presente, mostrare anche la ragione: "Serve un provider cloud (Lovable AI o BYOK)".
-
-### 4. Avatar più evidente (richiesta esplicita)
-
-In `src/components/AppShell.tsx`:
-- Aumentare l'avatar da `h-7 w-7` a `h-8 w-8`, aggiungere `ring-2 ring-primary/30 hover:ring-primary/60`, e un piccolo badge "Account" testuale accanto su `md:` e superiori, così non è più solo un'iniziale ambigua.
-- Tenere il `Tooltip` con email (già presente).
-
-### File modificati
-
-- `src/routes/_authenticated/projects.$projectId.repos.$repoId.tsx` — empty state guidato, indicatore di stato, stack verticale dei select, sticky toolbar, sheet a livello root, auto-open robusto.
-- `src/components/AppShell.tsx` — avatar più evidente.
-- `src/components/AiOriginPanel.tsx` — messaggio "Serve provider cloud" più chiaro.
-- `src/i18n/locales/{en,it,zh}/common.json` — nuove chiavi: `workspace.howTo.step1/2/3`, `workspace.status.ready`, `workspace.status.needFile`, `workspace.status.needProvider`, `workspace.runFile`, `aiOrigin.needsCloudLong`.
-
-### Fuori scope
-
-- Nessun cambio a backend / server functions / RLS / schema.
-- La landing pubblica non viene toccata (per quella domanda servirebbe uno screenshot specifico — la affrontiamo separatamente se vuoi).
-- Nessuna nuova dipendenza npm.
+## Note tecniche
+- `react-i18next` è già usato nel progetto (hook `useTranslation`), quindi `<Trans>` è disponibile senza installare dipendenze.
+- Nessuna modifica al backend, RLS o schema.
