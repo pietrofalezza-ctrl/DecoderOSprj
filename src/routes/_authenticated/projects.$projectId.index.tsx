@@ -22,7 +22,7 @@ import { getProject } from "@/lib/projects.functions";
 import { createRepositoryFromZip } from "@/lib/repos.functions";
 import { importFromGitHub } from "@/lib/github.functions";
 
-export const Route = createFileRoute("/_authenticated/projects/$projectId")({
+export const Route = createFileRoute("/_authenticated/projects/$projectId/")({
   component: ProjectPage,
 });
 
