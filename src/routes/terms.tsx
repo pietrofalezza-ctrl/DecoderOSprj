@@ -134,12 +134,8 @@ function TermsPage() {
           </p>
         </section>
 
-        <section className="mt-10">
-          <h2 className="text-2xl font-semibold">{t("terms.contributionsTitle")}</h2>
-          <p className="mt-3 text-sm text-muted-foreground">
-            {t("terms.contributionsBody")}
-          </p>
-        </section>
+
+
 
         <section className="mt-10">
           <h2 className="text-2xl font-semibold">{t("terms.dataCollectedTitle")}</h2>
