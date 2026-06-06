@@ -81,6 +81,34 @@
       "applyComments": "Applica commenti"
     }
   },
+  "terms": {
+    "kicker": "Note legali",
+    "title": "Termini e condizioni d'uso",
+    "intro": "Questi termini riassumono la licenza open source che si applica a De-coder e le condizioni per l'utilizzo del software, del nome e del marchio.",
+    "licenseTitle": "Licenza open source",
+    "licenseBody": "De-coder è un progetto gratuito e open source rilasciato sotto licenza MIT. Il testo integrale della licenza è disponibile nel file LICENSE distribuito con il software.",
+    "allowedTitle": "Cosa puoi fare",
+    "allowed": {
+      "usePersonal": "Usarlo per scopi personali o commerciali",
+      "modify": "Modificare il codice sorgente e creare versioni personalizzate",
+      "distribute": "Distribuire il software originale o modificato ad altri",
+      "develop": "Sviluppare nuove funzionalità e contribuirle al progetto"
+    },
+    "forbiddenTitle": "Cosa non puoi fare",
+    "forbidden": {
+      "claimCreator": "Dichiarare di essere il creatore o l'autore originale di De-coder",
+      "useTrademark": "Utilizzare il nome, il logo o il marchio De-coder senza autorizzazione scritta",
+      "presentOfficial": "Presentare una versione modificata come progetto ufficiale De-coder"
+    },
+    "ownershipTitle": "Copyright e proprietà",
+    "ownershipBody": "Il copyright originale e i diritti morali restano dell'autore del progetto. La licenza MIT ti concede i permessi elencati sopra, ma non trasferisce la proprietà.",
+    "analyzedCodeTitle": "Codice analizzato tramite De-coder",
+    "analyzedCodeBody": "Qualsiasi codice sorgente caricato o analizzato tramite De-coder resta di proprietà dei rispettivi titolari. De-coder non acquisisce alcun diritto sul tuo codice o sulla documentazione generata.",
+    "contributionsTitle": "Contributi",
+    "contributionsBody": "I contributi inviati al progetto De-coder (pull request, issue, patch di codice, documentazione) possono essere esaminati, integrati e inclusi nelle versioni future a discrezione dei maintainer. Inviando un contributo accetti di rilasciarlo sotto gli stessi termini del progetto (licenza MIT).",
+    "disclaimerTitle": "Esclusione di responsabilità",
+    "disclaimerBody": "IL SOFTWARE VIENE FORNITO \"COSÌ COM'È\", SENZA GARANZIE DI ALCUN TIPO, ESPLICITE O IMPLICITE, INCLUSE, A TITOLO ESEMPLIFICATIVO, LE GARANZIE DI COMMERCIABILITÀ, IDONEITÀ A UNO SCOPO PARTICOLARE E NON VIOLAZIONE. IN NESSUN CASO GLI AUTORI O I TITOLARI DEL COPYRIGHT POTRANNO ESSERE RITENUTI RESPONSABILI PER QUALSIASI RECLAMO, DANNO O ALTRA RESPONSABILITÀ, SIA IN UN'AZIONE CONTRATTUALE CHE EXTRACONTRATTUALE, DERIVANTE DA, IN CONNESSIONE CON O RELATIVAMENTE AL SOFTWARE O ALL'USO O AD ALTRE OPERAZIONI CON IL SOFTWARE."
+  },
   "manifesto": {
     "kicker": "Manifesto",
     "title": "Crediamo che il codice debba essere comprensibile",
@@ -89,7 +117,7 @@
     "principles": {
       "open": {
         "title": "Open source per davvero",
-        "body": "Licenza MIT, sviluppo pubblico, nessun componente nascosto. Quello che vedi è quello che gira."
+        "body": "Licenza MIT. Libero di usare, modificare e distribuire. Nessun componente nascosto. Marchio e denominazione rimangono all'autore."
       },
       "privacy": {
         "title": "Privacy by design",

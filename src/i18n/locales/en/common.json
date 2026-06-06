@@ -81,6 +81,34 @@
       "applyComments": "Apply comments"
     }
   },
+  "terms": {
+    "kicker": "Legal",
+    "title": "Terms and Conditions",
+    "intro": "These terms summarize the open-source license that applies to De-coder and the conditions for using the software, name and brand.",
+    "licenseTitle": "Open-source license",
+    "licenseBody": "De-coder is a free and open-source project released under the MIT License. The full text of the license is available in the LICENSE file distributed with the software.",
+    "allowedTitle": "What you can do",
+    "allowed": {
+      "usePersonal": "Use it for personal or commercial purposes",
+      "modify": "Modify the source code and build custom versions",
+      "distribute": "Distribute the original or modified software to others",
+      "develop": "Develop new features and contribute them back"
+    },
+    "forbiddenTitle": "What you cannot do",
+    "forbidden": {
+      "claimCreator": "Claim to be the creator of De-coder or its original author",
+      "useTrademark": "Use the De-coder name, logo or trademark without prior written authorization",
+      "presentOfficial": "Present a modified version as the official De-coder project"
+    },
+    "ownershipTitle": "Copyright and ownership",
+    "ownershipBody": "The original copyright and moral rights remain with the author of the project. The MIT License grants you the permissions listed above, but it does not transfer ownership.",
+    "analyzedCodeTitle": "Code analyzed through De-coder",
+    "analyzedCodeBody": "Any source code uploaded or analyzed via De-coder remains the property of its respective owners. De-coder does not acquire any rights over your code or the generated documentation.",
+    "contributionsTitle": "Contributions",
+    "contributionsBody": "Contributions submitted to the De-coder project (pull requests, issues, code patches, documentation) may be reviewed, merged and included in future releases at the discretion of the maintainers. By submitting a contribution you agree to license it under the same terms as the project (MIT License).",
+    "disclaimerTitle": "Disclaimer",
+    "disclaimerBody": "THE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE."
+  },
   "manifesto": {
     "kicker": "Manifesto",
     "title": "We believe code should be understandable",
@@ -89,7 +117,7 @@
     "principles": {
       "open": {
         "title": "Genuinely open source",
-        "body": "MIT license, public development, no hidden components. What you see is what runs."
+        "body": "MIT License. Free to use, modify and distribute. No hidden components. Brand and trademark remain with the author."
       },
       "privacy": {
         "title": "Privacy by design",

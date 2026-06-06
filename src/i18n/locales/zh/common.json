@@ -81,6 +81,34 @@
       "applyComments": "应用注释"
     }
   },
+  "terms": {
+    "kicker": "法律条款",
+    "title": "使用条款",
+    "intro": "本条款概述了适用于 De-coder 的开源许可证以及使用软件、名称和品牌的条件。",
+    "licenseTitle": "开源许可证",
+    "licenseBody": "De-coder 是一款基于 MIT 许可证发布的免费开源项目。许可证全文随软件一起分发在 LICENSE 文件中。",
+    "allowedTitle": "你可以做什么",
+    "allowed": {
+      "usePersonal": "用于个人或商业目的",
+      "modify": "修改源代码并构建自定义版本",
+      "distribute": "向他人分发原始或修改后的软件",
+      "develop": "开发新功能并将其贡献回来"
+    },
+    "forbiddenTitle": "你不得做什么",
+    "forbidden": {
+      "claimCreator": "声称自己是 De-coder 或其原作者的创作者",
+      "useTrademark": "未经授权使用 De-coder 的名称、标识或商标",
+      "presentOfficial": "将修改版本作为官方 De-coder 项目发布"
+    },
+    "ownershipTitle": "版权与所有权",
+    "ownershipBody": "原始版权和人身权仍归项目作者所有。MIT 许可证授予你上述权限，但并不转移所有权。",
+    "analyzedCodeTitle": "通过 De-coder 分析的代码",
+    "analyzedCodeBody": "通过 De-coder 上传或分析的任何源代码仍归各自所有者所有。De-coder 不会就你的代码或生成的文档获取任何权利。",
+    "contributionsTitle": "贡献",
+    "contributionsBody": "提交给 De-coder 项目的贡献（拉取请求、问题、代码补丁、文档）可由维护者自行决定进行审核、合并并纳入未来版本。提交贡献即表示你同意按照与项目相同的条款（MIT 许可证）进行授权。",
+    "disclaimerTitle": "免责声明",
+    "disclaimerBody": "本软件按「原样」提供，不提供任何明示或暗示的担保，包括但不限于适销性、特定用途适用性和不侵权的担保。在任何情况下，作者或版权持有者均不对因本软件或与本软件相关的使用或其他交易而产生的任何索赔、损害或其他责任负责，无论是基于合同、侵权还是其他原因。"
+  },
   "manifesto": {
     "kicker": "宣言",
     "title": "我们相信代码应当易于理解",
@@ -89,7 +117,7 @@
     "principles": {
       "open": {
         "title": "真正的开源",
-        "body": "MIT 许可证、公开开发、没有隐藏组件。所见即所运行。"
+        "body": "MIT 许可证。可自由使用、修改和分发。无隐藏组件。品牌和商标归作者所有。"
       },
       "privacy": {
         "title": "隐私设计",
