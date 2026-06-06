@@ -4,12 +4,23 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
-import { Upload } from "lucide-react";
+import { Upload, Github } from "lucide-react";
 
 import { AppShell } from "@/components/AppShell";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { getProject } from "@/lib/projects.functions";
 import { createRepositoryFromZip } from "@/lib/repos.functions";
+import { importFromGitHub } from "@/lib/github.functions";
 
 export const Route = createFileRoute("/_authenticated/projects/$projectId")({
   component: ProjectPage,
@@ -22,8 +33,12 @@ function ProjectPage() {
   const qc = useQueryClient();
   const get = useServerFn(getProject);
   const upload = useServerFn(createRepositoryFromZip);
+  const importGh = useServerFn(importFromGitHub);
   const fileRef = useRef<HTMLInputElement>(null);
   const [uploading, setUploading] = useState(false);
+  const [ghOpen, setGhOpen] = useState(false);
+  const [ghUrl, setGhUrl] = useState("");
+  const [ghRef, setGhRef] = useState("");
 
   const data = useQuery({
     queryKey: ["project", projectId],
@@ -35,7 +50,6 @@ function ProjectPage() {
   const upMut = useMutation({
     mutationFn: async (file: File) => {
       const buf = new Uint8Array(await file.arrayBuffer());
-      // base64 encode (chunked)
       let binary = "";
       const chunk = 0x8000;
       for (let i = 0; i < buf.length; i += chunk) {
@@ -61,7 +75,29 @@ function ProjectPage() {
     onSettled: () => setUploading(false),
   });
 
-  const onFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const ghMut = useMutation({
+    mutationFn: () =>
+      importGh({
+        data: {
+          project_id: projectId,
+          url: ghUrl.trim(),
+          ref: ghRef.trim() || undefined,
+        },
+      }),
+    onSuccess: (r) => {
+      setGhOpen(false);
+      setGhUrl("");
+      setGhRef("");
+      qc.invalidateQueries({ queryKey: ["project", projectId] });
+      navigate({
+        to: "/projects/$projectId/repos/$repoId",
+        params: { projectId, repoId: r.repository_id },
+      });
+    },
+    onError: (e: any) => toast.error(e?.message ?? t("errors.generic")),
+  });
+
+  const onFile = (e: React.ChangeEvent<HTMLInputElement>) => {
     const f = e.target.files?.[0];
     if (!f) return;
     setUploading(true);
@@ -72,25 +108,63 @@ function ProjectPage() {
   return (
     <AppShell>
       <div className="mx-auto max-w-5xl px-6 py-10">
-        <div className="flex items-center justify-between">
+        <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
             <h1 className="text-2xl font-semibold">{data.data?.project?.name}</h1>
             {data.data?.project?.description && (
               <p className="text-sm text-muted-foreground">{data.data.project.description}</p>
             )}
           </div>
-          <div>
-            <input
-              ref={fileRef}
-              type="file"
-              accept=".zip"
-              hidden
-              onChange={onFile}
-            />
-            <Button onClick={onPick} disabled={uploading}>
+          <div className="flex items-center gap-2">
+            <input ref={fileRef} type="file" accept=".zip" hidden onChange={onFile} />
+            <Button variant="outline" onClick={onPick} disabled={uploading}>
               <Upload className="mr-2 h-4 w-4" />
               {uploading ? t("project.uploading") : t("project.uploadZip")}
             </Button>
+            <Dialog open={ghOpen} onOpenChange={setGhOpen}>
+              <DialogTrigger asChild>
+                <Button>
+                  <Github className="mr-2 h-4 w-4" />
+                  {t("project.importGithub")}
+                </Button>
+              </DialogTrigger>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>{t("project.importGithub")}</DialogTitle>
+                </DialogHeader>
+                <div className="space-y-3">
+                  <div>
+                    <Label htmlFor="ghUrl">{t("project.githubUrl")}</Label>
+                    <Input
+                      id="ghUrl"
+                      value={ghUrl}
+                      onChange={(e) => setGhUrl(e.target.value)}
+                      placeholder={t("project.githubUrlPlaceholder")}
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="ghRef">{t("project.githubRef")}</Label>
+                    <Input
+                      id="ghRef"
+                      value={ghRef}
+                      onChange={(e) => setGhRef(e.target.value)}
+                      placeholder={t("project.githubRefPlaceholder")}
+                    />
+                  </div>
+                  <p className="text-xs text-muted-foreground">
+                    {t("project.githubOnlyPublic")}
+                  </p>
+                </div>
+                <DialogFooter>
+                  <Button
+                    onClick={() => ghMut.mutate()}
+                    disabled={ghMut.isPending || !ghUrl.trim()}
+                  >
+                    {ghMut.isPending ? t("project.importing") : t("project.import")}
+                  </Button>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
           </div>
         </div>
 

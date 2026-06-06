@@ -1,6 +1,8 @@
 import { Link, useNavigate } from "@tanstack/react-router";
+import { useQuery } from "@tanstack/react-query";
+import { useServerFn } from "@tanstack/react-start";
 import { useTranslation } from "react-i18next";
-import { LogOut, Settings, LayoutDashboard, BookOpen } from "lucide-react";
+import { LogOut, Settings, LayoutDashboard, BookOpen, ShieldCheck } from "lucide-react";
 import type { ReactNode } from "react";
 
 import { Button } from "@/components/ui/button";
@@ -13,10 +15,17 @@ import {
 import { LangSwitcher } from "./LangSwitcher";
 import { ThemeToggle } from "./ThemeToggle";
 import { supabase } from "@/integrations/supabase/client";
+import { isAdmin } from "@/lib/admin.functions";
 
 export function AppShell({ children }: { children: ReactNode }) {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const isAdminFn = useServerFn(isAdmin);
+  const admin = useQuery({
+    queryKey: ["me", "admin"],
+    queryFn: () => isAdminFn(),
+    staleTime: 60_000,
+  });
 
   const signOut = async () => {
     await supabase.auth.signOut();
@@ -58,6 +67,14 @@ export function AppShell({ children }: { children: ReactNode }) {
                   {t("nav.settings")}
                 </Link>
               </DropdownMenuItem>
+              {admin.data?.admin && (
+                <DropdownMenuItem asChild>
+                  <Link to="/admin">
+                    <ShieldCheck className="mr-2 h-4 w-4" />
+                    {t("nav.admin")}
+                  </Link>
+                </DropdownMenuItem>
+              )}
               <DropdownMenuItem onSelect={signOut}>
                 <LogOut className="mr-2 h-4 w-4" />
                 {t("nav.signOut")}
