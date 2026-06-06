@@ -59,10 +59,13 @@ export function AiOriginPanel({
             {t("aiOrigin.run")}
           </Button>
         ) : (
-          <div className="w-full space-y-2 rounded-md border border-border bg-muted/40 p-3">
-            <p className="text-xs text-muted-foreground">{t("aiOrigin.needsCloud")}</p>
+          <div className="w-full space-y-2 rounded-md border border-amber-500/40 bg-amber-500/5 p-3">
+            <p className="text-xs font-medium text-amber-700 dark:text-amber-300">
+              {t("aiOrigin.needsCloudLong")}
+            </p>
+            <p className="text-[11px] text-muted-foreground">{t("aiOrigin.needsCloud")}</p>
             <Button asChild size="sm" variant="secondary">
-              <Link to="/settings">
+              <Link to="/settings" hash="byok">
                 <KeyRound className="mr-2 h-4 w-4" />
                 {t("aiOrigin.configureKey")}
               </Link>
