@@ -117,7 +117,7 @@ function Landing() {
             <div className="mb-5 flex flex-wrap gap-2 text-xs">
               <Badge icon={<Sparkles className="h-3 w-3" />} label={t("landing.heroBadgeOpen")} />
               <Badge icon={<Lock className="h-3 w-3" />} label={t("landing.heroBadgePrivacy")} />
-              <Badge icon={<Zap className="h-3 w-3" />} label={t("landing.heroBadgeAI")} />
+              <Badge icon={<Bot className="h-3 w-3" />} label={t("landing.heroBadgeAiEra")} />
             </div>
             <h1 className="text-balance text-4xl font-semibold leading-[1.1] tracking-tight md:text-6xl">
               {t("landing.heroLine1")}{" "}
@@ -172,8 +172,40 @@ function Landing() {
         </div>
       </section>
 
+      {/* Why now — AI-generated code era */}
+      <section className="border-y border-border/60 bg-card/40">
+        <div className="mx-auto max-w-7xl px-6 py-16">
+          <div className="max-w-2xl">
+            <p className="text-xs font-semibold uppercase tracking-wide text-primary">
+              {t("landing.whyNowKicker")}
+            </p>
+            <h2 className="mt-2 text-3xl font-semibold tracking-tight md:text-4xl">
+              {t("landing.whyNowTitle")}
+            </h2>
+            <p className="mt-3 text-muted-foreground">{t("landing.whyNowIntro")}</p>
+          </div>
+          <div className="mt-10 grid gap-6 md:grid-cols-3">
+            <WhyNowCard
+              icon={<Bot className="h-5 w-5" />}
+              title={t("landing.whyNow1Title")}
+              body={t("landing.whyNow1Body")}
+            />
+            <WhyNowCard
+              icon={<GitPullRequest className="h-5 w-5" />}
+              title={t("landing.whyNow2Title")}
+              body={t("landing.whyNow2Body")}
+            />
+            <WhyNowCard
+              icon={<Eye className="h-5 w-5" />}
+              title={t("landing.whyNow3Title")}
+              body={t("landing.whyNow3Body")}
+            />
+          </div>
+        </div>
+      </section>
+
       {/* Features */}
-      <section id="features" className="mx-auto max-w-7xl px-6 pb-16">
+      <section id="features" className="mx-auto max-w-7xl px-6 py-16">
         <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
           <Feature
             icon={<Globe2 className="h-5 w-5" />}
