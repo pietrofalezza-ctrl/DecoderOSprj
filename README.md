@@ -59,6 +59,43 @@ SELECT public.promote_to_admin('you@example.com');
 
 Subsequent admins are managed from `/admin`.
 
+## Run De-coder on your own machine
+
+De-coder is a web app, but you can keep it entirely on your system. Three options, from easiest to most isolated:
+
+### 1. Desktop app (Electron)
+
+Packages the UI as a native window. Still talks to your backend (cloud or self-hosted) and to local LLMs.
+
+```bash
+bun install
+bun run desktop:build           # produces electron-release/De-coder-<platform>-<arch>/
+# Cross-compile:
+bun run desktop:build -- --platform=darwin --arch=arm64
+bun run desktop:build -- --platform=win32  --arch=x64
+```
+
+Dev loop: `bun run dev` in one shell, `bun run desktop:dev` in another.
+
+### 2. Self-host with Docker
+
+Build the TanStack Start server and run it on your own host. You need a reachable Supabase instance (cloud or `supabase start` locally).
+
+```bash
+docker build -t decoder .
+docker run --rm -p 8080:8080 \
+  -e SUPABASE_URL=... \
+  -e SUPABASE_PUBLISHABLE_KEY=... \
+  -e SUPABASE_SERVICE_ROLE_KEY=... \
+  -e DECODER_ENCRYPTION_KEY=$(openssl rand -base64 32) \
+  decoder
+```
+
+### 3. 100% offline AI
+
+In **Settings → Local providers**, configure Ollama (`http://localhost:11434`) or LM Studio (`http://localhost:1234`). Pick the local provider in the workspace and your source code stays on your machine — De-coder's server is not on the request path.
+
+
 ## Contributing
 
 See [`CONTRIBUTING.md`](./CONTRIBUTING.md).
