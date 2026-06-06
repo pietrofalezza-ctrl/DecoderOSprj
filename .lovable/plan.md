@@ -1,57 +1,40 @@
+## Phase 5 — App "sul tuo sistema" + cleanup bug
 
-# Phase 4 — Manifesto, admin onboarding, landing redesign, no dead-ends, E2E
+### 1. Desktop app (Electron)
+De-coder resta una web app TanStack Start, ma viene confezionata anche come applicazione desktop installabile (macOS / Windows / Linux). L'eseguibile carica la stessa UI in modalità offline-first e si collega al tuo backend (cloud o self-host) o ai modelli locali Ollama / LM Studio già configurati.
 
-## 1. Manifesto pubblico
-- Nuova route `src/routes/manifesto.tsx` (pubblica, SSR-safe, niente loader protetti).
-- Contenuto tri-lingua via `manifesto.*` in `en/it/zh/common.json`: principi (open source, privacy-first, BYOK, local-first, no training su codice utente, multilingua, accessibilità), "Cosa NON faremo", roadmap pubblica.
-- SEO: `head()` con title/description/og:title/og:description dedicati per route.
-- Link nel header landing + nel footer di `AppShell`.
+- `electron/main.cjs` — finestra `BrowserWindow` (contextIsolation on, nodeIntegration off) che carica `dist/index.html`.
+- `electron/preload.cjs` — minimo, espone solo `app.getVersion()`.
+- `vite.config.ts` — aggiunta condizionale `base: process.env.ELECTRON ? './' : '/'` (solo build desktop, non tocca la web).
+- `package.json` — script `desktop:build` = `ELECTRON=1 vite build && electron-packager . "De-coder" --platform=... --arch=x64 --out=electron-release --overwrite`. `electron` e `@electron/packager` come `devDependencies`.
+- README sezione "Run on your machine" con tre opzioni:
+  1. **Desktop app** — scarica binario / `bun run desktop:build`.
+  2. **Self-host Docker** — `Dockerfile` (build TanStack Start → Bun runtime su porta 8080) + variabili `SUPABASE_*` da impostare. La parte database resta Supabase, ma il README spiega come puntare a un'istanza self-host (supabase-cli `start`).
+  3. **100 % offline LLM** — promemoria che con Ollama/LM Studio configurati in Settings, il codice non lascia mai la macchina.
 
-## 2. Admin onboarding (UX, non solo SQL)
-Oggi promuovere il primo admin richiede una query SQL manuale — l'utente non sa come loggarsi da admin. Aggiungo:
-- **README + pagina `/docs`**: blocco "Become the first admin" con i due metodi:
-  - (a) SQL one-shot: `SELECT public.promote_to_admin('you@example.com');` dall'SQL editor di Lovable Cloud.
-  - (b) Bootstrap automatico: se la tabella `user_roles` è vuota, il primo utente loggato vede in `/settings` un banner "Claim admin" che chiama una nuova server fn `claimFirstAdmin()` (server-side controlla `count=0` su `user_roles` con `supabaseAdmin`, atomicamente).
-- Nuova server fn `claimFirstAdmin` in `src/lib/admin.functions.ts` con `requireSupabaseAuth`, controllo `count(*)=0` e insert.
-- UI: banner condizionale in `src/routes/_authenticated/settings.tsx` mostrato solo se `isAdmin=false` && `noAdminsYet=true` (nuova query `adminBootstrapStatus`).
-- Dopo claim, redirect a `/admin`.
+Registrazione resta aperta a tutti (nessuna modifica auth).
 
-## 3. Redesign landing in stile screenshot
-Replica del layout dell'immagine, mantenendo i token semantici esistenti (`src/styles.css`, niente classi colore hardcoded):
-- **Header**: logo SVG (nuovo `src/components/Logo.tsx` con il monogramma `</>` mostrato in screenshot), nav orizzontale (Funzionalità, Come funziona, Integrazioni, Open Source, Documentazione → ancore in-page + link a `/docs` e `/manifesto`), a destra `LangSwitcher` + `ThemeToggle` + CTA `Inizia ora`.
-- **Hero**: titolo grande con due parole in accento gradient (`codice`, `tuo livello`) usando `bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent`, sub-headline a 3 righe, doppia CTA "Inizia ora" + "Guarda la demo" (la demo scrolla a sezione "Come funziona" — niente link rotti).
-- **Mockup workspace**: componente `src/components/LandingMockup.tsx` puramente decorativo (no rete), riproduce sidebar + code editor + pannello AI come in screenshot, con sintassi statica TS.
-- **Provider strip**: riga "Funziona con i provider che preferisci" + loghi inline SVG (OpenAI, Anthropic, Gemini, OpenRouter, Ollama) — solo testo+icona, niente immagini esterne.
-- **3 feature card** (Multilingua, Porta la tua AI, Locale e privato) con sparkline SVG decorativa.
-- **Strip valori** in fondo (100% Open Source, Privacy First, No Vendor Lock-in, Per tutti).
-- **Footer** con link a Manifesto / Docs / GitHub / License.
+### 2. Bug-fix sweep
+Cose viste nei log del debug che meritano un giro di pulizia:
 
-Token: aggiungo eventuali sfumature mancanti (`--gradient-hero`, `--shadow-elegant`) in `src/styles.css`. Niente nuovi font esterni: resto sui font di sistema attuali per non rompere SSR.
+- **Falso positivo SSR**: l'errore "SSR rendering failed" segnalato nel preview risulta stale (tutte le rotte rispondono 200). Aggiungere però `errorComponent` + `notFoundComponent` mancanti dove serve, così un futuro crash mostra un fallback invece di blank:
+  - `src/routes/_authenticated/dashboard.tsx`
+  - `src/routes/_authenticated/admin.tsx`
+  - `src/routes/_authenticated/projects.$projectId.tsx`
+  - `src/routes/_authenticated/projects.$projectId.repos.$repoId.tsx`
+  - `src/routes/_authenticated/settings.tsx`
+  - root `notFoundComponent` (404 user-friendly con link Home / Dashboard).
+- **Loop console "Unknown message type: RESET_BLANK_CHECK"**: cosmetico (lovable.js), si silenzia con un piccolo filtro in `src/lib/error-capture.ts`.
+- **`_authenticated/route.tsx`**: rimuovere il `setTick` artigianale (l'onAuthStateChange root già invalida il router) — riduce un re-render fantasma e segue le linee guida TanStack/Supabase.
+- **`src/lib/local-ai.client.ts`**: aggiungere `AbortController` con timeout 60 s, oggi una chiamata Ollama hang-ata lascia la UI in pending per sempre.
+- **README + manifesto**: aggiornare con istruzioni desktop e Docker.
 
-## 4. Niente dead-end / loop di navigazione
-Audit + fix mirati:
-- Ogni route con `loader` o `beforeLoad` deve avere `errorComponent` + `notFoundComponent` con bottoni `← Indietro` (router.history.back con fallback `/`) e `Vai alla dashboard`. Controllo: `__root.tsx`, `_authenticated/route.tsx`, `_authenticated/admin.tsx`, `_authenticated/projects.$projectId.tsx`, `projects.$projectId.repos.$repoId.tsx`, `settings.tsx`, `auth.tsx`, `docs.tsx`, `manifesto.tsx`.
-- `/auth`: se utente già loggato, redirect a `/dashboard` invece di mostrare form (oggi può creare loop se l'utente atterra lì già autenticato).
-- `_authenticated/route.tsx`: se non autenticato → redirect a `/auth?redirect=<from>`. Dopo login leggere `redirect` e tornare lì (no atterraggio sempre su `/dashboard`).
-- `/admin`: oggi `throw redirect({ to: "/dashboard" })` se non admin — aggiungere toast "Accesso negato" lato target via `search: { denied: 'admin' }` e bottone "Richiedi accesso" per UX comprensibile.
-- Breadcrumb `← Back` in tutte le route nested (`projects/$id`, `repos/$id`) con `useRouter().history.back()` + fallback esplicito (mai history.back nudo, che su deep-link diretto non ha storia).
-- Bottone home cliccabile sul logo in `AppShell` (già c'è ma punta solo a `/dashboard` se autenticato; aggiungo target `/` se pubblico).
+### 3. Verifica
+- `curl` su `/`, `/auth`, `/dashboard`, `/manifesto`, `/admin` → 200 senza placeholder di errore.
+- `bun run desktop:build --platform=linux` produce un `tar.gz` scaricabile (test in sandbox).
+- Smoke manuale: header → Manifesto / Docs, login form visibile, banner "Claim first admin" appare solo al primo utente.
 
-## 5. E2E + debug
-- Aggiungo Playwright (`@playwright/test`) come devDep + `playwright.config.ts` + cartella `e2e/`.
-- Specs minime ma utili:
-  - `landing.spec.ts`: home renders, lingua switch IT→EN→ZH non causa hydration mismatch (controlla console errors), tutti i link header risolvono 200.
-  - `auth.spec.ts`: `/auth` mostra form, redirect quando già loggato (mock sessione).
-  - `manifesto.spec.ts`: route esiste, SEO tags presenti.
-  - `navigation.spec.ts`: visita `/admin` senza login → redirect a `/auth?redirect=/admin`; visita `/dashboard` senza login → idem; back button dopo redirect non rimbalza in loop.
-  - `accessibility.spec.ts`: smoke `axe-core` su `/`, `/manifesto`, `/docs`, `/auth`.
-- Script: `bun run test:e2e` (avvia preview build + playwright).
-- Round di debug: dopo aver girato i test, leggo l'output, leggo `code--read_console_logs` e `code--read_runtime_errors` nella preview live, e correggo solo i rilievi emersi (no refactor speculativi). Riporto al termine la lista test/passati/falliti e le fix applicate.
-
-## Fuori scope (Phase 5)
-- GitHub OAuth, sync repo privati, suggested inline comments con diff, analisi architettura/dipendenze, A/B test della landing.
-
-## Domande
-1. **Bootstrap admin**: ok l'opzione "claim first admin" automatica via banner in Settings, oppure preferisci solo il path SQL documentato?
-2. **Demo button**: la CTA "Guarda la demo" deve scrollare a una sezione "Come funziona" sulla landing, oppure aprire una pagina dedicata `/demo` con uno screencast/mock interattivo?
-3. **E2E**: ok Playwright? In alternativa Cypress (più pesante) o solo Vitest + Testing Library (niente browser reale, copertura minore).
+### Fuori scope (Phase 6)
+- Suite Playwright E2E.
+- Build firmati macOS/Windows (richiedono certificati utente).
+- GitHub OAuth e analisi architetturale profonda.
