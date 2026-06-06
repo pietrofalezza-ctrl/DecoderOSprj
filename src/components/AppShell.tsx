@@ -118,6 +118,12 @@ export function AppShell({ children }: { children: ReactNode }) {
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
+                  <Link to="/settings" hash="byok">
+                    <KeyRound className="mr-2 h-4 w-4" />
+                    {t("nav.apiKeys")}
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
                   <Link to="/settings">
                     <Settings className="mr-2 h-4 w-4" />
                     {t("nav.settings")}
