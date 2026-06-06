@@ -326,20 +326,51 @@ function WorkspacePage() {
         <ResizablePanelGroup orientation="horizontal">
           <ResizablePanel defaultSize={20} minSize={14}>
             <div className="flex h-full flex-col border-r border-border bg-sidebar">
-              <div className="flex items-center justify-between border-b border-border px-3 py-2">
-                <span className="text-xs font-medium uppercase text-muted-foreground">
+              <div className="flex items-center justify-between gap-2 border-b border-border px-3 py-2">
+                <span className="truncate text-xs font-medium uppercase text-muted-foreground">
                   {repo.data?.repository?.name ?? t("workspace.files")}
                 </span>
-                <Button
-                  size="sm"
-                  variant="ghost"
-                  onClick={() => exportMut.mutate()}
-                  disabled={exportMut.isPending}
-                  aria-label={t("workspace.exportAll")}
-                  title={t("workspace.exportAll")}
-                >
-                  <FileDown className="h-3.5 w-3.5" />
-                </Button>
+                <div className="flex shrink-0 items-center gap-1">
+                  <Sheet open={repoSheetOpen} onOpenChange={setRepoSheetOpen}>
+                    <SheetTrigger asChild>
+                      <Button
+                        size="sm"
+                        variant="secondary"
+                        className="h-7 px-2 text-[11px]"
+                        title={t("workspace.analyzeWholeRepo")}
+                      >
+                        <ScanSearch className="mr-1 h-3.5 w-3.5" />
+                        {t("workspace.analyzeWholeRepo")}
+                      </Button>
+                    </SheetTrigger>
+                    <SheetContent side="right" className="w-full p-0 sm:max-w-xl">
+                      <SheetHeader className="border-b border-border p-4">
+                        <SheetTitle className="flex items-center gap-2">
+                          <Bot className="h-5 w-5 text-primary" />
+                          {t("aiOrigin.title")}
+                        </SheetTitle>
+                      </SheetHeader>
+                      <div className="h-[calc(100vh-4rem)]">
+                        <AiOriginPanel
+                          result={repoAiResult}
+                          isRunning={repoAiMut.isPending}
+                          onRun={() => repoAiMut.mutate()}
+                          canRun={canRunRepoAi}
+                        />
+                      </div>
+                    </SheetContent>
+                  </Sheet>
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    onClick={() => exportMut.mutate()}
+                    disabled={exportMut.isPending}
+                    aria-label={t("workspace.exportAll")}
+                    title={t("workspace.exportAll")}
+                  >
+                    <FileDown className="h-3.5 w-3.5" />
+                  </Button>
+                </div>
               </div>
               <ScrollArea className="flex-1">
                 <div className="p-2">
