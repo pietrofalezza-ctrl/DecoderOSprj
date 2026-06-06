@@ -7,31 +7,40 @@ import { LangSwitcher } from "@/components/LangSwitcher";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { Logo } from "@/components/Logo";
 
-export const Route = createFileRoute("/manifesto")({
+export const Route = createFileRoute("/terms")({
   head: () => ({
     meta: [
-      { title: "De-coder — Manifesto" },
+      { title: "De-coder — Terms and Conditions" },
       {
         name: "description",
         content:
-          "What De-coder stands for: open source, privacy-first, BYOK, local-first, multilingual, accessible. And what we will never do.",
+          "De-coder Terms and Conditions: MIT License, permitted uses, trademark restrictions, disclaimer.",
       },
-      { property: "og:title", content: "De-coder — Manifesto" },
+      { property: "og:title", content: "De-coder — Terms and Conditions" },
       {
         property: "og:description",
         content:
-          "Our principles: open source, privacy-first, BYOK, local-first, multilingual, accessible.",
+          "De-coder Terms and Conditions: MIT License, permitted uses, trademark restrictions, disclaimer.",
       },
     ],
   }),
-  component: ManifestoPage,
+  component: TermsPage,
 });
 
-function ManifestoPage() {
+function TermsPage() {
   const { t } = useTranslation();
 
-  const principles = ["open", "privacy", "byok", "localFirst", "multilang", "accessible"] as const;
-  const wonts = ["w1", "w2", "w3", "w4"] as const;
+  const allowed = [
+    "usePersonal",
+    "modify",
+    "distribute",
+    "develop",
+  ] as const;
+  const forbidden = [
+    "claimCreator",
+    "useTrademark",
+    "presentOfficial",
+  ] as const;
 
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -57,52 +66,79 @@ function ManifestoPage() {
       </header>
 
       <main className="mx-auto max-w-3xl px-6 py-16">
-        <p className="text-xs uppercase tracking-wide text-primary">{t("manifesto.kicker")}</p>
+        <p className="text-xs uppercase tracking-wide text-primary">
+          {t("terms.kicker")}
+        </p>
         <h1 className="mt-2 text-balance text-4xl font-semibold tracking-tight md:text-5xl">
-          {t("manifesto.title")}
+          {t("terms.title")}
         </h1>
         <p className="mt-4 text-balance text-lg text-muted-foreground">
-          {t("manifesto.intro")}
+          {t("terms.intro")}
         </p>
 
         <section className="mt-12">
-          <h2 className="text-2xl font-semibold">{t("manifesto.principlesTitle")}</h2>
+          <h2 className="text-2xl font-semibold">{t("terms.licenseTitle")}</h2>
+          <p className="mt-3 text-sm text-muted-foreground">
+            {t("terms.licenseBody")}
+          </p>
+        </section>
+
+        <section className="mt-10">
+          <h2 className="text-2xl font-semibold">{t("terms.allowedTitle")}</h2>
           <ul className="mt-6 space-y-4">
-            {principles.map((k) => (
+            {allowed.map((k) => (
               <li
                 key={k}
                 className="flex items-start gap-3 rounded-lg border border-border bg-card p-4"
               >
                 <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-primary" />
-                <div>
-                  <div className="font-medium">{t(`manifesto.principles.${k}.title`)}</div>
-                  <p className="mt-1 text-sm text-muted-foreground">
-                    {t(`manifesto.principles.${k}.body`)}
-                  </p>
-                </div>
+                <span className="text-sm">{t(`terms.allowed.${k}`)}</span>
               </li>
             ))}
           </ul>
         </section>
 
-        <section className="mt-12">
-          <h2 className="text-2xl font-semibold">{t("manifesto.wontTitle")}</h2>
-          <ul className="mt-6 space-y-3">
-            {wonts.map((k) => (
+        <section className="mt-10">
+          <h2 className="text-2xl font-semibold">{t("terms.forbiddenTitle")}</h2>
+          <ul className="mt-6 space-y-4">
+            {forbidden.map((k) => (
               <li
                 key={k}
                 className="flex items-start gap-3 rounded-lg border border-border bg-card p-4"
               >
                 <XCircle className="mt-0.5 h-5 w-5 shrink-0 text-destructive" />
-                <span className="text-sm">{t(`manifesto.wont.${k}`)}</span>
+                <span className="text-sm">{t(`terms.forbidden.${k}`)}</span>
               </li>
             ))}
           </ul>
         </section>
 
-        <section className="mt-12">
-          <h2 className="text-2xl font-semibold">{t("manifesto.roadmapTitle")}</h2>
-          <p className="mt-3 text-sm text-muted-foreground">{t("manifesto.roadmapBody")}</p>
+        <section className="mt-10">
+          <h2 className="text-2xl font-semibold">{t("terms.ownershipTitle")}</h2>
+          <p className="mt-3 text-sm text-muted-foreground">
+            {t("terms.ownershipBody")}
+          </p>
+        </section>
+
+        <section className="mt-10">
+          <h2 className="text-2xl font-semibold">{t("terms.analyzedCodeTitle")}</h2>
+          <p className="mt-3 text-sm text-muted-foreground">
+            {t("terms.analyzedCodeBody")}
+          </p>
+        </section>
+
+        <section className="mt-10">
+          <h2 className="text-2xl font-semibold">{t("terms.contributionsTitle")}</h2>
+          <p className="mt-3 text-sm text-muted-foreground">
+            {t("terms.contributionsBody")}
+          </p>
+        </section>
+
+        <section className="mt-10 rounded-lg border border-border bg-card p-6">
+          <h2 className="text-xl font-semibold">{t("terms.disclaimerTitle")}</h2>
+          <p className="mt-3 text-sm text-muted-foreground">
+            {t("terms.disclaimerBody")}
+          </p>
         </section>
 
         <div className="mt-14 flex flex-wrap gap-3">
@@ -110,7 +146,7 @@ function ManifestoPage() {
             <Link to="/auth">{t("landing.ctaStart")}</Link>
           </Button>
           <Button asChild variant="outline">
-            <Link to="/docs">{t("landing.nav.docs")}</Link>
+            <Link to="/manifesto">{t("landing.nav.manifesto")}</Link>
           </Button>
         </div>
       </main>
@@ -124,9 +160,6 @@ function ManifestoPage() {
             </Link>
             <Link to="/docs" className="hover:text-foreground">
               {t("landing.nav.docs")}
-            </Link>
-            <Link to="/terms" className="hover:text-foreground">
-              {t("landing.nav.terms")}
             </Link>
             <a
               href="https://github.com"

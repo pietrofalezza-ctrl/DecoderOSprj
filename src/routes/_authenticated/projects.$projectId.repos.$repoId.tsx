@@ -31,7 +31,7 @@ import { listProviders } from "@/lib/credentials.functions";
 import { explainFile, saveLocalExplanation } from "@/lib/explain.functions";
 import { runAnalysis, saveLocalAnalysis } from "@/lib/analysis.functions";
 import { exportRepoMarkdown } from "@/lib/export.functions";
-import { callLocalProvider, type LocalKind } from "@/lib/local-ai.client";
+import { callLocalProvider, type LocalKind } from "@/lib/local-ai";
 import { buildPrompt, type Proficiency } from "@/lib/prompt";
 import { buildAnalysisPrompt, type AnalysisKind } from "@/lib/analysis-prompt";
 
