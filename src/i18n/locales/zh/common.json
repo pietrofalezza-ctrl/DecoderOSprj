@@ -274,6 +274,7 @@
     "configured": "已配置",
     "notConfigured": "未配置",
     "providers": {
+      "lovable": "Lovable AI（默认）",
       "openai": "OpenAI",
       "anthropic": "Anthropic",
       "gemini": "Google Gemini",
@@ -283,12 +284,23 @@
       "ollama": "Ollama(本地)",
       "lmstudio": "LM Studio(本地)"
     },
+    "lovableSection": "默认 AI 提供商",
+    "lovableIntro": "Lovable AI 已在服务器端预先配置，无需任何密钥即可开始使用 De-coder。仅当你希望使用其他提供商时再在下方添加密钥。",
+    "lovableBadge": "可立即测试 — 无需密钥",
     "localSection": "本地 AI 端点",
-    "localIntro": "本地模式完全在浏览器中调用你的 localhost,源代码不会发送到我们的服务器。",
+    "localIntro": "本地模式完全在浏览器中调用你的 localhost，源代码不会发送到我们的服务器。",
     "endpointKind": "类型",
     "endpointUrl": "Base URL",
     "endpointModel": "默认模型",
-    "addEndpoint": "保存端点"
+    "addEndpoint": "保存端点",
+    "accountSection": "账户与隐私（GDPR）",
+    "accountIntro": "随时以 JSON 导出我们持有的全部数据，或永久删除账户。",
+    "exportData": "导出我的数据",
+    "exporting": "导出中…",
+    "deleteAccount": "删除账户",
+    "deleting": "删除中…",
+    "deleteConfirm": "确认删除？账户、项目、文件、解释和密钥都将被清除，且无法恢复。",
+    "deleteDone": "账户已删除。"
   },
   "adminBootstrap": {
     "title": "成为第一位管理员",
