@@ -285,6 +285,18 @@
     "exporting": "Esportazione…",
     "noProvider": "Aggiungi una chiave API in Impostazioni per attivare le spiegazioni AI.",
     "analyzeWholeRepo": "Scansiona repo",
+    "runFile": "Esegui analisi su questo file",
+    "howTo": {
+      "title": "Come avviare un'analisi",
+      "step1": "Scegli un file dall'albero a sinistra",
+      "step2": "Scegli un provider AI a destra",
+      "step3": "Premi \"Esegui analisi su questo file\""
+    },
+    "status": {
+      "ready": "Pronto: clicca Esegui",
+      "needFile": "Seleziona un file a sinistra",
+      "needProvider": "Configura un provider AI"
+    },
     "tabs": {
       "summary": "Riassunto",
       "human": "Riassunto umano",
