@@ -70,6 +70,15 @@
     "valueNoLockinBody": "Usa i modelli che preferisci",
     "valueForAll": "Per tutti",
     "valueForAllBody": "Da junior a CTO",
+    "whyNowKicker": "Perché ora",
+    "whyNowTitle": "Generare codice è facile. Capirlo no.",
+    "whyNowIntro": "Gli assistenti IA producono codice a una velocità che nessun team umano può rivedere riga per riga. De-coder colma quel divario.",
+    "whyNow1Title": "Una quota crescente di codice è generata da IA",
+    "whyNow1Body": "Copilot, Cursor, Lovable, Claude Code: una porzione sempre più ampia di ogni nuovo progetto non è stata scritta da chi la deve mantenere.",
+    "whyNow2Title": "Le PR si moltiplicano, le review umane no",
+    "whyNow2Body": "Più output IA significa più diff da leggere. Senza un layer di comprensione, le review diventano superficiali o vengono saltate.",
+    "whyNow3Title": "Capire ≠ generare",
+    "whyNow3Body": "De-coder spiega, mappa l'architettura, evidenzia rischi di sicurezza e logica del codice già esistente — anche di quello che non hai scritto tu.",
     "mockup": {
       "projects": "Progetti",
       "repository": "Repository",
@@ -204,7 +213,9 @@
     "disclaimerAcceptPrefix": "Ho letto e accetto i ",
     "disclaimerAcceptLink": "Termini e l'esonero di responsabilità",
     "disclaimerAcceptSuffix": " — comprese le limitazioni su output IA, codice analizzato, sicurezza e usi non conformi.",
-    "disclaimerRequired": "Devi accettare l'esonero di responsabilità per continuare."
+    "disclaimerRequired": "Devi accettare l'esonero di responsabilità per continuare.",
+    "disclaimerHeader": "Prima di continuare",
+    "disclaimerRequiredHint": "Spunta questa casella per attivare l'accesso (email o Google)."
   },
   "dashboard": {
     "title": "I tuoi progetti",
