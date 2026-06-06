@@ -92,7 +92,7 @@ export function AppShell({ children }: { children: ReactNode }) {
                       className="ml-1 h-9 gap-1.5 px-1.5"
                       aria-label={t("nav.account")}
                     >
-                      <span className="flex h-7 w-7 items-center justify-center rounded-full bg-primary/15 text-xs font-semibold text-primary">
+                      <span className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/15 text-sm font-semibold text-primary ring-2 ring-primary/30 transition hover:ring-primary/60">
                         {initial}
                       </span>
                       <ChevronDown className="h-3.5 w-3.5 text-muted-foreground" />
