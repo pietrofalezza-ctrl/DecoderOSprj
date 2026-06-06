@@ -1,9 +1,10 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
+import { ShieldCheck } from "lucide-react";
 
 import { AppShell } from "@/components/AppShell";
 import { Button } from "@/components/ui/button";
@@ -24,6 +25,11 @@ import {
   saveLocalEndpoint,
   deleteLocalEndpoint,
 } from "@/lib/credentials.functions";
+import {
+  adminBootstrapStatus,
+  claimFirstAdmin,
+  isAdmin,
+} from "@/lib/admin.functions";
 
 type Provider = "openai" | "anthropic" | "gemini" | "openrouter";
 const PROVIDERS: Provider[] = ["openai", "anthropic", "gemini", "openrouter"];
