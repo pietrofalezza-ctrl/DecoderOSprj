@@ -78,6 +78,10 @@ function SettingsPage() {
       <div className="mx-auto max-w-3xl px-6 py-10 space-y-10">
         <h1 className="text-2xl font-semibold">{t("settings.title")}</h1>
 
+        <AdminBootstrapBanner />
+
+
+
         <section className="space-y-4 rounded-lg border border-border bg-card p-5">
           <h2 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
             {t("settings.profileSection")}
