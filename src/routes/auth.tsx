@@ -5,6 +5,7 @@ import { toast } from "sonner";
 import { z } from "zod";
 
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { LangSwitcher } from "@/components/LangSwitcher";
@@ -38,12 +39,30 @@ function AuthPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [accepted, setAccepted] = useState(false);
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {
       if (data.session) navigate({ to: target, replace: true });
     });
+    try {
+      if (typeof window !== "undefined" && localStorage.getItem("decoder.disclaimer.acceptedAt")) {
+        setAccepted(true);
+      }
+    } catch {
+      /* ignore */
+    }
   }, [navigate, target]);
+
+  const persistAcceptance = () => {
+    try {
+      if (typeof window !== "undefined") {
+        localStorage.setItem("decoder.disclaimer.acceptedAt", new Date().toISOString());
+      }
+    } catch {
+      /* ignore */
+    }
+  };
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
