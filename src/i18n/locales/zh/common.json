@@ -7,7 +7,8 @@
     "back": "返回",
     "home": "首页",
     "tryAgain": "重试",
-    "goToDashboard": "前往工作台"
+    "goToDashboard": "前往工作台",
+    "repoUrl": "https://github.com/de-coder/de-coder"
   },
   "nav": {
     "dashboard": "工作台",
@@ -85,9 +86,9 @@
   "terms": {
     "kicker": "法律条款",
     "title": "使用条款",
-    "intro": "本条款概述了适用于 De-coder 的开源许可证以及使用软件、名称和品牌的条件。",
+    "intro": "本条款概述适用于 De-coder 的开源许可证、所处理的数据以及软件使用条件。",
     "licenseTitle": "开源许可证",
-    "licenseBody": "De-coder 是一款基于 MIT 许可证发布的免费开源项目。许可证全文随软件一起分发在 LICENSE 文件中。",
+    "licenseBody": "De-coder 是一款基于 MIT 许可证发布的免费开源项目。许可证全文随软件分发在 LICENSE 文件中。项目由匿名贡献者集体维护（\"De-coder contributors\"）。",
     "allowedTitle": "你可以做什么",
     "allowed": {
       "usePersonal": "用于个人或商业目的",
@@ -98,11 +99,10 @@
     "forbiddenTitle": "你不得做什么",
     "forbidden": {
       "claimCreator": "声称自己是 De-coder 或其原作者的创作者",
-      "useTrademark": "未经授权使用 De-coder 的名称、标识或商标",
-      "presentOfficial": "将修改版本作为官方 De-coder 项目发布"
+      "attribution": "在分叉或再分发时，未明确说明这是修改后的版本、与原始 De-coder 项目无关"
     },
-    "ownershipTitle": "版权与所有权",
-    "ownershipBody": "原始版权和人身权仍归项目作者所有。MIT 许可证授予你上述权限，但并不转移所有权。",
+    "ownershipTitle": "版权",
+    "ownershipBody": "原始贡献的版权归各自作者和贡献者所有。MIT 许可证授予上述权限，但并不转移版权。本项目不存在已注册的商标持有人：「De-coder」只是该开源项目的非正式名称。",
     "analyzedCodeTitle": "通过 De-coder 分析的代码",
     "analyzedCodeBody": "通过 De-coder 上传或分析的任何源代码仍归各自所有者所有。De-coder 不会就你的代码或生成的文档获取任何权利。",
     "contributionsTitle": "贡献",
@@ -110,11 +110,14 @@
     "dataCollectedTitle": "我们收集的数据",
     "dataCollectedIntro": "De-coder 仅存储运行服务所必需的数据：",
     "dataCollected": {
-      "account": "账户：邮箱、显示名、角色与创建时间（由认证模块管理）。",
-      "content": "内容：上传的文件（私有存储，仅所有者可读）、元数据（路径、大小、sha256、语言）以及生成的 AI 解释。",
+      "account": "账户：邮箱、显示名与创建时间（由认证模块管理）。",
+      "content": "内容：上传的文件保存在服务器的私有存储中（通过 RLS 仅所有者可访问）、元数据（路径、大小、sha256、语言、仓库来源 — zip 或 GitHub）以及生成的 AI 解释。",
       "credentials": "用户 API 密钥：使用 AES-256-GCM 静态加密，永不返回浏览器。BYOK 可选，Lovable AI 无需配置即可使用。",
+      "usage": "使用元数据：每次解释所使用的 AI 提供商与模型、偏好语言与熟练程度、应用角色（如 admin）。无行为画像，无第三方追踪。",
       "notracking": "无广告追踪、无第三方分析、无用户画像。"
     },
+    "managedAiTitle": "托管 AI 提供商（Lovable AI）",
+    "managedAiBody": "默认的「Lovable AI」提供商免费可用，因为 API 密钥由 De-coder 服务器托管。使用时，你的代码和提示词会由 De-coder 服务器转发到外部网关 ai.gateway.lovable.dev，并受 Lovable 的政策约束。你可随时切换为自己的密钥（OpenAI、Anthropic、Gemini、OpenRouter）或本地端点（Ollama、LM Studio）。De-coder 不对第三方提供商的处理政策负责。",
     "gdprTitle": "GDPR 合规（欧盟 2016/679 法规）",
     "gdprIntro": "De-coder 旨在符合欧盟通用数据保护条例。",
     "gdpr": {
@@ -122,13 +125,13 @@
       "rights": "数据主体权利：访问、更正、删除、可携带、反对与限制处理。可在「设置 → 账户」中导出或删除数据。",
       "transfers": "欧盟外传输：仅当选择位于欧盟以外的 AI 提供商时（如 OpenAI、Anthropic、Lovable AI），并在请求前明确显示。",
       "retention": "保留期：数据保留至你明确删除账户或单项内容为止。",
-      "contact": "如需行使权利或报告事件，请通过项目 GitHub 仓库联系维护者。"
+      "contact": "如需行使权利或报告事件，请在项目 GitHub 仓库（页面底部链接）提交 issue。维护者以匿名集体方式运作；沟通仅通过仓库的公共渠道进行。"
     },
     "aiActTitle": "欧盟人工智能法案合规（欧盟 2024/1689 法规）",
     "aiActIntro": "De-coder 是被归类为有限风险的代码理解助手。",
     "aiAct": {
       "risk": "分类：下游 GPAI 系统，有限风险。不对个人作自动决策、不评估员工、不进行用户画像。",
-      "transparency": "透明（第 50 条）：所有输出明确标注为 AI 生成，可能存在错误，须由人类核实。",
+      "transparency": "透明（第 50 条）：每条生成的输出都附有「AI 生成内容」标签，可能存在错误，须由人类核实。",
       "prohibited": "禁止用途（第 5 条）：不得用于生物识别、社会评分、潜意识操纵或利用弱势群体。",
       "humanOversight": "人为监督：用户完全掌控何时调用 AI、使用哪个提供商以及是否接受输出。"
     },
@@ -139,6 +142,7 @@
     "liability": {
       "aiOutput": "AI 输出：由人工智能生成的解释、分析、摘要和建议可能包含错误、遗漏或不准确之处。你对核实、解读和使用输出结果承担全部责任。作者不对基于 AI 生成内容所作的任何决定、行为或后果承担责任。",
       "ipCode": "被分析的代码与知识产权：你保证对上传的代码及材料拥有必要的权利或已获得授权。作者不对因你提供的材料而引发的版权、开源许可、专利、商业秘密、保密协议或其他第三方权利的侵权承担责任。",
+      "dataTransfer": "代码传输：在云模式下，上传的源代码会被转发到你所选择的 AI 提供商（包括默认托管提供商 Lovable AI，其使用 De-coder 服务器端持有的密钥）。在本地模式下，上传的文件仍存储在服务器中，而 AI 推理在你的 localhost 上运行。作者不对第三方 AI 提供商的处理政策负责。",
       "security": "安全与损害：本软件不提供可用性、完整性或安全性的任何保证。作者不对因使用或无法使用 De-coder 而产生的任何直接、间接、附带、后果性或惩罚性损害——包括数据丢失、利润损失、业务中断、漏洞或故障——承担责任。",
       "unlawful": "非法或不合规使用：你对使用 De-coder 符合一切适用法律、法规、合同、公司政策及第三方权利负全部责任。作者不对任何未经授权、非法或不合规的使用承担任何责任。"
     }
