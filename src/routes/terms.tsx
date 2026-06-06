@@ -134,12 +134,54 @@ function TermsPage() {
           </p>
         </section>
 
+        <section className="mt-10">
+          <h2 className="text-2xl font-semibold">{t("terms.contributionsTitle")}</h2>
+          <p className="mt-3 text-sm text-muted-foreground">
+            {t("terms.contributionsBody")}
+          </p>
+        </section>
+
+        <section className="mt-10">
+          <h2 className="text-2xl font-semibold">{t("terms.dataCollectedTitle")}</h2>
+          <p className="mt-3 text-sm text-muted-foreground">{t("terms.dataCollectedIntro")}</p>
+          <ul className="mt-3 list-disc space-y-1 pl-5 text-sm text-muted-foreground">
+            <li>{t("terms.dataCollected.account")}</li>
+            <li>{t("terms.dataCollected.content")}</li>
+            <li>{t("terms.dataCollected.credentials")}</li>
+            <li>{t("terms.dataCollected.notracking")}</li>
+          </ul>
+        </section>
+
+        <section className="mt-10">
+          <h2 className="text-2xl font-semibold">{t("terms.gdprTitle")}</h2>
+          <p className="mt-3 text-sm text-muted-foreground">{t("terms.gdprIntro")}</p>
+          <ul className="mt-3 list-disc space-y-1 pl-5 text-sm text-muted-foreground">
+            <li>{t("terms.gdpr.lawful")}</li>
+            <li>{t("terms.gdpr.rights")}</li>
+            <li>{t("terms.gdpr.transfers")}</li>
+            <li>{t("terms.gdpr.retention")}</li>
+            <li>{t("terms.gdpr.contact")}</li>
+          </ul>
+        </section>
+
+        <section className="mt-10">
+          <h2 className="text-2xl font-semibold">{t("terms.aiActTitle")}</h2>
+          <p className="mt-3 text-sm text-muted-foreground">{t("terms.aiActIntro")}</p>
+          <ul className="mt-3 list-disc space-y-1 pl-5 text-sm text-muted-foreground">
+            <li>{t("terms.aiAct.risk")}</li>
+            <li>{t("terms.aiAct.transparency")}</li>
+            <li>{t("terms.aiAct.prohibited")}</li>
+            <li>{t("terms.aiAct.humanOversight")}</li>
+          </ul>
+        </section>
+
         <section className="mt-10 rounded-lg border border-border bg-card p-6">
           <h2 className="text-xl font-semibold">{t("terms.disclaimerTitle")}</h2>
           <p className="mt-3 text-sm text-muted-foreground">
             {t("terms.disclaimerBody")}
           </p>
         </section>
+
 
         <div className="mt-14 flex flex-wrap gap-3">
           <Button asChild>
