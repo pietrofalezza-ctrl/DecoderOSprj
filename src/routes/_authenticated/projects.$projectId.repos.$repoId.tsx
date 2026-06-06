@@ -1,11 +1,11 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 import { z } from "zod";
-import { Sparkles, Copy, Download, ShieldCheck, FileDown, BugPlay, Bot, ScanSearch } from "lucide-react";
+import { Sparkles, Copy, Download, ShieldCheck, FileDown, BugPlay, Bot, ScanSearch, ArrowLeft, ArrowRight, KeyRound, CheckCircle2, AlertCircle, Play } from "lucide-react";
 
 import { AppShell } from "@/components/AppShell";
 import { FileTree } from "@/components/FileTree";
@@ -32,7 +32,6 @@ import {
   SheetContent,
   SheetHeader,
   SheetTitle,
-  SheetTrigger,
 } from "@/components/ui/sheet";
 import { AiOriginPanel, type RepoAiOriginResult } from "@/components/AiOriginPanel";
 import { getRepository, getFileContent } from "@/lib/repos.functions";
@@ -61,6 +60,7 @@ export const Route = createFileRoute("/_authenticated/projects/$projectId/repos/
 function WorkspacePage() {
   const { repoId } = Route.useParams();
   const { t, i18n } = useTranslation();
+  const navigate = useNavigate();
   const getRepo = useServerFn(getRepository);
   const getContent = useServerFn(getFileContent);
   const providersFn = useServerFn(listProviders);
@@ -116,10 +116,15 @@ function WorkspacePage() {
     setAiOriginText("");
   }, [selectedFileId, providerValue]);
 
-  // Open the repo-level AI-origin sheet if landed via ?view=analyze
-  useEffect(() => {
-    if (search.view === "analyze") setRepoSheetOpen(true);
-  }, [search.view]);
+  // Open the repo-level AI-origin sheet when ?view=analyze. Use derived state
+  // so it works synchronously on first render (no flash, no race with effects).
+  const repoSheetOpenDerived = search.view === "analyze" ? true : repoSheetOpen;
+  const onRepoSheetOpenChange = (open: boolean) => {
+    setRepoSheetOpen(open);
+    if (!open && search.view === "analyze") {
+      navigate({ to: ".", search: {}, replace: true });
+    }
+  };
 
   // Auto-start the repo scan when the sheet opens via ?view=analyze
   // as soon as a provider is ready and no result yet.
@@ -127,7 +132,7 @@ function WorkspacePage() {
   useEffect(() => {
     if (
       search.view === "analyze" &&
-      repoSheetOpen &&
+      provs.isSuccess &&
       !autoStarted &&
       !repoAiResult &&
       providerValue.startsWith("cloud:")
@@ -136,7 +141,7 @@ function WorkspacePage() {
       repoAiMut.mutate();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [search.view, repoSheetOpen, providerValue, autoStarted, repoAiResult]);
+  }, [search.view, provs.isSuccess, providerValue, autoStarted, repoAiResult]);
 
 
   const isLocal = providerValue.startsWith("local:");
@@ -337,8 +342,32 @@ function WorkspacePage() {
 
   const canRunRepoAi = providerValue.startsWith("cloud:");
 
+  const statusKind: "ready" | "needFile" | "needProvider" =
+    !providerValue ? "needProvider" : !selectedFileId ? "needFile" : "ready";
+
   return (
     <AppShell>
+      {/* Repo-scan sheet hoisted to shell level so it can't be hidden by
+          a narrow resizable panel and opens deterministically from URL. */}
+      <Sheet open={repoSheetOpenDerived} onOpenChange={onRepoSheetOpenChange}>
+        <SheetContent side="right" className="w-full p-0 sm:max-w-xl">
+          <SheetHeader className="border-b border-border p-4">
+            <SheetTitle className="flex items-center gap-2">
+              <Bot className="h-5 w-5 text-primary" />
+              {t("aiOrigin.title")}
+            </SheetTitle>
+          </SheetHeader>
+          <div className="h-[calc(100vh-4rem)]">
+            <AiOriginPanel
+              result={repoAiResult}
+              isRunning={repoAiMut.isPending}
+              onRun={() => repoAiMut.mutate()}
+              canRun={canRunRepoAi}
+            />
+          </div>
+        </SheetContent>
+      </Sheet>
+
       <div className="h-[calc(100vh-3.5rem)]">
         <ResizablePanelGroup orientation="horizontal">
           <ResizablePanel defaultSize={20} minSize={14}>
@@ -348,35 +377,16 @@ function WorkspacePage() {
                   {repo.data?.repository?.name ?? t("workspace.files")}
                 </span>
                 <div className="flex shrink-0 items-center gap-1">
-                  <Sheet open={repoSheetOpen} onOpenChange={setRepoSheetOpen}>
-                    <SheetTrigger asChild>
-                      <Button
-                        size="sm"
-                        variant="secondary"
-                        className="h-7 px-2 text-[11px]"
-                        title={t("workspace.analyzeWholeRepo")}
-                      >
-                        <ScanSearch className="mr-1 h-3.5 w-3.5" />
-                        {t("workspace.analyzeWholeRepo")}
-                      </Button>
-                    </SheetTrigger>
-                    <SheetContent side="right" className="w-full p-0 sm:max-w-xl">
-                      <SheetHeader className="border-b border-border p-4">
-                        <SheetTitle className="flex items-center gap-2">
-                          <Bot className="h-5 w-5 text-primary" />
-                          {t("aiOrigin.title")}
-                        </SheetTitle>
-                      </SheetHeader>
-                      <div className="h-[calc(100vh-4rem)]">
-                        <AiOriginPanel
-                          result={repoAiResult}
-                          isRunning={repoAiMut.isPending}
-                          onRun={() => repoAiMut.mutate()}
-                          canRun={canRunRepoAi}
-                        />
-                      </div>
-                    </SheetContent>
-                  </Sheet>
+                  <Button
+                    size="sm"
+                    variant="secondary"
+                    className="h-7 px-2 text-[11px]"
+                    title={t("workspace.analyzeWholeRepo")}
+                    onClick={() => setRepoSheetOpen(true)}
+                  >
+                    <ScanSearch className="mr-1 h-3.5 w-3.5" />
+                    {t("workspace.analyzeWholeRepo")}
+                  </Button>
                   <Button
                     size="sm"
                     variant="ghost"
@@ -403,22 +413,38 @@ function WorkspacePage() {
             </div>
           </ResizablePanel>
           <ResizableHandle />
-          <ResizablePanel defaultSize={50} minSize={20}>
+          <ResizablePanel defaultSize={46} minSize={20}>
             <div className="h-full">
               {fileQ.data ? (
                 <CodeViewer content={fileQ.data.content} language={fileQ.data.language} />
               ) : (
-                <div className="flex h-full items-center justify-center text-sm text-muted-foreground">
-                  {t("workspace.selectFile")}
+                <div className="flex h-full items-center justify-center p-6">
+                  <div className="max-w-md space-y-4 rounded-lg border border-border bg-card p-6 shadow-sm">
+                    <h3 className="text-base font-semibold">{t("workspace.howTo.title")}</h3>
+                    <ol className="space-y-3 text-sm">
+                      <li className="flex items-start gap-3">
+                        <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary/15 text-xs font-semibold text-primary">1</span>
+                        <span className="flex items-center gap-1.5"><ArrowLeft className="h-3.5 w-3.5 text-muted-foreground" />{t("workspace.howTo.step1")}</span>
+                      </li>
+                      <li className="flex items-start gap-3">
+                        <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary/15 text-xs font-semibold text-primary">2</span>
+                        <span className="flex items-center gap-1.5">{t("workspace.howTo.step2")}<ArrowRight className="h-3.5 w-3.5 text-muted-foreground" /></span>
+                      </li>
+                      <li className="flex items-start gap-3">
+                        <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary/15 text-xs font-semibold text-primary">3</span>
+                        <span className="flex items-center gap-1.5"><Play className="h-3.5 w-3.5 text-primary" />{t("workspace.howTo.step3")}</span>
+                      </li>
+                    </ol>
+                  </div>
                 </div>
               )}
             </div>
           </ResizablePanel>
           <ResizableHandle />
-          <ResizablePanel defaultSize={30} minSize={22}>
+          <ResizablePanel defaultSize={34} minSize={26}>
             <div className="flex h-full flex-col border-l border-border bg-sidebar">
-              <div className="space-y-2 border-b border-border p-3">
-                <div className="grid grid-cols-2 gap-2">
+              <div className="sticky top-0 z-10 space-y-2 border-b border-border bg-sidebar p-3">
+                <div className="space-y-2">
                   <div>
                     <label className="text-[10px] uppercase text-muted-foreground">
                       {t("workspace.proficiency")}
@@ -474,7 +500,17 @@ function WorkspacePage() {
                   </div>
                 </div>
                 {!hasAny && (
-                  <p className="text-xs text-muted-foreground">{t("workspace.noProvider")}</p>
+                  <div className="flex items-center justify-between gap-2 rounded-md border border-amber-500/40 bg-amber-500/5 p-2">
+                    <span className="text-[11px] text-amber-700 dark:text-amber-300">
+                      {t("workspace.noProvider")}
+                    </span>
+                    <Button asChild size="sm" variant="secondary" className="h-7 shrink-0 px-2 text-[11px]">
+                      <Link to="/settings" hash="byok">
+                        <KeyRound className="mr-1 h-3 w-3" />
+                        {t("aiOrigin.configureKey")}
+                      </Link>
+                    </Button>
+                  </div>
                 )}
                 {isLocal && (
                   <p className="flex items-center gap-1 text-[11px] text-primary">
@@ -496,24 +532,42 @@ function WorkspacePage() {
                     </SelectContent>
                   </Select>
                 )}
+                {/* Status pill */}
+                <div
+                  className={
+                    "flex items-center gap-1.5 rounded-md border px-2 py-1 text-[11px] font-medium " +
+                    (statusKind === "ready"
+                      ? "border-emerald-500/40 bg-emerald-500/5 text-emerald-700 dark:text-emerald-300"
+                      : "border-amber-500/40 bg-amber-500/5 text-amber-700 dark:text-amber-300")
+                  }
+                >
+                  {statusKind === "ready" ? (
+                    <CheckCircle2 className="h-3.5 w-3.5" />
+                  ) : (
+                    <AlertCircle className="h-3.5 w-3.5" />
+                  )}
+                  {statusKind === "ready" && t("workspace.status.ready")}
+                  {statusKind === "needFile" && t("workspace.status.needFile")}
+                  {statusKind === "needProvider" && t("workspace.status.needProvider")}
+                </div>
                 <Button
-                  size="sm"
-                  className="w-full"
+                  size="default"
+                  className="h-10 w-full text-sm font-semibold"
                   onClick={runMain}
                   disabled={!selectedFileId || !providerValue || isRunning}
                 >
-                  {mainTab === "summary" ? (
-                    <Sparkles className="mr-2 h-3.5 w-3.5" />
+                  {isRunning ? (
+                    <Sparkles className="mr-2 h-4 w-4 animate-pulse" />
+                  ) : mainTab === "summary" ? (
+                    <Sparkles className="mr-2 h-4 w-4" />
                   ) : (
-                    <BugPlay className="mr-2 h-3.5 w-3.5" />
+                    <BugPlay className="mr-2 h-4 w-4" />
                   )}
                   {isRunning
                     ? mainTab === "summary"
                       ? t("workspace.explaining")
                       : t("workspace.analyzing")
-                    : mainTab === "summary"
-                      ? t("workspace.explain")
-                      : t("workspace.analyze")}
+                    : t("workspace.runFile")}
                 </Button>
               </div>
               <Tabs

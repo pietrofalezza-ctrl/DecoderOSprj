@@ -285,6 +285,18 @@
     "exporting": "Exporting…",
     "noProvider": "Add an API key in Settings to enable AI explanations.",
     "analyzeWholeRepo": "Scan whole repo",
+    "runFile": "Run analysis on this file",
+    "howTo": {
+      "title": "How to start an analysis",
+      "step1": "Pick a file from the tree on the left",
+      "step2": "Pick an AI provider on the right",
+      "step3": "Press \"Run analysis on this file\""
+    },
+    "status": {
+      "ready": "Ready: click Run",
+      "needFile": "Select a file on the left",
+      "needProvider": "Configure an AI provider"
+    },
     "tabs": {
       "summary": "Summary",
       "human": "Human summary",
@@ -315,6 +327,7 @@
     "running": "Scanning codebase…",
     "runningHint": "Analyzing source files in batches. This may take a minute.",
     "needsCloud": "A cloud AI provider is required to scan the whole repo.",
+    "needsCloudLong": "A cloud provider (free Lovable AI or your own key) is required to analyze the codebase.",
     "repoScore": "Repository score",
     "bucket": {
       "human": "Likely human",
