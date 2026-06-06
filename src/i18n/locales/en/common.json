@@ -7,7 +7,8 @@
     "back": "Back",
     "home": "Home",
     "tryAgain": "Try again",
-    "goToDashboard": "Go to dashboard"
+    "goToDashboard": "Go to dashboard",
+    "repoUrl": "https://github.com/de-coder/de-coder"
   },
   "nav": {
     "dashboard": "Dashboard",
