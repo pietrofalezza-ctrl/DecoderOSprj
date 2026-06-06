@@ -70,6 +70,15 @@
     "valueNoLockinBody": "Use the models you prefer",
     "valueForAll": "For everyone",
     "valueForAllBody": "From junior to CTO",
+    "whyNowKicker": "Why now",
+    "whyNowTitle": "Generating code is easy. Understanding it isn't.",
+    "whyNowIntro": "AI assistants ship code faster than any human team can review line by line. De-coder closes that gap.",
+    "whyNow1Title": "A growing share of code is AI-generated",
+    "whyNow1Body": "Copilot, Cursor, Lovable, Claude Code — an increasing portion of every new project wasn't written by the people who have to maintain it.",
+    "whyNow2Title": "PRs scale, human reviews don't",
+    "whyNow2Body": "More AI output means more diffs to read. Without a comprehension layer, reviews go shallow or get skipped.",
+    "whyNow3Title": "Understanding ≠ generating",
+    "whyNow3Body": "De-coder explains, maps the architecture, surfaces security and logic risks in code that already exists — including code you didn't write.",
     "mockup": {
       "projects": "Projects",
       "repository": "Repository",
@@ -204,7 +213,9 @@
     "disclaimerAcceptPrefix": "I have read and accept the ",
     "disclaimerAcceptLink": "Terms and liability waiver",
     "disclaimerAcceptSuffix": " — including the limitations on AI output, analyzed code, security and non-compliant use.",
-    "disclaimerRequired": "You must accept the liability waiver to continue."
+    "disclaimerRequired": "You must accept the liability waiver to continue.",
+    "disclaimerHeader": "Before you continue",
+    "disclaimerRequiredHint": "Tick this box to enable sign-in (email or Google)."
   },
   "dashboard": {
     "title": "Your projects",

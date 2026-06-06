@@ -70,6 +70,15 @@
     "valueNoLockinBody": "随心选择模型",
     "valueForAll": "面向所有人",
     "valueForAllBody": "从初级到 CTO",
+    "whyNowKicker": "为什么是现在",
+    "whyNowTitle": "生成代码很容易,理解它却不是。",
+    "whyNowIntro": "AI 助手生成代码的速度超过任何人工团队逐行审查的能力。De-coder 弥补这一差距。",
+    "whyNow1Title": "越来越多的代码由 AI 生成",
+    "whyNow1Body": "Copilot、Cursor、Lovable、Claude Code——每个新项目中越来越大的比例并非由维护者亲手编写。",
+    "whyNow2Title": "PR 在扩展,人工审查跟不上",
+    "whyNow2Body": "更多 AI 输出意味着更多 diff 要读。没有理解层,审查就会变浅甚至被跳过。",
+    "whyNow3Title": "理解 ≠ 生成",
+    "whyNow3Body": "De-coder 解释、绘制架构、揭示安全与逻辑风险——即使是你没有写过的代码。",
     "mockup": {
       "projects": "项目",
       "repository": "仓库",
@@ -204,7 +213,9 @@
     "disclaimerAcceptPrefix": "我已阅读并接受 ",
     "disclaimerAcceptLink": "条款及责任豁免",
     "disclaimerAcceptSuffix": "——包括对 AI 输出、被分析代码、安全和不合规使用的限制。",
-    "disclaimerRequired": "你必须接受责任豁免才能继续。"
+    "disclaimerRequired": "你必须接受责任豁免才能继续。",
+    "disclaimerHeader": "在继续之前",
+    "disclaimerRequiredHint": "勾选此框以启用登录(邮箱或 Google)。"
   },
   "dashboard": {
     "title": "你的项目",
