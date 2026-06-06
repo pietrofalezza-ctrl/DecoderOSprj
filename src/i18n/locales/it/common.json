@@ -28,7 +28,7 @@
     "zh": "简体中文"
   },
   "landing": {
-    "hero": "<1>ma</1>, tu hai ancora bisogno di comprenderlo.",
+    "hero": "Sempre più codice è scritto dall'IA, <1>ma</1> tu hai ancora bisogno di comprenderlo.",
     "heroSubtitle": "Decoder è il layer di comprensione del codice nell'era dell'IA. Leggi, revisiona e fai audit del codice generato da Copilot, Cursor, Lovable o dai tuoi colleghi — in italiano, alla tua profondità tecnica.",
     "heroBadgeOpen": "Open Source",
     "heroBadgePrivacy": "Privacy First",
