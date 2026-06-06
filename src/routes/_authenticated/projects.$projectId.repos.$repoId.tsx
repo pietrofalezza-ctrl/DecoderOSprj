@@ -117,10 +117,15 @@ function WorkspacePage() {
     setAiOriginText("");
   }, [selectedFileId, providerValue]);
 
-  // Open the repo-level AI-origin sheet if landed via ?view=analyze
-  useEffect(() => {
-    if (search.view === "analyze") setRepoSheetOpen(true);
-  }, [search.view]);
+  // Open the repo-level AI-origin sheet when ?view=analyze. Use derived state
+  // so it works synchronously on first render (no flash, no race with effects).
+  const repoSheetOpenDerived = search.view === "analyze" ? true : repoSheetOpen;
+  const onRepoSheetOpenChange = (open: boolean) => {
+    setRepoSheetOpen(open);
+    if (!open && search.view === "analyze") {
+      navigate({ to: ".", search: {}, replace: true });
+    }
+  };
 
   // Auto-start the repo scan when the sheet opens via ?view=analyze
   // as soon as a provider is ready and no result yet.
@@ -128,7 +133,7 @@ function WorkspacePage() {
   useEffect(() => {
     if (
       search.view === "analyze" &&
-      repoSheetOpen &&
+      provs.isSuccess &&
       !autoStarted &&
       !repoAiResult &&
       providerValue.startsWith("cloud:")
@@ -137,7 +142,7 @@ function WorkspacePage() {
       repoAiMut.mutate();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [search.view, repoSheetOpen, providerValue, autoStarted, repoAiResult]);
+  }, [search.view, provs.isSuccess, providerValue, autoStarted, repoAiResult]);
 
 
   const isLocal = providerValue.startsWith("local:");
