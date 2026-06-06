@@ -32,7 +32,6 @@ import {
   SheetContent,
   SheetHeader,
   SheetTitle,
-  SheetTrigger,
 } from "@/components/ui/sheet";
 import { AiOriginPanel, type RepoAiOriginResult } from "@/components/AiOriginPanel";
 import { getRepository, getFileContent } from "@/lib/repos.functions";
