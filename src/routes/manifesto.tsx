@@ -11,13 +11,13 @@ import { PublicHeaderAuthSlot } from "@/components/PublicHeaderAuthSlot";
 export const Route = createFileRoute("/manifesto")({
   head: () => ({
     meta: [
-      { title: "De-coder — Manifesto" },
+      { title: "Decoder — Manifesto" },
       {
         name: "description",
         content:
-          "What De-coder stands for: open source, privacy-first, BYOK, local-first, multilingual, accessible. And what we will never do.",
+          "What Decoder stands for: open source, privacy-first, BYOK, local-first, multilingual, accessible. And what we will never do.",
       },
-      { property: "og:title", content: "De-coder — Manifesto" },
+      { property: "og:title", content: "Decoder — Manifesto" },
       {
         property: "og:description",
         content:

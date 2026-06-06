@@ -9,17 +9,17 @@ import { PublicHeaderAuthSlot } from "@/components/PublicHeaderAuthSlot";
 export const Route = createFileRoute("/docs")({
   head: () => ({
     meta: [
-      { title: "De-coder — Documentation" },
+      { title: "Decoder — Documentation" },
       {
         name: "description",
         content:
-          "How to use De-coder: BYOK cloud providers, local Ollama / LM Studio mode, security and ownership.",
+          "How to use Decoder: BYOK cloud providers, local Ollama / LM Studio mode, security and ownership.",
       },
-      { property: "og:title", content: "De-coder — Documentation" },
+      { property: "og:title", content: "Decoder — Documentation" },
       {
         property: "og:description",
         content:
-          "How to use De-coder: BYOK cloud providers, local Ollama / LM Studio mode, security and ownership.",
+          "How to use Decoder: BYOK cloud providers, local Ollama / LM Studio mode, security and ownership.",
       },
     ],
   }),

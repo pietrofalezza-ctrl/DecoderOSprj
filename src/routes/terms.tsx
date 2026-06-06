@@ -11,17 +11,17 @@ import { PublicHeaderAuthSlot } from "@/components/PublicHeaderAuthSlot";
 export const Route = createFileRoute("/terms")({
   head: () => ({
     meta: [
-      { title: "De-coder — Terms and Conditions" },
+      { title: "Decoder — Terms and Conditions" },
       {
         name: "description",
         content:
-          "De-coder Terms and Conditions: MIT License, permitted uses, trademark restrictions, disclaimer.",
+          "Decoder Terms and Conditions: MIT License, permitted uses, trademark restrictions, disclaimer.",
       },
-      { property: "og:title", content: "De-coder — Terms and Conditions" },
+      { property: "og:title", content: "Decoder — Terms and Conditions" },
       {
         property: "og:description",
         content:
-          "De-coder Terms and Conditions: MIT License, permitted uses, trademark restrictions, disclaimer.",
+          "Decoder Terms and Conditions: MIT License, permitted uses, trademark restrictions, disclaimer.",
       },
     ],
   }),

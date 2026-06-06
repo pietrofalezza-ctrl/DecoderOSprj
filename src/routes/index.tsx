@@ -19,19 +19,19 @@ import { Button } from "@/components/ui/button";
 import { LangSwitcher } from "@/components/LangSwitcher";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { Logo } from "@/components/Logo";
-import { LandingMockup } from "@/components/LandingMockup";
+import { HeroIllustration } from "@/components/HeroIllustration";
 import { PublicHeaderAuthSlot } from "@/components/PublicHeaderAuthSlot";
 
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "De-coder — Understand AI-generated code, in any language" },
+      { title: "Decoder — Understand AI-generated code, in any language" },
       {
         name: "description",
         content:
           "Open-source code understanding for the AI era. Read, review and audit code written by Copilot, Cursor, Lovable and your team. BYOK cloud or fully local.",
       },
-      { property: "og:title", content: "De-coder — Understand AI-generated code" },
+      { property: "og:title", content: "Decoder — Understand AI-generated code" },
       {
         property: "og:description",
         content:
@@ -46,7 +46,7 @@ export const Route = createFileRoute("/")({
         children: JSON.stringify({
           "@context": "https://schema.org",
           "@type": "SoftwareApplication",
-          name: "De-coder",
+          name: "Decoder",
           description:
             "Open-source code understanding for the AI era — read, review and audit AI-generated code.",
           applicationCategory: "DeveloperApplication",
@@ -165,7 +165,7 @@ function Landing() {
             </div>
           </div>
           <div className="relative flex items-center">
-            <LandingMockup />
+            <HeroIllustration />
           </div>
         </div>
       </section>
@@ -282,28 +282,33 @@ function Landing() {
 
       {/* Footer */}
       <footer className="border-t border-border/60">
-        <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-3 px-6 py-8 text-xs text-muted-foreground md:flex-row">
-          <Logo />
-          <nav className="flex gap-5">
-            <Link to="/manifesto" className="hover:text-foreground">
-              {t("landing.nav.manifesto")}
-            </Link>
-            <Link to="/docs" className="hover:text-foreground">
-              {t("landing.nav.docs")}
-            </Link>
-            <Link to="/terms" className="hover:text-foreground">
-              {t("landing.nav.terms")}
-            </Link>
-            <a
-              href={t("common.repoUrl")}
-              target="_blank"
-              rel="noreferrer"
-              className="hover:text-foreground"
-            >
-              GitHub
-            </a>
-          </nav>
-          <span>{t("footer.ownership")}</span>
+        <div className="mx-auto max-w-7xl px-6 py-8 text-xs text-muted-foreground">
+          <div className="flex flex-col items-center justify-between gap-3 md:flex-row">
+            <Logo />
+            <nav className="flex gap-5">
+              <Link to="/manifesto" className="hover:text-foreground">
+                {t("landing.nav.manifesto")}
+              </Link>
+              <Link to="/docs" className="hover:text-foreground">
+                {t("landing.nav.docs")}
+              </Link>
+              <Link to="/terms" className="hover:text-foreground">
+                {t("landing.nav.terms")}
+              </Link>
+              <a
+                href={t("common.repoUrl")}
+                target="_blank"
+                rel="noreferrer"
+                className="hover:text-foreground"
+              >
+                GitHub
+              </a>
+            </nav>
+            <span>{t("footer.ownership")}</span>
+          </div>
+          <p className="mt-6 border-t border-border/40 pt-6 text-center text-[11px] leading-relaxed text-muted-foreground/80 md:text-left">
+            {t("footer.disclaimer")}
+          </p>
         </div>
       </footer>
     </div>
