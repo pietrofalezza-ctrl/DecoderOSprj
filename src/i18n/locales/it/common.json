@@ -236,6 +236,20 @@
     "projectDescPlaceholder": "Descrizione (opzionale)",
     "create": "Crea"
   },
+  "howToUse": {
+    "title": "Come usare Decoder",
+    "intro": "Scegli come far girare l'IA. Puoi cambiare quando vuoi, per ogni repository.",
+    "defaultTitle": "Lovable AI (predefinita)",
+    "defaultBody": "Pronta all'uso — nessuna chiave, nessuna configurazione. Quota gratuita inclusa.",
+    "byokTitle": "Porta la tua chiave (BYOK)",
+    "byokBody": "Usa OpenAI, Anthropic, Gemini o OpenRouter con la tua API key. Paghi direttamente il provider, senza ricarichi.",
+    "byokCta": "Aggiungi la tua API key",
+    "localTitle": "Locale (Ollama / LM Studio)",
+    "localBody": "Inferenza interamente sul tuo computer. Il codice sorgente non lascia mai la tua macchina.",
+    "localCta": "Configura endpoint locale",
+    "installTitle": "Installa come app",
+    "installBody": "Decoder è una web app — non c'è nulla da scaricare. Su Chrome/Edge desktop clicca l'icona di installazione nella barra indirizzi. Su iOS Safari: Condividi → Aggiungi alla schermata Home."
+  },
   "project": {
     "repos": "Repository",
     "uploadZip": "Carica ZIP",

@@ -236,6 +236,20 @@
     "projectDescPlaceholder": "描述(可选)",
     "create": "创建"
   },
+  "howToUse": {
+    "title": "如何使用 Decoder",
+    "intro": "选择 AI 的运行方式，可随时按仓库切换。",
+    "defaultTitle": "Lovable AI（默认）",
+    "defaultBody": "开箱即用——无需密钥与配置，含免费额度。",
+    "byokTitle": "自带密钥（BYOK）",
+    "byokBody": "使用你自己的 OpenAI、Anthropic、Gemini 或 OpenRouter API 密钥，直接付费给提供商，无加价。",
+    "byokCta": "添加你的 API 密钥",
+    "localTitle": "本地（Ollama / LM Studio）",
+    "localBody": "推理完全在你的电脑上运行，源代码永不离开本机。",
+    "localCta": "配置本地端点",
+    "installTitle": "安装为应用",
+    "installBody": "Decoder 是网页应用——无需下载。Chrome/Edge 桌面端可点击地址栏的安装图标；iOS Safari 请点击「分享 → 添加到主屏幕」。"
+  },
   "project": {
     "repos": "代码仓库",
     "uploadZip": "上传 ZIP",
