@@ -20,6 +20,7 @@ import { LangSwitcher } from "@/components/LangSwitcher";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { Logo } from "@/components/Logo";
 import { LandingMockup } from "@/components/LandingMockup";
+import { PublicHeaderAuthSlot } from "@/components/PublicHeaderAuthSlot";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -95,12 +96,7 @@ function Landing() {
           <div className="flex items-center gap-1">
             <LangSwitcher />
             <ThemeToggle />
-            <Button asChild size="sm" className="ml-2">
-              <Link to="/auth">
-                {t("landing.ctaStart")}
-                <ArrowRight className="ml-2 h-4 w-4" />
-              </Link>
-            </Button>
+            <PublicHeaderAuthSlot />
           </div>
         </div>
       </header>
