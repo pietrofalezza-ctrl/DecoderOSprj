@@ -155,7 +155,7 @@
     "principles": {
       "open": {
         "title": "真正的开源",
-        "body": "MIT 许可证。可自由使用、修改和分发。无隐藏组件。品牌和商标归作者所有。"
+        "body": "MIT 许可证。可自由使用、修改和分发。无隐藏组件。由匿名贡献者集体维护。"
       },
       "privacy": {
         "title": "隐私设计",
@@ -242,7 +242,8 @@
     "model": "模型",
     "cloud": "云端",
     "local": "本地",
-    "localPledge": "本地模式 — 源代码留在你的电脑上。",
+    "localPledge": "本地模式：AI 推理在你的 localhost 上运行。上传的文件仍存储在服务器中；源代码不会发送到外部 AI 提供商。",
+    "aiGeneratedBadge": "AI 生成内容 — 请务必核实",
     "copy": "复制",
     "copied": "已复制。",
     "download": "下载 .md",

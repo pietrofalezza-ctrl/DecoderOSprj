@@ -155,7 +155,7 @@
     "principles": {
       "open": {
         "title": "Open source per davvero",
-        "body": "Licenza MIT. Libero di usare, modificare e distribuire. Nessun componente nascosto. Marchio e denominazione rimangono all'autore."
+        "body": "Licenza MIT. Libero di usare, modificare e distribuire. Nessun componente nascosto. Mantenuto collettivamente in forma anonima."
       },
       "privacy": {
         "title": "Privacy by design",
@@ -242,7 +242,8 @@
     "model": "Modello",
     "cloud": "Cloud",
     "local": "Locale",
-    "localPledge": "Modalità locale — il codice resta sulla tua macchina.",
+    "localPledge": "Modalità locale: l'inferenza IA gira sul tuo localhost. I file caricati restano archiviati nello storage del server; il sorgente non viene inviato a provider IA esterni.",
+    "aiGeneratedBadge": "Contenuto generato da IA — verifica sempre",
     "copy": "Copia",
     "copied": "Copiato.",
     "download": "Scarica .md",

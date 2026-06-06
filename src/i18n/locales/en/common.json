@@ -155,7 +155,7 @@
     "principles": {
       "open": {
         "title": "Genuinely open source",
-        "body": "MIT License. Free to use, modify and distribute. No hidden components. Brand and trademark remain with the author."
+        "body": "MIT License. Free to use, modify and distribute. No hidden components. Maintained collectively and anonymously."
       },
       "privacy": {
         "title": "Privacy by design",
@@ -242,7 +242,8 @@
     "model": "Model",
     "cloud": "Cloud",
     "local": "Local",
-    "localPledge": "Local mode — source code stays on your machine.",
+    "localPledge": "Local mode: AI inference runs on your localhost. Uploaded files still live in the server's storage; source code is not sent to external AI providers.",
+    "aiGeneratedBadge": "AI-generated content — always verify",
     "copy": "Copy",
     "copied": "Copied.",
     "download": "Download .md",
