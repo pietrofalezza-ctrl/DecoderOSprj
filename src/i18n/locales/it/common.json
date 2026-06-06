@@ -7,7 +7,8 @@
     "dashboard": "Dashboard",
     "settings": "Impostazioni",
     "signOut": "Esci",
-    "signIn": "Accedi"
+    "signIn": "Accedi",
+    "docs": "Documentazione"
   },
   "languages": {
     "en": "English",
@@ -64,6 +65,12 @@
     "type": "Tipo",
     "provider": "Provider",
     "model": "Modello",
+    "cloud": "Cloud",
+    "local": "Locale",
+    "localPledge": "Modalità locale — il codice resta sulla tua macchina.",
+    "copy": "Copia",
+    "copied": "Copiato.",
+    "download": "Scarica .md",
     "noProvider": "Aggiungi una chiave API in Impostazioni per attivare le spiegazioni AI.",
     "tabs": {
       "human": "Riassunto umano",
@@ -97,12 +104,28 @@
       "gemini": "Google Gemini",
       "openrouter": "OpenRouter"
     },
+    "endpoints": {
+      "ollama": "Ollama (locale)",
+      "lmstudio": "LM Studio (locale)"
+    },
     "localSection": "Endpoint AI locali",
     "localIntro": "La modalità locale gira interamente nel browser verso il tuo localhost. Il codice non raggiunge mai i nostri server.",
     "endpointKind": "Tipo",
     "endpointUrl": "Base URL",
     "endpointModel": "Modello predefinito",
     "addEndpoint": "Salva endpoint"
+  },
+  "docs": {
+    "title": "Documentazione",
+    "intro": "De-coder trasforma il codice sorgente in conoscenza leggibile. Leggi questa pagina nella tua lingua tramite il selettore nell'intestazione.",
+    "gettingStartedTitle": "Per iniziare",
+    "gettingStartedBody": "Accedi, crea un progetto, carica uno ZIP di un qualsiasi codebase, seleziona un file nell'albero, poi clicca Spiega. Scegli il tuo livello e il riassunto umano o tecnico.",
+    "byokTitle": "Porta la tua chiave AI",
+    "byokBody": "In Impostazioni → Provider AI, incolla una chiave per OpenAI, Anthropic, Google Gemini o OpenRouter. Le chiavi sono cifrate con AES-256-GCM lato server e decifrate solo per inoltrare la tua richiesta — non vengono mai restituite al browser.",
+    "localTitle": "Modalità locale (Ollama / LM Studio)",
+    "localBody": "Installa Ollama (https://ollama.com) o LM Studio, poi in Impostazioni → Endpoint AI locali aggiungi la base URL (Ollama: http://localhost:11434, LM Studio: http://localhost:1234) e un modello predefinito. Il browser chiama direttamente la tua macchina — il codice non raggiunge mai i nostri server.",
+    "securityTitle": "Sicurezza e proprietà",
+    "securityBody": "Il tuo codice, la documentazione generata e i commenti suggeriti appartengono a te. Non addestriamo modelli sulle tue repository. Ogni tabella del database usa Row-Level Security scoped al tuo account."
   },
   "errors": {
     "generic": "Qualcosa è andato storto.",
