@@ -7,7 +7,8 @@
     "dashboard": "工作台",
     "settings": "设置",
     "signOut": "退出登录",
-    "signIn": "登录"
+    "signIn": "登录",
+    "docs": "文档"
   },
   "languages": {
     "en": "English",
@@ -64,6 +65,12 @@
     "type": "类型",
     "provider": "提供商",
     "model": "模型",
+    "cloud": "云端",
+    "local": "本地",
+    "localPledge": "本地模式 — 源代码留在你的电脑上。",
+    "copy": "复制",
+    "copied": "已复制。",
+    "download": "下载 .md",
     "noProvider": "请在设置中添加 API 密钥以启用 AI 解释。",
     "tabs": {
       "human": "通俗摘要",
@@ -97,12 +104,28 @@
       "gemini": "Google Gemini",
       "openrouter": "OpenRouter"
     },
+    "endpoints": {
+      "ollama": "Ollama(本地)",
+      "lmstudio": "LM Studio(本地)"
+    },
     "localSection": "本地 AI 端点",
     "localIntro": "本地模式完全在浏览器中调用你的 localhost,源代码不会发送到我们的服务器。",
     "endpointKind": "类型",
     "endpointUrl": "Base URL",
     "endpointModel": "默认模型",
     "addEndpoint": "保存端点"
+  },
+  "docs": {
+    "title": "文档",
+    "intro": "De-coder 把源代码转化为可读的知识。可使用页眉中的切换器以你偏好的语言阅读本页。",
+    "gettingStartedTitle": "快速开始",
+    "gettingStartedBody": "登录、创建项目、上传任意代码库的 ZIP,在文件树中选择文件,然后点击「解释」。选择你的水平以及通俗或技术摘要。",
+    "byokTitle": "自带 AI 密钥",
+    "byokBody": "在「设置 → AI 提供商」中粘贴 OpenAI、Anthropic、Google Gemini 或 OpenRouter 的密钥。密钥在服务器端通过 AES-256-GCM 加密,仅在转发你的请求时解密 —— 永远不会返回到浏览器。",
+    "localTitle": "本地模式(Ollama / LM Studio)",
+    "localBody": "安装 Ollama(https://ollama.com)或 LM Studio,然后在「设置 → 本地 AI 端点」中添加基础 URL(Ollama:http://localhost:11434,LM Studio:http://localhost:1234)和默认模型。浏览器会直接调用你的电脑 —— 源代码不会发送到我们的服务器。",
+    "securityTitle": "安全与所有权",
+    "securityBody": "你的代码、生成的文档和建议的注释归你所有。我们不会使用用户的代码仓库进行模型训练。每张数据表都启用了限定到你账户的行级安全(RLS)。"
   },
   "errors": {
     "generic": "出现错误。",
