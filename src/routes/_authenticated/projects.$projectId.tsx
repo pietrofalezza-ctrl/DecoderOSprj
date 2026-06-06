@@ -4,7 +4,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
-import { Upload, Github } from "lucide-react";
+import { Upload, Github, ScanSearch, Sparkles, Bot, ShieldAlert } from "lucide-react";
 
 import { AppShell } from "@/components/AppShell";
 import { Button } from "@/components/ui/button";
@@ -168,6 +168,26 @@ function ProjectPage() {
           </div>
         </div>
 
+        {/* Capability chips: surface what's possible BEFORE opening a repo */}
+        <div className="mt-6 grid gap-3 sm:grid-cols-3">
+          <CapabilityChip
+            icon={<Sparkles className="h-4 w-4" />}
+            title={t("project.capabilityExplain")}
+            body={t("project.capabilityExplainBody")}
+          />
+          <CapabilityChip
+            icon={<ShieldAlert className="h-4 w-4" />}
+            title={t("project.capabilityQuality")}
+            body={t("project.capabilityQualityBody")}
+          />
+          <CapabilityChip
+            icon={<Bot className="h-4 w-4" />}
+            title={t("project.capabilityAiOrigin")}
+            body={t("project.capabilityAiOriginBody")}
+            accent
+          />
+        </div>
+
         <h2 className="mt-8 text-sm font-medium text-muted-foreground">
           {t("project.repos")}
         </h2>
@@ -176,18 +196,61 @@ function ProjectPage() {
             <p className="text-sm text-muted-foreground">{t("project.noRepos")}</p>
           )}
           {data.data?.repositories.map((r) => (
-            <Link
+            <div
               key={r.id}
-              to="/projects/$projectId/repos/$repoId"
-              params={{ projectId, repoId: r.id }}
-              className="flex items-center justify-between rounded-md border border-border bg-card p-3 text-sm hover:border-primary/60"
+              className="flex items-center justify-between gap-3 rounded-md border border-border bg-card p-3 text-sm transition-colors hover:border-primary/60"
             >
-              <span>{r.name}</span>
-              <span className="text-xs text-muted-foreground">{r.file_count} files</span>
-            </Link>
+              <Link
+                to="/projects/$projectId/repos/$repoId"
+                params={{ projectId, repoId: r.id }}
+                className="flex flex-1 items-center justify-between gap-3"
+              >
+                <span className="font-medium">{r.name}</span>
+                <span className="text-xs text-muted-foreground">{r.file_count} files</span>
+              </Link>
+              <Link
+                to="/projects/$projectId/repos/$repoId"
+                params={{ projectId, repoId: r.id }}
+                search={{ view: "analyze" }}
+              >
+                <Button size="sm" variant="secondary" className="shrink-0">
+                  <ScanSearch className="mr-1.5 h-3.5 w-3.5" />
+                  {t("project.analyzeCodebase")}
+                </Button>
+              </Link>
+            </div>
           ))}
         </div>
       </div>
     </AppShell>
+  );
+}
+
+function CapabilityChip({
+  icon,
+  title,
+  body,
+  accent,
+}: {
+  icon: React.ReactNode;
+  title: string;
+  body: string;
+  accent?: boolean;
+}) {
+  return (
+    <div
+      className={
+        "rounded-lg border p-3 " +
+        (accent
+          ? "border-primary/40 bg-primary/5"
+          : "border-border bg-card")
+      }
+    >
+      <div className="flex items-center gap-2 text-sm font-semibold">
+        <span className={accent ? "text-primary" : "text-foreground"}>{icon}</span>
+        {title}
+      </div>
+      <p className="mt-1 text-xs text-muted-foreground">{body}</p>
+    </div>
   );
 }
