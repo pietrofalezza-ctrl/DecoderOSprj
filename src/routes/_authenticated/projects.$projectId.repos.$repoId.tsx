@@ -4,7 +4,8 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
-import { Sparkles, Copy, Download, ShieldCheck, FileDown, BugPlay } from "lucide-react";
+import { z } from "zod";
+import { Sparkles, Copy, Download, ShieldCheck, FileDown, BugPlay, Bot, ScanSearch } from "lucide-react";
 
 import { AppShell } from "@/components/AppShell";
 import { FileTree } from "@/components/FileTree";
@@ -26,10 +27,18 @@ import {
   ResizablePanelGroup,
 } from "@/components/ui/resizable";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
+import { AiOriginPanel, type RepoAiOriginResult } from "@/components/AiOriginPanel";
 import { getRepository, getFileContent } from "@/lib/repos.functions";
 import { listProviders } from "@/lib/credentials.functions";
 import { explainFile, saveLocalExplanation } from "@/lib/explain.functions";
-import { runAnalysis, saveLocalAnalysis } from "@/lib/analysis.functions";
+import { runAnalysis, saveLocalAnalysis, analyzeRepoAiOrigin } from "@/lib/analysis.functions";
 import { exportRepoMarkdown } from "@/lib/export.functions";
 import { callLocalProvider, type LocalKind } from "@/lib/local-ai";
 import { buildPrompt, type Proficiency } from "@/lib/prompt";
@@ -37,10 +46,15 @@ import { buildAnalysisPrompt, type AnalysisKind } from "@/lib/analysis-prompt";
 
 type CloudProvider = "openai" | "anthropic" | "gemini" | "openrouter";
 type ProviderValue = `cloud:${CloudProvider}` | `local:${LocalKind}`;
-type MainTab = "summary" | "quality" | "security";
+type MainTab = "summary" | "quality" | "security" | "ai_origin";
 type SummarySub = "human" | "technical";
 
+const SearchSchema = z.object({
+  view: z.enum(["analyze"]).optional(),
+});
+
 export const Route = createFileRoute("/_authenticated/projects/$projectId/repos/$repoId")({
+  validateSearch: (s) => SearchSchema.parse(s),
   component: WorkspacePage,
 });
 
