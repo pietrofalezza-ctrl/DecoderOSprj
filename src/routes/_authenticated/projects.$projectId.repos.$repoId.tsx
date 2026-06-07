@@ -447,9 +447,65 @@ function WorkspacePage() {
     (mainTab === "fix" && fixMut.isPending);
 
   const jumpToFinding = (f: Finding) => {
+    setActiveFindingId(f.id ?? null);
     codeRef.current?.revealLine(f.start_line, {
       select: { from: f.start_line, to: f.end_line },
     });
+  };
+
+  const handleInsightAction = (action: InsightAction) => {
+    const f = action.finding;
+    if (!fileQ.data) return;
+    if (action.kind === "show") {
+      jumpToFinding(f);
+      return;
+    }
+    if (action.kind === "explain" || action.kind === "comment") {
+      const lines = fileQ.data.content.split("\n");
+      const slice = lines
+        .slice(f.start_line - 1, f.end_line)
+        .join("\n");
+      setSelection({
+        content: slice,
+        startLine: f.start_line,
+        endLine: f.end_line,
+      });
+      setUseSelection(true);
+      setMainTab("summary");
+      setSummarySub(action.kind === "comment" ? "human" : "technical");
+      jumpToFinding(f);
+      // defer so state propagates
+      setTimeout(() => explainMut.mutate(), 0);
+      return;
+    }
+    if (action.kind === "patch") {
+      setPatchSourceInsight(f);
+      jumpToFinding(f);
+      if (providerValue.startsWith("cloud:") && fixSourceAnalysis) {
+        setMainTab("fix");
+        setTimeout(() => fixMut.mutate(), 0);
+      } else {
+        toast.error(t("workspace.fix.needsAnalysis"));
+      }
+      return;
+    }
+  };
+
+  // Toolbar actions triggered from a manual editor selection.
+  const runFromSelection = (kind: "explain" | "summarize" | "comment" | "quality" | "security") => {
+    if (!selection) return;
+    setUseSelection(true);
+    if (kind === "explain" || kind === "summarize" || kind === "comment") {
+      setMainTab("summary");
+      setSummarySub(kind === "comment" || kind === "summarize" ? "human" : "technical");
+      setTimeout(() => explainMut.mutate(), 0);
+    } else if (kind === "quality") {
+      setMainTab("quality");
+      setTimeout(() => qualityMut.mutate(), 0);
+    } else if (kind === "security") {
+      setMainTab("security");
+      setTimeout(() => securityMut.mutate(), 0);
+    }
   };
 
 
