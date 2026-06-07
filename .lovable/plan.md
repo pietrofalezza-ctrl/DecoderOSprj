@@ -1,158 +1,79 @@
-## Obiettivo
+## Onboarding Wizard — Plan
 
-Introdurre un flusso obbligatorio di acknowledgement Terms & BYOK: modale bloccante prima di salvare una chiave API o di lanciare una qualunque chiamata cloud-based AI, con persistenza per utente e versione dei termini, ri-prompt automatico al cambio versione, e pagina settings di review.
+Build a 9-step first-run onboarding for Decoder, available in IT / EN / ZH, auto-shown after first login, re-openable from Settings, and ending with a mandatory acknowledgement stored in `user_acknowledgements`.
 
----
+### 1. Data model
 
-## 1. Schema DB (nuova tabella `public.user_acknowledgements`)
+Reuse existing `public.user_acknowledgements`. Add a new acknowledgement type alongside the existing `byok_cloud_ai`:
 
-Migrazione unica (CREATE TABLE + GRANT + RLS + POLICY).
+- `acknowledgement_type = "decoder_onboarding_byok_ai_notice"`
+- New constant `ONBOARDING_TERMS_VERSION = "2026-06-07"` in `src/lib/onboarding.ts`.
 
-Colonne:
-- `id uuid pk default gen_random_uuid()`
-- `user_id uuid not null` (riferimento logico a `auth.users`, no FK)
-- `acknowledgement_type text not null` (al momento solo `'byok_cloud_ai'`, lasciato estendibile)
-- `accepted_terms_version text not null`
-- `accepted_at timestamptz not null default now()`
-- `accepted_language text not null` (`it` | `en` | `zh` o altro che arrivi dall'header)
-- `ip_address inet null`
-- `user_agent text null`
-- Unique `(user_id, acknowledgement_type, accepted_terms_version)` — un record per versione.
-- Indice su `(user_id, acknowledgement_type)` per la query "ha già accettato l'ultima versione?".
+No migration needed — table already has all required columns (`user_id`, `acknowledgement_type`, `accepted_terms_version`, `accepted_at`, `accepted_language`, `user_agent`, `ip_address`).
 
-RLS:
-- Enable RLS.
-- Policy `SELECT` per `authenticated` con `auth.uid() = user_id`.
-- Policy `INSERT` per `authenticated` con `auth.uid() = user_id`.
-- Nessuna `UPDATE` / `DELETE` lato utente (immutabile, è una prova di consenso).
-- GRANT `SELECT, INSERT` a `authenticated`, GRANT `ALL` a `service_role`.
+Onboarding "completed" = a row exists for the current user with this type AND the current version. Bumping the version re-triggers onboarding.
 
-Costante applicativa `BYOK_TERMS_VERSION = "2026-06-07"` (data ISO; bumped manualmente quando si cambia il testo dell'avviso). Vive in `src/lib/byok-acknowledgement.ts` insieme al tipo `AcknowledgementType`.
+### 2. Server functions (`src/lib/onboarding.functions.ts`)
 
----
+- `getOnboardingStatus()` — returns `{ completed: boolean, record | null, currentVersion }`. Auth-protected via `requireSupabaseAuth`.
+- `recordOnboardingCompletion({ language })` — inserts row with IP + UA from request headers, `ON CONFLICT DO NOTHING`.
 
-## 2. Server functions (`src/lib/byok-acknowledgement.functions.ts`)
+Both follow the same pattern as `byok-acknowledgement.functions.ts`.
 
-Tutte protette da `requireSupabaseAuth`.
+### 3. Wizard UI (`src/components/onboarding/`)
 
-- `getCurrentByokAck()` → ritorna `{ accepted: boolean, record?: { acceptedAt, version, language } }`. Logica: query `user_acknowledgements` per `user_id = ctx.userId`, `type = 'byok_cloud_ai'`, `version = BYOK_TERMS_VERSION`, ordine `accepted_at desc`, limit 1. Letta da modale e settings.
-- `recordByokAck({ language })` → input validato (`language` in `['it','en','zh']`; fallback `en`). Handler:
-  - Legge IP da `x-forwarded-for` o `cf-connecting-ip` via `getRequestHeader` (best effort, può essere null).
-  - Legge `user-agent` (truncato a 512 char).
-  - `INSERT ... ON CONFLICT (user_id, acknowledgement_type, accepted_terms_version) DO NOTHING`.
-  - Ritorna `{ ok: true, version, acceptedAt }`.
-- `listByokAckHistory()` → ritorna l'elenco di tutte le accettazioni dell'utente (per la pagina settings; mostra storia versioni).
+- `OnboardingDialog.tsx` — full-screen modal `Dialog`, progress bar (Step N of 9), Back / Continue / Skip-for-now (except final), keyboard nav.
+- Step components: `Step1Welcome`, `Step2Modes`, `Step3Provider`, `Step4Import`, `Step5Analysis`, `Step6Reader`, `Step7Review`, `Step8Acknowledge`, `Step9Start`.
+- `DataFlowDiagram.tsx` — small SVG/CSS diagram showing Local vs Cloud BYOK flow (reuse style from BYOK dialog).
+- All copy via `t("onboarding.step1.title")` etc. — no hard-coded strings.
 
-**Server-side enforcement (no bypass via API):** in `src/lib/hosted-ai-guard.server.ts` aggiungere helper `assertByokAckAccepted(userId)` che verifica la riga `(user_id, 'byok_cloud_ai', BYOK_TERMS_VERSION)` esiste. Chiamare l'helper all'inizio di:
-- `credentials.functions.ts` → `upsertUserCredential` (salvataggio chiave BYOK).
-- `analysis.functions.ts` → `analyzeFile`, `analyzeFolderAggregate` (solo se provider cloud, locale escluso).
-- `explain.functions.ts` → `explainFile` (solo provider cloud).
-- `folder-analysis.functions.ts` → `analyzeFolder*` (cloud).
-- `fix.functions.ts` → `proposeFix` (cloud).
+Step-specific behavior:
 
-Se manca l'acknowledgement, throw `Error("byok_ack_required")` con `setResponseStatus(403)`. Il client intercetta questo codice ed apre la modale (vedi §3).
+- **Step 3** (Add provider) — optional. Renders provider cards (Ollama, LM Studio, OpenAI, Anthropic, Gemini, OpenRouter). Selecting one expands inline form (endpoint+model for local, API key for cloud) and calls existing `saveProviderKey` / `saveLocalEndpoint` server fns. "Skip for now" link advances without configuring. Cloud key save is already gated by existing BYOK ack — wizard pre-resolves the BYOK ack inline if needed (reuses existing `useByokAck`).
+- **Step 4** (Import) — informational only in the wizard; the actual import lives in `/dashboard`. Buttons here are navigation shortcuts that close the wizard.
+- **Steps 5 & 6** — informational cards listing options; no DB writes (user picks at actual analysis time).
+- **Step 8** (Acknowledgement) — 5 mandatory checkboxes (none pre-checked). "Finish" button disabled until all 5 are true. On click → `recordOnboardingCompletion` → advances to Step 9.
+- **Step 9** — three CTAs: "Start with demo project" → `/dashboard?demo=1`, "Add AI provider" → `/settings#providers`, "Go to dashboard" → `/dashboard`. Closes wizard.
 
-Le chiamate **local provider** (Ollama / LM Studio) **non** richiedono ack: il codice non lascia la macchina utente. La modale resta comunque consigliata e i checkbox la coprono semanticamente, ma l'enforcement server-side scatta solo per provider cloud (logica già presente nei guard esistenti).
+### 4. Auto-trigger
 
----
+New `OnboardingProvider.tsx` mounted inside `src/routes/_authenticated/route.tsx` (alongside `ByokAckProvider`). On mount, calls `getOnboardingStatus`; if `!completed`, opens `OnboardingDialog` non-dismissably (no Skip on final step, but earlier steps may be skipped — completion still requires Step 8). Exposes context `{ open, openOnboarding }`.
 
-## 3. UI — componente modale `<ByokAcknowledgementDialog />`
+Until Step 8 is signed, `getOnboardingStatus.completed` stays false → wizard re-appears on next session. (Soft model — user can navigate the app but the dialog will re-prompt at next login.)
 
-Nuovo file `src/components/ByokAcknowledgementDialog.tsx`. Basato su `@/components/ui/dialog` shadcn.
+### 5. Settings entry point
 
-Layout:
-- Titolo i18n `byokAck.title`:
-  - IT: "Avviso importante su BYOK e provider AI"
-  - EN: "Important BYOK and AI Provider Notice"
-  - ZH: "关于 BYOK 和 AI 服务提供商的重要提示"
-- Corpo: 8 paragrafi numerati corrispondenti ai punti del requisito (chiavi `byokAck.body.p1`…`p8`).
-- Sezione `Data flow` espandibile (`<Collapsible>` shadcn) — link "View data flow" che mostra:
-  - **Local mode**: `User machine → local model → Decoder UI`
-  - **Cloud BYOK mode**: `User code selection → Decoder backend → selected AI provider → Decoder UI`
-  - Rappresentazione testuale + piccolo diagramma con `lucide-react` icone (`Laptop`, `Cloud`, `Server`, `ArrowRight`).
-- Link inline (tutti `target="_blank"` se esterni, `<Link>` se interni):
-  - Terms and Conditions → `/terms`
-  - Privacy Policy → `/terms` (la app usa una sola pagina; ancora `#data` o `#gdpr`). Verificare e linkare allo specifico anchor `#gdpr`.
-  - Provider documentation → `/docs` (esiste già `src/routes/docs.tsx`).
-- 5 checkbox (`@/components/ui/checkbox`), tutti **default false**, ognuno con label i18n `byokAck.checks.cost / providers / authorized / review / terms`.
-- Pulsante "Continua" (`byokAck.cta`) disabilitato finché tutti e 5 i checkbox non sono `true`. Pulsante secondario "Annulla" chiude la modale senza salvare.
-- Footer piccolo: "Versione termini: {BYOK_TERMS_VERSION}".
+In `src/routes/_authenticated/settings.tsx`, add a "Help & Onboarding" card with:
+- Status line: "Onboarding completed on {date}, version {x}" or "Not completed".
+- Button "Reopen onboarding" → `openOnboarding()` from context.
 
-Stato interno: `useState<Record<5checks, boolean>>`. On submit: chiama `recordByokAck({ language: i18n.language })` via `useServerFn` + `useMutation` di TanStack Query, invalida la query `['byok-ack']`, chiude la modale, esegue `onAccepted?.()` callback.
+### 6. i18n
 
-Accessibilità: focus trap dal Dialog shadcn, `aria-required` sui checkbox, descrizioni esplicite. Niente `defaultChecked`. Niente pre-spunte.
+Add new `onboarding` block to `src/i18n/locales/{it,en,zh}/common.json` covering all step titles, copy, mode descriptions, provider names, analysis types, reader levels, the 5 acknowledgement checkboxes, CTAs, and Step 9 actions. Copy uses the exact IT/EN/ZH strings from the brief.
 
----
+### 7. Files
 
-## 4. Gating client-side
+**New:**
+- `src/lib/onboarding.ts` (constant + type)
+- `src/lib/onboarding.functions.ts` (server fns)
+- `src/components/onboarding/OnboardingProvider.tsx`
+- `src/components/onboarding/OnboardingDialog.tsx`
+- `src/components/onboarding/DataFlowDiagram.tsx`
+- `src/components/onboarding/Step1Welcome.tsx` … `Step9Start.tsx` (9 files)
+- `src/hooks/use-onboarding.ts`
 
-Hook nuovo `useByokAck()` in `src/hooks/use-byok-ack.ts`:
-- Esegue `useQuery({ queryKey: ['byok-ack'], queryFn: getCurrentByokAck })`.
-- Espone `{ accepted, isLoading, requireAck(onAccepted) }` dove `requireAck` apre la modale globale se non accettato, altrimenti chiama subito `onAccepted`.
+**Modified:**
+- `src/routes/_authenticated/route.tsx` (mount provider)
+- `src/routes/_authenticated/settings.tsx` (Help card)
+- `src/i18n/locales/{en,it,zh}/common.json` (onboarding block)
 
-Provider globale `<ByokAckProvider>` in `src/components/ByokAckProvider.tsx`, montato in `src/routes/_authenticated/route.tsx` accanto al `<Outlet />`. Espone via context la modale singleton e il metodo `openAckDialog`.
+### 8. Out of scope
 
-Punti di integrazione (UI):
-1. **Settings → API Keys** (`src/routes/_authenticated/settings.tsx`): prima di invocare `upsertUserCredential` chiama `requireAck(() => saveKey())`. Stesso flusso per `connect provider` cards.
-2. **Analisi cloud** (componenti che lanciano `analyzeFile` / `explainFile` / ecc. con provider non-locale): wrap del trigger. Se `provider === 'lovable' | 'openai' | 'anthropic' | 'gemini' | 'openrouter'` → `requireAck`. Se `provider === 'ollama' | 'lmstudio'` → salta.
-3. **Fallback server**: se per qualunque motivo la chiamata arriva al server senza ack e il server risponde 403 `byok_ack_required`, il `queryClient` global error handler intercetta e apre la modale; mostra toast "Accetta prima i termini per usare i provider cloud".
+- No new analysis logic — wizard only explains existing features.
+- No changes to existing BYOK ack flow (kept independent; onboarding ack is a separate row type).
+- No demo repo implementation (Step 9 CTA navigates to dashboard; actual demo seeding is a separate feature).
+- No email notifications.
 
----
+### 9. Bonus fix
 
-## 5. Settings page — sezione "Acknowledgements"
-
-In `src/routes/_authenticated/settings.tsx` aggiungere una nuova `<Card>` "Acknowledgements & consent":
-- Stato corrente: "Versione termini accettata: X — il GG/MM/AAAA in {lingua}". Se non accettata: badge rosso "Acknowledgement mancante" + bottone "Apri avviso".
-- Lista storica versioni accettate (`listByokAckHistory`), in piccolo.
-- Sezione "Provider connessi" (riusa dati già presenti via `listUserCredentials`): per ogni provider → nome, key hint, data ultima modifica, bottone "Rimuovi". 
-- Banner warning fisso sopra la lista: "Rimuovendo una chiave API tutte le future chiamate a quel provider falliranno fino a nuovo inserimento."
-- Nessun campo modificabile sull'acknowledgement: read-only.
-
----
-
-## 6. i18n
-
-Aggiungere nuovo blocco `byokAck` in `src/i18n/locales/{en,it,zh}/common.json` (chiavi: `title`, `body.p1..p8`, `checks.cost/providers/authorized/review/terms`, `cta`, `cancel`, `versionLabel`, `dataFlow.toggle/local/cloud`, `links.terms/privacy/docs`, `settings.sectionTitle`, `settings.acceptedOn`, `settings.notAcceptedBadge`, `settings.history`, `settings.providersTitle`, `settings.removeKeyWarning`, `settings.removeKey`, `errors.required`).
-
-Testi nelle 3 lingue, aderenti letterali ai punti del requisito (i 5 checkbox usano le frasi esatte fornite dall'utente).
-
----
-
-## 7. File toccati / creati
-
-Creati:
-- `supabase/migrations/<timestamp>_user_acknowledgements.sql` (via tool migrazione).
-- `src/lib/byok-acknowledgement.ts` (costante versione, tipi).
-- `src/lib/byok-acknowledgement.functions.ts` (3 server fn).
-- `src/components/ByokAcknowledgementDialog.tsx`.
-- `src/components/ByokAckProvider.tsx` (context + singleton dialog).
-- `src/hooks/use-byok-ack.ts`.
-
-Modificati:
-- `src/lib/hosted-ai-guard.server.ts` → aggiunge `assertByokAckAccepted`.
-- `src/lib/credentials.functions.ts` → chiama `assertByokAckAccepted` in `upsertUserCredential`.
-- `src/lib/analysis.functions.ts`, `src/lib/explain.functions.ts`, `src/lib/folder-analysis.functions.ts`, `src/lib/fix.functions.ts` → guard nelle handler quando provider è cloud.
-- `src/routes/_authenticated/route.tsx` → monta `<ByokAckProvider>`.
-- `src/routes/_authenticated/settings.tsx` → nuova sezione Acknowledgements + warning rimozione chiave.
-- Componenti che lanciano analisi/explain cloud (es. `src/components/FolderAnalysisPanel.tsx`, eventuali invocazioni in `routes/_authenticated/projects.*`) → wrap con `requireAck`.
-- `src/i18n/locales/{en,it,zh}/common.json` → blocco `byokAck`.
-
-Non toccati: backend AI providers, RLS esistenti, schema delle altre tabelle, flusso auth.
-
----
-
-## 8. Comportamento al cambio versione
-
-Quando l'autore modifica il testo della modale e bumpa `BYOK_TERMS_VERSION`:
-- `getCurrentByokAck` non trova un record con la nuova versione → `accepted: false`.
-- Alla prossima azione gated (save key o cloud call) la modale riappare.
-- I record vecchi restano in `user_acknowledgements` come storico (visibile in settings).
-
----
-
-## 9. Cosa NON è in piano
-
-- Niente integrazione Stripe / billing — il punto 2 del requisito è già rispettato dalla natura BYOK.
-- Niente blocco sui provider locali (per design: il codice non lascia il device).
-- Niente notifiche email al cambio versione (out-of-scope; il prompt in-app è sufficiente per un progetto personale come da T&C riqualificati).
-- Niente meccanismo di revoca/cancellazione dell'ack (è una prova di consenso; cancellazione account già rimuove tutto via futura logica account-delete o richiesta GDPR).
+The current runtime error (`Identifier 'requireAck' has already been declared`) appears to be a stale HMR artifact — no duplicate exists in source. Will verify after build; no source change planned unless reproduced.
