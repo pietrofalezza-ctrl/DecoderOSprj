@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
-import { ArrowLeft, ArrowRight, CheckCircle2, GitPullRequest, Languages, ShieldCheck, Sparkles, XCircle } from "lucide-react";
+import { ArrowLeft, ArrowRight, CheckCircle2, GitPullRequest, ShieldCheck, Sparkles, XCircle } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { LangSwitcher } from "@/components/LangSwitcher";
