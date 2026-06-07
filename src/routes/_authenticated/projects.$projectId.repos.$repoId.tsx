@@ -440,7 +440,12 @@ function WorkspacePage() {
           <ResizablePanel defaultSize={46} minSize={20}>
             <div className="h-full">
               {fileQ.data ? (
-                <CodeViewer content={fileQ.data.content} language={fileQ.data.language} />
+                <CodeViewer
+                  content={fileQ.data.content}
+                  language={fileQ.data.language}
+                  onSelectionChange={setSelection}
+                />
+
               ) : (
                 <div className="flex h-full items-center justify-center p-6">
                   <div className="max-w-md space-y-4 rounded-lg border border-border bg-card p-6 shadow-sm">
