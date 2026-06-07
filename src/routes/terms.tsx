@@ -76,7 +76,14 @@ function TermsPage() {
           {t("terms.intro")}
         </p>
 
-        <section className="mt-12">
+        <section className="mt-12 rounded-lg border-l-4 border-primary bg-primary/5 p-6">
+          <h2 className="text-xl font-semibold">{t("terms.natureTitle")}</h2>
+          <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
+            {t("terms.natureBody")}
+          </p>
+        </section>
+
+        <section className="mt-10">
           <h2 className="text-2xl font-semibold">{t("terms.licenseTitle")}</h2>
           <p className="mt-3 text-sm text-muted-foreground">
             {t("terms.licenseBody")}

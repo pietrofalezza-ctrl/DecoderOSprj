@@ -29,10 +29,10 @@
   },
   "landing": {
     "hero": "More and more code is written by <1>AI</1>. You still need to <2>understand it</2>.",
-    "heroSubtitle": "Decoder is an open-source case study — a didactic experiment on how LLMs and source code can talk to each other in a transparent, reproducible way. Not a for-profit product: public code you can read, fork and understand. BYOK or 100% local.",
-    "heroBadgeOpen": "OS case study · Non-profit",
-    "heroBadgePrivacy": "Privacy First · BYOK",
-    "heroBadgeAiEra": "Didactic LLM + code experiment",
+    "heroSubtitle": "Decoder is a personal study project, free and open source (MIT). Maintained in spare time by a single author with help from the community. Not a product, not a commercial service: just public code to read, fork and understand. BYOK or 100% local.",
+    "heroBadgeOpen": "Personal project · Open source · Free",
+    "heroBadgePrivacy": "BYOK · Optional local mode",
+    "heroBadgeAiEra": "Personal didactic experiment",
     "ctaStart": "Get started",
     "ctaSignIn": "Sign in",
     "ctaGithub": "View on GitHub",
@@ -130,9 +130,11 @@
   "terms": {
     "kicker": "Legal",
     "title": "Terms and Conditions",
-    "intro": "These terms summarize the open-source license that applies to Decoder, the data we process and the conditions for using the software.",
+    "intro": "Decoder is a personal, free and open-source project, maintained on a non-professional basis by a single author with voluntary contributions from the community. It is not a commercial service, involves no payment and creates no supply contract between the author and the user. Use of the software is governed solely by the MIT License and by these informational notes.",
+    "natureTitle": "Nature of the project",
+    "natureBody": "Decoder is not a product, not a commercial SaaS, and not an online platform within the meaning of Regulation (EU) 2022/2065 (DSA). The author develops it as a personal study experiment, with no business organization and no profit motive. Any publicly hosted instance is a demonstration demo provided \"as is\", with no availability or continuity guarantee, and may be suspended or taken down at any time without notice. The author does not act as a \"trader\" under EU consumer law: the conformity guarantees of Directive (EU) 2019/770 and Italian Consumer Code (Legislative Decree 206/2005, artt. 135-octies ff.) do not apply.",
     "licenseTitle": "Open-source license",
-    "licenseBody": "Decoder is a free and open-source project released under the MIT License. The full text of the license is available in the LICENSE file distributed with the software. The project is maintained collectively by anonymous contributors (\"Decoder contributors\").",
+    "licenseBody": "Decoder is a free and open-source project released under the MIT License. The full text is in the LICENSE file shipped with the software. The project is maintained collectively by contributors (\"Decoder contributors\"). The entire relationship between user and author is governed by the MIT License, which expressly excludes warranties and liability to the maximum extent permitted by applicable law.",
     "allowedTitle": "What you can do",
     "allowed": {
       "usePersonal": "Use it for personal or commercial purposes",
@@ -151,107 +153,107 @@
     "analyzedCodeBody": "Any source code uploaded or analyzed via Decoder remains the property of its respective owners. Decoder does not acquire any rights over your code or the generated documentation.",
     "contributionsTitle": "Contributions",
     "contributionsBody": "Contributions submitted to the Decoder project (pull requests, issues, code patches, documentation) may be reviewed, merged and included in future releases at the discretion of the maintainers. By submitting a contribution you agree to license it under the same terms as the project (MIT License).",
-    "dataCollectedTitle": "Data we collect",
-    "dataCollectedIntro": "Decoder only stores the data strictly required to operate the service:",
+    "dataCollectedTitle": "Data processed",
+    "dataCollectedIntro": "The data listed below is processed strictly to the extent necessary to operate the demo:",
     "dataCollected": {
       "account": "Account: email, display name and creation timestamp (managed by the auth module).",
-      "content": "Content: uploaded files kept in the server's private storage (owner-only access enforced via RLS) with a 60-day retention from last activity, metadata (path, size, sha256, language, repository source — zip or GitHub) and AI explanations.",
-      "credentials": "User API keys: encrypted at rest with AES-256-GCM and never returned to the browser. BYOK is optional — Lovable AI works without configuration.",
-      "usage": "Usage metadata: AI provider and model used for each explanation, preferred language and proficiency level, application role (e.g. admin). No behavioural profiling or third-party tracking.",
-      "notracking": "No advertising trackers, no third-party analytics, no profiling."
+      "content": "Content: uploaded files kept in the server's private storage (owner-only access enforced via RLS) with an indicative 60-day retention from last activity, metadata (path, size, sha256, language, repository source — zip or GitHub) and AI explanations.",
+      "credentials": "User API keys: encrypted at rest with AES-256-GCM and never returned to the browser. BYOK is optional — Lovable AI is offered as a courtesy without configuration.",
+      "usage": "Usage metadata: AI provider and model used for each explanation, preferred language and proficiency level, application role (e.g. admin). No behavioural profiling, no third-party tracking.",
+      "notracking": "No advertising trackers, no third-party analytics, no profiling. The only cookie set is technical (sidebar UI preference) and requires no consent under the Italian DPA decision of 10 June 2021."
     },
     "managedAiTitle": "Managed AI provider (Lovable AI)",
-    "managedAiBody": "The default \"Lovable AI\" provider is free because the API key is managed by the Decoder server. When you use it, your code and prompts are forwarded by the Decoder server to the external gateway ai.gateway.lovable.dev, subject to Lovable's policies. You may switch at any time to your own key (OpenAI, Anthropic, Gemini, OpenRouter) or to a local endpoint (Ollama, LM Studio). Decoder is not liable for the processing policies of third-party providers.",
-    "gdprTitle": "GDPR compliance (EU Reg. 2016/679)",
-    "gdprIntro": "Decoder is designed to comply with the EU General Data Protection Regulation.",
+    "managedAiBody": "The default \"Lovable AI\" provider is offered as a courtesy because the API key is managed by the Decoder server. It is subject to usage quotas and may be disabled at any time without notice or continuity. When you use it, your code and prompts are forwarded by the Decoder server to the external gateway ai.gateway.lovable.dev, subject to Lovable's policies. You may switch at any time to your own key (OpenAI, Anthropic, Gemini, OpenRouter) or to a local endpoint (Ollama, LM Studio). The author is not liable for third-party providers' processing policies.",
+    "gdprTitle": "GDPR (EU Reg. 2016/679)",
+    "gdprIntro": "Processing of personal data needed to run the demo is set up consistently with the GDPR, taking into account the project's non-professional nature.",
     "gdpr": {
-      "lawful": "Lawful basis: performance of the service contract (art. 6.1.b) and explicit consent (art. 6.1.a) when using external AI providers.",
-      "rights": "Data subject rights: access, rectification, erasure, portability, objection and restriction. Export or delete your data from Settings → Account.",
+      "lawful": "Lawful basis: pre-contractual measures taken at the data subject's request and legitimate interest in the technical operation of the demo (art. 6.1.b and 6.1.f); explicit consent (art. 6.1.a) when you choose an external AI provider.",
+      "rights": "Data subject rights: access, rectification, erasure, portability, objection and restriction. Export or delete your data from Settings → Account, or by opening a GitHub request.",
       "transfers": "Non-EU transfers: only when you choose an AI provider hosted outside the EU (e.g. OpenAI, Anthropic, Lovable AI). The provider is always shown before the request runs.",
-      "retention": "Retention: data is kept until you explicitly delete your account or individual items.",
-      "contact": "To exercise your GDPR rights (access, rectification, erasure, portability, objection, restriction) or report an incident, open a request on the project's GitHub repository. For sensitive data use GitHub's private Security Advisories channel."
+      "retention": "Retention: data is kept until you delete your account or individual items, or until the demo is decommissioned.",
+      "contact": "The data controller is the author of the project as a private individual acting in a non-professional capacity, reachable solely through GitHub Issues or, for sensitive data, GitHub private Security Advisories. The conditions for mandatory DPO appointment (art. 37 GDPR) are not met and the exemption from the records of processing for entities with fewer than 250 employees that do not carry out risky/systematic processing applies (art. 30.5 GDPR). The right to lodge a complaint with the Italian DPA (Garante per la protezione dei dati personali) remains unaffected."
     },
-    "aiActTitle": "EU AI Act compliance (EU Reg. 2024/1689)",
-    "aiActIntro": "Decoder is a code-comprehension assistant classified as a limited-risk AI system.",
+    "aiActTitle": "EU AI Act (EU Reg. 2024/1689)",
+    "aiActIntro": "Decoder is an open-source application that calls third-party AI models. As a project released under a free license (MIT) and not placed on the market as a GPAI model, it benefits from the exclusion set out in art. 2(12) of the Regulation. Formal obligations for AI system providers (technical documentation art. 11, quality management system art. 17, CE marking) do not apply. The transparency obligation under art. 50 still applies.",
     "aiAct": {
-      "risk": "Classification: downstream GPAI system, limited risk. No automated decisions about people, no worker scoring, no user profiling.",
-      "transparency": "Transparency (art. 50): every generated output is labelled with an \"AI-generated content\" badge and may contain errors; it must always be verified by a human.",
+      "risk": "Positioning: limited-risk downstream application. No automated decisions about people, no worker scoring, no user profiling; not among the high-risk systems in Annex III.",
+      "transparency": "Transparency (art. 50): every generated output is labelled as AI-generated content and must always be verified by a competent person.",
       "prohibited": "Prohibited uses (art. 5): no biometric inference, social scoring, subliminal manipulation or exploitation of vulnerabilities.",
       "humanOversight": "Human oversight: you stay in full control of when to call the AI, which provider to use and whether to accept the output."
     },
     "disclaimerTitle": "Disclaimer",
-    "disclaimerBody": "THE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.",
+    "disclaimerBody": "As free software offered without consideration, the general principles of Italian law on gratuitous contracts apply (notably the attenuated duty of diligence drawn by analogy from art. 1710 of the Italian Civil Code), in addition to the full warranty exclusion of the MIT License. THE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHOR OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.",
     "liabilityTitle": "Extended liability waiver",
-    "liabilityIntro": "To the maximum extent permitted by applicable law, by using Decoder you expressly acknowledge and accept the following:",
+    "liabilityIntro": "To the maximum extent permitted by applicable law, and given the free and non-professional nature of the project, by using Decoder you expressly acknowledge and accept the following:",
     "liability": {
       "aiOutput": "AI output: explanations, analyses, summaries and suggestions generated by artificial intelligence may contain errors, omissions or inaccuracies. You are solely responsible for verifying, interpreting and acting on the output. The author is not liable for any decision, action or consequence based on AI-generated content.",
       "ipCode": "Analyzed code and intellectual property: you warrant that you hold the necessary rights to any code or material you upload, or have proper authorization. The author is not liable for any infringement of copyright, open-source licenses, patents, trade secrets, NDAs or other third-party rights arising from the material you provide.",
-      "dataTransfer": "Code transmission: in cloud mode the uploaded source code is forwarded to the AI provider you select (including Lovable AI, the default managed provider that uses a server-side key held by Decoder). In local mode the uploaded files still reside in the server's storage, while AI inference runs on your localhost. The author is not liable for the processing policies of third-party AI providers.",
-      "security": "Security and damages: the software is provided with no warranty of availability, integrity or security. The author is not liable for any direct, indirect, incidental, consequential or punitive damages — including data loss, lost profits, business interruption, bugs, vulnerabilities or malfunctions — arising from your use of or inability to use Decoder.",
+      "dataTransfer": "Code transmission: in cloud mode the uploaded source code is forwarded to the AI provider you select (including Lovable AI, the default managed provider that uses a server-side key held by Decoder). In local mode the uploaded files still reside in the server's storage, while AI inference runs on your localhost. The author is not liable for third-party AI providers' processing policies.",
+      "security": "Security and damages: the software is provided with no warranty of availability, integrity or security. The author is not liable for any direct, indirect, incidental, consequential or punitive damages — including data loss, lost profits, business interruption, bugs, vulnerabilities or malfunctions — arising from your use of or inability to use Decoder, except for wilful misconduct or gross negligence to the extent these cannot be excluded by law.",
       "unlawful": "Unlawful or non-compliant use: you are solely responsible for ensuring that your use of Decoder complies with all applicable laws, regulations, contracts, corporate policies and third-party rights. The author disclaims all liability for unauthorized, unlawful or non-compliant use."
     }
   },
   "manifesto": {
-    "kicker": "Manifesto",
-    "title": "We believe code should be understandable",
-    "intro": "Decoder exists to break the barrier between those who write code and those who must understand, maintain, evaluate or explain it — without betraying the trust of the people who use it.",
-    "principlesTitle": "Our principles",
-    "whyGuardrailTitle": "Why we need a guardrail",
-    "whyGuardrailBody": "Generative AI is a plausible oracle, not a reliable one: it produces convincing code that can hide bugs, vulnerabilities, or wrong architectural choices. Without an independent verification tool, the risk is to accept every answer as truth. Decoder is that counter-power — open source to stay inspectable, community-owned to stay honest.",
+    "kicker": "Project notes",
+    "title": "An experiment for reading code together with AI",
+    "intro": "Decoder is a personal study project, open source and free. These notes describe how it is designed, why it exists and what it does not do.",
+    "principlesTitle": "Project choices",
+    "whyGuardrailTitle": "Why this experiment",
+    "whyGuardrailBody": "Generative AI can produce convincing code that still hides bugs, questionable choices or vulnerabilities. This project is a personal exercise to study whether a second reading layer — assisted by another model and using public prompts — can help understanding it. It does not replace professional tools for static analysis, security review or human code review.",
     "principles": {
       "guardrail": {
-        "title": "An evolving guardrail",
-        "body": "Decoder is an independent verification tool, in users' hands, that grows with the community as AI sources evolve. It does not replace your judgement — it amplifies it."
+        "title": "A study tool",
+        "body": "Decoder is a study tool, not a certified verification system. It helps reading code but does not replace your judgement or a professional review."
       },
       "open": {
-        "title": "Genuinely open source",
-        "body": "MIT License. Free to use, modify and distribute. No hidden components. Maintained collectively and anonymously."
+        "title": "Open source (MIT)",
+        "body": "MIT License: free to use, modify and distribute. No hidden components."
       },
       "privacy": {
-        "title": "Privacy by design",
-        "body": "API keys are AES-256-GCM encrypted and never returned to the browser. Files are isolated per user via Row Level Security. No ad trackers, no behavioral profiling."
+        "title": "Technical measures in place",
+        "body": "User API keys are AES-256-GCM encrypted and are not returned to the browser. Uploaded files are isolated per user via Row Level Security. No ad trackers, no behavioural profiling."
       },
       "byok": {
-        "title": "Bring your own key",
-        "body": "No lock-in: pay your AI provider directly. Swap providers any time, export everything as Markdown."
+        "title": "BYOK",
+        "body": "You can configure your own key for the AI provider you prefer and pay it directly. Markdown export of explanations is available."
       },
       "localFirst": {
-        "title": "Local inference",
-        "body": "Local mode with Ollama or LM Studio: AI inference runs on your localhost and your code is not sent to external providers. Uploaded files stay on the server, accessible only to you via RLS."
+        "title": "Optional local inference",
+        "body": "When Ollama or LM Studio is selected, AI inference runs on your localhost and the file body is not sent to external providers. Uploaded files remain in the server's storage, accessible only to you."
       },
       "multilang": {
-        "title": "Natively multilingual",
-        "body": "UI and explanations in English, Italian and Simplified Chinese. Other languages will come with the community."
+        "title": "Multilingual",
+        "body": "Languages available today are English, Italian and Simplified Chinese. Further languages depend on community contributions."
       },
       "accessible": {
-        "title": "Accessible at every level",
-        "body": "From non-technical readers to CTOs: pick the depth and get a fitting explanation."
+        "title": "Depth levels",
+        "body": "You can pick the depth of the explanation, from concise to technical."
       }
     },
-    "wontTitle": "What we will NEVER do",
+    "wontTitle": "Project limits",
     "wont": {
-      "w1": "We will never use your code to train models, ours or third-party.",
-      "w2": "We will never sell your data or share it with brokers.",
-      "w3": "We will never add artificial lock-in on AI providers.",
-      "w4": "We will never block the export of your explanations and comments.",
-      "w5": "We will never keep your files forever: automatic deletion after 60 days of inactivity.",
-      "w6": "We will never replace your judgement: we are a guardrail, not an oracle."
+      "w1": "Uploaded code is not used to train models: the author has neither the access nor the infrastructure to do so.",
+      "w2": "No data sale, no marketing integrations: there is no commercial activity behind the project.",
+      "w3": "No AI-provider lock-in is in place; the project is BYOK.",
+      "w4": "Markdown export of explanations exists but remains subject to demo availability.",
+      "w5": "Uploaded files may be deleted automatically after inactivity; long-term retention is not guaranteed.",
+      "w6": "AI output must always be verified by a competent person: it is not professional advice nor a correctness guarantee."
     },
-    "contributingTitle": "How to contribute",
-    "contributingBody": "Decoder is co-maintained by the people who use it. Lightweight governance: an issue becomes a discussion, a discussion becomes a PR. No invasive CLA, no bureaucracy.",
+    "contributingTitle": "Contributions",
+    "contributingBody": "Contributions and reports are welcome via GitHub Issues and Pull Requests. The author reviews them in spare time, with no response-time commitments.",
     "contributing": {
       "rules": "Extend the analysis rules (src/lib/analysis-prompt.ts) to cover new smells or languages.",
       "translations": "Add a language by creating a folder in src/i18n/locales/.",
       "providers": "Integrate new AI providers or local engines compatible with the OpenAI API.",
-      "docs": "Improve the user documentation in /docs and the review guides."
+      "docs": "Improve the user documentation in /docs."
     },
-    "roadmapTitle": "Public roadmap",
-    "roadmapBody": "Development phases live in the README and in .lovable/plan.md in the repository. Product decisions are discussed in the open."
+    "roadmapTitle": "Future ideas",
+    "roadmapBody": "Areas under exploration are documented in the README and in .lovable/plan.md in the repository, with no deadlines and no delivery guarantees."
   },
   "openSource": {
     "kicker": "Open Source",
-    "title": "An open guardrail to question AI",
-    "intro": "Decoder is public code, public prompts, public rules. Born as a case study, maintained as a common good — because a guardrail for AI only makes sense if anyone can read and improve it.",
+    "title": "Public code, prompts and rules",
+    "intro": "Decoder is an open study experiment: code, analysis prompts and rules live in the public repository, because that is the only way to share a personal project of this kind.",
     "ctaRepo": "Open on GitHub",
     "ctaContribute": "Contribute",
     "openTitle": "What's open",
