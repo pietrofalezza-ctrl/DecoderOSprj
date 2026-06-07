@@ -174,7 +174,10 @@ function ManifestoPage() {
       <footer className="border-t border-border/60">
         <div className="mx-auto flex max-w-5xl flex-col items-center justify-between gap-3 px-6 py-8 text-xs text-muted-foreground md:flex-row">
           <Logo />
-          <nav className="flex gap-5">
+          <nav className="flex flex-wrap justify-center gap-5">
+            <Link to="/open-source" className="hover:text-foreground">
+              {t("landing.nav.openSource")}
+            </Link>
             <Link to="/manifesto" className="hover:text-foreground">
               {t("landing.nav.manifesto")}
             </Link>
