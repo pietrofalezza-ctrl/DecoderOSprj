@@ -14,6 +14,8 @@ async function resolveCloudKey(
   if (provider === "lovable") {
     const { assertHostedLovableAllowed } = await import("./hosted-ai-guard.server");
     assertHostedLovableAllowed(provider);
+    const { assertByokAckAccepted } = await import("./byok-acknowledgement.functions");
+    await assertByokAckAccepted(supabase, userId);
     return process.env.LOVABLE_API_KEY!;
   }
   const { supabaseAdmin } = await import("@/integrations/supabase/client.server");

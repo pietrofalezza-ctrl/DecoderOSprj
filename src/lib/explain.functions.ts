@@ -71,6 +71,8 @@ export const explainFile = createServerFn({ method: "POST" })
     if (data.provider === "lovable") {
       const { assertHostedLovableAllowed } = await import("./hosted-ai-guard.server");
       assertHostedLovableAllowed(data.provider);
+      const { assertByokAckAccepted } = await import("./byok-acknowledgement.functions");
+      await assertByokAckAccepted(context.supabase, context.userId);
       const k = process.env.LOVABLE_API_KEY!;
       // Free-tier daily quota — enforced only for the managed provider.
       // Returned as a structured result (not thrown) so it isn't reported

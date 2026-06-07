@@ -57,6 +57,8 @@ export const aggregateFolderAnalysis = createServerFn({ method: "POST" })
     if (data.provider === "lovable") {
       const { assertHostedLovableAllowed } = await import("./hosted-ai-guard.server");
       assertHostedLovableAllowed(data.provider);
+      const { assertByokAckAccepted } = await import("./byok-acknowledgement.functions");
+      await assertByokAckAccepted(context.supabase, context.userId);
       apiKey = process.env.LOVABLE_API_KEY!;
     } else {
       const { supabaseAdmin } = await import("@/integrations/supabase/client.server");

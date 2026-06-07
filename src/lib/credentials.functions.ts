@@ -41,6 +41,8 @@ export const saveProviderKey = createServerFn({ method: "POST" })
     z.object({ provider: Provider, api_key: z.string().trim().min(8).max(500) }),
   )
   .handler(async ({ context, data }) => {
+    const { assertByokAckAccepted } = await import("./byok-acknowledgement.functions");
+    await assertByokAckAccepted(context.supabase, context.userId);
     const { encryptSecret, keyHint } = await import("./crypto.server");
     const encrypted = encryptSecret(data.api_key);
     const hint = keyHint(data.api_key);
