@@ -71,6 +71,9 @@ export const explainFile = createServerFn({ method: "POST" })
     if (data.provider === "lovable") {
       const k = process.env.LOVABLE_API_KEY;
       if (!k) throw new Error("lovable_ai_not_configured");
+      // Free-tier daily quota — enforced only for the managed provider.
+      const { assertLovableQuota } = await import("./rate-limit.server");
+      await assertLovableQuota(context.supabase, context.userId, data.language);
       apiKey = k;
     } else {
       const { data: cred, error: cErr } = await context.supabase
