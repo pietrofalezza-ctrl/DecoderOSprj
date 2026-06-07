@@ -318,7 +318,49 @@
       "technical": "技术摘要",
       "quality": "质量",
       "security": "安全",
-      "aiOrigin": "AI 来源"
+      "aiOrigin": "AI 来源",
+      "fix": "修复"
+    },
+    "findings": {
+      "title": "重点位置",
+      "empty": "未检测到行级引用。运行分析以在代码中高亮位置。",
+      "jumpHint": "点击条目以在编辑器中高亮"
+    },
+    "folder": {
+      "title": "已选文件夹",
+      "close": "关闭",
+      "kind": "分析类型",
+      "needsCloud": "文件夹分析需要云端提供商。",
+      "fileCount": "已排队 {{count}} 个文件(文件夹共 {{total}} 个)",
+      "truncated": "为控制成本跳过 +{{count}} 个文件",
+      "runAll": "分析整个文件夹",
+      "runningLabel": "进行中… {{done}}/{{total}}",
+      "tabSummary": "文件夹概要",
+      "tabFiles": "按文件",
+      "aggregating": "正在生成文件夹概要…",
+      "aggregatePending": "分析完成。正在生成文件夹概要…",
+      "emptyHint": "按 \"分析整个文件夹\" 开始。",
+      "noFindings": "此文件没有结构化条目。"
+    },
+    "fix": {
+      "tab": "修复",
+      "generate": "为此文件生成补丁",
+      "generateFolder": "生成文件夹合并补丁",
+      "generating": "正在生成补丁…",
+      "empty": "暂无 diff。请先运行分析,再生成补丁。",
+      "noFindings": "没有可作为补丁依据的条目。",
+      "needsAnalysis": "请先对此文件运行分析。",
+      "needsCloud": "生成补丁需要云端提供商。",
+      "copyDiff": "复制 diff",
+      "copied": "已复制到剪贴板。",
+      "downloadPatch": "下载 .patch",
+      "showRaw": "纯文本",
+      "showEditor": "编辑器",
+      "howToApply": "如何应用",
+      "howToTitle": "将补丁应用到你的仓库",
+      "how1": "把 .patch 文件保存到项目根目录。",
+      "how3": "用 `git diff` 检查后提交。",
+      "notes": "模型备注"
     }
   },
   "analysis": {

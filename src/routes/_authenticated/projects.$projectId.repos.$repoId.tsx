@@ -1,15 +1,18 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 import { z } from "zod";
-import { Sparkles, Copy, Download, ShieldCheck, FileDown, BugPlay, Bot, ScanSearch, ArrowLeft, ArrowRight, KeyRound, CheckCircle2, AlertCircle, Play } from "lucide-react";
+import { Sparkles, Copy, Download, ShieldCheck, FileDown, BugPlay, Bot, ScanSearch, ArrowLeft, ArrowRight, KeyRound, CheckCircle2, AlertCircle, Play, Wrench } from "lucide-react";
 
 import { AppShell } from "@/components/AppShell";
 import { FileTree } from "@/components/FileTree";
-import { CodeViewer, type CodeSelection } from "@/components/CodeViewer";
+import { CodeViewer, type CodeSelection, type CodeViewerHandle } from "@/components/CodeViewer";
+import { FindingsList } from "@/components/FindingsList";
+import { DiffViewer, extractDiffBlock, extractNotes } from "@/components/DiffViewer";
+import { FolderAnalysisPanel } from "@/components/FolderAnalysisPanel";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -39,14 +42,16 @@ import { getRepository, getFileContent } from "@/lib/repos.functions";
 import { listProviders } from "@/lib/credentials.functions";
 import { explainFile, saveLocalExplanation } from "@/lib/explain.functions";
 import { runAnalysis, saveLocalAnalysis, analyzeRepoAiOrigin } from "@/lib/analysis.functions";
+import { proposeFileFix } from "@/lib/fix.functions";
 import { exportRepoMarkdown } from "@/lib/export.functions";
 import { callLocalProvider, type LocalKind } from "@/lib/local-ai";
 import { buildPrompt, type Proficiency } from "@/lib/prompt";
 import { buildAnalysisPrompt, type AnalysisKind } from "@/lib/analysis-prompt";
+import { extractFindings, stripFindingsBlock, type Finding } from "@/lib/findings";
 
 type CloudProvider = "lovable" | "openai" | "anthropic" | "gemini" | "openrouter";
 type ProviderValue = `cloud:${CloudProvider}` | `local:${LocalKind}`;
-type MainTab = "summary" | "quality" | "security" | "ai_origin";
+type MainTab = "summary" | "quality" | "security" | "ai_origin" | "fix";
 type SummarySub = "human" | "technical";
 
 const SearchSchema = z.object({
@@ -71,12 +76,15 @@ function WorkspacePage() {
   const saveLocalA = useServerFn(saveLocalAnalysis);
   const exportFn = useServerFn(exportRepoMarkdown);
   const repoAiOriginFn = useServerFn(analyzeRepoAiOrigin);
+  const proposeFix = useServerFn(proposeFileFix);
   const search = Route.useSearch();
 
   const repo = useQuery({ queryKey: ["repo", repoId], queryFn: () => getRepo({ data: { id: repoId } }) });
   const provs = useQuery({ queryKey: ["providers"], queryFn: () => providersFn() });
 
   const [selectedFileId, setSelectedFileId] = useState<string | null>(null);
+  const [selectedFolderPath, setSelectedFolderPath] = useState<string | null>(null);
+  const codeRef = useRef<CodeViewerHandle | null>(null);
   const [proficiency, setProficiency] = useState<Proficiency>("intermediate");
   const [providerValue, setProviderValue] = useState<ProviderValue | "">("");
   const [mainTab, setMainTab] = useState<MainTab>("summary");
@@ -87,6 +95,7 @@ function WorkspacePage() {
   const [qualityText, setQualityText] = useState<string>("");
   const [securityText, setSecurityText] = useState<string>("");
   const [aiOriginText, setAiOriginText] = useState<string>("");
+  const [fixText, setFixText] = useState<string>("");
 
   const [repoSheetOpen, setRepoSheetOpen] = useState(false);
   const [repoAiResult, setRepoAiResult] = useState<RepoAiOriginResult | null>(null);
@@ -119,6 +128,7 @@ function WorkspacePage() {
     setQualityText("");
     setSecurityText("");
     setAiOriginText("");
+    setFixText("");
     setSelection(null);
   }, [selectedFileId, providerValue]);
 
@@ -314,12 +324,57 @@ function WorkspacePage() {
     onError: (e: any) => toast.error(e?.message ?? t("errors.generic")),
   });
 
+  // Best source of findings for the active "issue" tab.
+  const sourceTextForFindings = useMemo(() => {
+    if (mainTab === "quality") return qualityText;
+    if (mainTab === "security") return securityText;
+    return "";
+  }, [mainTab, qualityText, securityText]);
+
+  const totalLines = fileQ.data?.content ? fileQ.data.content.split("\n").length : 100_000;
+  const findings: Finding[] = useMemo(
+    () => extractFindings(sourceTextForFindings, totalLines),
+    [sourceTextForFindings, totalLines],
+  );
+
+  const fixSourceAnalysis = useMemo(() => {
+    // Prefer whichever issue analysis the user just ran.
+    if (qualityText) return { kind: qualityKind, text: qualityText };
+    if (securityText) return { kind: "security" as const, text: securityText };
+    return null;
+  }, [qualityText, securityText, qualityKind]);
+
+  const fixMut = useMutation({
+    mutationFn: async () => {
+      if (!selectedFileId) throw new Error("no_file");
+      if (!providerValue.startsWith("cloud:")) throw new Error(t("workspace.fix.needsCloud"));
+      if (!fixSourceAnalysis) throw new Error(t("workspace.fix.needsAnalysis"));
+      const provider = providerValue.slice(6) as CloudProvider;
+      const r = await proposeFix({
+        data: {
+          file_id: selectedFileId,
+          kind: fixSourceAnalysis.kind,
+          language: lang,
+          provider,
+          analysis_markdown: fixSourceAnalysis.text,
+        },
+      });
+      return r.content;
+    },
+    onSuccess: (text) => {
+      setFixText(text);
+      setMainTab("fix");
+    },
+    onError: (e: any) => toast.error(e?.message ?? t("errors.generic")),
+  });
+
   const activeText = useMemo(() => {
     if (mainTab === "summary") return summaryText;
     if (mainTab === "quality") return qualityText;
     if (mainTab === "ai_origin") return aiOriginText;
+    if (mainTab === "fix") return fixText;
     return securityText;
-  }, [mainTab, summaryText, qualityText, securityText, aiOriginText]);
+  }, [mainTab, summaryText, qualityText, securityText, aiOriginText, fixText]);
 
   const mdFilename = useMemo(() => {
     const base = fileQ.data?.path?.split("/").pop() ?? "explanation";
@@ -330,7 +385,9 @@ function WorkspacePage() {
           ? `quality.${qualityKind}`
           : mainTab === "ai_origin"
             ? `ai-origin`
-            : `security`;
+            : mainTab === "fix"
+              ? `fix`
+              : `security`;
     return `${base}.${suffix}.md`;
   }, [fileQ.data?.path, mainTab, summarySub, proficiency, qualityKind]);
 
@@ -360,13 +417,22 @@ function WorkspacePage() {
     if (mainTab === "summary") explainMut.mutate();
     else if (mainTab === "quality") qualityMut.mutate();
     else if (mainTab === "ai_origin") aiOriginMut.mutate();
+    else if (mainTab === "fix") fixMut.mutate();
     else securityMut.mutate();
   };
   const isRunning =
     (mainTab === "summary" && explainMut.isPending) ||
     (mainTab === "quality" && qualityMut.isPending) ||
     (mainTab === "ai_origin" && aiOriginMut.isPending) ||
-    (mainTab === "security" && securityMut.isPending);
+    (mainTab === "security" && securityMut.isPending) ||
+    (mainTab === "fix" && fixMut.isPending);
+
+  const jumpToFinding = (f: Finding) => {
+    codeRef.current?.revealLine(f.start_line, {
+      select: { from: f.start_line, to: f.end_line },
+    });
+  };
+
 
   const canRunRepoAi = providerValue.startsWith("cloud:");
 
@@ -433,7 +499,15 @@ function WorkspacePage() {
                     <FileTree
                       files={repo.data.files}
                       selectedId={selectedFileId}
-                      onSelect={(f) => setSelectedFileId(f.id)}
+                      selectedFolderPath={selectedFolderPath}
+                      onSelect={(f) => {
+                        setSelectedFileId(f.id);
+                        setSelectedFolderPath(null);
+                      }}
+                      onSelectFolder={(p) => {
+                        setSelectedFolderPath(p);
+                        setSelectedFileId(null);
+                      }}
                     />
                   )}
                 </div>
@@ -443,13 +517,29 @@ function WorkspacePage() {
           <ResizableHandle />
           <ResizablePanel defaultSize={46} minSize={20}>
             <div className="h-full">
-              {fileQ.data ? (
+              {selectedFolderPath ? (
+                <div className="flex h-full items-center justify-center p-6">
+                  <div className="max-w-md space-y-3 rounded-lg border border-primary/30 bg-primary/5 p-6 text-center">
+                    <ScanSearch className="mx-auto h-8 w-8 text-primary" />
+                    <h3 className="text-base font-semibold">
+                      {t("workspace.folder.title")}
+                    </h3>
+                    <p className="font-mono text-sm text-foreground">
+                      {selectedFolderPath}/
+                    </p>
+                    <p className="text-xs text-muted-foreground">
+                      {t("workspace.folder.emptyHint")}
+                    </p>
+                  </div>
+                </div>
+              ) : fileQ.data ? (
                 <CodeViewer
+                  ref={codeRef}
                   content={fileQ.data.content}
                   language={fileQ.data.language}
                   onSelectionChange={setSelection}
+                  findings={findings}
                 />
-
               ) : (
                 <div className="flex h-full items-center justify-center p-6">
                   <div className="max-w-md space-y-4 rounded-lg border border-border bg-card p-6 shadow-sm">
@@ -475,6 +565,19 @@ function WorkspacePage() {
           </ResizablePanel>
           <ResizableHandle />
           <ResizablePanel defaultSize={34} minSize={26}>
+            {selectedFolderPath ? (
+              <FolderAnalysisPanel
+                repoId={repoId}
+                folderPath={selectedFolderPath}
+                providerValue={providerValue}
+                language={lang}
+                onClose={() => setSelectedFolderPath(null)}
+                onOpenFile={(id) => {
+                  setSelectedFileId(id);
+                  setSelectedFolderPath(null);
+                }}
+              />
+            ) : (
             <div className="flex h-full flex-col border-l border-border bg-sidebar">
               <div className="sticky top-0 z-10 space-y-2 border-b border-border bg-sidebar p-3">
                 <div className="space-y-2">
@@ -628,11 +731,22 @@ function WorkspacePage() {
                 <div className="flex items-center justify-between px-2 pt-2">
                   <TabsList>
                     <TabsTrigger value="summary">{t("workspace.tabs.summary")}</TabsTrigger>
-                    <TabsTrigger value="quality">{t("workspace.tabs.quality")}</TabsTrigger>
+                    <TabsTrigger value="quality" className="gap-1">
+                      {t("workspace.tabs.quality")}
+                      {mainTab !== "quality" && findings.length > 0 && qualityText && (
+                        <span className="rounded-full bg-primary/15 px-1.5 text-[10px] tabular-nums text-primary">
+                          {findings.length}
+                        </span>
+                      )}
+                    </TabsTrigger>
                     <TabsTrigger value="security">{t("workspace.tabs.security")}</TabsTrigger>
                     <TabsTrigger value="ai_origin" className="gap-1">
                       <Bot className="h-3 w-3" />
                       {t("workspace.tabs.aiOrigin")}
+                    </TabsTrigger>
+                    <TabsTrigger value="fix" className="gap-1">
+                      <Wrench className="h-3 w-3" />
+                      {t("workspace.tabs.fix")}
                     </TabsTrigger>
                   </TabsList>
                   <div className="flex items-center gap-1">
@@ -670,11 +784,27 @@ function WorkspacePage() {
                     </TabsContent>
                   </Tabs>
                 </TabsContent>
-                <TabsContent forceMount value="quality" className="m-0 flex-1 overflow-auto px-4 pb-4 data-[state=inactive]:hidden">
-                  <ExplanationView text={qualityText} placeholder={t("analysis.empty")} />
+                <TabsContent forceMount value="quality" className="m-0 flex-1 space-y-3 overflow-auto px-4 pb-4 data-[state=inactive]:hidden">
+                  <ExplanationView text={stripFindingsBlock(qualityText)} placeholder={t("analysis.empty")} />
+                  {qualityText && (
+                    <FindingsList
+                      findings={findings}
+                      onJump={jumpToFinding}
+                      title={t("workspace.findings.title")}
+                      emptyLabel={t("workspace.findings.empty")}
+                    />
+                  )}
                 </TabsContent>
-                <TabsContent forceMount value="security" className="m-0 flex-1 overflow-auto px-4 pb-4 data-[state=inactive]:hidden">
-                  <ExplanationView text={securityText} placeholder={t("analysis.empty")} />
+                <TabsContent forceMount value="security" className="m-0 flex-1 space-y-3 overflow-auto px-4 pb-4 data-[state=inactive]:hidden">
+                  <ExplanationView text={stripFindingsBlock(securityText)} placeholder={t("analysis.empty")} />
+                  {securityText && (
+                    <FindingsList
+                      findings={extractFindings(securityText, totalLines)}
+                      onJump={jumpToFinding}
+                      title={t("workspace.findings.title")}
+                      emptyLabel={t("workspace.findings.empty")}
+                    />
+                  )}
                 </TabsContent>
                 <TabsContent forceMount value="ai_origin" className="m-0 flex-1 overflow-auto px-4 pb-4 data-[state=inactive]:hidden">
                   {aiOriginText ? (
@@ -688,13 +818,45 @@ function WorkspacePage() {
                     </div>
                   )}
                 </TabsContent>
+                <TabsContent forceMount value="fix" className="m-0 flex-1 overflow-hidden p-3 data-[state=inactive]:hidden">
+                  <div className="flex h-full min-h-0 flex-col gap-2">
+                    <div className="flex items-center gap-2">
+                      <Button
+                        size="sm"
+                        onClick={() => fixMut.mutate()}
+                        disabled={!selectedFileId || !providerValue.startsWith("cloud:") || !fixSourceAnalysis || fixMut.isPending}
+                      >
+                        {fixMut.isPending ? (
+                          <Sparkles className="mr-2 h-3.5 w-3.5 animate-pulse" />
+                        ) : (
+                          <Wrench className="mr-2 h-3.5 w-3.5" />
+                        )}
+                        {fixMut.isPending ? t("workspace.fix.generating") : t("workspace.fix.generate")}
+                      </Button>
+                      {!fixSourceAnalysis && (
+                        <span className="text-[11px] text-muted-foreground">
+                          {t("workspace.fix.needsAnalysis")}
+                        </span>
+                      )}
+                    </div>
+                    <div className="min-h-0 flex-1">
+                      <DiffViewer
+                        diff={extractDiffBlock(fixText)}
+                        notes={extractNotes(fixText)}
+                        filename={`${fileQ.data?.path?.split("/").pop() ?? "decoder-fix"}.patch`}
+                      />
+                    </div>
+                  </div>
+                </TabsContent>
 
               </Tabs>
               <div className="border-t border-border px-3 py-2 text-[10px] text-muted-foreground">
                 {t("footer.ownership")}
               </div>
             </div>
+            )}
           </ResizablePanel>
+
         </ResizablePanelGroup>
       </div>
     </AppShell>
