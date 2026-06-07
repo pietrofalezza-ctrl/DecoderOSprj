@@ -652,27 +652,27 @@ function WorkspacePage() {
                     </Button>
                   </div>
                 </div>
-                <TabsContent value="summary" className="m-0 flex-1 overflow-auto px-4 pb-4">
+                <TabsContent forceMount value="summary" className="m-0 flex-1 overflow-auto px-4 pb-4 data-[state=inactive]:hidden">
                   <Tabs value={summarySub} onValueChange={(v) => setSummarySub(v as SummarySub)}>
                     <TabsList className="mt-2">
                       <TabsTrigger value="human">{t("workspace.tabs.human")}</TabsTrigger>
                       <TabsTrigger value="technical">{t("workspace.tabs.technical")}</TabsTrigger>
                     </TabsList>
-                    <TabsContent value="human" className="m-0 pt-2">
+                    <TabsContent forceMount value="human" className="m-0 pt-2 data-[state=inactive]:hidden">
                       <ExplanationView text={summaryText} />
                     </TabsContent>
-                    <TabsContent value="technical" className="m-0 pt-2">
+                    <TabsContent forceMount value="technical" className="m-0 pt-2 data-[state=inactive]:hidden">
                       <ExplanationView text={summaryText} />
                     </TabsContent>
                   </Tabs>
                 </TabsContent>
-                <TabsContent value="quality" className="m-0 flex-1 overflow-auto px-4 pb-4">
+                <TabsContent forceMount value="quality" className="m-0 flex-1 overflow-auto px-4 pb-4 data-[state=inactive]:hidden">
                   <ExplanationView text={qualityText} placeholder={t("analysis.empty")} />
                 </TabsContent>
-                <TabsContent value="security" className="m-0 flex-1 overflow-auto px-4 pb-4">
+                <TabsContent forceMount value="security" className="m-0 flex-1 overflow-auto px-4 pb-4 data-[state=inactive]:hidden">
                   <ExplanationView text={securityText} placeholder={t("analysis.empty")} />
                 </TabsContent>
-                <TabsContent value="ai_origin" className="m-0 flex-1 overflow-auto px-4 pb-4">
+                <TabsContent forceMount value="ai_origin" className="m-0 flex-1 overflow-auto px-4 pb-4 data-[state=inactive]:hidden">
                   {aiOriginText ? (
                     <ExplanationView text={aiOriginText} />
                   ) : (
@@ -684,6 +684,7 @@ function WorkspacePage() {
                     </div>
                   )}
                 </TabsContent>
+
               </Tabs>
               <div className="border-t border-border px-3 py-2 text-[10px] text-muted-foreground">
                 {t("footer.ownership")}
