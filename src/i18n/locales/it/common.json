@@ -120,7 +120,7 @@
     "dataCollectedIntro": "Decoder raccoglie solo i dati necessari al funzionamento del servizio:",
     "dataCollected": {
       "account": "Account: email, nome visualizzato e timestamp di creazione (gestiti dal modulo di autenticazione).",
-      "content": "Contenuti: file caricati conservati nello storage privato del server (accessibile solo dal proprietario tramite RLS), metadati (path, dimensione, sha256, linguaggio, tipo di sorgente — zip o GitHub) e spiegazioni IA generate.",
+      "content": "Contenuti: file caricati conservati nello storage privato del server (accessibile solo dal proprietario tramite RLS) con retention di 60 giorni dall'ultimo utilizzo, metadati (path, dimensione, sha256, linguaggio, tipo di sorgente — zip o GitHub) e spiegazioni IA generate.",
       "credentials": "Chiavi API utente: cifrate at-rest con AES-256-GCM e mai restituite al browser. Le chiavi proprie restano opzionali — Lovable AI è disponibile senza configurazione.",
       "usage": "Metadati d'uso: provider e modello IA usati per ogni spiegazione, lingua e livello di proficiency preferiti, ruolo applicativo (es. admin). Nessuna profilazione comportamentale né tracciamento di terze parti.",
       "notracking": "Nessun tracker pubblicitario, nessun analytics di terze parti, nessuna profilazione."
@@ -134,7 +134,7 @@
       "rights": "Diritti dell'interessato: accesso, rettifica, cancellazione, portabilità, opposizione e limitazione del trattamento. Puoi esportare o cancellare i tuoi dati dalla pagina Impostazioni → Account.",
       "transfers": "Trasferimenti extra-UE: solo se scegli un provider AI con server al di fuori dell'UE (es. OpenAI, Anthropic, Lovable AI). Il provider è sempre indicato chiaramente prima della richiesta.",
       "retention": "Conservazione: i dati restano archiviati fino alla cancellazione esplicita dell'account o dei singoli contenuti.",
-      "contact": "Per esercitare i tuoi diritti o segnalare un incidente, apri una issue nel repository GitHub del progetto (link in fondo alla pagina). I maintainer operano in forma collettiva e anonima; la comunicazione avviene esclusivamente tramite il canale pubblico del repository."
+      "contact": "Per esercitare i tuoi diritti GDPR (accesso, rettifica, cancellazione, portabilità, opposizione, limitazione) o segnalare un incidente, scrivi a pietro@codecoder.com. Risponderemo entro 30 giorni."
     },
     "aiActTitle": "Conformità EU AI Act (Reg. UE 2024/1689)",
     "aiActIntro": "Decoder è un assistente di comprensione del codice classificato come sistema IA a rischio limitato.",
@@ -192,7 +192,8 @@
       "w1": "Non useremo mai il tuo codice per addestrare modelli, nostri o di terzi.",
       "w2": "Non venderemo i tuoi dati né li condivideremo con broker.",
       "w3": "Non aggiungeremo lock-in artificiali sui provider AI.",
-      "w4": "Non bloccheremo l'export delle tue spiegazioni e dei tuoi commenti."
+      "w4": "Non bloccheremo l'export delle tue spiegazioni e dei tuoi commenti.",
+      "w5": "Non conserveremo per sempre i tuoi file: cancellazione automatica dopo 60 giorni di inattività."
     },
     "roadmapTitle": "Roadmap pubblica",
     "roadmapBody": "Le fasi di sviluppo sono documentate nel README e nel file .lovable/plan.md del repository. Le decisioni di prodotto vengono discusse in pubblico."
@@ -263,6 +264,7 @@
     "githubRef": "Branch / tag (opzionale)",
     "githubRefPlaceholder": "main",
     "githubOnlyPublic": "In questa build sono supportate solo repository pubbliche.",
+    "retentionNotice": "I file restano sul server fino a 60 giorni dall'ultima spiegazione, poi vengono cancellati automaticamente. Esporta sempre ciò che ti serve.",
     "import": "Importa",
     "analyzeCodebase": "Analizza la codebase",
     "capabilityExplain": "Spiega ogni file",
@@ -446,6 +448,19 @@
     "notFoundTitle": "Pagina non trovata",
     "notFoundBody": "L'indirizzo che hai aperto non esiste o è stato spostato.",
     "boundaryTitle": "Questa pagina non si è caricata"
+  },
+  "contact": {
+    "email": "pietro@codecoder.com",
+    "kicker": "Contatti",
+    "title": "Come raggiungerci",
+    "intro": "Decoder è un progetto open source no-profit. Ecco i canali ufficiali per privacy, sicurezza e feedback.",
+    "privacyTitle": "Privacy & GDPR",
+    "privacyBody": "Per esercitare i tuoi diritti GDPR (accesso, rettifica, cancellazione, portabilità, opposizione, limitazione) scrivi all'indirizzo qui sotto. Risposta garantita entro 30 giorni.",
+    "securityTitle": "Sicurezza",
+    "securityBody": "Hai trovato una vulnerabilità? Segnalala in modo riservato all'indirizzo qui sotto prima di renderla pubblica.",
+    "bugsTitle": "Bug & feedback",
+    "bugsBody": "Per bug, idee, miglioramenti: apri una issue su GitHub. Risposta best-effort.",
+    "responseTimes": "Tempi indicativi: GDPR entro 30 giorni · sicurezza entro 7 giorni · feedback best-effort."
   },
   "footer": {
     "ownership": "Il tuo codice e la documentazione generata appartengono a te. Decoder non addestra modelli sulle tue repository.",
