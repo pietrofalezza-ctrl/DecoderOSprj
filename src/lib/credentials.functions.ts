@@ -17,8 +17,13 @@ export const listProviders = createServerFn({ method: "GET" })
       .select("kind, base_url, default_model");
     if (eErr) throw eErr;
 
-    // Lovable AI is always available — no user key required.
-    const lovableAvailable = Boolean(process.env.LOVABLE_API_KEY);
+    // Hosted "Lovable AI" provider is opt-in by the project owner.
+    // Without ALLOW_HOSTED_LOVABLE_AI=true it is invisible to end users and
+    // rejected server-side, so no end-user request can ever bill the owner's
+    // AI Gateway balance. Default = BYOK or local only.
+    const lovableAvailable =
+      Boolean(process.env.LOVABLE_API_KEY) &&
+      process.env.ALLOW_HOSTED_LOVABLE_AI === "true";
     const synthetic = lovableAvailable
       ? [{ provider: "lovable", key_hint: "managed", updated_at: new Date().toISOString() }]
       : [];
