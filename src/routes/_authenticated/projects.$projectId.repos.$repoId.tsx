@@ -499,7 +499,15 @@ function WorkspacePage() {
                     <FileTree
                       files={repo.data.files}
                       selectedId={selectedFileId}
-                      onSelect={(f) => setSelectedFileId(f.id)}
+                      selectedFolderPath={selectedFolderPath}
+                      onSelect={(f) => {
+                        setSelectedFileId(f.id);
+                        setSelectedFolderPath(null);
+                      }}
+                      onSelectFolder={(p) => {
+                        setSelectedFolderPath(p);
+                        setSelectedFileId(null);
+                      }}
                     />
                   )}
                 </div>
@@ -511,10 +519,13 @@ function WorkspacePage() {
             <div className="h-full">
               {fileQ.data ? (
                 <CodeViewer
+                  ref={codeRef}
                   content={fileQ.data.content}
                   language={fileQ.data.language}
                   onSelectionChange={setSelection}
+                  findings={findings}
                 />
+
 
               ) : (
                 <div className="flex h-full items-center justify-center p-6">
