@@ -222,7 +222,14 @@ function AuthPage() {
                 >
                   {t("auth.disclaimerAcceptLink")}
                 </Link>
-                {t("auth.disclaimerAcceptSuffix")}
+                {t("auth.disclaimerAcceptSuffix")}{" · "}
+                <Link
+                  to="/privacy"
+                  target="_blank"
+                  className="font-medium text-primary underline-offset-2 hover:underline"
+                >
+                  {t("footer.privacy")}
+                </Link>
               </Label>
             </div>
             {!accepted && (
