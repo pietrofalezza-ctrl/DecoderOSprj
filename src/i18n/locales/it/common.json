@@ -169,7 +169,7 @@
       "rights": "Diritti dell'interessato: accesso, rettifica, cancellazione, portabilità, opposizione e limitazione del trattamento. Puoi esportare o cancellare i tuoi dati dalla pagina Impostazioni → Account.",
       "transfers": "Trasferimenti extra-UE: solo se scegli un provider AI con server al di fuori dell'UE (es. OpenAI, Anthropic, Lovable AI). Il provider è sempre indicato chiaramente prima della richiesta.",
       "retention": "Conservazione: i dati restano archiviati fino alla cancellazione esplicita dell'account o dei singoli contenuti.",
-      "contact": "Per esercitare i tuoi diritti GDPR (accesso, rettifica, cancellazione, portabilità, opposizione, limitazione) o segnalare un incidente, scrivi a pietro@codecoder.com. Risponderemo entro 30 giorni."
+      "contact": "Per esercitare i tuoi diritti GDPR (accesso, rettifica, cancellazione, portabilità, opposizione, limitazione) o segnalare un incidente, apri una richiesta sul repository GitHub del progetto. Per dati sensibili usa il canale privato Security Advisories di GitHub."
     },
     "aiActTitle": "Conformità EU AI Act (Reg. UE 2024/1689)",
     "aiActIntro": "Decoder è un assistente di comprensione del codice classificato come sistema IA a rischio limitato.",
