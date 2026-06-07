@@ -15,6 +15,7 @@ import { Route as OpenSourceRouteImport } from './routes/open-source'
 import { Route as ManifestoRouteImport } from './routes/manifesto'
 import { Route as DocsRouteImport } from './routes/docs'
 import { Route as DataFlowRouteImport } from './routes/data-flow'
+import { Route as CookiesRouteImport } from './routes/cookies'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
@@ -55,6 +56,11 @@ const DocsRoute = DocsRouteImport.update({
 const DataFlowRoute = DataFlowRouteImport.update({
   id: '/data-flow',
   path: '/data-flow',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CookiesRoute = CookiesRouteImport.update({
+  id: '/cookies',
+  path: '/cookies',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ContactRoute = ContactRouteImport.update({
@@ -120,6 +126,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/contact': typeof ContactRoute
+  '/cookies': typeof CookiesRoute
   '/data-flow': typeof DataFlowRoute
   '/docs': typeof DocsRouteWithChildren
   '/manifesto': typeof ManifestoRoute
@@ -138,6 +145,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/contact': typeof ContactRoute
+  '/cookies': typeof CookiesRoute
   '/data-flow': typeof DataFlowRoute
   '/docs': typeof DocsRouteWithChildren
   '/manifesto': typeof ManifestoRoute
@@ -157,6 +165,7 @@ export interface FileRoutesById {
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/auth': typeof AuthRoute
   '/contact': typeof ContactRoute
+  '/cookies': typeof CookiesRoute
   '/data-flow': typeof DataFlowRoute
   '/docs': typeof DocsRouteWithChildren
   '/manifesto': typeof ManifestoRoute
@@ -177,6 +186,7 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/contact'
+    | '/cookies'
     | '/data-flow'
     | '/docs'
     | '/manifesto'
@@ -195,6 +205,7 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/contact'
+    | '/cookies'
     | '/data-flow'
     | '/docs'
     | '/manifesto'
@@ -213,6 +224,7 @@ export interface FileRouteTypes {
     | '/_authenticated'
     | '/auth'
     | '/contact'
+    | '/cookies'
     | '/data-flow'
     | '/docs'
     | '/manifesto'
@@ -233,6 +245,7 @@ export interface RootRouteChildren {
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AuthRoute: typeof AuthRoute
   ContactRoute: typeof ContactRoute
+  CookiesRoute: typeof CookiesRoute
   DataFlowRoute: typeof DataFlowRoute
   DocsRoute: typeof DocsRouteWithChildren
   ManifestoRoute: typeof ManifestoRoute
@@ -284,6 +297,13 @@ declare module '@tanstack/react-router' {
       path: '/data-flow'
       fullPath: '/data-flow'
       preLoaderRoute: typeof DataFlowRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/cookies': {
+      id: '/cookies'
+      path: '/cookies'
+      fullPath: '/cookies'
+      preLoaderRoute: typeof CookiesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/contact': {
@@ -415,6 +435,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AuthRoute: AuthRoute,
   ContactRoute: ContactRoute,
+  CookiesRoute: CookiesRoute,
   DataFlowRoute: DataFlowRoute,
   DocsRoute: DocsRouteWithChildren,
   ManifestoRoute: ManifestoRoute,

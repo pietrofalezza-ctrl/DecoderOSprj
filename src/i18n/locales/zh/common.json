@@ -861,6 +861,39 @@
     "ownership": "你的代码和生成的文档属于你自己。Decoder 不会用你的仓库训练模型。",
     "disclaimer": "Decoder 是一个开源教育性代码理解案例研究。它不是经认证的安全审计工具、法律/合规工具或生产决策系统。AI 生成的输出可能不准确，必须由具备资质的人员进行审查。",
     "privacy": "隐私",
+    "cookies": "Cookie",
     "dataFlow": "数据流"
+  },
+  "cookies": {
+    "kicker": "Cookie 政策",
+    "title": "Cookie 与本地存储",
+    "intro": "Decoder 以隐私为先。仅使用严格必要和功能性的存储来保持登录状态并记住你的偏好。无分析、无营销、无画像、无第三方追踪。",
+    "noBanner": {
+      "title": "为什么没有 Cookie 横幅",
+      "body": "根据欧盟 ePrivacy 和 GDPR 指南，与用户明确使用的功能相关的严格必要和纯功能性存储无需事先同意。我们不加载任何非必要的追踪器，因此同意横幅是不必要的干扰。"
+    },
+    "whatWeUseTitle": "我们实际存储什么",
+    "whatWeUseBody": "Decoder 使用的 Cookie 和浏览器存储完整列表：",
+    "col": { "name": "名称", "purpose": "用途", "storage": "存储位置", "retention": "保留期" },
+    "rows": {
+      "auth": { "name": "sb-* (Supabase 认证)", "purpose": "安全地保持登录状态", "storage": "Cookie / localStorage", "retention": "直到退出或令牌过期" },
+      "lang": { "name": "i18nextLng", "purpose": "记住界面语言", "storage": "localStorage", "retention": "直到清除浏览器数据" },
+      "theme": { "name": "theme", "purpose": "记住深色/浅色主题偏好", "storage": "localStorage", "retention": "直到清除浏览器数据" },
+      "disclaimer": { "name": "decoder.disclaimer.acceptedAt", "purpose": "记录你已查看登录免责声明", "storage": "localStorage", "retention": "直到清除浏览器数据" },
+      "ack": { "name": "user_acknowledgements", "purpose": "存储你的 BYOK 与入门确认", "storage": "服务器数据库（你的账户）", "retention": "直到删除账户或确认记录" }
+    },
+    "noTrackingTitle": "我们不使用的内容",
+    "noTrackingBody": "Decoder 不加载以下任何内容：",
+    "noTracking": {
+      "analytics": "分析工具（Google Analytics、Plausible、Vercel Analytics、PostHog、Mixpanel、Amplitude、Segment…）",
+      "marketing": "营销/广告 Cookie 和再营销标签",
+      "heatmaps": "热图或会话录制（Hotjar、FullStory…）",
+      "pixels": "第三方像素（Meta Pixel、LinkedIn Insight、Google Tag Manager…）"
+    },
+    "thirdPartyTitle": "第三方调用",
+    "thirdPartyBody": "在分析代码时，请求可能会发送到你显式配置的 AI 提供商（BYOK）或你自行运行的本地模型。这些提供商有各自的政策。详见数据流页面。",
+    "controlTitle": "如何清除或撤回",
+    "controlBody": "你可以随时退出登录、清除浏览器存储，或在设置中删除你的账户和确认记录。移除 API 密钥将停止对该提供商的后续调用。",
+    "updated": "最后更新：2026-06-07"
   }
 }

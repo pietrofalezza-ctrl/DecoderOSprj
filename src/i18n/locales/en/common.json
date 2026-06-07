@@ -861,6 +861,39 @@
     "ownership": "Your code and generated documentation belong to you. Decoder never trains on your repositories.",
     "disclaimer": "Decoder is an open-source educational code-understanding case study. It is not a certified security audit tool, legal/compliance tool, or production decision system. AI-generated outputs may be inaccurate and must be reviewed by a qualified person.",
     "privacy": "Privacy",
+    "cookies": "Cookies",
     "dataFlow": "Data flow"
+  },
+  "cookies": {
+    "kicker": "Cookie Policy",
+    "title": "Cookies & local storage",
+    "intro": "Decoder is privacy-first. It uses only strictly necessary and functional storage to keep you signed in and remember your preferences. No analytics, no marketing, no profiling, no third-party tracking.",
+    "noBanner": {
+      "title": "Why there is no cookie banner",
+      "body": "Under EU ePrivacy and GDPR guidance, strictly necessary and purely functional storage tied to a feature you explicitly use does not require prior consent. We do not load any non-essential trackers, so a consent banner would be unnecessary friction."
+    },
+    "whatWeUseTitle": "What we actually store",
+    "whatWeUseBody": "The full list of cookies and browser storage used by Decoder:",
+    "col": { "name": "Name", "purpose": "Purpose", "storage": "Storage", "retention": "Retention" },
+    "rows": {
+      "auth": { "name": "sb-* (Supabase auth)", "purpose": "Keeps you signed in securely", "storage": "Cookie / localStorage", "retention": "Until sign-out or token expiry" },
+      "lang": { "name": "i18nextLng", "purpose": "Remembers your interface language", "storage": "localStorage", "retention": "Until you clear browser data" },
+      "theme": { "name": "theme", "purpose": "Remembers dark / light preference", "storage": "localStorage", "retention": "Until you clear browser data" },
+      "disclaimer": { "name": "decoder.disclaimer.acceptedAt", "purpose": "Records that you saw the sign-in disclaimer", "storage": "localStorage", "retention": "Until you clear browser data" },
+      "ack": { "name": "user_acknowledgements", "purpose": "Stores your BYOK and onboarding acknowledgement", "storage": "Server database (your account)", "retention": "Until you delete your account or the acknowledgement" }
+    },
+    "noTrackingTitle": "What we do NOT use",
+    "noTrackingBody": "Decoder does not load any of the following:",
+    "noTracking": {
+      "analytics": "Analytics tools (Google Analytics, Plausible, Vercel Analytics, PostHog, Mixpanel, Amplitude, Segment, …)",
+      "marketing": "Marketing or advertising cookies and remarketing tags",
+      "heatmaps": "Heatmaps or session recording (Hotjar, FullStory, …)",
+      "pixels": "Third-party pixels (Meta Pixel, LinkedIn Insight, Google Tag Manager, …)"
+    },
+    "thirdPartyTitle": "Third-party calls",
+    "thirdPartyBody": "When you analyze code, requests may be sent to the AI provider you explicitly configure (BYOK) or to a local model you run yourself. Those providers have their own policies. See the Data Flow page for details.",
+    "controlTitle": "How to clear or withdraw",
+    "controlBody": "You can sign out at any time, clear your browser storage, or delete your account and acknowledgements from Settings. Removing an API key stops future calls to that provider.",
+    "updated": "Last updated: 2026-06-07"
   }
 }
