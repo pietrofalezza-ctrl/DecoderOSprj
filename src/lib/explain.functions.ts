@@ -66,6 +66,9 @@ export const explainFile = createServerFn({ method: "POST" })
       }
     }
 
+    const { assertByokAckAccepted } = await import("./byok-acknowledgement.functions");
+    await assertByokAckAccepted(context.supabase, context.userId);
+
     // Load credential (skip for Lovable AI which uses the server-side gateway key).
     let apiKey: string;
     if (data.provider === "lovable") {

@@ -4,7 +4,14 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
-import { ShieldCheck, Sparkles, Download, Trash2 } from "lucide-react";
+import {
+  ShieldCheck,
+  Sparkles,
+  Download,
+  Trash2,
+  FileCheck2,
+  AlertTriangle,
+} from "lucide-react";
 
 import { AppShell } from "@/components/AppShell";
 import { Button } from "@/components/ui/button";
@@ -26,6 +33,8 @@ import {
   deleteLocalEndpoint,
 } from "@/lib/credentials.functions";
 import { exportMyData, deleteMyAccount } from "@/lib/account.functions";
+import { listByokAckHistory } from "@/lib/byok-acknowledgement.functions";
+import { useByokAck } from "@/hooks/use-byok-ack";
 
 import { supabase } from "@/integrations/supabase/client";
 
@@ -46,6 +55,7 @@ function SettingsPage() {
   const removeKey = useServerFn(deleteProviderKey);
   const saveEndpoint = useServerFn(saveLocalEndpoint);
   const removeEndpoint = useServerFn(deleteLocalEndpoint);
+  const { requireAck } = useByokAck();
 
   const profile = useQuery({ queryKey: ["profile"], queryFn: () => getProfile() });
   const prov = useQuery({ queryKey: ["providers"], queryFn: () => list() });
@@ -140,11 +150,17 @@ function SettingsPage() {
           </Button>
         </section>
 
+        <AcknowledgementSection />
+
         <section id="byok" className="space-y-4 rounded-lg border border-border bg-card p-5 scroll-mt-20">
           <h2 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
             {t("settings.byokSection")}
           </h2>
           <p className="text-xs text-muted-foreground">{t("settings.byokIntro")}</p>
+          <div className="flex items-start gap-2 rounded-md border border-amber-500/30 bg-amber-500/5 p-3 text-xs text-amber-900 dark:text-amber-200">
+            <AlertTriangle className="mt-0.5 h-3.5 w-3.5 shrink-0" />
+            <span>{t("byokAck.settings.removeKeyWarning")}</span>
+          </div>
           <div className="space-y-3">
             {PROVIDERS.map((p) => {
               const existing = prov.data?.keys.find((k) => k.provider === p);
@@ -153,11 +169,21 @@ function SettingsPage() {
                   key={p}
                   provider={p}
                   hint={existing?.key_hint ?? null}
-                  onSave={async (key) => {
-                    await saveKey({ data: { provider: p, api_key: key } });
-                    qc.invalidateQueries({ queryKey: ["providers"] });
-                    toast.success(t("settings.saved"));
-                  }}
+                  onSave={(key) =>
+                    new Promise<void>((resolve) => {
+                      void requireAck(async () => {
+                        try {
+                          await saveKey({ data: { provider: p, api_key: key } });
+                          qc.invalidateQueries({ queryKey: ["providers"] });
+                          toast.success(t("settings.saved"));
+                        } catch (e: any) {
+                          toast.error(e?.message ?? t("errors.generic"));
+                        } finally {
+                          resolve();
+                        }
+                      });
+                    })
+                  }
                   onRemove={async () => {
                     await removeKey({ data: { provider: p } });
                     qc.invalidateQueries({ queryKey: ["providers"] });
@@ -167,6 +193,7 @@ function SettingsPage() {
             })}
           </div>
         </section>
+
 
         <section id="local" className="space-y-4 rounded-lg border border-border bg-card p-5 scroll-mt-20">
 
@@ -204,6 +231,73 @@ function SettingsPage() {
         <p className="text-center text-xs text-muted-foreground">{t("footer.ownership")}</p>
       </div>
     </AppShell>
+  );
+}
+
+function AcknowledgementSection() {
+  const { t, i18n } = useTranslation();
+  const { accepted, record, currentVersion, openAck } = useByokAck();
+  const fetchHistory = useServerFn(listByokAckHistory);
+  const history = useQuery({ queryKey: ["byok-ack-history"], queryFn: () => fetchHistory() });
+
+  const fmt = (iso: string) =>
+    new Date(iso).toLocaleDateString(i18n.language, {
+      year: "numeric",
+      month: "short",
+      day: "2-digit",
+    });
+
+  return (
+    <section
+      id="acknowledgements"
+      className="space-y-4 rounded-lg border border-border bg-card p-5 scroll-mt-20"
+    >
+      <div className="flex items-start gap-3">
+        <FileCheck2 className="mt-0.5 h-5 w-5 shrink-0 text-primary" />
+        <div className="flex-1">
+          <h2 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
+            {t("byokAck.settings.sectionTitle")}
+          </h2>
+          {accepted && record ? (
+            <p className="mt-2 text-sm">
+              {t("byokAck.settings.acceptedOn", {
+                version: record.version,
+                date: fmt(record.acceptedAt),
+                language: record.language,
+              })}
+            </p>
+          ) : (
+            <div className="mt-2 flex flex-wrap items-center gap-3">
+              <span className="inline-flex items-center gap-1 rounded-full bg-destructive/10 px-2 py-0.5 text-xs font-medium text-destructive">
+                {t("byokAck.settings.notAcceptedBadge")}
+              </span>
+              <Button size="sm" onClick={() => openAck()}>
+                {t("byokAck.settings.openCta")}
+              </Button>
+            </div>
+          )}
+          <p className="mt-1 text-xs text-muted-foreground">
+            {t("byokAck.settings.currentVersion", { version: currentVersion ?? "—" })}
+          </p>
+        </div>
+      </div>
+
+      {history.data?.items.length ? (
+        <div>
+          <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+            {t("byokAck.settings.history")}
+          </p>
+          <ul className="mt-2 space-y-1 text-xs text-muted-foreground">
+            {history.data.items.map((it: any, i: number) => (
+              <li key={i} className="flex items-center justify-between border-b border-border/40 py-1 last:border-0">
+                <span>v{it.accepted_terms_version}</span>
+                <span>{fmt(it.accepted_at)} · {it.accepted_language}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ) : null}
+    </section>
   );
 }
 

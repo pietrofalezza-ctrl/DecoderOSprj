@@ -1,6 +1,7 @@
 import { createFileRoute, Link, Outlet, redirect, useRouter } from "@tanstack/react-router";
 
 import { supabase } from "@/integrations/supabase/client";
+import { ByokAckProvider } from "@/components/ByokAckProvider";
 
 export const Route = createFileRoute("/_authenticated")({
   ssr: false,
@@ -18,7 +19,11 @@ export const Route = createFileRoute("/_authenticated")({
     }
     return { user: data.session.user };
   },
-  component: () => <Outlet />,
+  component: () => (
+    <ByokAckProvider>
+      <Outlet />
+    </ByokAckProvider>
+  ),
   errorComponent: AuthErrorComponent,
 });
 

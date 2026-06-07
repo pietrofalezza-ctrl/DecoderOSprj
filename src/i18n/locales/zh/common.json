@@ -593,6 +593,55 @@
     "bugsCta": "在 GitHub 提交 Issue",
     "cookieNote": "Decoder 不使用任何分析工具或第三方追踪器。唯一设置的 Cookie 是界面技术偏好（侧边栏状态）：根据 ePrivacy 指令无需用户同意。"
   },
+  "byokAck": {
+    "title": "关于 BYOK 和 AI 服务提供商的重要提示",
+    "versionLabel": "条款版本:{{version}}",
+    "saving": "保存中……",
+    "cta": "我接受并继续",
+    "cancel": "取消",
+    "body": {
+      "p1": "你正在使用自己的 API 密钥连接第三方 AI 提供商。",
+      "p2": "你需对在所选提供商账户下产生的所有费用承担全部责任。",
+      "p3": "Decoder 不控制第三方提供商的定价、计费、速率限制、数据保留或模型行为。",
+      "p4": "若选择云端 AI 提供商,你所选定的代码片段、仓库内容或提示词可能会被发送到该提供商进行处理。",
+      "p5": "除非你获得授权并已阅读相应提供商的条款,否则请勿提交机密、专有、受监管的、个人的、雇主所有或第三方的代码。",
+      "p6": "在本地模式下,Decoder 设计为在本地处理代码,但你仍需对本地环境、模型、插件以及网络配置负责。",
+      "p7": "AI 生成的解释可能不准确,在用于技术、安全、法律、合规或生产用途前必须由合格人员审核。",
+      "p8": "Decoder 是一款开源的、用于代码理解的教育工具,不提供认证的安全审计、法律建议、合规建议或生产保证。"
+    },
+    "checks": {
+      "cost": "我理解自己需对使用自己的 API 密钥所产生的费用负责。",
+      "providers": "我理解云端 AI 提供商可能会收到我选择分析的代码或提示词。",
+      "authorized": "我确认有权分析我所提交的代码。",
+      "review": "我理解 AI 生成的解释可能不准确,需要人工审核。",
+      "terms": "我接受条款和隐私政策。"
+    },
+    "dataFlow": {
+      "toggle": "查看数据流向",
+      "localTitle": "本地模式",
+      "cloudTitle": "云端 BYOK 模式",
+      "userMachine": "用户机器",
+      "localModel": "本地模型",
+      "decoderUi": "Decoder 界面",
+      "codeSelection": "代码选择",
+      "decoderBackend": "Decoder 后端",
+      "aiProvider": "AI 提供商"
+    },
+    "links": {
+      "terms": "使用条款",
+      "privacy": "隐私政策",
+      "docs": "提供商文档"
+    },
+    "settings": {
+      "sectionTitle": "同意与条款",
+      "acceptedOn": "你已于 {{date}} 接受版本 {{version}}(语言:{{language}})。",
+      "currentVersion": "当前条款版本:{{version}}",
+      "notAcceptedBadge": "缺少确认",
+      "openCta": "打开提示",
+      "history": "确认历史",
+      "removeKeyWarning": "移除 API 密钥后,所有面向该提供商的后续调用将失败,直到重新添加密钥为止。"
+    }
+  },
   "footer": {
     "ownership": "你的代码和生成的文档属于你自己。Decoder 不会用你的仓库训练模型。",
     "disclaimer": "Decoder 是一个开源代码理解工具。AI 生成的解释可能不准确，在用于技术、安全、法律或生产决策之前，应由具备资质的人员进行审查。"
