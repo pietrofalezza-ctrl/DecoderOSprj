@@ -264,6 +264,7 @@
     "githubRef": "分支 / 标签(可选)",
     "githubRefPlaceholder": "main",
     "githubOnlyPublic": "此版本仅支持公开仓库。",
+    "retentionNotice": "文件在最后一次解释后最长保留 60 天，之后自动删除。请务必导出你需要的内容。",
     "import": "导入",
     "analyzeCodebase": "分析代码库",
     "capabilityExplain": "解释任何文件",
