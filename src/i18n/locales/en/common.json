@@ -169,7 +169,7 @@
       "rights": "Data subject rights: access, rectification, erasure, portability, objection and restriction. Export or delete your data from Settings → Account.",
       "transfers": "Non-EU transfers: only when you choose an AI provider hosted outside the EU (e.g. OpenAI, Anthropic, Lovable AI). The provider is always shown before the request runs.",
       "retention": "Retention: data is kept until you explicitly delete your account or individual items.",
-      "contact": "To exercise your GDPR rights (access, rectification, erasure, portability, objection, restriction) or report an incident, email pietro@codecoder.com. We respond within 30 days."
+      "contact": "To exercise your GDPR rights (access, rectification, erasure, portability, objection, restriction) or report an incident, open a request on the project's GitHub repository. For sensitive data use GitHub's private Security Advisories channel."
     },
     "aiActTitle": "EU AI Act compliance (EU Reg. 2024/1689)",
     "aiActIntro": "Decoder is a code-comprehension assistant classified as a limited-risk AI system.",
