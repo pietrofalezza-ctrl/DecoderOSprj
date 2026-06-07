@@ -222,7 +222,7 @@ function WorkspacePage() {
       }
       return text;
     },
-    onSuccess: (text) => setSummaryText(text),
+    onSuccess: (text) => { if (text) setSummaryText(text); },
     onError: (e: any) => toast.error(e?.message ?? t("errors.generic")),
   });
 
