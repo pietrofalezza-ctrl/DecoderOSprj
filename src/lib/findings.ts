@@ -23,8 +23,8 @@ const SEVERITY_SET: ReadonlySet<FindingSeverity> = new Set([
 
 function normalizeSeverity(v: unknown): FindingSeverity {
   if (typeof v === "string") {
-    const s = v.toLowerCase().trim() as FindingSeverity;
-    if (SEVERITY_SET.has(s)) return s;
+    const s = v.toLowerCase().trim();
+    if ((SEVERITY_SET as ReadonlySet<string>).has(s)) return s as FindingSeverity;
     if (s === "warn" || s === "warning") return "medium";
     if (s === "error") return "high";
   }
