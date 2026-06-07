@@ -133,7 +133,7 @@ export function ByokAcknowledgementDialog({
           <Link to="/terms" target="_blank" className="inline-flex items-center gap-1 text-primary hover:underline">
             {t("byokAck.links.terms")} <ExternalLink className="h-3 w-3" />
           </Link>
-          <Link to="/terms" hash="gdpr" target="_blank" className="inline-flex items-center gap-1 text-primary hover:underline">
+          <Link to="/privacy" target="_blank" className="inline-flex items-center gap-1 text-primary hover:underline">
             {t("byokAck.links.privacy")} <ExternalLink className="h-3 w-3" />
           </Link>
           <Link to="/docs" target="_blank" className="inline-flex items-center gap-1 text-primary hover:underline">

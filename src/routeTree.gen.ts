@@ -10,9 +10,11 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as TermsRouteImport } from './routes/terms'
+import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as OpenSourceRouteImport } from './routes/open-source'
 import { Route as ManifestoRouteImport } from './routes/manifesto'
 import { Route as DocsRouteImport } from './routes/docs'
+import { Route as DataFlowRouteImport } from './routes/data-flow'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
@@ -30,6 +32,11 @@ const TermsRoute = TermsRouteImport.update({
   path: '/terms',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PrivacyRoute = PrivacyRouteImport.update({
+  id: '/privacy',
+  path: '/privacy',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const OpenSourceRoute = OpenSourceRouteImport.update({
   id: '/open-source',
   path: '/open-source',
@@ -43,6 +50,11 @@ const ManifestoRoute = ManifestoRouteImport.update({
 const DocsRoute = DocsRouteImport.update({
   id: '/docs',
   path: '/docs',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DataFlowRoute = DataFlowRouteImport.update({
+  id: '/data-flow',
+  path: '/data-flow',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ContactRoute = ContactRouteImport.update({
@@ -108,9 +120,11 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/contact': typeof ContactRoute
+  '/data-flow': typeof DataFlowRoute
   '/docs': typeof DocsRouteWithChildren
   '/manifesto': typeof ManifestoRoute
   '/open-source': typeof OpenSourceRoute
+  '/privacy': typeof PrivacyRoute
   '/terms': typeof TermsRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/settings': typeof AuthenticatedSettingsRoute
@@ -124,9 +138,11 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/contact': typeof ContactRoute
+  '/data-flow': typeof DataFlowRoute
   '/docs': typeof DocsRouteWithChildren
   '/manifesto': typeof ManifestoRoute
   '/open-source': typeof OpenSourceRoute
+  '/privacy': typeof PrivacyRoute
   '/terms': typeof TermsRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/settings': typeof AuthenticatedSettingsRoute
@@ -141,9 +157,11 @@ export interface FileRoutesById {
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/auth': typeof AuthRoute
   '/contact': typeof ContactRoute
+  '/data-flow': typeof DataFlowRoute
   '/docs': typeof DocsRouteWithChildren
   '/manifesto': typeof ManifestoRoute
   '/open-source': typeof OpenSourceRoute
+  '/privacy': typeof PrivacyRoute
   '/terms': typeof TermsRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/settings': typeof AuthenticatedSettingsRoute
@@ -159,9 +177,11 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/contact'
+    | '/data-flow'
     | '/docs'
     | '/manifesto'
     | '/open-source'
+    | '/privacy'
     | '/terms'
     | '/dashboard'
     | '/settings'
@@ -175,9 +195,11 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/contact'
+    | '/data-flow'
     | '/docs'
     | '/manifesto'
     | '/open-source'
+    | '/privacy'
     | '/terms'
     | '/dashboard'
     | '/settings'
@@ -191,9 +213,11 @@ export interface FileRouteTypes {
     | '/_authenticated'
     | '/auth'
     | '/contact'
+    | '/data-flow'
     | '/docs'
     | '/manifesto'
     | '/open-source'
+    | '/privacy'
     | '/terms'
     | '/_authenticated/dashboard'
     | '/_authenticated/settings'
@@ -209,9 +233,11 @@ export interface RootRouteChildren {
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AuthRoute: typeof AuthRoute
   ContactRoute: typeof ContactRoute
+  DataFlowRoute: typeof DataFlowRoute
   DocsRoute: typeof DocsRouteWithChildren
   ManifestoRoute: typeof ManifestoRoute
   OpenSourceRoute: typeof OpenSourceRoute
+  PrivacyRoute: typeof PrivacyRoute
   TermsRoute: typeof TermsRoute
   ApiPublicHooksCleanupStaleRepositoriesRoute: typeof ApiPublicHooksCleanupStaleRepositoriesRoute
 }
@@ -223,6 +249,13 @@ declare module '@tanstack/react-router' {
       path: '/terms'
       fullPath: '/terms'
       preLoaderRoute: typeof TermsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/privacy': {
+      id: '/privacy'
+      path: '/privacy'
+      fullPath: '/privacy'
+      preLoaderRoute: typeof PrivacyRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/open-source': {
@@ -244,6 +277,13 @@ declare module '@tanstack/react-router' {
       path: '/docs'
       fullPath: '/docs'
       preLoaderRoute: typeof DocsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/data-flow': {
+      id: '/data-flow'
+      path: '/data-flow'
+      fullPath: '/data-flow'
+      preLoaderRoute: typeof DataFlowRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/contact': {
@@ -375,9 +415,11 @@ const rootRouteChildren: RootRouteChildren = {
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AuthRoute: AuthRoute,
   ContactRoute: ContactRoute,
+  DataFlowRoute: DataFlowRoute,
   DocsRoute: DocsRouteWithChildren,
   ManifestoRoute: ManifestoRoute,
   OpenSourceRoute: OpenSourceRoute,
+  PrivacyRoute: PrivacyRoute,
   TermsRoute: TermsRoute,
   ApiPublicHooksCleanupStaleRepositoriesRoute:
     ApiPublicHooksCleanupStaleRepositoriesRoute,
