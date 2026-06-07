@@ -466,6 +466,49 @@
     "needsCloud": "L'analisi del codice richiede un provider cloud in questa build.",
     "empty": "Esegui un'analisi per vedere i risultati qui."
   },
+  "insights": {
+    "lineRange": "Righe {{range}}",
+    "fileLevel": "Osservazione a livello file",
+    "expand": "Espandi",
+    "collapse": "Comprimi",
+    "suggestedAction": "Azione suggerita",
+    "reasonNotMapped": "Perché non collegata",
+    "patchFrom": "Patch generata da questo insight",
+    "backToInsight": "Torna all'insight",
+    "outline": {
+      "summary": "{{total}} insight · {{mapped}} collegati al codice · {{unmapped}} generali"
+    },
+    "filter": { "all": "Tutti" },
+    "category": {
+      "summary": "Riassunto",
+      "quality": "Qualità",
+      "security": "Sicurezza",
+      "ai_origin": "Origine AI",
+      "architecture": "Architettura",
+      "comment": "Commento"
+    },
+    "severity": {
+      "info": "Info",
+      "low": "Basso",
+      "medium": "Medio",
+      "high": "Alto",
+      "critical": "Critico"
+    },
+    "actions": {
+      "show": "Mostra nel codice",
+      "explain": "Spiega questo punto",
+      "comment": "Suggerisci commento",
+      "patch": "Crea patch"
+    },
+    "selection": {
+      "explain": "Spiega selezione",
+      "summarize": "Riassumi selezione",
+      "comment": "Suggerisci commenti",
+      "quality": "Controlla qualità",
+      "security": "Controlla sicurezza"
+    },
+    "unmapped": { "title": "Osservazioni a livello file" }
+  },
   "aiOrigin": {
     "title": "Probabilità origine AI",
     "intro": "Stima quanto è probabile che questa codebase — o parti di essa — sia stata generata da un assistente AI.",

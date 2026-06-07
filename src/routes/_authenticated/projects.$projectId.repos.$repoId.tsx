@@ -10,7 +10,7 @@ import { Sparkles, Copy, Download, ShieldCheck, FileDown, BugPlay, Bot, ScanSear
 import { AppShell } from "@/components/AppShell";
 import { FileTree } from "@/components/FileTree";
 import { CodeViewer, type CodeSelection, type CodeViewerHandle } from "@/components/CodeViewer";
-import { FindingsList } from "@/components/FindingsList";
+import { InsightPanel, type InsightAction } from "@/components/InsightPanel";
 import { DiffViewer, extractDiffBlock, extractNotes } from "@/components/DiffViewer";
 import { FolderAnalysisPanel } from "@/components/FolderAnalysisPanel";
 
@@ -47,7 +47,7 @@ import { exportRepoMarkdown } from "@/lib/export.functions";
 import { callLocalProvider, type LocalKind } from "@/lib/local-ai";
 import { buildPrompt, type Proficiency } from "@/lib/prompt";
 import { buildAnalysisPrompt, type AnalysisKind } from "@/lib/analysis-prompt";
-import { extractFindings, stripFindingsBlock, type Finding } from "@/lib/findings";
+import { extractInsightBundle, stripFindingsBlock, type Finding } from "@/lib/findings";
 
 type CloudProvider = "lovable" | "openai" | "anthropic" | "gemini" | "openrouter";
 type ProviderValue = `cloud:${CloudProvider}` | `local:${LocalKind}`;
@@ -324,21 +324,40 @@ function WorkspacePage() {
     onError: (e: any) => toast.error(e?.message ?? t("errors.generic")),
   });
 
-  // Best source of findings for the active "issue" tab.
-  const sourceTextForFindings = useMemo(() => {
-    if (mainTab === "quality") return qualityText;
-    if (mainTab === "security") return securityText;
-    return "";
-  }, [mainTab, qualityText, securityText]);
-
   const totalLines = fileQ.data?.content ? fileQ.data.content.split("\n").length : 100_000;
-  const findings: Finding[] = useMemo(
-    () => extractFindings(sourceTextForFindings, totalLines),
-    [sourceTextForFindings, totalLines],
+
+  // Per-tab insight bundles (mapped findings + unmapped file-level points).
+  const summaryBundle = useMemo(
+    () => extractInsightBundle(summaryText, totalLines, "summary"),
+    [summaryText, totalLines],
+  );
+  const qualityBundle = useMemo(
+    () => extractInsightBundle(qualityText, totalLines, "quality"),
+    [qualityText, totalLines],
+  );
+  const securityBundle = useMemo(
+    () => extractInsightBundle(securityText, totalLines, "security"),
+    [securityText, totalLines],
   );
 
+  // Active tab's findings drive the code editor highlights.
+  const findings: Finding[] = useMemo(() => {
+    if (mainTab === "summary") return summaryBundle.findings;
+    if (mainTab === "quality") return qualityBundle.findings;
+    if (mainTab === "security") return securityBundle.findings;
+    return [];
+  }, [mainTab, summaryBundle, qualityBundle, securityBundle]);
+
+  const [activeFindingId, setActiveFindingId] = useState<string | null>(null);
+  const [patchSourceInsight, setPatchSourceInsight] = useState<Finding | null>(null);
+
+  // Clear active highlight when the active tab no longer contains it.
+  useEffect(() => {
+    if (!activeFindingId) return;
+    if (!findings.some((f) => f.id === activeFindingId)) setActiveFindingId(null);
+  }, [findings, activeFindingId]);
+
   const fixSourceAnalysis = useMemo(() => {
-    // Prefer whichever issue analysis the user just ran.
     if (qualityText) return { kind: qualityKind, text: qualityText };
     if (securityText) return { kind: "security" as const, text: securityText };
     return null;
@@ -428,9 +447,65 @@ function WorkspacePage() {
     (mainTab === "fix" && fixMut.isPending);
 
   const jumpToFinding = (f: Finding) => {
+    setActiveFindingId(f.id ?? null);
     codeRef.current?.revealLine(f.start_line, {
       select: { from: f.start_line, to: f.end_line },
     });
+  };
+
+  const handleInsightAction = (action: InsightAction) => {
+    const f = action.finding;
+    if (!fileQ.data) return;
+    if (action.kind === "show") {
+      jumpToFinding(f);
+      return;
+    }
+    if (action.kind === "explain" || action.kind === "comment") {
+      const lines = fileQ.data.content.split("\n");
+      const slice = lines
+        .slice(f.start_line - 1, f.end_line)
+        .join("\n");
+      setSelection({
+        content: slice,
+        startLine: f.start_line,
+        endLine: f.end_line,
+      });
+      setUseSelection(true);
+      setMainTab("summary");
+      setSummarySub(action.kind === "comment" ? "human" : "technical");
+      jumpToFinding(f);
+      // defer so state propagates
+      setTimeout(() => explainMut.mutate(), 0);
+      return;
+    }
+    if (action.kind === "patch") {
+      setPatchSourceInsight(f);
+      jumpToFinding(f);
+      if (providerValue.startsWith("cloud:") && fixSourceAnalysis) {
+        setMainTab("fix");
+        setTimeout(() => fixMut.mutate(), 0);
+      } else {
+        toast.error(t("workspace.fix.needsAnalysis"));
+      }
+      return;
+    }
+  };
+
+  // Toolbar actions triggered from a manual editor selection.
+  const runFromSelection = (kind: "explain" | "summarize" | "comment" | "quality" | "security") => {
+    if (!selection) return;
+    setUseSelection(true);
+    if (kind === "explain" || kind === "summarize" || kind === "comment") {
+      setMainTab("summary");
+      setSummarySub(kind === "comment" || kind === "summarize" ? "human" : "technical");
+      setTimeout(() => explainMut.mutate(), 0);
+    } else if (kind === "quality") {
+      setMainTab("quality");
+      setTimeout(() => qualityMut.mutate(), 0);
+    } else if (kind === "security") {
+      setMainTab("security");
+      setTimeout(() => securityMut.mutate(), 0);
+    }
   };
 
 
@@ -533,13 +608,50 @@ function WorkspacePage() {
                   </div>
                 </div>
               ) : fileQ.data ? (
-                <CodeViewer
-                  ref={codeRef}
-                  content={fileQ.data.content}
-                  language={fileQ.data.language}
-                  onSelectionChange={setSelection}
-                  findings={findings}
-                />
+                <div className="relative h-full">
+                  <CodeViewer
+                    ref={codeRef}
+                    content={fileQ.data.content}
+                    language={fileQ.data.language}
+                    onSelectionChange={setSelection}
+                    findings={findings}
+                    activeFindingId={activeFindingId}
+                    onMarkerClick={(f) => {
+                      setActiveFindingId(f.id ?? null);
+                      // surface its tab if the active one doesn't contain it
+                      if (f.category === "summary" || f.category === "comment") setMainTab("summary");
+                      else if (f.category === "security") setMainTab("security");
+                      else if (f.category === "quality") setMainTab("quality");
+                    }}
+                  />
+                  {selection && (
+                    <div className="pointer-events-auto absolute right-3 top-3 z-20 flex flex-wrap items-center gap-1 rounded-md border border-border bg-card/95 p-1 shadow-md backdrop-blur">
+                      <span className="px-1.5 text-[10px] font-mono text-muted-foreground">
+                        {t("insights.lineRange", {
+                          range:
+                            selection.startLine === selection.endLine
+                              ? `${selection.startLine}`
+                              : `${selection.startLine}–${selection.endLine}`,
+                        })}
+                      </span>
+                      <Button size="sm" variant="ghost" className="h-6 px-2 text-[10px]" onClick={() => runFromSelection("explain")}>
+                        {t("insights.selection.explain")}
+                      </Button>
+                      <Button size="sm" variant="ghost" className="h-6 px-2 text-[10px]" onClick={() => runFromSelection("summarize")}>
+                        {t("insights.selection.summarize")}
+                      </Button>
+                      <Button size="sm" variant="ghost" className="h-6 px-2 text-[10px]" onClick={() => runFromSelection("comment")}>
+                        {t("insights.selection.comment")}
+                      </Button>
+                      <Button size="sm" variant="ghost" className="h-6 px-2 text-[10px]" onClick={() => runFromSelection("quality")}>
+                        {t("insights.selection.quality")}
+                      </Button>
+                      <Button size="sm" variant="ghost" className="h-6 px-2 text-[10px]" onClick={() => runFromSelection("security")}>
+                        {t("insights.selection.security")}
+                      </Button>
+                    </div>
+                  )}
+                </div>
               ) : (
                 <div className="flex h-full items-center justify-center p-6">
                   <div className="max-w-md space-y-4 rounded-lg border border-border bg-card p-6 shadow-sm">
@@ -770,27 +882,40 @@ function WorkspacePage() {
                     </Button>
                   </div>
                 </div>
-                <TabsContent forceMount value="summary" className="m-0 flex-1 overflow-auto px-4 pb-4 data-[state=inactive]:hidden">
+                <TabsContent forceMount value="summary" className="m-0 flex-1 space-y-3 overflow-auto px-4 pb-4 data-[state=inactive]:hidden">
                   <Tabs value={summarySub} onValueChange={(v) => setSummarySub(v as SummarySub)}>
                     <TabsList className="mt-2">
                       <TabsTrigger value="human">{t("workspace.tabs.human")}</TabsTrigger>
                       <TabsTrigger value="technical">{t("workspace.tabs.technical")}</TabsTrigger>
                     </TabsList>
                     <TabsContent forceMount value="human" className="m-0 pt-2 data-[state=inactive]:hidden">
-                      <ExplanationView text={summaryText} />
+                      <ExplanationView text={stripFindingsBlock(summaryText)} />
                     </TabsContent>
                     <TabsContent forceMount value="technical" className="m-0 pt-2 data-[state=inactive]:hidden">
-                      <ExplanationView text={summaryText} />
+                      <ExplanationView text={stripFindingsBlock(summaryText)} />
                     </TabsContent>
                   </Tabs>
+                  {summaryText && (
+                    <InsightPanel
+                      findings={summaryBundle.findings}
+                      unmapped={summaryBundle.unmapped}
+                      activeId={activeFindingId}
+                      onAction={handleInsightAction}
+                      defaultCategory="summary"
+                      emptyLabel={t("workspace.findings.empty")}
+                    />
+                  )}
                 </TabsContent>
                 <TabsContent forceMount value="quality" className="m-0 flex-1 space-y-3 overflow-auto px-4 pb-4 data-[state=inactive]:hidden">
                   <ExplanationView text={stripFindingsBlock(qualityText)} placeholder={t("analysis.empty")} />
                   {qualityText && (
-                    <FindingsList
-                      findings={findings}
-                      onJump={jumpToFinding}
-                      title={t("workspace.findings.title")}
+                    <InsightPanel
+                      findings={qualityBundle.findings}
+                      unmapped={qualityBundle.unmapped}
+                      activeId={activeFindingId}
+                      onAction={handleInsightAction}
+                      canPatch={providerValue.startsWith("cloud:")}
+                      defaultCategory="quality"
                       emptyLabel={t("workspace.findings.empty")}
                     />
                   )}
@@ -798,10 +923,13 @@ function WorkspacePage() {
                 <TabsContent forceMount value="security" className="m-0 flex-1 space-y-3 overflow-auto px-4 pb-4 data-[state=inactive]:hidden">
                   <ExplanationView text={stripFindingsBlock(securityText)} placeholder={t("analysis.empty")} />
                   {securityText && (
-                    <FindingsList
-                      findings={extractFindings(securityText, totalLines)}
-                      onJump={jumpToFinding}
-                      title={t("workspace.findings.title")}
+                    <InsightPanel
+                      findings={securityBundle.findings}
+                      unmapped={securityBundle.unmapped}
+                      activeId={activeFindingId}
+                      onAction={handleInsightAction}
+                      canPatch={providerValue.startsWith("cloud:")}
+                      defaultCategory="security"
                       emptyLabel={t("workspace.findings.empty")}
                     />
                   )}
@@ -839,6 +967,30 @@ function WorkspacePage() {
                         </span>
                       )}
                     </div>
+                    {patchSourceInsight && fixText && (
+                      <div className="flex items-center justify-between gap-2 rounded-md border border-primary/30 bg-primary/5 px-2 py-1.5 text-[11px]">
+                        <span className="truncate">
+                          <span className="font-semibold text-primary">{t("insights.patchFrom")}: </span>
+                          {patchSourceInsight.title}
+                          <span className="ml-2 font-mono text-muted-foreground">
+                            {t("insights.lineRange", {
+                              range:
+                                patchSourceInsight.start_line === patchSourceInsight.end_line
+                                  ? `${patchSourceInsight.start_line}`
+                                  : `${patchSourceInsight.start_line}–${patchSourceInsight.end_line}`,
+                            })}
+                          </span>
+                        </span>
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          className="h-6 px-2 text-[10px]"
+                          onClick={() => jumpToFinding(patchSourceInsight)}
+                        >
+                          {t("insights.backToInsight")}
+                        </Button>
+                      </div>
+                    )}
                     <div className="min-h-0 flex-1">
                       <DiffViewer
                         diff={extractDiffBlock(fixText)}

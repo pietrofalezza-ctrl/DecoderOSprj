@@ -466,6 +466,49 @@
     "needsCloud": "此版本中代码分析需要使用云端提供商。",
     "empty": "运行分析以在此查看结果。"
   },
+  "insights": {
+    "lineRange": "第 {{range}} 行",
+    "fileLevel": "文件级观察",
+    "expand": "展开",
+    "collapse": "收起",
+    "suggestedAction": "建议操作",
+    "reasonNotMapped": "未关联原因",
+    "patchFrom": "由此洞察生成的补丁",
+    "backToInsight": "返回洞察",
+    "outline": {
+      "summary": "{{total}} 条洞察 · {{mapped}} 条关联到代码 · {{unmapped}} 条通用"
+    },
+    "filter": { "all": "全部" },
+    "category": {
+      "summary": "摘要",
+      "quality": "质量",
+      "security": "安全",
+      "ai_origin": "AI 来源",
+      "architecture": "架构",
+      "comment": "注释"
+    },
+    "severity": {
+      "info": "信息",
+      "low": "低",
+      "medium": "中",
+      "high": "高",
+      "critical": "严重"
+    },
+    "actions": {
+      "show": "在代码中显示",
+      "explain": "解释此项",
+      "comment": "建议注释",
+      "patch": "创建补丁"
+    },
+    "selection": {
+      "explain": "解释选区",
+      "summarize": "总结选区",
+      "comment": "建议注释",
+      "quality": "检查质量",
+      "security": "检查安全"
+    },
+    "unmapped": { "title": "文件级观察" }
+  },
   "aiOrigin": {
     "title": "AI 来源概率",
     "intro": "估计该代码库——或其中部分——由 AI 编码助手生成的可能性。",

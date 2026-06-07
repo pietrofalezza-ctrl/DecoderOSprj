@@ -40,27 +40,35 @@ export function buildAnalysisPrompt(args: {
     ? ""
     : `
 
-AFTER the prose, append a fenced code block with language tag \`findings-json\` containing a JSON array of the concrete locations referenced in your prose. Each item has shape:
+AFTER the prose, append a fenced code block with language tag \`insights-json\` containing a JSON OBJECT with two arrays: \`insights\` (mapped to specific lines) and \`unmapped_insights\` (file-level or general observations that you cannot anchor to specific lines). Schema:
 {
-  "start_line": <integer>,
-  "end_line": <integer>,
-  "severity": "info" | "low" | "medium" | "high" | "critical",
-  "title": "<short label, <=80 chars>",
-  "message": "<one-paragraph explanation tying it to the prose above>"
+  "insights": [
+    {
+      "id": "<short stable slug>",
+      "category": "summary | quality | security | ai_origin | architecture | comment",
+      "severity": "info | low | medium | high",
+      "title": "<short label, <=80 chars>",
+      "explanation": "<one-paragraph explanation tied to the prose above>",
+      "suggested_action": "<optional, short, actionable>",
+      "start_line": <integer>,
+      "end_line": <integer>
+    }
+  ],
+  "unmapped_insights": [
+    {
+      "category": "summary | quality | security | ai_origin | architecture | comment",
+      "title": "<short label>",
+      "explanation": "<why it matters at file level>",
+      "reason_not_mapped": "<why no specific lines>"
+    }
+  ]
 }
 Rules:
 - Use the SAME line numbers you see in the file source below (1-indexed).
-- Include only findings that point to specific lines/ranges. Omit generic remarks.
-- Maximum 25 items. Keep it small and high-signal.
-- If there are NO findings, output an empty array \`[]\`.
-- Do NOT add any commentary inside the fenced block — JSON only.
-
-Example:
-\`\`\`findings-json
-[
-  {"start_line": 42, "end_line": 47, "severity": "high", "title": "Missing await on async call", "message": "fetchUser is async but its promise is dropped, leaving subsequent logic to run on undefined."}
-]
-\`\`\``;
+- If you cannot confidently map a point to lines, put it under \`unmapped_insights\` instead of inventing line numbers.
+- Maximum 25 mapped insights and 10 unmapped insights. Keep it high-signal.
+- If there are no findings of either kind, output \`{"insights": [], "unmapped_insights": []}\`.
+- Do NOT add any commentary inside the fenced block — JSON only.`;
 
   const formatRules = isAiOrigin
     ? `OUTPUT FORMAT — STRICT:

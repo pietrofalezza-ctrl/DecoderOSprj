@@ -42,7 +42,25 @@ export function buildPrompt(args: {
 Audience: ${audience[args.proficiency]}.
 Reply in ${langName}.
 ${focus}
-Be concise (under ~350 words). Use Markdown. Never invent behavior you cannot infer from the code.`;
+Be concise (under ~350 words). Use Markdown. Never invent behavior you cannot infer from the code.
+
+AFTER the prose, append a fenced code block with language tag \`insights-json\` mapping the key points of your explanation to specific lines:
+{
+  "insights": [
+    {
+      "id": "<short slug>",
+      "category": "summary",
+      "title": "<short label, <=80 chars>",
+      "explanation": "<one sentence>",
+      "start_line": <int>,
+      "end_line": <int>
+    }
+  ],
+  "unmapped_insights": [
+    { "category": "summary", "title": "<short label>", "explanation": "<file-level point>", "reason_not_mapped": "<why>" }
+  ]
+}
+Rules: 1-indexed lines from the source below. Maximum 12 mapped + 6 unmapped. If you cannot confidently map a point to lines, put it in \`unmapped_insights\`. JSON only inside the fenced block.`;
 
   const content =
     args.fileContent.length > 60_000
