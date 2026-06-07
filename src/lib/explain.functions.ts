@@ -182,3 +182,18 @@ export const saveLocalExplanation = createServerFn({ method: "POST" })
     });
     return { ok: true };
   });
+
+/**
+ * GDPR Art. 17 — delete a single stored explanation.
+ */
+export const deleteExplanation = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator(z.object({ id: z.string().uuid() }))
+  .handler(async ({ context, data }) => {
+    const { error } = await context.supabase
+      .from("explanations")
+      .delete()
+      .eq("id", data.id);
+    if (error) throw error;
+    return { ok: true };
+  });

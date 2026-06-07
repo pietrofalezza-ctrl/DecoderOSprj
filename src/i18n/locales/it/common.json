@@ -29,7 +29,7 @@
   },
   "landing": {
     "hero": "Sempre più codice è scritto dall'IA, <1>ma</1> tu hai ancora bisogno di comprenderlo.",
-    "heroSubtitle": "Decoder è un progetto personale di studio, gratuito e open source (MIT). Mantenuto a tempo perso da un singolo autore con il contributo della community. Non è un prodotto né un servizio commerciale: è codice pubblico da leggere, forkare e capire. BYOK o 100% locale.",
+    "heroSubtitle": "Decoder è un progetto personale di studio, gratuito e open source (MIT). Mantenuto a tempo perso da un singolo autore con il contributo della community. Non è un prodotto né un servizio commerciale: è codice pubblico da leggere, forkare e capire. BYOK o modalità di inferenza locale.",
     "heroBadgeOpen": "Progetto personale · Open source · Gratuito",
     "heroBadgePrivacy": "BYOK · Locale opzionale",
     "heroBadgeAiEra": "Esperimento didattico personale",
@@ -51,7 +51,7 @@
     "feature2Title": "Porta la tua AI",
     "feature2Body": "OpenAI, Anthropic, Gemini, OpenRouter oppure locale con Ollama / LM Studio.",
     "feature3Title": "Locale e privato",
-    "feature3Body": "Modalità locale: il tuo codice non lascia mai la tua macchina.",
+    "feature3Body": "Modalità locale: l'inferenza AI gira nel tuo ambiente tramite Ollama / LM Studio; i contenuti dei file non vengono inviati ai provider AI. I file caricati restano nello storage privato del server.",
     "howTitle": "Come funziona",
     "howIntro": "Tre passi dal sorgente alla conoscenza.",
     "step1Title": "Importa il codice",
@@ -322,7 +322,9 @@
     "empty": "Non hai ancora progetti.",
     "projectNamePlaceholder": "Nome progetto",
     "projectDescPlaceholder": "Descrizione (opzionale)",
-    "create": "Crea"
+    "create": "Crea",
+    "deleteProject": "Elimina progetto",
+    "deleteProjectConfirm": "Eliminare il progetto \"{{name}}\" con tutti i suoi repository, file e spiegazioni? L'operazione è irreversibile."
   },
   "howToUse": {
     "title": "Come usare Decoder",
@@ -333,7 +335,7 @@
     "byokBody": "Usa OpenAI, Anthropic, Gemini o OpenRouter con la tua API key. Paghi direttamente il provider, senza ricarichi.",
     "byokCta": "Aggiungi la tua API key",
     "localTitle": "Locale (Ollama / LM Studio)",
-    "localBody": "Inferenza interamente sul tuo computer. Il codice sorgente non lascia mai la tua macchina.",
+    "localBody": "Inferenza sulla tua macchina tramite Ollama / LM Studio. I provider AI non ricevono i contenuti dei file. I file caricati restano nello storage privato del server.",
     "localCta": "Configura endpoint locale",
     "installTitle": "Installa come app",
     "installBody": "Decoder è una web app — non c'è nulla da scaricare. Su Chrome/Edge desktop clicca l'icona di installazione nella barra indirizzi. Su iOS Safari: Condividi → Aggiungi alla schermata Home."
@@ -361,7 +363,9 @@
     "capabilityAiOrigin": "Probabilità AI",
     "capabilityAiOriginBody": "Stima la probabilità che la codebase — o parti di essa — sia stata generata da una AI.",
     "openFiles": "Apri file e commenti",
-    "howToHint": "Apri un repository, seleziona un file e leggi i commenti generati nelle tab Riassunto / Qualità / Sicurezza / Origine AI."
+    "howToHint": "Apri un repository, seleziona un file e leggi i commenti generati nelle tab Riassunto / Qualità / Sicurezza / Origine AI.",
+    "deleteRepo": "Elimina repository",
+    "deleteRepoConfirm": "Eliminare il repository \"{{name}}\" con tutti i suoi file e spiegazioni? L'operazione è irreversibile."
   },
   "workspace": {
     "files": "File",
@@ -525,7 +529,7 @@
     "lovableIntro": "Lovable AI è già configurato lato server. Puoi iniziare a usare Decoder senza inserire alcuna chiave. Configura le tue chiavi solo se vuoi usare un provider diverso.",
     "lovableBadge": "Pronto per i test — nessuna chiave richiesta",
     "localSection": "Endpoint AI locali",
-    "localIntro": "La modalità locale gira interamente nel browser verso il tuo localhost. Il codice non raggiunge mai i nostri server.",
+    "localIntro": "In modalità locale, il browser chiama direttamente l'AI sul tuo localhost per l'inferenza — i contenuti dei file non vengono inviati ai provider AI. I file caricati restano nello storage privato del server. Resti responsabile della configurazione locale.",
     "endpointKind": "Tipo",
     "endpointUrl": "Base URL",
     "endpointModel": "Modello predefinito",
@@ -564,7 +568,7 @@
     "byokTitle": "Porta la tua chiave AI",
     "byokBody": "In Impostazioni → Provider AI, incolla una chiave per OpenAI, Anthropic, Google Gemini o OpenRouter. Le chiavi sono cifrate con AES-256-GCM lato server e decifrate solo per inoltrare la tua richiesta — non vengono mai restituite al browser.",
     "localTitle": "Modalità locale (Ollama / LM Studio)",
-    "localBody": "Installa Ollama (https://ollama.com) o LM Studio, poi in Impostazioni → Endpoint AI locali aggiungi la base URL (Ollama: http://localhost:11434, LM Studio: http://localhost:1234) e un modello predefinito. Il browser chiama direttamente la tua macchina — il codice non raggiunge mai i nostri server.",
+    "localBody": "Installa Ollama (https://ollama.com) o LM Studio, poi in Impostazioni → Endpoint AI locali aggiungi la base URL (Ollama: http://localhost:11434, LM Studio: http://localhost:1234) e un modello predefinito. Il browser chiama direttamente la tua macchina per l'inferenza — i contenuti dei file non vengono inviati ai provider AI. I file caricati restano nello storage privato del server.",
     "securityTitle": "Sicurezza e proprietà",
     "securityBody": "Il tuo codice, la documentazione generata e i commenti suggeriti appartengono a te. Non addestriamo modelli sulle tue repository. Ogni tabella del database usa Row-Level Security scoped al tuo account.",
     "adminTitle": "Diventare amministratore",
@@ -773,8 +777,90 @@
       "removeKeyWarning": "Rimuovendo una chiave API tutte le future chiamate verso quel provider falliranno fino al reinserimento."
     }
   },
+  "privacy": {
+    "kicker": "Privacy",
+    "title": "Informativa sulla privacy",
+    "intro": "Decoder è un case study open source personale. Questa pagina riassume quali dati vengono trattati, perché, e come esercitare i tuoi diritti.",
+    "controllerTitle": "Titolare del trattamento",
+    "controllerBody": "Il progetto è gestito dal singolo manutentore come persona fisica, non come azienda. Contatto: apri una issue o un Security Advisory privato sul repository GitHub.",
+    "dataTitle": "Dati trattati",
+    "dataIntro": "Decoder tratta solo i dati necessari per la demo:",
+    "data": {
+      "account": "Account: email, nome visualizzato, lingua preferita.",
+      "files": "Archivi ZIP / file di repository importati (bucket privato, RLS).",
+      "explanations": "Spiegazioni e commenti AI generati da te.",
+      "keys": "Chiavi API BYOK cifrate (AES-256-GCM) e un breve hint; configurazione del provider.",
+      "endpoints": "Configurazione degli endpoint AI locali (URL e modello predefinito).",
+      "acks": "Registrazioni di consenso (lingua, indirizzo IP, user agent, timestamp).",
+      "logs": "I log operativi della piattaforma di hosting possono includere indirizzo IP, user agent e metadati di richiesta."
+    },
+    "purposesTitle": "Finalità",
+    "purposesBody": "Fornire le funzionalità della demo (storage, forwarding BYOK, spiegazioni AI), prevenire abusi, mantenere una traccia di audit dei consensi.",
+    "lawfulTitle": "Base giuridica (GDPR UE)",
+    "lawfulBody": "Esecuzione del servizio richiesto (Art. 6(1)(b)) e legittimo interesse a gestire una demo pubblica sicura (Art. 6(1)(f)).",
+    "retentionTitle": "Conservazione",
+    "retentionBody": "Account, file, spiegazioni, credenziali ed endpoint sono conservati finché non li elimini o finché la demo non viene dismessa. I record di consenso e i log operativi possono essere conservati fino a 12 mesi come traccia di audit / prevenzione abusi.",
+    "rightsTitle": "I tuoi diritti",
+    "rightsBody": "Accesso, rettifica, cancellazione (account completo o per singolo elemento: progetto, repository, spiegazione, API key), portabilità (export JSON), limitazione, opposizione. Esercitabili da Impostazioni → Account, o tramite GitHub se le Impostazioni non sono raggiungibili.",
+    "thirdPartiesTitle": "Terze parti",
+    "thirdPartiesBody": "Hosting e database: Lovable Cloud (Supabase). AI gateway: ai.gateway.lovable.dev. I provider AI cloud che scegli (OpenAI, Anthropic, Google Gemini, OpenRouter) ricevono il codice e i prompt selezionati secondo i loro termini. I provider locali (Ollama / LM Studio) girano sulla tua macchina — nessun trasferimento al provider AI per l'inferenza, ma i file caricati restano nello storage del server.",
+    "minorsTitle": "Minori",
+    "minorsBody": "Questa demo non è destinata a persone sotto i 16 anni. Non creare un account se hai meno di tale età.",
+    "securityTitle": "Sicurezza",
+    "securityBody": "Le chiavi BYOK sono cifrate at-rest con AES-256-GCM. La tabella delle credenziali non ha policy SELECT. Ogni tabella di dati utente usa RLS su auth.uid(). La service-role key non è mai inclusa nel codice client.",
+    "noWarrantyTitle": "Disclaimer",
+    "noWarrantyBody": "Decoder è fornito \"così com'è\", senza garanzie. Non è uno strumento di audit di sicurezza certificato, consulenza legale/compliance, né un sistema di decisione produttiva."
+  },
+  "dataFlow": {
+    "kicker": "Trasparenza",
+    "title": "Come scorrono i tuoi dati",
+    "intro": "Sono supportate tre modalità. Ciascuna instrada il codice in modo diverso. La modalità locale tiene l'inferenza AI sulla tua macchina; la modalità cloud BYOK invia il codice selezionato al provider scelto.",
+    "localTitle": "Modalità locale (Ollama / LM Studio)",
+    "cloudTitle": "Modalità Cloud BYOK (OpenAI / Anthropic / Gemini / OpenRouter)",
+    "githubTitle": "Modalità importazione GitHub",
+    "githubBody": "Autorizzi GitHub. Decoder importa metadati e contenuti dei repository selezionati, secondo gli scope concessi. Puoi eliminare i dati del progetto importato in qualsiasi momento.",
+    "warningsTitle": "Prima di caricare",
+    "warnings": {
+      "secrets": "Non caricare segreti, token o file `.env`.",
+      "env": "Rimuovi `.env`, credenziali e dati dei clienti da qualsiasi archivio.",
+      "terms": "Rivedi i termini del provider AI prima di inviare codice reale.",
+      "demo": "Inizia con un repository demo pubblico o codice non sensibile."
+    },
+    "nodes": {
+      "code": "Il tuo codice",
+      "localModel": "Modello AI locale",
+      "ui": "Interfaccia Decoder",
+      "backend": "Backend Decoder",
+      "provider": "Provider AI scelto",
+      "github": "GitHub",
+      "import": "Importazione Decoder"
+    }
+  },
+  "intendedUse": {
+    "title": "Uso previsto",
+    "intro": "Decoder è progettato per:",
+    "items": {
+      "edu": "Esplorazione didattica del codice sorgente.",
+      "comprehension": "Supporto alla comprensione e all'onboarding.",
+      "docs": "Supporto alla redazione della documentazione.",
+      "maintain": "Osservazioni di manutenibilità e refactoring.",
+      "learning": "Apprendimento assistito dall'AI."
+    },
+    "notTitle": "Uso non previsto",
+    "notIntro": "Decoder NON è progettato né adatto per:",
+    "notItems": {
+      "audit": "Audit di sicurezza certificato.",
+      "legal": "Consulenza legale o di compliance.",
+      "production": "Automazione di decisioni produttive.",
+      "highRisk": "Decisioni AI ad alto rischio.",
+      "regulated": "Decisioni automatizzate su lavoro, credito, assicurazioni, salute, forze dell'ordine o autorità pubbliche.",
+      "replace": "Sostituzione della revisione umana qualificata."
+    }
+  },
   "footer": {
     "ownership": "Il tuo codice e la documentazione generata appartengono a te. Decoder non addestra modelli sulle tue repository.",
-    "disclaimer": "Decoder è uno strumento open source per la comprensione del codice. Le spiegazioni generate dall'AI possono contenere errori e devono essere verificate da una persona qualificata prima di essere usate per decisioni tecniche, di sicurezza, legali o di produzione."
+    "disclaimer": "Decoder è un case study open source e didattico per la comprensione del codice. Non è uno strumento di audit di sicurezza certificato, consulenza legale/compliance o decisione produttiva. Gli output generati dall'AI possono essere inaccurati e devono essere verificati da una persona qualificata.",
+    "privacy": "Privacy",
+    "dataFlow": "Flusso dati"
   }
 }

@@ -1,79 +1,109 @@
-## Onboarding Wizard — Plan
+## Public-Release Readiness — Fix Plan
 
-Build a 9-step first-run onboarding for Decoder, available in IT / EN / ZH, auto-shown after first login, re-openable from Settings, and ending with a mandatory acknowledgement stored in `user_acknowledgements`.
+Audit summary (full report already produced): the consent flows, encryption, RLS, and disclaimers are in good shape. The main gaps are absolute "never leaves your machine" claims that contradict the fact that uploaded files live in server storage, a missing `/privacy` route, missing per-item deletion, no in-app disclaimer footer, and `.env` not git-ignored. Plan below applies practical safeguards across EN/IT/ZH without claiming legal certification.
 
-### 1. Data model
+### P0 — Repository hygiene
 
-Reuse existing `public.user_acknowledgements`. Add a new acknowledgement type alongside the existing `byok_cloud_ai`:
+1. **`.gitignore`**: add `/.env` and `.env.*` patterns (keep `.env.example` allowed via negation). Note in `SECURITY.md` that the previously committed Supabase **publishable** key is non-secret by design but should be rotated if the repo was ever public.
+2. **`.env.example`**: create with placeholder values mirroring the structure of current `.env` so contributors know the required vars without committing secrets.
 
-- `acknowledgement_type = "decoder_onboarding_byok_ai_notice"`
-- New constant `ONBOARDING_TERMS_VERSION = "2026-06-07"` in `src/lib/onboarding.ts`.
+### P1 — Wording corrections (absolute → qualified)
 
-No migration needed — table already has all required columns (`user_id`, `acknowledgement_type`, `accepted_terms_version`, `accepted_at`, `accepted_language`, `user_agent`, `ip_address`).
+Replace every absolute privacy claim in **EN / IT / ZH** with the already-correct qualified form used in `manifesto.principles.localFirst.body` and `byokAck.body.p6`.
 
-Onboarding "completed" = a row exists for the current user with this type AND the current version. Bumping the version re-triggers onboarding.
+Targets (i18n keys):
+- `landing.feature3Body`
+- `settings.localIntro`
+- `docs.localBody`
+- `landing.heroSubtitle` (`"100% local"` → `"local-inference mode"` / equivalent IT/ZH)
 
-### 2. Server functions (`src/lib/onboarding.functions.ts`)
+Same fix in `README.md` (EN/IT/ZH blocks) and `og:description` meta in `src/routes/index.tsx` and `src/routes/auth.tsx` (`"fully local"` → `"local-inference"`).
 
-- `getOnboardingStatus()` — returns `{ completed: boolean, record | null, currentVersion }`. Auth-protected via `requireSupabaseAuth`.
-- `recordOnboardingCompletion({ language })` — inserts row with IP + UA from request headers, `ON CONFLICT DO NOTHING`.
+Approved replacement (English; equivalents in IT/ZH):
+> *"In local mode, AI inference runs in your own environment via Ollama / LM Studio; file bodies are not sent to AI providers. Uploaded files still live in your private server storage."*
 
-Both follow the same pattern as `byok-acknowledgement.functions.ts`.
+### P1 — `/privacy` route
 
-### 3. Wizard UI (`src/components/onboarding/`)
+New `src/routes/privacy.tsx` that re-renders the GDPR / privacy sections of `terms.tsx` (factored into a small shared component `<PrivacyContent />` or imported from terms) so the canonical URL exists. Update:
+- BYOK dialog "Privacy Policy" link → `/privacy`
+- Onboarding step 8 "Terms / Privacy" → make hyperlinked (`<Link to="/terms">` and `<Link to="/privacy">`)
+- Auth page disclaimer checkbox → add Privacy link
+- Footer (landing, manifesto, terms, open-source pages) → add Privacy link next to Terms
 
-- `OnboardingDialog.tsx` — full-screen modal `Dialog`, progress bar (Step N of 9), Back / Continue / Skip-for-now (except final), keyboard nav.
-- Step components: `Step1Welcome`, `Step2Modes`, `Step3Provider`, `Step4Import`, `Step5Analysis`, `Step6Reader`, `Step7Review`, `Step8Acknowledge`, `Step9Start`.
-- `DataFlowDiagram.tsx` — small SVG/CSS diagram showing Local vs Cloud BYOK flow (reuse style from BYOK dialog).
-- All copy via `t("onboarding.step1.title")` etc. — no hard-coded strings.
+### P1 — In-app footer disclaimer
 
-Step-specific behavior:
+Add a minimal footer inside `src/components/AppShell.tsx`:
+- Renders `footer.disclaimer` (already translated in all 3 locales).
+- Links: Terms · Privacy · Data flow · Manifesto.
+- Visible on every authenticated route (dashboard, analysis, settings).
 
-- **Step 3** (Add provider) — optional. Renders provider cards (Ollama, LM Studio, OpenAI, Anthropic, Gemini, OpenRouter). Selecting one expands inline form (endpoint+model for local, API key for cloud) and calls existing `saveProviderKey` / `saveLocalEndpoint` server fns. "Skip for now" link advances without configuring. Cloud key save is already gated by existing BYOK ack — wizard pre-resolves the BYOK ack inline if needed (reuses existing `useByokAck`).
-- **Step 4** (Import) — informational only in the wizard; the actual import lives in `/dashboard`. Buttons here are navigation shortcuts that close the wizard.
-- **Steps 5 & 6** — informational cards listing options; no DB writes (user picks at actual analysis time).
-- **Step 8** (Acknowledgement) — 5 mandatory checkboxes (none pre-checked). "Finish" button disabled until all 5 are true. On click → `recordOnboardingCompletion` → advances to Step 9.
-- **Step 9** — three CTAs: "Start with demo project" → `/dashboard?demo=1`, "Add AI provider" → `/settings#providers`, "Go to dashboard" → `/dashboard`. Closes wizard.
+### P1 — Per-item deletion (GDPR Art. 17 granularity)
 
-### 4. Auto-trigger
+New server fns in `src/lib/projects.functions.ts` / `repos.functions.ts` / `explain.functions.ts`:
+- `deleteProject({ projectId })` — cascades repos / files / explanations owned by the user, plus storage objects.
+- `deleteRepository({ repoId })` — cascades files / explanations / storage.
+- `deleteExplanation({ explanationId })`.
 
-New `OnboardingProvider.tsx` mounted inside `src/routes/_authenticated/route.tsx` (alongside `ByokAckProvider`). On mount, calls `getOnboardingStatus`; if `!completed`, opens `OnboardingDialog` non-dismissably (no Skip on final step, but earlier steps may be skipped — completion still requires Step 8). Exposes context `{ open, openOnboarding }`.
+All scoped by `auth.uid() = owner_id` via existing RLS; admin client only for storage object removal.
 
-Until Step 8 is signed, `getOnboardingStatus.completed` stays false → wizard re-appears on next session. (Soft model — user can navigate the app but the dialog will re-prompt at next login.)
+UI:
+- Add a delete (trash) button next to each project / repo / explanation in their existing list views.
+- Confirmation dialog with `settings.deleteConfirm`-style copy.
 
-### 5. Settings entry point
+### P1 — Onboarding step 8 links
 
-In `src/routes/_authenticated/settings.tsx`, add a "Help & Onboarding" card with:
-- Status line: "Onboarding completed on {date}, version {x}" or "Not completed".
-- Button "Reopen onboarding" → `openOnboarding()` from context.
+Make the "Terms and Conditions" / "Privacy Policy" mentions in `OnboardingDialog.tsx` step 8 clickable (open in new tab), matching the BYOK dialog pattern.
 
-### 6. i18n
+### P2 — Terms / Privacy content gaps
 
-Add new `onboarding` block to `src/i18n/locales/{it,en,zh}/common.json` covering all step titles, copy, mode descriptions, provider names, analysis types, reader levels, the 5 acknowledgement checkboxes, CTAs, and Step 9 actions. Copy uses the exact IT/EN/ZH strings from the brief.
+Edit `src/i18n/locales/{en,it,zh}/common.json` and (if structural changes needed) `src/routes/terms.tsx`:
+1. **Minors clause** — add to `terms.gdpr.*`: *"This demo is not directed at persons under 16; do not create an account if you are below that age."*
+2. **IP / UA logging disclosure** — extend `terms.dataCollected.*` to mention that acknowledgement records and server logs may include IP address and user agent.
+3. **Retention reconciliation** — unify the `dataCollected.content` (~60 days) note with `gdpr.retention` ("until deletion") into a single coherent statement.
+4. **Intended / Not intended use** — add new `terms.intendedUseTitle` / `terms.intendedUseBody` and `terms.notIntendedUseTitle` / `terms.notIntendedUseBody` blocks rendered on Terms page, using the exact lists from the brief (educational / code comprehension / etc. vs employment / credit / health / law enforcement / etc.).
+5. **Trademark reservation** — soften `terms.ownershipBody`: reserve informal rights over the "Decoder" name and logo even without registration.
 
-### 7. Files
+### P2 — README hardening
 
-**New:**
-- `src/lib/onboarding.ts` (constant + type)
-- `src/lib/onboarding.functions.ts` (server fns)
-- `src/components/onboarding/OnboardingProvider.tsx`
-- `src/components/onboarding/OnboardingDialog.tsx`
-- `src/components/onboarding/DataFlowDiagram.tsx`
-- `src/components/onboarding/Step1Welcome.tsx` … `Step9Start.tsx` (9 files)
-- `src/hooks/use-onboarding.ts`
+Add `## ⚠️ Important / Importante / 重要提示` block near the top of `README.md`, in all three languages, containing:
+- The exact global disclaimer text from the brief (`"Decoder è un case study open source e didattico …"` / EN / ZH).
+- The "Public demo safety notice" (`"Use the demo only with public, demo or non-sensitive code…"` / IT / ZH).
+- Bullet list of intended / not-intended use (same as Terms additions).
+- Pointer to `SECURITY.md` and `/terms`, `/privacy`.
 
-**Modified:**
-- `src/routes/_authenticated/route.tsx` (mount provider)
-- `src/routes/_authenticated/settings.tsx` (Help card)
-- `src/i18n/locales/{en,it,zh}/common.json` (onboarding block)
+Also remove residual absolute claims from README local-mode bullets.
 
-### 8. Out of scope
+### P2 — `/data-flow` page
 
-- No new analysis logic — wizard only explains existing features.
-- No changes to existing BYOK ack flow (kept independent; onboarding ack is a separate row type).
-- No demo repo implementation (Step 9 CTA navigates to dashboard; actual demo seeding is a separate feature).
-- No email notifications.
+New `src/routes/data-flow.tsx` rendering three labelled flow diagrams (reuse `FlowNode` styling from `ByokAcknowledgementDialog`):
+- **Local mode**: User code → Local model → Decoder UI.
+- **Cloud BYOK**: Selected code/prompt → Decoder backend → Selected AI provider → Decoder UI.
+- **GitHub**: User authorizes GitHub → Decoder imports selected repo content per granted scopes → User can delete imported project data.
 
-### 9. Bonus fix
+Plus 4 warnings: don't upload secrets · remove `.env` · review provider terms · use demo repos first. Linked from footer (AppShell + landing) and from onboarding step 4.
 
-The current runtime error (`Identifier 'requireAck' has already been declared`) appears to be a stale HMR artifact — no duplicate exists in source. Will verify after build; no source change planned unless reproduced.
+### P3 — Misc copy
+
+- Replace marketing use of `"audit" / "auditing"` in `auth.signInSubline` and `index.tsx` og:description with `"review" / "reviewing"` to avoid implying formal audit.
+- `landing.osStrip.kicker` (`"100% Open Source"`) can stay — factually accurate.
+
+### Final deliverable
+
+After implementation, produce a structured report in the chat with:
+- Issues found (mirroring audit table).
+- Changes made (file list grouped by area).
+- Remaining residual risks (e.g. controller is a private individual, no DPO).
+- Suitability statement using the required phrase: **"Prepared for public demo with practical safeguards, not legally certified."**
+- Per-scenario suitability: (a) private testing, (b) public portfolio demo, (c) real users with private repositories.
+
+### Files affected (overview)
+
+- **New**: `src/routes/privacy.tsx`, `src/routes/data-flow.tsx`, `.env.example`.
+- **Edited (code)**: `.gitignore`, `README.md`, `SECURITY.md`, `src/components/AppShell.tsx`, `src/components/ByokAcknowledgementDialog.tsx`, `src/components/onboarding/OnboardingDialog.tsx`, `src/routes/index.tsx`, `src/routes/auth.tsx`, `src/routes/terms.tsx`, `src/lib/projects.functions.ts`, `src/lib/repos.functions.ts`, `src/lib/explain.functions.ts`, project/repo/explanation list components, settings page (links).
+- **Edited (i18n)**: `src/i18n/locales/{en,it,zh}/common.json` (landing/settings/docs/terms/footer/data-flow/intended-use blocks).
+
+### Out of scope
+
+- No database migrations (existing `user_acknowledgements` table already covers the consent storage).
+- No real legal review or DPO appointment — explicit in the residual-risk section.
+- No content rewrite of `/manifesto` beyond what's required for consistency.

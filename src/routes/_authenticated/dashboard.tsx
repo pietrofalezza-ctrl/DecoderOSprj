@@ -4,7 +4,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
-import { Plus, FolderGit2, Sparkles, KeyRound, Cpu, Download } from "lucide-react";
+import { Plus, FolderGit2, Sparkles, KeyRound, Cpu, Download, Trash2 } from "lucide-react";
 
 import { AppShell } from "@/components/AppShell";
 import { Button } from "@/components/ui/button";
@@ -17,7 +17,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { createProject, listProjects } from "@/lib/projects.functions";
+import { createProject, deleteProject, listProjects } from "@/lib/projects.functions";
 
 export const Route = createFileRoute("/_authenticated/dashboard")({
   component: DashboardPage,
@@ -27,6 +27,7 @@ function DashboardPage() {
   const { t } = useTranslation();
   const list = useServerFn(listProjects);
   const create = useServerFn(createProject);
+  const remove = useServerFn(deleteProject);
   const qc = useQueryClient();
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
@@ -144,22 +145,46 @@ function DashboardPage() {
             </p>
           )}
           {projects.data?.projects.map((p) => (
-            <Link
+            <div
               key={p.id}
-              to="/projects/$projectId"
-              params={{ projectId: p.id }}
-              className="group rounded-lg border border-border bg-card p-4 transition-colors hover:border-primary/60"
+              className="group relative rounded-lg border border-border bg-card p-4 transition-colors hover:border-primary/60"
             >
-              <div className="flex items-center gap-2 text-sm font-medium">
-                <FolderGit2 className="h-4 w-4 text-primary" />
-                {p.name}
-              </div>
-              {p.description && (
-                <p className="mt-2 line-clamp-2 text-xs text-muted-foreground">
-                  {p.description}
-                </p>
-              )}
-            </Link>
+              <Link
+                to="/projects/$projectId"
+                params={{ projectId: p.id }}
+                className="block"
+              >
+                <div className="flex items-center gap-2 pr-8 text-sm font-medium">
+                  <FolderGit2 className="h-4 w-4 text-primary" />
+                  <span className="truncate">{p.name}</span>
+                </div>
+                {p.description && (
+                  <p className="mt-2 line-clamp-2 text-xs text-muted-foreground">
+                    {p.description}
+                  </p>
+                )}
+              </Link>
+              <button
+                type="button"
+                aria-label={t("dashboard.deleteProject")}
+                title={t("dashboard.deleteProject")}
+                onClick={async (e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  if (!window.confirm(t("dashboard.deleteProjectConfirm", { name: p.name }))) return;
+                  try {
+                    await remove({ data: { id: p.id } });
+                    qc.invalidateQueries({ queryKey: ["projects"] });
+                    toast.success(t("settings.deleteDone"));
+                  } catch (err: any) {
+                    toast.error(err?.message ?? t("errors.generic"));
+                  }
+                }}
+                className="absolute right-3 top-3 rounded-md p-1.5 text-muted-foreground opacity-0 transition-opacity hover:bg-destructive/10 hover:text-destructive group-hover:opacity-100 focus:opacity-100"
+              >
+                <Trash2 className="h-3.5 w-3.5" />
+              </button>
+            </div>
           ))}
         </div>
       </div>

@@ -141,6 +141,33 @@ function TermsPage() {
           </p>
         </section>
 
+        <section className="mt-10 rounded-lg border-l-4 border-primary bg-primary/5 p-6">
+          <h2 className="text-xl font-semibold">{t("intendedUse.title")}</h2>
+          <p className="mt-3 text-sm text-muted-foreground">{t("intendedUse.intro")}</p>
+          <ul className="mt-3 list-disc space-y-1 pl-5 text-sm text-muted-foreground">
+            {(["edu", "comprehension", "docs", "maintain", "learning"] as const).map((k) => (
+              <li key={k}>{t(`intendedUse.items.${k}`)}</li>
+            ))}
+          </ul>
+          <h3 className="mt-6 text-base font-semibold">{t("intendedUse.notTitle")}</h3>
+          <p className="mt-2 text-sm text-muted-foreground">{t("intendedUse.notIntro")}</p>
+          <ul className="mt-2 list-disc space-y-1 pl-5 text-sm text-muted-foreground">
+            {(["audit", "legal", "production", "highRisk", "regulated", "replace"] as const).map((k) => (
+              <li key={k}>{t(`intendedUse.notItems.${k}`)}</li>
+            ))}
+          </ul>
+        </section>
+
+        <section className="mt-10">
+          <h2 className="text-2xl font-semibold">{t("privacy.minorsTitle")}</h2>
+          <p className="mt-3 text-sm text-muted-foreground">{t("privacy.minorsBody")}</p>
+        </section>
+
+
+
+
+
+
 
 
 
@@ -221,7 +248,13 @@ function TermsPage() {
       <footer className="border-t border-border/60">
         <div className="mx-auto flex max-w-5xl flex-col items-center justify-between gap-3 px-6 py-8 text-xs text-muted-foreground md:flex-row">
           <Logo />
-          <nav className="flex gap-5">
+          <nav className="flex flex-wrap gap-5">
+            <Link to="/privacy" className="hover:text-foreground">
+              {t("footer.privacy")}
+            </Link>
+            <Link to="/data-flow" className="hover:text-foreground">
+              {t("footer.dataFlow")}
+            </Link>
             <Link to="/manifesto" className="hover:text-foreground">
               {t("landing.nav.manifesto")}
             </Link>

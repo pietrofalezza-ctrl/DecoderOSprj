@@ -29,7 +29,7 @@
   },
   "landing": {
     "hero": "越来越多的代码由 <1>AI</1> 编写。你仍然需要 <2>理解它</2>。",
-    "heroSubtitle": "Decoder 是一个个人学习项目,免费且开源(MIT)。由一位作者在业余时间维护,并接受社区贡献。它不是产品,也不是商业服务:只是可阅读、可 fork、可理解的公开代码。BYOK 或 100% 本地运行。",
+    "heroSubtitle": "Decoder 是一个个人学习项目,免费且开源(MIT)。由一位作者在业余时间维护,并接受社区贡献。它不是产品,也不是商业服务:只是可阅读、可 fork、可理解的公开代码。BYOK 或本地推理模式。",
     "heroBadgeOpen": "个人项目 · 开源 · 免费",
     "heroBadgePrivacy": "BYOK · 可选本地模式",
     "heroBadgeAiEra": "个人教学实验",
@@ -51,7 +51,7 @@
     "feature2Title": "自带 AI",
     "feature2Body": "OpenAI、Anthropic、Gemini、OpenRouter,或本地 Ollama / LM Studio。",
     "feature3Title": "本地且私密",
-    "feature3Body": "本地模式:源代码永远不会离开你的电脑。",
+    "feature3Body": "本地模式：AI 推理通过 Ollama / LM Studio 在你自己的环境中运行；文件内容不会被发送给 AI 服务提供商。已上传的文件仍存放在你的私有服务器存储中。",
     "howTitle": "工作流程",
     "howIntro": "从源代码到知识,只需三步。",
     "step1Title": "导入代码",
@@ -322,7 +322,9 @@
     "empty": "你还没有任何项目。",
     "projectNamePlaceholder": "项目名称",
     "projectDescPlaceholder": "描述(可选)",
-    "create": "创建"
+    "create": "创建",
+    "deleteProject": "删除项目",
+    "deleteProjectConfirm": "删除项目「{{name}}」及其所有仓库、文件和解释？此操作无法撤销。"
   },
   "howToUse": {
     "title": "如何使用 Decoder",
@@ -333,7 +335,7 @@
     "byokBody": "使用你自己的 OpenAI、Anthropic、Gemini 或 OpenRouter API 密钥，直接付费给提供商，无加价。",
     "byokCta": "添加你的 API 密钥",
     "localTitle": "本地（Ollama / LM Studio）",
-    "localBody": "推理完全在你的电脑上运行，源代码永不离开本机。",
+    "localBody": "通过 Ollama / LM Studio 在你自己的机器上运行推理。AI 服务提供商不会收到文件内容。已上传的文件仍存放在你的私有服务器存储中。",
     "localCta": "配置本地端点",
     "installTitle": "安装为应用",
     "installBody": "Decoder 是网页应用——无需下载。Chrome/Edge 桌面端可点击地址栏的安装图标；iOS Safari 请点击「分享 → 添加到主屏幕」。"
@@ -361,7 +363,9 @@
     "capabilityAiOrigin": "AI 来源评分",
     "capabilityAiOriginBody": "估计代码库——或其中部分——由 AI 生成的可能性。",
     "openFiles": "打开文件与注释",
-    "howToHint": "打开一个仓库，选择文件，在 摘要 / 质量 / 安全 / AI 来源 标签中查看生成的注释。"
+    "howToHint": "打开一个仓库，选择文件，在 摘要 / 质量 / 安全 / AI 来源 标签中查看生成的注释。",
+    "deleteRepo": "删除仓库",
+    "deleteRepoConfirm": "删除仓库「{{name}}」及其所有文件与解释？此操作无法撤销。"
   },
   "workspace": {
     "files": "文件",
@@ -525,7 +529,7 @@
     "lovableIntro": "Lovable AI 已在服务器端预先配置，无需任何密钥即可开始使用 Decoder。仅当你希望使用其他提供商时再在下方添加密钥。",
     "lovableBadge": "可立即测试 — 无需密钥",
     "localSection": "本地 AI 端点",
-    "localIntro": "本地模式完全在浏览器中调用你的 localhost，源代码不会发送到我们的服务器。",
+    "localIntro": "在本地模式下，浏览器直接调用本机的 AI 进行推理 —— 文件内容不会被发送给 AI 服务提供商。已上传的文件仍存放在你的私有服务器存储中。你需自行负责本地配置。",
     "endpointKind": "类型",
     "endpointUrl": "Base URL",
     "endpointModel": "默认模型",
@@ -564,7 +568,7 @@
     "byokTitle": "自带 AI 密钥",
     "byokBody": "在「设置 → AI 提供商」中粘贴 OpenAI、Anthropic、Google Gemini 或 OpenRouter 的密钥。密钥在服务器端通过 AES-256-GCM 加密,仅在转发你的请求时解密 —— 永远不会返回到浏览器。",
     "localTitle": "本地模式(Ollama / LM Studio)",
-    "localBody": "安装 Ollama(https://ollama.com)或 LM Studio,然后在「设置 → 本地 AI 端点」中添加基础 URL(Ollama:http://localhost:11434,LM Studio:http://localhost:1234)和默认模型。浏览器会直接调用你的电脑 —— 源代码不会发送到我们的服务器。",
+    "localBody": "安装 Ollama(https://ollama.com)或 LM Studio,然后在「设置 → 本地 AI 端点」中添加基础 URL(Ollama:http://localhost:11434,LM Studio:http://localhost:1234)和默认模型。浏览器会直接调用你的电脑进行推理 —— 文件内容不会被发送给 AI 服务提供商。已上传的文件仍存放在你的私有服务器存储中。",
     "securityTitle": "安全与所有权",
     "securityBody": "你的代码、生成的文档和建议的注释归你所有。我们不会使用用户的代码仓库进行模型训练。每张数据表都启用了限定到你账户的行级安全(RLS)。",
     "adminTitle": "成为管理员",
@@ -773,8 +777,90 @@
       "removeKeyWarning": "移除 API 密钥后,所有面向该提供商的后续调用将失败,直到重新添加密钥为止。"
     }
   },
+  "privacy": {
+    "kicker": "隐私",
+    "title": "隐私政策",
+    "intro": "Decoder 是一个个人开源案例研究。本页面总结了处理哪些数据、为什么处理，以及如何行使你的权利。",
+    "controllerTitle": "数据控制者",
+    "controllerBody": "本项目由维护者作为自然人个人运营，而非公司。联系方式：在 GitHub 仓库中提交 issue 或私有 Security Advisory。",
+    "dataTitle": "处理的数据",
+    "dataIntro": "Decoder 仅处理交付此演示所必需的数据：",
+    "data": {
+      "account": "账户：邮箱、显示名称、语言偏好。",
+      "files": "上传的 ZIP / 导入的仓库文件（私有存储桶，按 RLS 限制）。",
+      "explanations": "你生成的 AI 解释与建议注释。",
+      "keys": "加密后的 BYOK API 密钥（AES-256-GCM）和短提示；服务提供商配置。",
+      "endpoints": "本地 AI 端点配置（URL 和默认模型）。",
+      "acks": "确认记录（语言、IP 地址、User-Agent、时间戳）。",
+      "logs": "托管平台的运营日志可能包含 IP 地址、User-Agent 及请求元数据。"
+    },
+    "purposesTitle": "目的",
+    "purposesBody": "提供演示功能（存储、BYOK 转发、AI 解释）、防止滥用，并保留同意的审计记录。",
+    "lawfulTitle": "法律依据（欧盟 GDPR）",
+    "lawfulBody": "履行你所请求的服务（第 6(1)(b) 条）以及运行安全公共演示的合法利益（第 6(1)(f) 条）。",
+    "retentionTitle": "保留期限",
+    "retentionBody": "账户、文件、解释、凭据和端点会保留至你删除或演示停用为止。确认记录与运营日志可能保留最长 12 个月，用作同意 / 防滥用的审计追踪。",
+    "rightsTitle": "你的权利",
+    "rightsBody": "访问、更正、删除（整个账户或按单项：项目、仓库、解释、API 密钥）、可携带性（JSON 导出）、限制、反对。可在 设置 → 账户 中行使；若无法访问设置，请通过 GitHub。",
+    "thirdPartiesTitle": "第三方",
+    "thirdPartiesBody": "托管与数据库：Lovable Cloud（Supabase）。AI 网关：ai.gateway.lovable.dev。你选择的云端 AI 服务提供商（OpenAI、Anthropic、Google Gemini、OpenRouter）将根据其各自条款收到你选定的代码与提示词。本地服务提供商（Ollama / LM Studio）在你的机器上运行 —— 推理不会传输至 AI 服务提供商，但已上传的文件仍存放在服务器存储中。",
+    "minorsTitle": "未成年人",
+    "minorsBody": "此演示不面向 16 岁以下人士。若未满该年龄，请勿创建账户。",
+    "securityTitle": "安全",
+    "securityBody": "BYOK 密钥以 AES-256-GCM 加密存储。凭据表无 SELECT 策略。每个用户数据表均启用按 auth.uid() 限定的 RLS。服务角色密钥从未打包进客户端代码。",
+    "noWarrantyTitle": "免责声明",
+    "noWarrantyBody": "Decoder 按 \"现状\" 提供，不附带任何保证。它不是经认证的安全审计、法律/合规建议或生产决策系统。"
+  },
+  "dataFlow": {
+    "kicker": "透明度",
+    "title": "你的数据如何流动",
+    "intro": "支持三种模式，每种模式以不同方式路由你的代码。本地模式将 AI 推理保留在你的机器上；云端 BYOK 模式会将选定代码发送给你所选的服务提供商。",
+    "localTitle": "本地模式（Ollama / LM Studio）",
+    "cloudTitle": "云端 BYOK 模式（OpenAI / Anthropic / Gemini / OpenRouter）",
+    "githubTitle": "GitHub 导入模式",
+    "githubBody": "你授权 GitHub。Decoder 按你授予的范围导入所选仓库的元数据和文件内容。你可以随时删除已导入的项目数据。",
+    "warningsTitle": "上传前请注意",
+    "warnings": {
+      "secrets": "不要上传机密、令牌或 `.env` 文件。",
+      "env": "请从任何归档中移除 `.env`、凭据和客户数据。",
+      "terms": "在发送真实代码前，请阅读 AI 服务提供商的条款。",
+      "demo": "建议从公开的演示仓库或非敏感代码开始。"
+    },
+    "nodes": {
+      "code": "你的代码",
+      "localModel": "本地 AI 模型",
+      "ui": "Decoder 界面",
+      "backend": "Decoder 后端",
+      "provider": "所选 AI 服务提供商",
+      "github": "GitHub",
+      "import": "Decoder 导入"
+    }
+  },
+  "intendedUse": {
+    "title": "预期用途",
+    "intro": "Decoder 适用于：",
+    "items": {
+      "edu": "源代码的教育性探索。",
+      "comprehension": "代码理解与入职支持。",
+      "docs": "文档起草辅助。",
+      "maintain": "可维护性与重构观察。",
+      "learning": "AI 辅助学习。"
+    },
+    "notTitle": "非预期用途",
+    "notIntro": "Decoder 不适用于：",
+    "notItems": {
+      "audit": "经认证的安全审计。",
+      "legal": "法律或合规建议。",
+      "production": "生产决策自动化。",
+      "highRisk": "高风险 AI 决策。",
+      "regulated": "就业、信贷、保险、健康、执法或公共部门的自动化决策。",
+      "replace": "替代具备资质的人工审查。"
+    }
+  },
   "footer": {
     "ownership": "你的代码和生成的文档属于你自己。Decoder 不会用你的仓库训练模型。",
-    "disclaimer": "Decoder 是一个开源代码理解工具。AI 生成的解释可能不准确，在用于技术、安全、法律或生产决策之前，应由具备资质的人员进行审查。"
+    "disclaimer": "Decoder 是一个开源教育性代码理解案例研究。它不是经认证的安全审计工具、法律/合规工具或生产决策系统。AI 生成的输出可能不准确，必须由具备资质的人员进行审查。",
+    "privacy": "隐私",
+    "dataFlow": "数据流"
   }
 }
