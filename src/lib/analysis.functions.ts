@@ -157,6 +157,8 @@ export const analyzeRepoAiOrigin = createServerFn({ method: "POST" })
     }),
   )
   .handler(async ({ context, data }) => {
+    const { assertByokAckAccepted } = await import("./byok-acknowledgement.functions");
+    await assertByokAckAccepted(context.supabase, context.userId);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { decryptSecret } = await import("./crypto.server");
     const { callCloudProvider } = await import("./ai-providers.server");
