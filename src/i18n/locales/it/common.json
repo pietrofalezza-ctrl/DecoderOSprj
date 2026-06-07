@@ -158,12 +158,12 @@
     "dataCollected": {
       "account": "Account: email, nome visualizzato e timestamp di creazione (gestiti dal modulo di autenticazione).",
       "content": "Contenuti: file caricati conservati nello storage privato del server (accessibili solo al proprietario tramite RLS) con retention indicativa di 60 giorni dall'ultimo utilizzo, metadati (path, dimensione, sha256, linguaggio, tipo di sorgente — zip o GitHub) e spiegazioni IA generate.",
-      "credentials": "Chiavi API utente: cifrate at-rest con AES-256-GCM e mai restituite al browser. Le chiavi proprie restano opzionali — l'AI gestita è offerta come cortesia senza configurazione.",
+      "credentials": "Chiavi API utente: cifrate at-rest con AES-256-GCM e mai restituite al browser. Decoder non offre alcuna AI gestita lato server: per usare un provider cloud devi configurare la tua chiave (BYOK).",
       "usage": "Metadati d'uso: provider e modello IA usati per ogni spiegazione, lingua e livello di proficiency preferiti, ruolo applicativo (es. admin). Nessuna profilazione comportamentale né tracciamento di terze parti.",
       "notracking": "Nessun tracker pubblicitario, nessun analytics di terze parti, nessuna profilazione. L'unico cookie impostato è tecnico (preferenza UI della sidebar) e non richiede consenso ai sensi del provvedimento del Garante del 10 giugno 2021."
     },
-    "managedAiTitle": "Provider IA gestito",
-    "managedAiBody": "Il provider predefinito \"AI gestita\" è offerto come cortesia perché la chiave API è gestita dal server di Decoder. È soggetto a quote di utilizzo e può essere disattivato in qualunque momento senza obbligo di preavviso o continuità. Quando lo utilizzi, il codice e i prompt vengono inoltrati dal server di Decoder a un gateway AI esterno gestito, soggetto alle relative policy. Puoi sostituirlo in qualsiasi momento con una tua chiave (OpenAI, Anthropic, Gemini, OpenRouter) o con un endpoint locale (Ollama, LM Studio). L'autore non risponde delle policy di trattamento dei provider terzi.",
+    "managedAiTitle": "",
+    "managedAiBody": "",
     "gdprTitle": "Conformità GDPR (Reg. UE 2016/679)",
     "gdprIntro": "Il trattamento dei dati personali necessari al funzionamento della demo è impostato in coerenza con il GDPR, tenendo conto della natura non professionale del progetto.",
     "gdpr": {
@@ -329,8 +329,8 @@
   "howToUse": {
     "title": "Come usare Decoder",
     "intro": "Scegli come far girare l'IA. Puoi cambiare quando vuoi, per ogni repository.",
-    "defaultTitle": "AI gestita (predefinita)",
-    "defaultBody": "Pronta all'uso — nessuna chiave, nessuna configurazione. Quota gratuita inclusa.",
+    "defaultTitle": "",
+    "defaultBody": "",
     "byokTitle": "Porta la tua chiave (BYOK)",
     "byokBody": "Usa OpenAI, Anthropic, Gemini o OpenRouter con la tua API key. Paghi direttamente il provider, senza ricarichi.",
     "byokCta": "Aggiungi la tua API key",
@@ -517,8 +517,8 @@
     "rerun": "Riesegui",
     "running": "Scansione in corso…",
     "runningHint": "Analizzo i file sorgente a lotti. Può richiedere un minuto.",
-    "needsCloud": "Per scansionare l'intera repo serve un provider AI cloud.",
-    "needsCloudLong": "Serve un provider cloud (AI gestita gratuita o una tua chiave) per analizzare la codebase.",
+    "needsCloud": "Per scansionare l'intera repo serve un provider AI cloud (BYOK).",
+    "needsCloudLong": "Serve un provider cloud configurato con la tua chiave (BYOK) per analizzare la codebase.",
     "repoScore": "Punteggio repository",
     "bucket": {
       "human": "Probabilmente umano",
@@ -558,7 +558,7 @@
     "configured": "Configurato",
     "notConfigured": "Non configurato",
     "providers": {
-      "lovable": "AI gestita (predefinito)",
+      "lovable": "",
       "openai": "OpenAI",
       "anthropic": "Anthropic",
       "gemini": "Google Gemini",
@@ -568,9 +568,9 @@
       "ollama": "Ollama (locale)",
       "lmstudio": "LM Studio (locale)"
     },
-    "lovableSection": "Provider AI predefinito",
-    "lovableIntro": "L'AI gestita è già configurata lato server. Puoi iniziare a usare Decoder senza inserire alcuna chiave. Configura le tue chiavi solo se vuoi usare un provider diverso.",
-    "lovableBadge": "Pronto per i test — nessuna chiave richiesta",
+    "lovableSection": "",
+    "lovableIntro": "",
+    "lovableBadge": "",
     "localSection": "Endpoint AI locali",
     "localIntro": "In modalità locale, il browser chiama direttamente l'AI sul tuo localhost per l'inferenza — i contenuti dei file non vengono inviati ai provider AI. I file caricati restano nello storage privato del server. Resti responsabile della configurazione locale.",
     "endpointKind": "Tipo",

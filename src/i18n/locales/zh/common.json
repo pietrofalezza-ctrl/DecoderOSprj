@@ -158,12 +158,12 @@
     "dataCollected": {
       "account": "账户:邮箱、显示名与创建时间(由认证模块管理)。",
       "content": "内容:上传的文件保存在服务器的私有存储中(通过 RLS 仅所有者可访问),自最近一次使用起约保留 60 天;元数据(路径、大小、sha256、语言、仓库来源 — zip 或 GitHub)以及生成的 AI 解释。",
-      "credentials": "用户 API 密钥:使用 AES-256-GCM 静态加密,永不返回浏览器。BYOK 为可选项;托管 AI 作为善意提供的默认选项,无需配置即可使用。",
+      "credentials": "用户 API 密钥:使用 AES-256-GCM 静态加密,永不返回浏览器。Decoder 不提供任何服务端托管 AI:如需使用云端提供商,必须配置你自己的密钥（BYOK）。",
       "usage": "使用元数据:每次解释所使用的 AI 提供商与模型、偏好语言与熟练程度、应用角色(如 admin)。无行为画像,无第三方追踪。",
       "notracking": "无广告追踪、无第三方分析、无用户画像。唯一设置的 cookie 为技术性 cookie(侧边栏 UI 偏好),依据意大利数据保护机构 2021 年 6 月 10 日的决定,无需征得同意。"
     },
-    "managedAiTitle": "托管 AI 提供商",
-    "managedAiBody": "默认的「托管 AI」提供商作为善意服务提供,因为 API 密钥由 Decoder 服务器托管。该服务受使用配额限制,可随时停用,无需事先通知或保证持续性。使用时,你的代码和提示词会由 Decoder 服务器转发到外部托管的 AI 网关,并受其相关政策约束。你可随时切换为自己的密钥(OpenAI、Anthropic、Gemini、OpenRouter)或本地端点(Ollama、LM Studio)。作者不对第三方提供商的处理政策负责。",
+    "managedAiTitle": "",
+    "managedAiBody": "",
     "gdprTitle": "GDPR(欧盟 2016/679 法规)",
     "gdprIntro": "为运行本 demo 所必需的个人数据处理,在考虑项目非职业性质的前提下,按照与 GDPR 一致的原则进行。",
     "gdpr": {
@@ -329,8 +329,8 @@
   "howToUse": {
     "title": "如何使用 Decoder",
     "intro": "选择 AI 的运行方式，可随时按仓库切换。",
-    "defaultTitle": "托管 AI（默认）",
-    "defaultBody": "开箱即用——无需密钥与配置，含免费额度。",
+    "defaultTitle": "",
+    "defaultBody": "",
     "byokTitle": "自带密钥（BYOK）",
     "byokBody": "使用你自己的 OpenAI、Anthropic、Gemini 或 OpenRouter API 密钥，直接付费给提供商，无加价。",
     "byokCta": "添加你的 API 密钥",
@@ -517,8 +517,8 @@
     "rerun": "重新扫描",
     "running": "正在扫描代码库…",
     "runningHint": "正在分批分析源文件,可能需要一分钟。",
-    "needsCloud": "扫描整个仓库需要使用云端 AI 提供商。",
-    "needsCloudLong": "分析代码库需要云端提供商（免费的托管 AI 或你自己的密钥）。",
+    "needsCloud": "扫描整个仓库需要使用云端 AI 提供商（BYOK）。",
+    "needsCloudLong": "分析代码库需要配置你自己密钥（BYOK）的云端提供商。",
     "repoScore": "仓库评分",
     "bucket": {
       "human": "可能为人类",
@@ -558,7 +558,7 @@
     "configured": "已配置",
     "notConfigured": "未配置",
     "providers": {
-      "lovable": "托管 AI（默认）",
+      "lovable": "",
       "openai": "OpenAI",
       "anthropic": "Anthropic",
       "gemini": "Google Gemini",
@@ -568,9 +568,9 @@
       "ollama": "Ollama(本地)",
       "lmstudio": "LM Studio(本地)"
     },
-    "lovableSection": "默认 AI 提供商",
-    "lovableIntro": "托管 AI 已在服务器端预先配置，无需任何密钥即可开始使用 Decoder。仅当你希望使用其他提供商时再在下方添加密钥。",
-    "lovableBadge": "可立即测试 — 无需密钥",
+    "lovableSection": "",
+    "lovableIntro": "",
+    "lovableBadge": "",
     "localSection": "本地 AI 端点",
     "localIntro": "在本地模式下，浏览器直接调用本机的 AI 进行推理 —— 文件内容不会被发送给 AI 服务提供商。已上传的文件仍存放在你的私有服务器存储中。你需自行负责本地配置。",
     "endpointKind": "类型",
