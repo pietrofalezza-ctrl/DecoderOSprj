@@ -2,14 +2,11 @@ import { createFileRoute, Link, Outlet, redirect, useRouter } from "@tanstack/re
 
 import { supabase } from "@/integrations/supabase/client";
 import { ByokAckProvider } from "@/components/ByokAckProvider";
+import { OnboardingProvider } from "@/components/onboarding/OnboardingProvider";
 
 export const Route = createFileRoute("/_authenticated")({
   ssr: false,
   beforeLoad: async ({ location }) => {
-    // Use cached session (reads from localStorage) instead of getUser() which
-    // does a network round-trip on every navigation. The root-level
-    // onAuthStateChange listener invalidates the router on sign-in/out, so
-    // the cached session stays accurate.
     const { data, error } = await supabase.auth.getSession();
     if (error || !data.session?.user) {
       throw redirect({
@@ -21,7 +18,9 @@ export const Route = createFileRoute("/_authenticated")({
   },
   component: () => (
     <ByokAckProvider>
-      <Outlet />
+      <OnboardingProvider>
+        <Outlet />
+      </OnboardingProvider>
     </ByokAckProvider>
   ),
   errorComponent: AuthErrorComponent,
