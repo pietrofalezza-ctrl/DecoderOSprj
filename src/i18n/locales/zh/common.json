@@ -322,7 +322,9 @@
     "empty": "你还没有任何项目。",
     "projectNamePlaceholder": "项目名称",
     "projectDescPlaceholder": "描述(可选)",
-    "create": "创建"
+    "create": "创建",
+    "deleteProject": "删除项目",
+    "deleteProjectConfirm": "删除项目「{{name}}」及其所有仓库、文件和解释？此操作无法撤销。"
   },
   "howToUse": {
     "title": "如何使用 Decoder",
@@ -361,7 +363,9 @@
     "capabilityAiOrigin": "AI 来源评分",
     "capabilityAiOriginBody": "估计代码库——或其中部分——由 AI 生成的可能性。",
     "openFiles": "打开文件与注释",
-    "howToHint": "打开一个仓库，选择文件，在 摘要 / 质量 / 安全 / AI 来源 标签中查看生成的注释。"
+    "howToHint": "打开一个仓库，选择文件，在 摘要 / 质量 / 安全 / AI 来源 标签中查看生成的注释。",
+    "deleteRepo": "删除仓库",
+    "deleteRepoConfirm": "删除仓库「{{name}}」及其所有文件与解释？此操作无法撤销。"
   },
   "workspace": {
     "files": "文件",

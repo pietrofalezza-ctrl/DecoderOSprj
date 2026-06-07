@@ -363,7 +363,9 @@
     "capabilityAiOrigin": "Probabilità AI",
     "capabilityAiOriginBody": "Stima la probabilità che la codebase — o parti di essa — sia stata generata da una AI.",
     "openFiles": "Apri file e commenti",
-    "howToHint": "Apri un repository, seleziona un file e leggi i commenti generati nelle tab Riassunto / Qualità / Sicurezza / Origine AI."
+    "howToHint": "Apri un repository, seleziona un file e leggi i commenti generati nelle tab Riassunto / Qualità / Sicurezza / Origine AI.",
+    "deleteRepo": "Elimina repository",
+    "deleteRepoConfirm": "Eliminare il repository \"{{name}}\" con tutti i suoi file e spiegazioni? L'operazione è irreversibile."
   },
   "workspace": {
     "files": "File",
