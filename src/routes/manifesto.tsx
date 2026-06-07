@@ -34,7 +34,7 @@ function ManifestoPage() {
   const { t } = useTranslation();
 
   const principles = ["open", "privacy", "byok", "localFirst", "multilang", "accessible"] as const;
-  const wonts = ["w1", "w2", "w3", "w4"] as const;
+  const wonts = ["w1", "w2", "w3", "w4", "w5"] as const;
 
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -128,6 +128,9 @@ function ManifestoPage() {
             </Link>
             <Link to="/terms" className="hover:text-foreground">
               {t("landing.nav.terms")}
+            </Link>
+            <Link to="/contact" className="hover:text-foreground">
+              {t("contact.kicker")}
             </Link>
             <a
               href={t("common.repoUrl")}

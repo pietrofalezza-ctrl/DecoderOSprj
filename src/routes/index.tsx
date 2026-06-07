@@ -342,6 +342,9 @@ function Landing() {
               <Link to="/terms" className="hover:text-foreground">
                 {t("landing.nav.terms")}
               </Link>
+              <Link to="/contact" className="hover:text-foreground">
+                {t("contact.kicker")}
+              </Link>
               <a
                 href={t("common.repoUrl")}
                 target="_blank"
