@@ -577,17 +577,19 @@
     "boundaryTitle": "This page didn't load"
   },
   "contact": {
-    "email": "pietro@codecoder.com",
     "kicker": "Contacts",
     "title": "How to reach us",
-    "intro": "Decoder is a non-profit open source project. These are the official channels for privacy, security and feedback.",
+    "intro": "Decoder is a non-profit open source project. All official channels go through GitHub: public for bugs, private (Security Advisories) for vulnerabilities and personal data.",
     "privacyTitle": "Privacy & GDPR",
-    "privacyBody": "To exercise your GDPR rights (access, rectification, erasure, portability, objection, restriction) email the address below. Response guaranteed within 30 days.",
+    "privacyBody": "To exercise your GDPR rights (access, rectification, erasure, portability, objection, restriction) open a request on the repository. If your request contains personal data, use the private Security Advisories channel.",
+    "privacyCta": "Open a GDPR request on GitHub",
     "securityTitle": "Security",
-    "securityBody": "Found a vulnerability? Report it privately at the address below before disclosing it publicly.",
+    "securityBody": "Found a vulnerability? Report it privately via GitHub Security Advisories — the channel stays private until a coordinated fix is shipped.",
+    "securityCta": "Open a private Security Advisory",
     "bugsTitle": "Bugs & feedback",
-    "bugsBody": "For bugs, ideas, improvements: open a GitHub issue. Best-effort response.",
-    "responseTimes": "Indicative SLAs: GDPR within 30 days · security within 7 days · feedback best-effort."
+    "bugsBody": "For bugs, ideas and improvements open a public issue on the repository.",
+    "bugsCta": "Open an Issue on GitHub",
+    "cookieNote": "Decoder uses no analytics or third-party trackers. The only cookie set is a technical UI preference (sidebar state): no consent is required under the ePrivacy directive."
   },
   "footer": {
     "ownership": "Your code and generated documentation belong to you. Decoder never trains on your repositories.",
