@@ -13,6 +13,11 @@ import {
   Bot,
   GitPullRequest,
   Eye,
+  GitFork,
+  MessageSquare,
+  Languages,
+  Scale,
+  HeartHandshake,
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -68,7 +73,8 @@ function Landing() {
     { label: t("landing.nav.features"), href: "#features" },
     { label: t("landing.nav.howItWorks"), href: "#how-it-works" },
     { label: t("landing.nav.integrations"), href: "#integrations" },
-    { label: t("landing.nav.openSource"), to: "/manifesto" as const },
+    { label: t("landing.nav.openSource"), to: "/open-source" as const },
+    { label: t("landing.nav.manifesto"), to: "/manifesto" as const },
     { label: t("landing.nav.docs"), to: "/docs" as const },
   ];
 
