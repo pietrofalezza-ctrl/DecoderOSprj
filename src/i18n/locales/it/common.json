@@ -162,14 +162,12 @@
       "usage": "Metadati d'uso: provider e modello IA usati per ogni spiegazione, lingua e livello di proficiency preferiti, ruolo applicativo (es. admin). Nessuna profilazione comportamentale né tracciamento di terze parti.",
       "notracking": "Nessun tracker pubblicitario, nessun analytics di terze parti, nessuna profilazione. L'unico cookie impostato è tecnico (preferenza UI della sidebar) e non richiede consenso ai sensi del provvedimento del Garante del 10 giugno 2021."
     },
-    "managedAiTitle": "",
-    "managedAiBody": "",
     "gdprTitle": "Conformità GDPR (Reg. UE 2016/679)",
     "gdprIntro": "Il trattamento dei dati personali necessari al funzionamento della demo è impostato in coerenza con il GDPR, tenendo conto della natura non professionale del progetto.",
     "gdpr": {
       "lawful": "Base giuridica: esecuzione di misure precontrattuali su richiesta dell'interessato e legittimo interesse al funzionamento tecnico della demo (art. 6.1.b e 6.1.f); consenso esplicito (art. 6.1.a) quando si sceglie di usare un provider AI esterno.",
       "rights": "Diritti dell'interessato: accesso, rettifica, cancellazione, portabilità, opposizione e limitazione del trattamento. Puoi esportare o cancellare i tuoi dati dalla pagina Impostazioni → Account o aprendo una richiesta su GitHub.",
-      "transfers": "Trasferimenti extra-UE: solo se scegli un provider AI con server al di fuori dell'UE (es. OpenAI, Anthropic, gateway gestito). Il provider è sempre indicato chiaramente prima della richiesta.",
+      "transfers": "Trasferimenti extra-UE: solo se scegli un provider AI cloud con server al di fuori dell'UE usando la tua chiave API (es. OpenAI, Anthropic). Il provider è sempre indicato chiaramente prima della richiesta.",
       "retention": "Conservazione: i dati restano archiviati fino alla cancellazione dell'account o dei singoli contenuti, oppure fino all'eventuale dismissione della demo.",
       "contact": "Titolare del trattamento è l'autore del progetto in qualità di persona fisica non professionale, contattabile esclusivamente tramite GitHub Issues o, per dati sensibili, tramite Security Advisories privati. Mancano i presupposti per la nomina obbligatoria di un DPO (art. 37 GDPR) e si applica la deroga al registro dei trattamenti per soggetti < 250 dipendenti che non effettuano trattamenti rischiosi/sistematici (art. 30.5 GDPR). Resta fermo il diritto di proporre reclamo al Garante per la protezione dei dati personali."
     },
@@ -188,7 +186,7 @@
     "liability": {
       "aiOutput": "Output IA: le spiegazioni, analisi, riassunti e suggerimenti generati dall'intelligenza artificiale possono contenere errori, omissioni o imprecisioni. L'utente è l'unico responsabile della verifica, interpretazione e utilizzo dell'output. L'autore non risponde di alcuna decisione, azione o conseguenza basata sui contenuti generati.",
       "ipCode": "Codice analizzato e proprietà intellettuale: l'utente garantisce di possedere i diritti necessari sul codice e sui materiali caricati o di averne ricevuto autorizzazione. L'autore non risponde di violazioni di copyright, licenze open source, brevetti, segreti industriali, NDA o altri diritti di terzi derivanti dal materiale fornito dall'utente.",
-      "dataTransfer": "Trasmissione del codice: in modalità cloud il sorgente caricato viene trasmesso al provider IA selezionato (incluso il provider gestito predefinito, che usa una chiave server lato Decoder). In modalità locale i file caricati restano comunque nello storage del server, mentre l'inferenza IA gira sul tuo localhost. L'autore non risponde delle policy di trattamento dei provider IA terzi.",
+      "dataTransfer": "Trasmissione del codice: in modalità cloud (BYOK) il sorgente caricato viene trasmesso al provider IA selezionato usando la tua chiave API. In modalità locale i file caricati restano comunque nello storage del server, mentre l'inferenza IA gira sul tuo localhost. L'autore non risponde delle policy di trattamento dei provider IA terzi.",
       "security": "Sicurezza e danni: il software è fornito senza garanzie di disponibilità, integrità o sicurezza. L'autore non risponde di danni diretti, indiretti, incidentali, consequenziali o punitivi — inclusi perdita di dati, mancato guadagno, interruzione di attività, bug, vulnerabilità o malfunzionamenti — derivanti dall'uso o dall'impossibilità di usare Decoder, salvo i casi di dolo o colpa grave non derogabili per legge.",
       "unlawful": "Utilizzo illecito o non conforme: l'utente è l'unico responsabile della conformità di ogni utilizzo di Decoder alle leggi, regolamenti, contratti, policy aziendali e diritti di terzi applicabili. L'autore declina ogni responsabilità per usi non autorizzati, illeciti o in violazione di obblighi contrattuali o normativi dell'utente."
     }
@@ -558,7 +556,6 @@
     "configured": "Configurato",
     "notConfigured": "Non configurato",
     "providers": {
-      "lovable": "",
       "openai": "OpenAI",
       "anthropic": "Anthropic",
       "gemini": "Google Gemini",
@@ -568,9 +565,6 @@
       "ollama": "Ollama (locale)",
       "lmstudio": "LM Studio (locale)"
     },
-    "lovableSection": "",
-    "lovableIntro": "",
-    "lovableBadge": "",
     "localSection": "Endpoint AI locali",
     "localIntro": "In modalità locale, il browser chiama direttamente l'AI sul tuo localhost per l'inferenza — i contenuti dei file non vengono inviati ai provider AI. I file caricati restano nello storage privato del server. Resti responsabile della configurazione locale.",
     "endpointKind": "Tipo",
@@ -846,7 +840,7 @@
     "rightsTitle": "I tuoi diritti",
     "rightsBody": "Accesso, rettifica, cancellazione (account completo o per singolo elemento: progetto, repository, spiegazione, API key), portabilità (export JSON), limitazione, opposizione. Esercitabili da Impostazioni → Account, o tramite GitHub se le Impostazioni non sono raggiungibili.",
     "thirdPartiesTitle": "Terze parti",
-    "thirdPartiesBody": "Hosting e database: infrastruttura cloud gestita (Supabase). Gateway AI: gateway gestito. I provider AI cloud che scegli (OpenAI, Anthropic, Google Gemini, OpenRouter) ricevono il codice e i prompt selezionati secondo i loro termini. I provider locali (Ollama / LM Studio) girano sulla tua macchina — nessun trasferimento al provider AI per l'inferenza, ma i file caricati restano nello storage del server.",
+    "thirdPartiesBody": "Hosting e database: infrastruttura cloud gestita (Supabase). I provider AI cloud che scegli (OpenAI, Anthropic, Google Gemini, OpenRouter) ricevono il codice e i prompt selezionati secondo i loro termini, usando la chiave API che configuri (BYOK). I provider locali (Ollama / LM Studio) girano sulla tua macchina — nessun trasferimento al provider AI per l'inferenza, ma i file caricati restano nello storage del server.",
     "minorsTitle": "Minori",
     "minorsBody": "Questa demo non è destinata a persone sotto i 16 anni. Non creare un account se hai meno di tale età.",
     "securityTitle": "Sicurezza",

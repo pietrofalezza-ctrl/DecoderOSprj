@@ -23,9 +23,25 @@ export const Route = createFileRoute("/manifesto")({
         content:
           "Our principles: open source, privacy-first, BYOK, local-first, multilingual, accessible.",
       },
+      { property: "og:type", content: "article" },
       { property: "og:url", content: "https://decoderdev.lovable.app/manifesto" },
     ],
     links: [{ rel: "canonical", href: "https://decoderdev.lovable.app/manifesto" }],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "Article",
+          headline: "Decoder — Manifesto",
+          description:
+            "What Decoder stands for: open source, privacy-first, BYOK, local-first, multilingual, accessible.",
+          url: "https://decoderdev.lovable.app/manifesto",
+          author: { "@type": "Organization", name: "Decoder" },
+          publisher: { "@type": "Organization", name: "Decoder" },
+        }),
+      },
+    ],
   }),
   component: ManifestoPage,
 });

@@ -33,17 +33,17 @@ import {
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Decoder — Understand AI-generated code, in any language" },
+      { title: "Decoder — Read and audit AI-generated code, in any language" },
       {
         name: "description",
         content:
-          "Open-source code understanding for the AI era. Read, review and audit code written by Copilot, Cursor, Claude Code and your team. BYOK cloud or fully local.",
+          "Open-source reader for AI-generated code. Audit Copilot, Cursor and Claude Code output with your own provider key (BYOK) or a fully local model.",
       },
-      { property: "og:title", content: "Decoder — Understand AI-generated code" },
+      { property: "og:title", content: "Decoder — Read and audit AI-generated code" },
       {
         property: "og:description",
         content:
-          "Open-source code understanding for the AI era. BYOK cloud or fully local with Ollama / LM Studio.",
+          "Open-source reader for AI-generated code. BYOK cloud or fully local with Ollama / LM Studio.",
       },
       { property: "og:url", content: "https://decoderdev.lovable.app/" },
     ],
@@ -59,7 +59,7 @@ export const Route = createFileRoute("/")({
             "Open-source code understanding for the AI era — read, review and audit AI-generated code.",
           applicationCategory: "DeveloperApplication",
           operatingSystem: "Web, Linux, macOS, Windows",
-          url: "https://decoder.lovable.app",
+          url: "https://decoderdev.lovable.app",
           license: "https://opensource.org/licenses/MIT",
           offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
         }),

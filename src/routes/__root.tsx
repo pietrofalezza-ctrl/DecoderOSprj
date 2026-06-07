@@ -81,7 +81,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       {
         name: "description",
         content:
-          "Open-source code understanding for the AI era. Read, review and audit code written by Copilot, Cursor, Claude Code and human teammates. BYOK cloud or fully local.",
+          "Open-source code understanding for the AI era. Read and audit code from Copilot, Cursor and Claude Code. BYOK cloud or fully local.",
       },
       { property: "og:site_name", content: "Decoder" },
       { property: "og:title", content: "Decoder — Understand AI-generated code" },
@@ -117,7 +117,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
           "@context": "https://schema.org",
           "@type": "WebSite",
           name: "Decoder",
-          url: "https://decoder.lovable.app",
+          url: "https://decoderdev.lovable.app",
           description:
             "Open-source code understanding for the AI era — read, review and audit AI-generated code.",
         }),
