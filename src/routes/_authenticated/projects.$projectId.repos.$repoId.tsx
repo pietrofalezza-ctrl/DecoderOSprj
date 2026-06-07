@@ -10,7 +10,7 @@ import { Sparkles, Copy, Download, ShieldCheck, FileDown, BugPlay, Bot, ScanSear
 import { AppShell } from "@/components/AppShell";
 import { FileTree } from "@/components/FileTree";
 import { CodeViewer, type CodeSelection, type CodeViewerHandle } from "@/components/CodeViewer";
-import { FindingsList } from "@/components/FindingsList";
+import { InsightPanel, type InsightAction } from "@/components/InsightPanel";
 import { DiffViewer, extractDiffBlock, extractNotes } from "@/components/DiffViewer";
 import { FolderAnalysisPanel } from "@/components/FolderAnalysisPanel";
 
@@ -47,7 +47,7 @@ import { exportRepoMarkdown } from "@/lib/export.functions";
 import { callLocalProvider, type LocalKind } from "@/lib/local-ai";
 import { buildPrompt, type Proficiency } from "@/lib/prompt";
 import { buildAnalysisPrompt, type AnalysisKind } from "@/lib/analysis-prompt";
-import { extractFindings, stripFindingsBlock, type Finding } from "@/lib/findings";
+import { extractInsightBundle, stripFindingsBlock, type Finding, type InsightCategory } from "@/lib/findings";
 
 type CloudProvider = "lovable" | "openai" | "anthropic" | "gemini" | "openrouter";
 type ProviderValue = `cloud:${CloudProvider}` | `local:${LocalKind}`;
