@@ -168,15 +168,15 @@
       },
       "privacy": {
         "title": "Privacy by design",
-        "body": "We never train models on your code. We never sell your data. API keys are AES-256-GCM encrypted and never returned to the browser."
+        "body": "API keys are AES-256-GCM encrypted and never returned to the browser. Files are isolated per user via Row Level Security. No ad trackers, no behavioral profiling."
       },
       "byok": {
         "title": "Bring your own key",
         "body": "No lock-in: pay your AI provider directly. Swap providers any time, export everything as Markdown."
       },
       "localFirst": {
-        "title": "Local-first",
-        "body": "Local mode with Ollama or LM Studio: source code never leaves your machine. The browser talks straight to your localhost."
+        "title": "Local inference",
+        "body": "Local mode with Ollama or LM Studio: AI inference runs on your localhost and your code is not sent to external providers. Uploaded files stay on the server, accessible only to you via RLS."
       },
       "multilang": {
         "title": "Natively multilingual",
