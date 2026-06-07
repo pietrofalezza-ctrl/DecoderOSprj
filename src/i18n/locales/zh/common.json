@@ -8,7 +8,7 @@
     "home": "首页",
     "tryAgain": "重试",
     "goToDashboard": "前往工作台",
-    "repoUrl": "https://github.com/de-coder/de-coder"
+    "repoUrl": "https://github.com/pietrofalezza-ctrl/DecoderOSprj"
   },
   "nav": {
     "dashboard": "工作台",
@@ -29,10 +29,10 @@
   },
   "landing": {
     "hero": "越来越多的代码由 <1>AI</1> 编写。你仍然需要 <2>理解它</2>。",
-    "heroSubtitle": "Decoder 是 AI 时代的代码理解层。阅读、审查并审计 Copilot、Cursor、Lovable 或团队成员生成的代码——用你的语言,按你的深度。",
-    "heroBadgeOpen": "开源",
-    "heroBadgePrivacy": "隐私优先",
-    "heroBadgeAiEra": "为 AI 代码时代而生",
+    "heroSubtitle": "Decoder 是一个开源案例研究——一次关于 LLM 与源代码如何透明、可复现地对话的教学实验。不是商业产品:它是可阅读、可 fork、可理解的公开代码。BYOK 或 100% 本地运行。",
+    "heroBadgeOpen": "开源案例 · 非营利",
+    "heroBadgePrivacy": "隐私优先 · BYOK",
+    "heroBadgeAiEra": "LLM + 代码教学实验",
     "ctaStart": "立即开始",
     "ctaSignIn": "登录",
     "ctaGithub": "在 GitHub 上查看",
