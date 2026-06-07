@@ -1,15 +1,12 @@
 import { Link, useNavigate } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { useServerFn } from "@tanstack/react-start";
 import { useTranslation } from "react-i18next";
 import {
   LogOut,
   Settings,
   LayoutDashboard,
   BookOpen,
-  ShieldCheck,
   ChevronDown,
-  KeyRound,
   Github,
 } from "lucide-react";
 import type { ReactNode } from "react";
@@ -33,17 +30,10 @@ import { LangSwitcher } from "./LangSwitcher";
 import { ThemeToggle } from "./ThemeToggle";
 import { Logo } from "./Logo";
 import { supabase } from "@/integrations/supabase/client";
-import { isAdmin } from "@/lib/admin.functions";
 
 export function AppShell({ children }: { children: ReactNode }) {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const isAdminFn = useServerFn(isAdmin);
-  const admin = useQuery({
-    queryKey: ["me", "admin"],
-    queryFn: () => isAdminFn(),
-    staleTime: 60_000,
-  });
   const me = useQuery({
     queryKey: ["me", "email"],
     queryFn: async () => {
@@ -52,6 +42,7 @@ export function AppShell({ children }: { children: ReactNode }) {
     },
     staleTime: 60_000,
   });
+
   const email = me.data ?? "";
   const initial = (email?.[0] ?? "?").toUpperCase();
 
@@ -121,25 +112,12 @@ export function AppShell({ children }: { children: ReactNode }) {
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
-                  <Link to="/settings" hash="byok">
-                    <KeyRound className="mr-2 h-5 w-5" />
-                    {t("nav.apiKeys")}
-                  </Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem asChild>
                   <Link to="/settings">
                     <Settings className="mr-2 h-5 w-5" />
                     {t("nav.settings")}
                   </Link>
                 </DropdownMenuItem>
-                {admin.data?.admin && (
-                  <DropdownMenuItem asChild>
-                    <Link to="/admin">
-                      <ShieldCheck className="mr-2 h-5 w-5" />
-                      {t("nav.admin")}
-                    </Link>
-                  </DropdownMenuItem>
-                )}
+
                 <DropdownMenuSeparator />
                 <DropdownMenuItem
                   onSelect={signOut}
