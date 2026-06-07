@@ -561,7 +561,24 @@ function WorkspacePage() {
                     </SelectContent>
                   </Select>
                 )}
+                {mainTab === "summary" && selection && (
+                  <label className="flex cursor-pointer items-start gap-2 rounded-md border border-primary/40 bg-primary/5 p-2 text-[11px] text-primary">
+                    <input
+                      type="checkbox"
+                      className="mt-0.5 h-3.5 w-3.5 accent-primary"
+                      checked={useSelection}
+                      onChange={(e) => setUseSelection(e.target.checked)}
+                    />
+                    <span>
+                      {t("workspace.selectionToggle", {
+                        from: selection.startLine,
+                        to: selection.endLine,
+                      })}
+                    </span>
+                  </label>
+                )}
                 {/* Status pill */}
+
                 <div
                   className={
                     "flex items-center gap-1.5 rounded-md border px-2 py-1 text-[11px] font-medium " +
