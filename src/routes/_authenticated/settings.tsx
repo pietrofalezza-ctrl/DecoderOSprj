@@ -74,9 +74,26 @@ function SettingsPage() {
   return (
     <AppShell>
       <div className="mx-auto max-w-3xl px-6 py-10 space-y-10">
-        <h1 className="text-2xl font-semibold">{t("settings.title")}</h1>
-
-        <AdminBootstrapBanner />
+        <header className="space-y-3">
+          <h1 className="text-2xl font-semibold">{t("settings.title")}</h1>
+          <p className="text-sm text-muted-foreground">{t("settings.pageIntro")}</p>
+          <nav className="flex flex-wrap gap-2 text-xs">
+            {[
+              { id: "profile", label: t("settings.profileSection") },
+              { id: "byok", label: t("settings.byokSection") },
+              { id: "local", label: t("settings.localSection") },
+              { id: "account", label: t("settings.accountSection") },
+            ].map((s) => (
+              <a
+                key={s.id}
+                href={`#${s.id}`}
+                className="rounded-full border border-border bg-card px-3 py-1 hover:border-primary/40 hover:text-primary"
+              >
+                {s.label}
+              </a>
+            ))}
+          </nav>
+        </header>
 
         <section className="space-y-3 rounded-lg border border-primary/40 bg-primary/5 p-5">
           <div className="flex items-start gap-3">
@@ -91,6 +108,7 @@ function SettingsPage() {
             </div>
           </div>
         </section>
+
 
 
 
@@ -253,63 +271,7 @@ function AccountPrivacySection() {
 }
 
 
-function AdminBootstrapBanner() {
-  const { t } = useTranslation();
-  const navigate = useNavigate();
-  const qc = useQueryClient();
-  const statusFn = useServerFn(adminBootstrapStatus);
-  const isAdminFn = useServerFn(isAdmin);
-  const claimFn = useServerFn(claimFirstAdmin);
 
-  const status = useQuery({
-    queryKey: ["admin", "bootstrap-status"],
-    queryFn: () => statusFn(),
-    staleTime: 30_000,
-  });
-  const admin = useQuery({
-    queryKey: ["me", "admin"],
-    queryFn: () => isAdminFn(),
-    staleTime: 30_000,
-  });
-
-  const claim = useMutation({
-    mutationFn: () => claimFn(),
-    onSuccess: () => {
-      toast.success(t("adminBootstrap.done"));
-      qc.invalidateQueries({ queryKey: ["me", "admin"] });
-      qc.invalidateQueries({ queryKey: ["admin", "bootstrap-status"] });
-      setTimeout(() => navigate({ to: "/admin" }), 400);
-    },
-    onError: (e: any) => {
-      if (String(e?.message).includes("admin_already_exists")) {
-        toast.error(t("adminBootstrap.notEligible"));
-        qc.invalidateQueries({ queryKey: ["admin", "bootstrap-status"] });
-      } else {
-        toast.error(e?.message ?? t("errors.generic"));
-      }
-    },
-  });
-
-  if (admin.data?.admin) return null;
-  if (status.data?.hasAdmin !== false) return null;
-
-  return (
-    <section className="flex flex-col gap-3 rounded-lg border border-primary/40 bg-primary/5 p-5 sm:flex-row sm:items-center sm:justify-between">
-      <div className="flex items-start gap-3">
-        <ShieldCheck className="mt-0.5 h-5 w-5 shrink-0 text-primary" />
-        <div>
-          <h2 className="text-sm font-semibold">{t("adminBootstrap.title")}</h2>
-          <p className="mt-1 text-xs text-muted-foreground">
-            {t("adminBootstrap.body")}
-          </p>
-        </div>
-      </div>
-      <Button onClick={() => claim.mutate()} disabled={claim.isPending} size="sm">
-        {claim.isPending ? t("adminBootstrap.claiming") : t("adminBootstrap.cta")}
-      </Button>
-    </section>
-  );
-}
 
 function ProviderRow({
   provider,
