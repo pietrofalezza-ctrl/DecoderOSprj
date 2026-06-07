@@ -45,6 +45,9 @@ export const runAnalysis = createServerFn({ method: "POST" })
       .maybeSingle();
     if (cached) return { content: cached.content, cached: true };
 
+    const { assertByokAckAccepted } = await import("./byok-acknowledgement.functions");
+    await assertByokAckAccepted(context.supabase, context.userId);
+
     let apiKey: string;
     if (data.provider === "lovable") {
       const { assertHostedLovableAllowed } = await import("./hosted-ai-guard.server");
