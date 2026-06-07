@@ -577,17 +577,19 @@
     "boundaryTitle": "此页面加载失败"
   },
   "contact": {
-    "email": "pietro@codecoder.com",
     "kicker": "联系方式",
     "title": "如何联系我们",
-    "intro": "Decoder 是一个非营利开源项目。以下是隐私、安全与反馈的官方渠道。",
+    "intro": "Decoder 是一个非营利开源项目。所有官方渠道均通过 GitHub：Bug 走公开 Issue，漏洞与个人数据走私密的 Security Advisories。",
     "privacyTitle": "隐私与 GDPR",
-    "privacyBody": "如需行使 GDPR 权利（访问、更正、删除、可携带、反对、限制），请发邮件至下方地址。30 天内必回复。",
+    "privacyBody": "如需行使 GDPR 权利（访问、更正、删除、可携带、反对、限制），请在仓库提交请求。若包含个人数据，请使用私密的 Security Advisories 通道。",
+    "privacyCta": "在 GitHub 提交 GDPR 请求",
     "securityTitle": "安全",
-    "securityBody": "发现漏洞？请在公开披露前以保密方式发送邮件至下方地址。",
+    "securityBody": "发现漏洞？请通过 GitHub Security Advisories 私下报告 —— 在协调修复之前，该通道始终保持私密。",
+    "securityCta": "提交私密 Security Advisory",
     "bugsTitle": "Bug 与反馈",
-    "bugsBody": "Bug、想法、改进建议：请在 GitHub 提交 issue。尽力回复。",
-    "responseTimes": "参考时效：GDPR 30 天 · 安全 7 天 · 反馈尽力而为。"
+    "bugsBody": "对于 Bug、想法和改进建议，请在仓库提交公开 Issue。",
+    "bugsCta": "在 GitHub 提交 Issue",
+    "cookieNote": "Decoder 不使用任何分析工具或第三方追踪器。唯一设置的 Cookie 是界面技术偏好（侧边栏状态）：根据 ePrivacy 指令无需用户同意。"
   },
   "footer": {
     "ownership": "你的代码和生成的文档属于你自己。Decoder 不会用你的仓库训练模型。",
