@@ -565,6 +565,19 @@ function WorkspacePage() {
           </ResizablePanel>
           <ResizableHandle />
           <ResizablePanel defaultSize={34} minSize={26}>
+            {selectedFolderPath ? (
+              <FolderAnalysisPanel
+                repoId={repoId}
+                folderPath={selectedFolderPath}
+                providerValue={providerValue}
+                language={lang}
+                onClose={() => setSelectedFolderPath(null)}
+                onOpenFile={(id) => {
+                  setSelectedFileId(id);
+                  setSelectedFolderPath(null);
+                }}
+              />
+            ) : (
             <div className="flex h-full flex-col border-l border-border bg-sidebar">
               <div className="sticky top-0 z-10 space-y-2 border-b border-border bg-sidebar p-3">
                 <div className="space-y-2">
