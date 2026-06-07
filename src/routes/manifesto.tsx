@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
-import { ArrowLeft, CheckCircle2, XCircle } from "lucide-react";
+import { ArrowLeft, ArrowRight, CheckCircle2, GitPullRequest, Languages, ShieldCheck, Sparkles, XCircle } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { LangSwitcher } from "@/components/LangSwitcher";
@@ -33,8 +33,9 @@ export const Route = createFileRoute("/manifesto")({
 function ManifestoPage() {
   const { t } = useTranslation();
 
-  const principles = ["open", "privacy", "byok", "localFirst", "multilang", "accessible"] as const;
-  const wonts = ["w1", "w2", "w3", "w4", "w5"] as const;
+  const principles = ["guardrail", "open", "privacy", "byok", "localFirst", "multilang", "accessible"] as const;
+  const wonts = ["w1", "w2", "w3", "w4", "w5", "w6"] as const;
+  const contributing = ["rules", "translations", "providers", "docs"] as const;
 
   return (
     <div className="min-h-screen bg-background text-foreground">
