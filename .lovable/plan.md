@@ -1,70 +1,59 @@
-# Revisione tono degli speech
 
-## Obiettivo
-Allineare tutti i testi rivolti all'utente a un tono **sobrio, descrittivo e onesto**, coerente con la natura del progetto (esperimento personale, open source, gratuito). Eliminare formule da pitch startup, slogan enfatici e claim "forti".
+# Pre-publish scan — Decoder
 
-## Linee guida di tono
-- Niente claim assoluti o promesse ("colma il divario", "guardrail per l'era dell'IA", "in mano agli utenti, non dell'IA").
-- Niente contrapposizioni a effetto ("Generare codice è facile. Capirlo no.", "Verifica, non fiducia cieca", "Niente scatole nere").
-- Niente etichette identitarie ("Community-driven", "Privacy First", "Per tutti").
-- Verbi descrittivi al posto di verbi-manifesto ("aiuta a leggere" invece di "interroga riga per riga").
-- Mantenere il messaggio: è uno strumento di studio personale, BYOK o locale, codice e prompt pubblici.
+## Overall rating: **B (7.5 / 10)** — ready to publish after small cleanups
 
-## File da modificare (solo copy)
-Tutti e tre i locale, mantenuti allineati semanticamente:
-- `src/i18n/locales/it/common.json`
-- `src/i18n/locales/en/common.json`
-- `src/i18n/locales/zh/common.json`
+| Area | Score | Notes |
+|---|---|---|
+| SEO basics (title/desc/canonical/og) | 7/10 | Per-route head() everywhere; small dup/length issues |
+| Sitemap / robots / llms.txt | 6/10 | Sitemap missing 5 public routes |
+| Structured data (JSON-LD) | 6/10 | Only home + root carry it |
+| Accessibility / semantic HTML | 8/10 | shadcn defaults, single `<main>` ok |
+| Brand consistency (Lovable removal) | 6/10 | User-facing copy clean; infra refs remain (correct) but a few text/i18n leftovers |
+| Domain consistency | 6/10 | Mix of `decoder.lovable.app` vs `decoderdev.lovable.app` |
+| Security (backend scan) | 7/10 | 1 warn related to removed `LOVABLE_API_KEY` path — dead code to delete; 2 input-validation warns (zip size, zip-slip) |
 
-## Sezioni interessate
+---
 
-**1. Tagline globale** (`tagline`)
-- Da: "Trasforma il codice sorgente in conoscenza leggibile"
-- A: "Uno strumento open source per leggere il codice insieme all'IA"
+## SEO findings (from scan)
 
-**2. Landing hero** (`landing.hero*`)
-- Hero: togliere l'enfasi del "ma" contrapposto. Es.: "Una parte crescente del codice è scritta dall'IA. Decoder aiuta a leggerla."
-- heroSubtitle: ridurre, togliere "Mantenuto a tempo perso", restare fattuali: progetto personale, open source MIT, BYOK o inferenza locale.
-- Badge: rimuovere "Esperimento didattico personale" (ridondante) e ammorbidire i restanti.
+1. **Root meta description = 163 chars** (>160). Shorten in `src/routes/__root.tsx`.
+2. **Home `<title>` and `og:title` duplicate the root default.** Make `/` unique (e.g. add subtitle, drop the dash variant) so each route is distinct in SERPs.
+3. **Sitemap missing routes**: `/auth`, `/contact`, `/cookies`, `/data-flow`, `/open-source`. Add to `public/sitemap.xml` (or migrate to dynamic `src/routes/sitemap[.]xml.ts` — **needs your confirmation**, since it changes the mechanism).
+   - Note: `/auth` is already `Disallow`-ed in robots — exclude it from sitemap too.
+4. **JSON-LD missing on content pages.** Add `Article` JSON-LD to `/manifesto` and `WebPage` JSON-LD to `/docs` and `/docs/how-to-review-ai-code`.
+5. **No `og:image` anywhere.** Optional — skip unless you want me to generate a branded social card (1200×630).
 
-**3. Sezione "Perché ora"** (`landing.whyNow*`)
-- Titolo: da "Generare codice è facile. Capirlo no." → "Leggere codice generato dall'IA richiede tempo."
-- Intro: rimuovere "colma quel divario"; descrivere cosa fa lo strumento.
-- whyNow3: rimuovere "guardrail collettivo"; parlare di prompt e regole pubbliche.
+## Brand / consistency inconsistencies
 
-**4. Strip open source** (`landing.osStrip`)
-- Titolo: rimuovere la formula "guardrail nelle tue mani, non in quelle dell'IA".
-- Body: descrittivo (codice pubblico, ispezionabile, contributi aperti).
-- Rimuovere etichetta "Comunitario" se troppo identitaria → "Contributi aperti".
+6. **Domain mismatch in JSON-LD**: `src/routes/__root.tsx:120` and `src/routes/index.tsx:62` use `https://decoder.lovable.app` while every canonical/og:url uses `https://decoderdev.lovable.app`. Pick one (recommend `decoderdev.lovable.app`, matches sitemap/robots) and align both JSON-LD blocks.
+7. **Stale i18n keys** still present in `en/it/zh common.json` with empty strings:
+   - `providers.lovable`, `lovableSection`, `lovableIntro`, `lovableBadge`, `managedAiTitle`, `managedAiBody`. Remove keys (nothing reads them) to avoid confusion in future edits.
+8. **Terms/Privacy copy still references managed/server-managed AI** in `en/common.json` lines 172, 191, 849 ("default managed provider that uses a server-side key held by Decoder", "managed gateway"). Contradicts the new "BYOK / Local only" stance. Rewrite those three sentences in en + it + zh.
+9. **`public/llms.txt`** lists "Lovable" as an example AI coder alongside Copilot/Cursor. Replace with "Claude Code" or remove — matches updated index head + docs page wording.
+10. **`src/routes/__root.tsx` title is the root default** ("Decoder — Understand AI-generated code, in any language") and the home route repeats the same string verbatim → fixes finding #2 once you change one of them.
 
-**5. Missione / guardrail** (`landing.guardrail`)
-- Rinominare concettualmente da "La missione" a "Cosa fa Decoder".
-- Sostituire "guardrail open source per l'era dell'IA generativa" con descrizione neutra ("Uno strumento aperto per leggere il codice generato dall'IA").
-- Punti: togliere "Verifica, non fiducia cieca", "In mano agli utenti", "In evoluzione continua" → titoli descrittivi (es. "Output da verificare", "Codice e prompt pubblici", "Estendibile dalla community").
+## Things that look like Lovable refs but should **stay**
 
-**6. Community** (`landing.community`)
-- Kicker "Community-driven" → "Contributi"
-- Titolo "Costruito da chi lo usa" → "Aperto ai contributi"
-- Body più asciutto.
+- `src/integrations/lovable/index.ts` — platform auth SDK (Google sign-in goes through it).
+- `src/lib/lovable-error-reporting.ts` — hooks into the Lovable runtime error capture; harmless if outside Lovable.
+- `*.lovable.app` URLs — that's the actual hosting domain until a custom domain is connected.
 
-**7. Value props** (`landing.value*`)
-- "Privacy First" → "Privacy"
-- "Nessun Vendor Lock-in" → "BYOK"
-- "Per tutti" → "Più livelli di lettura" (più aderente)
+## Security warnings to clear (backend scan)
 
-**8. Manifesto** (`manifesto.*`)
-- Già in tono "note di progetto"; solo piccole limature: rimuovere residui enfatici ("nasconde bug, scelte discutibili o vulnerabilità" → "può contenere bug o scelte non ottimali").
+11. **`quota_bypass_analysis`** — references `LOVABLE_API_KEY` + `assertLovableQuota`. These branches must already be dead after the BYOK-only refactor. Verify `analysis.functions.ts` and `analyzeRepoAiOrigin` no longer have any `provider === 'lovable'` branch and delete the leftover helper imports if any.
+12. **`zip_base64_no_max`** — add `.max(35_000_000)` to the Zod field in `createRepositoryFromZip` (`src/lib/repos.functions.ts`).
+13. **`zip_path_traversal`** — filter `..` segments and absolute paths in `extractZip` before writing/exporting.
 
-**9. Open source page** (`openSource.*`)
-- Intro: togliere "è solo così che ha senso condividere"; restare descrittivi.
-- Roadmap: rimuovere "guardrail" dal punto VS Code.
+---
 
-## Vincoli
-- Solo modifiche di copy nei tre file di locale.
-- Nessuna modifica a componenti, logica, chiavi i18n (preservare struttura JSON e nomi chiave).
-- Mantenere parità semantica IT / EN / ZH.
-- Non rimuovere disclaimer legali o tecnici.
+## Proposed action set (single follow-up turn)
 
-## Verifica
-- Diff sui tre `common.json`, rilettura sezioni `landing`, `manifesto`, `openSource`, `tagline`.
-- Nessuna chiave aggiunta o rinominata → nessun impatto sui componenti.
+A. **SEO fixes** — root description shortened to ≤160; home title/og:title made unique; add JSON-LD to `/manifesto`, `/docs`, `/docs/how-to-review-ai-code`; align JSON-LD `url` to `decoderdev.lovable.app`.
+B. **Sitemap** — add the 5 missing routes to `public/sitemap.xml` (keep static file; do **not** migrate unless you say so).
+C. **i18n cleanup** — remove dead `lovable*`/`managedAi*` keys in en/it/zh; rewrite the 3 terms/privacy sentences that still mention managed AI.
+D. **llms.txt** — replace "Lovable" with "Claude Code" in both lines.
+E. **Security** — Zod `.max` on zip payload; path-traversal filter in `extractZip`; remove dead `lovable`-provider branches + `assertLovableQuota` imports if still present.
+F. **Optional (ask first)** — generate a 1200×630 `og:image`; migrate sitemap to dynamic server route.
+
+Please confirm (or pick a subset) and I'll implement in build mode. Tell me explicitly if you want F.A (og image) or F.B (dynamic sitemap).
