@@ -168,15 +168,15 @@
       },
       "privacy": {
         "title": "隐私设计",
-        "body": "我们绝不使用你的代码训练模型,绝不出售你的数据。API 密钥采用 AES-256-GCM 加密,绝不返回浏览器。"
+        "body": "API 密钥采用 AES-256-GCM 加密,绝不返回浏览器。文件通过行级安全(RLS)按用户隔离。无广告追踪器,无行为画像。"
       },
       "byok": {
         "title": "自带密钥",
         "body": "无锁定:直接向你选择的 AI 提供商付费。随时切换提供商,所有内容均可导出为 Markdown。"
       },
       "localFirst": {
-        "title": "本地优先",
-        "body": "本地模式使用 Ollama 或 LM Studio:源代码不离开你的电脑。浏览器直接与你的 localhost 通信。"
+        "title": "本地推理",
+        "body": "本地模式使用 Ollama 或 LM Studio:AI 推理在你的 localhost 运行,代码不会发送给外部提供商。上传的文件保存在服务器上,仅你本人可通过 RLS 访问。"
       },
       "multilang": {
         "title": "原生多语言",

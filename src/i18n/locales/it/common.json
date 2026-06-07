@@ -168,15 +168,15 @@
       },
       "privacy": {
         "title": "Privacy by design",
-        "body": "Non addestriamo modelli sul tuo codice. Non vendiamo i tuoi dati. Le chiavi API sono cifrate AES-256-GCM e mai restituite al browser."
+        "body": "Le chiavi API sono cifrate AES-256-GCM e mai restituite al browser. I file sono isolati per utente tramite Row Level Security. Nessun tracker pubblicitario, nessuna profilazione comportamentale."
       },
       "byok": {
         "title": "Porta la tua chiave",
         "body": "Nessun lock-in: paghi direttamente il provider AI che preferisci. Cambia provider quando vuoi, esporta tutto in Markdown."
       },
       "localFirst": {
-        "title": "Local-first",
-        "body": "Modalità locale con Ollama o LM Studio: il sorgente non lascia mai la tua macchina. Il browser parla direttamente con il tuo localhost."
+        "title": "Inferenza locale",
+        "body": "Modalità locale con Ollama o LM Studio: l'inferenza AI gira sul tuo localhost e il codice non viene inviato a provider esterni. I file caricati restano sul server, accessibili solo a te tramite RLS."
       },
       "multilang": {
         "title": "Multilingua nativo",
