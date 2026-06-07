@@ -592,12 +592,7 @@ function CommunityCard({
   );
 }
 
-    <span className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-3 py-1 text-muted-foreground">
-      {icon}
-      {label}
-    </span>
-  );
-}
+
 
 function ProviderChip({ name }: { name: string }) {
   return (
