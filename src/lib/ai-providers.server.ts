@@ -70,7 +70,7 @@ export async function callCloudProvider(args: {
         ],
       }),
     });
-    if (!r.ok) await failSafe("Lovable AI", r);
+    if (!r.ok) await failSafe("Managed AI", r);
     const j = await r.json();
     return j.choices?.[0]?.message?.content ?? "";
   }
