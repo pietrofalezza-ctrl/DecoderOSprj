@@ -482,7 +482,10 @@ function Landing() {
         <div className="mx-auto max-w-7xl px-6 py-8 text-xs text-muted-foreground">
           <div className="flex flex-col items-center justify-between gap-3 md:flex-row">
             <Logo />
-            <nav className="flex gap-5">
+            <nav className="flex flex-wrap justify-center gap-5">
+              <Link to="/open-source" className="hover:text-foreground">
+                {t("landing.nav.openSource")}
+              </Link>
               <Link to="/manifesto" className="hover:text-foreground">
                 {t("landing.nav.manifesto")}
               </Link>
@@ -517,6 +520,78 @@ function Landing() {
 
 function Badge({ icon, label }: { icon: React.ReactNode; label: string }) {
   return (
+    <span className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-3 py-1 text-muted-foreground">
+      {icon}
+      {label}
+    </span>
+  );
+}
+
+function GuardrailDiagram({ t }: { t: (k: string) => string }) {
+  return (
+    <div className="border border-border bg-background p-5 font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
+      <div className="flex items-center justify-between gap-3">
+        <div className="flex-1 border border-border bg-card px-2 py-3 text-center">
+          <Bot className="mx-auto mb-1.5 h-4 w-4 text-foreground" />
+          AI source
+        </div>
+        <div className="flex flex-col items-center text-foreground">
+          <span className="h-px w-6 bg-border" />
+          <ArrowRight className="h-3 w-3" />
+        </div>
+        <div className="flex-1 border-2 border-primary bg-primary/5 px-2 py-3 text-center text-primary">
+          <ShieldCheck className="mx-auto mb-1.5 h-4 w-4" />
+          Decoder
+        </div>
+        <div className="flex flex-col items-center text-foreground">
+          <span className="h-px w-6 bg-border" />
+          <ArrowRight className="h-3 w-3" />
+        </div>
+        <div className="flex-1 border border-border bg-card px-2 py-3 text-center">
+          <Users className="mx-auto mb-1.5 h-4 w-4 text-foreground" />
+          You
+        </div>
+      </div>
+      <p className="mt-3 text-[9px] normal-case tracking-normal text-muted-foreground/80">
+        {t("landing.guardrail.intro").split(". ")[0]}.
+      </p>
+    </div>
+  );
+}
+
+function CommunityCard({
+  icon,
+  title,
+  body,
+  link,
+  href,
+}: {
+  icon: React.ReactNode;
+  title: string;
+  body: string;
+  link: string;
+  href: string;
+}) {
+  return (
+    <a
+      href={href}
+      target="_blank"
+      rel="noreferrer"
+      className="group flex flex-col gap-3 border border-border bg-card p-6 transition-colors hover:border-primary hover:bg-background"
+    >
+      <span className="inline-flex h-10 w-10 items-center justify-center rounded-lg bg-accent text-accent-foreground">
+        {icon}
+      </span>
+      <h3 className="font-display text-lg font-medium">{title}</h3>
+      <p className="text-sm text-muted-foreground">{body}</p>
+      <span className="mt-auto inline-flex items-center gap-1.5 text-xs font-medium text-primary">
+        {link}
+        <ArrowRight className="h-3 w-3 transition-transform group-hover:translate-x-1" />
+      </span>
+    </a>
+  );
+}
+
     <span className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-3 py-1 text-muted-foreground">
       {icon}
       {label}
