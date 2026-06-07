@@ -193,8 +193,8 @@ function Landing() {
               {t("landing.heroSubtitle")}
             </p>
 
-            <div className="flex flex-wrap items-center gap-6 pt-2">
-              <Button asChild size="lg" className="rounded-none px-6">
+            <div className="flex flex-wrap items-center gap-4 pt-2 sm:gap-6">
+              <Button asChild size="lg" className="rounded-none px-6 w-full sm:w-auto">
                 <Link to="/auth">
                   {t("landing.ctaStart")}
                   <ArrowRight className="ml-2 h-4 w-4" />
@@ -211,11 +211,11 @@ function Landing() {
               </a>
             </div>
 
-            <div className="pt-10">
+            <div className="pt-8 md:pt-10">
               <p className="mb-4 font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground/70">
                 {t("landing.providersStrip")}
               </p>
-              <div className="flex flex-wrap gap-x-8 gap-y-2 font-mono text-xs tracking-tight text-muted-foreground">
+              <div className="flex flex-wrap gap-x-5 gap-y-2 font-mono text-[11px] tracking-tight text-muted-foreground sm:gap-x-8 sm:text-xs">
                 <span>01. OPENAI</span>
                 <span>02. ANTHROPIC</span>
                 <span>03. GOOGLE</span>
@@ -226,7 +226,7 @@ function Landing() {
           </div>
 
           <div className="md:col-span-5 flex justify-center">
-            <div className="relative w-full aspect-square border border-border bg-card p-8 flex flex-col items-center justify-center">
+            <div className="relative mx-auto w-full max-w-sm aspect-square border border-border bg-card p-6 sm:p-8 flex flex-col items-center justify-center md:max-w-none">
               <span className="absolute left-0 top-0 h-2 w-2 border-l border-t border-border" />
               <span className="absolute right-0 top-0 h-2 w-2 border-r border-t border-border" />
               <span className="absolute bottom-0 left-0 h-2 w-2 border-b border-l border-border" />
