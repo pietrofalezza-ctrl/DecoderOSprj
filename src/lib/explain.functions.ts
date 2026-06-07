@@ -25,8 +25,16 @@ export const explainFile = createServerFn({ method: "POST" })
       proficiency: Proficiency,
       explanation_type: ExplanationType,
       language: Language,
+      snippet: z
+        .object({
+          content: z.string().min(1).max(60_000),
+          start_line: z.number().int().min(1),
+          end_line: z.number().int().min(1),
+        })
+        .optional(),
     }),
   )
+
   .handler(async ({ context, data }) => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { decryptSecret } = await import("./crypto.server");
