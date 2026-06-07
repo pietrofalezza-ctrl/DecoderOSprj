@@ -94,8 +94,8 @@ function Landing() {
     <div className="min-h-screen bg-background text-foreground">
       {/* Header */}
       <header className="sticky top-0 z-30 border-b border-border/60 bg-background/80 backdrop-blur">
-        <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-6">
-          <Link to="/" aria-label={t("brand.name")}>
+        <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-2 px-4 sm:px-6">
+          <Link to="/" aria-label={t("brand.name")} className="shrink-0">
             <Logo />
           </Link>
           <nav className="hidden items-center gap-7 text-sm text-muted-foreground md:flex">
@@ -115,6 +115,56 @@ function Landing() {
             <LangSwitcher />
             <ThemeToggle />
             <PublicHeaderAuthSlot />
+            <Sheet open={menuOpen} onOpenChange={setMenuOpen}>
+              <SheetTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="md:hidden h-10 w-10"
+                  aria-label="Open menu"
+                >
+                  <Menu className="h-5 w-5" />
+                </Button>
+              </SheetTrigger>
+              <SheetContent side="right" className="w-72">
+                <SheetHeader>
+                  <SheetTitle>{t("brand.name")}</SheetTitle>
+                </SheetHeader>
+                <nav className="mt-6 flex flex-col gap-1 text-base">
+                  {nav.map((item) =>
+                    "to" in item && item.to ? (
+                      <Link
+                        key={item.label}
+                        to={item.to}
+                        onClick={() => setMenuOpen(false)}
+                        className="rounded-md px-3 py-3 hover:bg-accent"
+                      >
+                        {item.label}
+                      </Link>
+                    ) : (
+                      <a
+                        key={item.label}
+                        href={item.href}
+                        onClick={() => setMenuOpen(false)}
+                        className="rounded-md px-3 py-3 hover:bg-accent"
+                      >
+                        {item.label}
+                      </a>
+                    ),
+                  )}
+                  <a
+                    href={t("common.repoUrl")}
+                    target="_blank"
+                    rel="noreferrer"
+                    onClick={() => setMenuOpen(false)}
+                    className="mt-2 inline-flex items-center gap-2 rounded-md px-3 py-3 hover:bg-accent"
+                  >
+                    <Github className="h-4 w-4" />
+                    GitHub
+                  </a>
+                </nav>
+              </SheetContent>
+            </Sheet>
           </div>
         </div>
       </header>
