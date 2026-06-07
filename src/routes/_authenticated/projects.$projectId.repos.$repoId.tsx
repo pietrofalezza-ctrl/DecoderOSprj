@@ -177,6 +177,10 @@ function WorkspacePage() {
               : undefined,
           },
         });
+        if ("quotaExceeded" in r && r.quotaExceeded) {
+          toast.error(r.message);
+          return null;
+        }
         return r.content;
       }
       const kind = providerValue.slice(6) as LocalKind;
@@ -218,7 +222,7 @@ function WorkspacePage() {
       }
       return text;
     },
-    onSuccess: (text) => setSummaryText(text),
+    onSuccess: (text) => { if (text) setSummaryText(text); },
     onError: (e: any) => toast.error(e?.message ?? t("errors.generic")),
   });
 

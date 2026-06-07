@@ -20,11 +20,15 @@ export class LovableQuotaError extends Error {
   }
 }
 
-export async function assertLovableQuota(
+export type QuotaCheck =
+  | { ok: true }
+  | { ok: false; message: string };
+
+export async function checkLovableQuota(
   supabase: any,
   userId: string,
   language: Lang,
-): Promise<void> {
+): Promise<QuotaCheck> {
   const since = new Date(Date.now() - WINDOW_HOURS * 60 * 60 * 1000).toISOString();
   const { count, error } = await supabase
     .from("explanations")
@@ -36,11 +40,22 @@ export async function assertLovableQuota(
   if (error) {
     // Fail open: a count failure must not block legitimate usage.
     console.error("[rate-limit] count failed", error);
-    return;
+    return { ok: true };
   }
   if ((count ?? 0) >= LOVABLE_DAILY_LIMIT) {
-    throw new LovableQuotaError(language);
+    return { ok: false, message: messages[language] ?? messages.en };
   }
+  return { ok: true };
+}
+
+/** @deprecated Use checkLovableQuota — throwing surfaces a runtime error. */
+export async function assertLovableQuota(
+  supabase: any,
+  userId: string,
+  language: Lang,
+): Promise<void> {
+  const r = await checkLovableQuota(supabase, userId, language);
+  if (!r.ok) throw new LovableQuotaError(language);
 }
 
 export const LOVABLE_QUOTA = {
