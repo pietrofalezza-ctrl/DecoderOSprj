@@ -67,15 +67,35 @@ function ManifestoPage() {
           {t("manifesto.intro")}
         </p>
 
+        <section className="mt-12 rounded-lg border-l-4 border-primary bg-primary/5 p-6">
+          <div className="flex items-start gap-3">
+            <ShieldCheck className="mt-0.5 h-6 w-6 shrink-0 text-primary" />
+            <div>
+              <h2 className="text-xl font-semibold">{t("manifesto.whyGuardrailTitle")}</h2>
+              <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+                {t("manifesto.whyGuardrailBody")}
+              </p>
+            </div>
+          </div>
+        </section>
+
         <section className="mt-12">
           <h2 className="text-2xl font-semibold">{t("manifesto.principlesTitle")}</h2>
           <ul className="mt-6 space-y-4">
             {principles.map((k) => (
               <li
                 key={k}
-                className="flex items-start gap-3 rounded-lg border border-border bg-card p-4"
+                className={
+                  "flex items-start gap-3 rounded-lg border bg-card p-4 " +
+                  (k === "guardrail" ? "border-primary/50 bg-primary/5" : "border-border")
+                }
               >
-                <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-primary" />
+                <CheckCircle2
+                  className={
+                    "mt-0.5 h-5 w-5 shrink-0 " +
+                    (k === "guardrail" ? "text-primary" : "text-primary")
+                  }
+                />
                 <div>
                   <div className="font-medium">{t(`manifesto.principles.${k}.title`)}</div>
                   <p className="mt-1 text-sm text-muted-foreground">
@@ -103,9 +123,43 @@ function ManifestoPage() {
         </section>
 
         <section className="mt-12">
+          <div className="flex items-center gap-3">
+            <Sparkles className="h-5 w-5 text-primary" />
+            <h2 className="text-2xl font-semibold">{t("manifesto.contributingTitle")}</h2>
+          </div>
+          <p className="mt-3 text-sm text-muted-foreground">{t("manifesto.contributingBody")}</p>
+          <ul className="mt-6 grid gap-3 sm:grid-cols-2">
+            {contributing.map((k) => (
+              <li
+                key={k}
+                className="flex items-start gap-3 rounded-lg border border-border bg-card p-4"
+              >
+                <GitPullRequest className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
+                <span className="text-sm">{t(`manifesto.contributing.${k}`)}</span>
+              </li>
+            ))}
+          </ul>
+          <div className="mt-5 flex flex-wrap gap-3">
+            <Button asChild variant="outline" size="sm">
+              <a href={t("common.repoUrl")} target="_blank" rel="noreferrer">
+                {t("openSource.ctaRepo")}
+                <ArrowRight className="ml-1.5 h-3.5 w-3.5" />
+              </a>
+            </Button>
+            <Button asChild variant="ghost" size="sm">
+              <Link to="/open-source">
+                {t("landing.nav.openSource")}
+                <ArrowRight className="ml-1.5 h-3.5 w-3.5" />
+              </Link>
+            </Button>
+          </div>
+        </section>
+
+        <section className="mt-12">
           <h2 className="text-2xl font-semibold">{t("manifesto.roadmapTitle")}</h2>
           <p className="mt-3 text-sm text-muted-foreground">{t("manifesto.roadmapBody")}</p>
         </section>
+
 
         <div className="mt-14 flex flex-wrap gap-3">
           <Button asChild>
