@@ -169,7 +169,7 @@
       "rights": "数据主体权利：访问、更正、删除、可携带、反对与限制处理。可在「设置 → 账户」中导出或删除数据。",
       "transfers": "欧盟外传输：仅当选择位于欧盟以外的 AI 提供商时（如 OpenAI、Anthropic、Lovable AI），并在请求前明确显示。",
       "retention": "保留期：数据保留至你明确删除账户或单项内容为止。",
-      "contact": "如需行使 GDPR 权利（访问、更正、删除、可携带、反对、限制）或报告事件，请发邮件至 pietro@codecoder.com，我们将在 30 天内回复。"
+      "contact": "如需行使 GDPR 权利（访问、更正、删除、可携带、反对、限制）或报告事件，请在项目 GitHub 仓库提交请求。若涉及个人敏感数据，请使用 GitHub 的私密 Security Advisories 通道。"
     },
     "aiActTitle": "欧盟人工智能法案合规（欧盟 2024/1689 法规）",
     "aiActIntro": "Decoder 是被归类为有限风险的代码理解助手。",
