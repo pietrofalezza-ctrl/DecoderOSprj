@@ -1,11 +1,15 @@
+import { useEffect, useState } from "react";
 import { useRouterState } from "@tanstack/react-router";
 
 export function RouterPendingIndicator() {
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+
   const isPending = useRouterState({
     select: (s) => s.status === "pending" || s.isLoading,
   });
 
-  if (!isPending) return null;
+  if (!mounted || !isPending) return null;
 
   return (
     <div
@@ -25,7 +29,5 @@ export function RouterPendingIndicator() {
 }
 
 export function RouterPendingFallback() {
-  // Intentionally empty: we keep the previous Outlet visible and rely on
-  // RouterPendingIndicator (top progress bar) instead of swapping the screen.
   return null;
 }
