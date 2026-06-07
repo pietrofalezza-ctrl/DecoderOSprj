@@ -48,18 +48,22 @@ export const explainFile = createServerFn({ method: "POST" })
       .maybeSingle();
     if (fErr || !file) throw fErr ?? new Error("file_not_found");
 
-    // Cache lookup
-    const { data: cached } = await context.supabase
-      .from("explanations")
-      .select("content, provider, model")
-      .eq("file_id", file.id)
-      .eq("proficiency", data.proficiency)
-      .eq("explanation_type", data.explanation_type)
-      .eq("language", data.language)
-      .eq("file_sha256", file.sha256)
-      .maybeSingle();
-    if (cached) {
-      return { content: cached.content, provider: cached.provider, model: cached.model, cached: true };
+    const hasSnippet = !!data.snippet;
+
+    // Cache lookup (only for full-file explanations — snippets are ad-hoc).
+    if (!hasSnippet) {
+      const { data: cached } = await context.supabase
+        .from("explanations")
+        .select("content, provider, model")
+        .eq("file_id", file.id)
+        .eq("proficiency", data.proficiency)
+        .eq("explanation_type", data.explanation_type)
+        .eq("language", data.language)
+        .eq("file_sha256", file.sha256)
+        .maybeSingle();
+      if (cached) {
+        return { content: cached.content, provider: cached.provider, model: cached.model, cached: true };
+      }
     }
 
     // Load credential (skip for Lovable AI which uses the server-side gateway key).
@@ -78,20 +82,26 @@ export const explainFile = createServerFn({ method: "POST" })
       apiKey = decryptSecret(cred.encrypted_key);
     }
 
-    // Load file content via admin client (file is RLS-validated above)
-    const { data: blob, error: dlErr } = await supabaseAdmin.storage
-      .from("repositories")
-      .download(file.storage_path);
-    if (dlErr || !blob) throw dlErr ?? new Error("download_failed");
-    let content = await blob.text();
-    if (content.length > 60_000) content = content.slice(0, 60_000) + "\n…[truncated]";
+    let contentForPrompt: string;
+    let pathForPrompt: string = file.path;
+    if (hasSnippet) {
+      contentForPrompt = data.snippet!.content;
+      pathForPrompt = `${file.path} (selezione righe ${data.snippet!.start_line}–${data.snippet!.end_line})`;
+    } else {
+      const { data: blob, error: dlErr } = await supabaseAdmin.storage
+        .from("repositories")
+        .download(file.storage_path);
+      if (dlErr || !blob) throw dlErr ?? new Error("download_failed");
+      contentForPrompt = await blob.text();
+      if (contentForPrompt.length > 60_000) contentForPrompt = contentForPrompt.slice(0, 60_000) + "\n…[truncated]";
+    }
 
     const { system, user } = buildPrompt({
       proficiency: data.proficiency,
       explanationType: data.explanation_type,
       language: data.language,
-      filePath: file.path,
-      fileContent: content,
+      filePath: pathForPrompt,
+      fileContent: contentForPrompt,
     });
 
     const text = await callCloudProvider({
@@ -102,18 +112,21 @@ export const explainFile = createServerFn({ method: "POST" })
       user,
     });
 
-    // Persist cache
-    await context.supabase.from("explanations").insert({
-      owner_id: context.userId,
-      file_id: file.id,
-      proficiency: data.proficiency,
-      explanation_type: data.explanation_type,
-      language: data.language,
-      provider: data.provider,
-      model: data.model ?? null,
-      content: text,
-      file_sha256: file.sha256,
-    });
+    // Persist cache only for full-file explanations.
+    if (!hasSnippet) {
+      await context.supabase.from("explanations").insert({
+        owner_id: context.userId,
+        file_id: file.id,
+        proficiency: data.proficiency,
+        explanation_type: data.explanation_type,
+        language: data.language,
+        provider: data.provider,
+        model: data.model ?? null,
+        content: text,
+        file_sha256: file.sha256,
+      });
+    }
+
 
     return { content: text, provider: data.provider, model: data.model ?? null, cached: false };
   });
