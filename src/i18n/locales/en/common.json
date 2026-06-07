@@ -74,7 +74,7 @@
     "whyNowTitle": "Generating code is easy. Understanding it isn't.",
     "whyNowIntro": "AI assistants ship code faster than any human team can review line by line. Decoder closes that gap.",
     "whyNow1Title": "A growing share of code is AI-generated",
-    "whyNow1Body": "Copilot, Cursor, Lovable, Claude Code — an increasing portion of every new project wasn't written by the people who have to maintain it.",
+    "whyNow1Body": "Copilot, Cursor, Claude Code — an increasing portion of every new project wasn't written by the people who have to maintain it.",
     "whyNow2Title": "PRs scale, human reviews don't",
     "whyNow2Body": "More AI output means more diffs to read. Without a comprehension layer, reviews go shallow or get skipped.",
     "whyNow3Title": "A collective guardrail",
@@ -158,18 +158,18 @@
     "dataCollected": {
       "account": "Account: email, display name and creation timestamp (managed by the auth module).",
       "content": "Content: uploaded files kept in the server's private storage (owner-only access enforced via RLS) with an indicative 60-day retention from last activity, metadata (path, size, sha256, language, repository source — zip or GitHub) and AI explanations.",
-      "credentials": "User API keys: encrypted at rest with AES-256-GCM and never returned to the browser. BYOK is optional — Lovable AI is offered as a courtesy without configuration.",
+      "credentials": "User API keys: encrypted at rest with AES-256-GCM and never returned to the browser. BYOK is optional — the managed AI is offered as a courtesy without configuration.",
       "usage": "Usage metadata: AI provider and model used for each explanation, preferred language and proficiency level, application role (e.g. admin). No behavioural profiling, no third-party tracking.",
       "notracking": "No advertising trackers, no third-party analytics, no profiling. The only cookie set is technical (sidebar UI preference) and requires no consent under the Italian DPA decision of 10 June 2021."
     },
-    "managedAiTitle": "Managed AI provider (Lovable AI)",
-    "managedAiBody": "The default \"Lovable AI\" provider is offered as a courtesy because the API key is managed by the Decoder server. It is subject to usage quotas and may be disabled at any time without notice or continuity. When you use it, your code and prompts are forwarded by the Decoder server to the external gateway ai.gateway.lovable.dev, subject to Lovable's policies. You may switch at any time to your own key (OpenAI, Anthropic, Gemini, OpenRouter) or to a local endpoint (Ollama, LM Studio). The author is not liable for third-party providers' processing policies.",
+    "managedAiTitle": "Managed AI provider",
+    "managedAiBody": "The default \"Managed AI\" provider is offered as a courtesy because the API key is managed by the Decoder server. It is subject to usage quotas and may be disabled at any time without notice or continuity. When you use it, your code and prompts are forwarded by the Decoder server to an external managed AI gateway, subject to its policies. You may switch at any time to your own key (OpenAI, Anthropic, Gemini, OpenRouter) or to a local endpoint (Ollama, LM Studio). The author is not liable for third-party providers' processing policies.",
     "gdprTitle": "GDPR (EU Reg. 2016/679)",
     "gdprIntro": "Processing of personal data needed to run the demo is set up consistently with the GDPR, taking into account the project's non-professional nature.",
     "gdpr": {
       "lawful": "Lawful basis: pre-contractual measures taken at the data subject's request and legitimate interest in the technical operation of the demo (art. 6.1.b and 6.1.f); explicit consent (art. 6.1.a) when you choose an external AI provider.",
       "rights": "Data subject rights: access, rectification, erasure, portability, objection and restriction. Export or delete your data from Settings → Account, or by opening a GitHub request.",
-      "transfers": "Non-EU transfers: only when you choose an AI provider hosted outside the EU (e.g. OpenAI, Anthropic, Lovable AI). The provider is always shown before the request runs.",
+      "transfers": "Non-EU transfers: only when you choose an AI provider hosted outside the EU (e.g. OpenAI, Anthropic, managed gateway). The provider is always shown before the request runs.",
       "retention": "Retention: data is kept until you delete your account or individual items, or until the demo is decommissioned.",
       "contact": "The data controller is the author of the project as a private individual acting in a non-professional capacity, reachable solely through GitHub Issues or, for sensitive data, GitHub private Security Advisories. The conditions for mandatory DPO appointment (art. 37 GDPR) are not met and the exemption from the records of processing for entities with fewer than 250 employees that do not carry out risky/systematic processing applies (art. 30.5 GDPR). The right to lodge a complaint with the Italian DPA (Garante per la protezione dei dati personali) remains unaffected."
     },
@@ -188,7 +188,7 @@
     "liability": {
       "aiOutput": "AI output: explanations, analyses, summaries and suggestions generated by artificial intelligence may contain errors, omissions or inaccuracies. You are solely responsible for verifying, interpreting and acting on the output. The author is not liable for any decision, action or consequence based on AI-generated content.",
       "ipCode": "Analyzed code and intellectual property: you warrant that you hold the necessary rights to any code or material you upload, or have proper authorization. The author is not liable for any infringement of copyright, open-source licenses, patents, trade secrets, NDAs or other third-party rights arising from the material you provide.",
-      "dataTransfer": "Code transmission: in cloud mode the uploaded source code is forwarded to the AI provider you select (including Lovable AI, the default managed provider that uses a server-side key held by Decoder). In local mode the uploaded files still reside in the server's storage, while AI inference runs on your localhost. The author is not liable for third-party AI providers' processing policies.",
+      "dataTransfer": "Code transmission: in cloud mode the uploaded source code is forwarded to the AI provider you select (including the default managed provider that uses a server-side key held by Decoder). In local mode the uploaded files still reside in the server's storage, while AI inference runs on your localhost. The author is not liable for third-party AI providers' processing policies.",
       "security": "Security and damages: the software is provided with no warranty of availability, integrity or security. The author is not liable for any direct, indirect, incidental, consequential or punitive damages — including data loss, lost profits, business interruption, bugs, vulnerabilities or malfunctions — arising from your use of or inability to use Decoder, except for wilful misconduct or gross negligence to the extent these cannot be excluded by law.",
       "unlawful": "Unlawful or non-compliant use: you are solely responsible for ensuring that your use of Decoder complies with all applicable laws, regulations, contracts, corporate policies and third-party rights. The author disclaims all liability for unauthorized, unlawful or non-compliant use."
     }
@@ -248,7 +248,7 @@
       "docs": "Improve the user documentation in /docs."
     },
     "roadmapTitle": "Future ideas",
-    "roadmapBody": "Areas under exploration are documented in the README and in .lovable/plan.md in the repository, with no deadlines and no delivery guarantees."
+    "roadmapBody": "Areas under exploration are documented in the README and in the internal roadmap file in the repository, with no deadlines and no delivery guarantees."
   },
   "openSource": {
     "kicker": "Open Source",
@@ -329,7 +329,7 @@
   "howToUse": {
     "title": "How to use Decoder",
     "intro": "Pick how the AI runs. You can switch any time, per repository.",
-    "defaultTitle": "Lovable AI (default)",
+    "defaultTitle": "Managed AI (default)",
     "defaultBody": "Ready to use — no key, no setup. Free quota included.",
     "byokTitle": "Bring your own key (BYOK)",
     "byokBody": "Use OpenAI, Anthropic, Gemini or OpenRouter with your own API key. You pay the provider directly, no markup.",
@@ -518,7 +518,7 @@
     "running": "Scanning codebase…",
     "runningHint": "Analyzing source files in batches. This may take a minute.",
     "needsCloud": "A cloud AI provider is required to scan the whole repo.",
-    "needsCloudLong": "A cloud provider (free Lovable AI or your own key) is required to analyze the codebase.",
+    "needsCloudLong": "A cloud provider (free managed AI or your own key) is required to analyze the codebase.",
     "repoScore": "Repository score",
     "bucket": {
       "human": "Likely human",
@@ -558,7 +558,7 @@
     "configured": "Configured",
     "notConfigured": "Not configured",
     "providers": {
-      "lovable": "Lovable AI (default)",
+      "lovable": "Managed AI (default)",
       "openai": "OpenAI",
       "anthropic": "Anthropic",
       "gemini": "Google Gemini",
@@ -569,7 +569,7 @@
       "lmstudio": "LM Studio (local)"
     },
     "lovableSection": "Default AI provider",
-    "lovableIntro": "Lovable AI is pre-configured server-side. You can start using Decoder without entering any key. Add your own keys below only if you want a different provider.",
+    "lovableIntro": "The managed AI is pre-configured server-side. You can start using Decoder without entering any key. Add your own keys below only if you want a different provider.",
     "lovableBadge": "Ready to test — no key required",
     "localSection": "Local AI endpoints",
     "localIntro": "In local mode, the browser calls your localhost AI directly for inference — file bodies are not sent to AI providers. Uploaded files still live in your private server storage. You remain responsible for your local setup.",
@@ -615,7 +615,7 @@
     "securityTitle": "Security & ownership",
     "securityBody": "You own your code, generated documentation and suggested comments. We never train on user repositories. Every database table uses Row-Level Security scoped to your account.",
     "adminTitle": "Becoming an administrator",
-    "adminBody": "If you are the first user, go to Settings and click \"Become admin\" in the banner at the top. Or from the Lovable Cloud SQL editor: SELECT public.promote_to_admin('your-email@example.com');"
+    "adminBody": "If you are the first user, go to Settings and click \"Become admin\" in the banner at the top. Or from the backend SQL editor: SELECT public.promote_to_admin('your-email@example.com');"
   },
   "errors": {
     "generic": "Something went wrong.",
@@ -846,7 +846,7 @@
     "rightsTitle": "Your rights",
     "rightsBody": "Access, rectification, erasure (full account or per item: project, repository, explanation, API key), portability (JSON export), restriction, objection. Exercise from Settings → Account, or via GitHub if Settings is unreachable.",
     "thirdPartiesTitle": "Third parties",
-    "thirdPartiesBody": "Hosting and database: Lovable Cloud (Supabase). AI gateway: ai.gateway.lovable.dev. Cloud AI providers you choose (OpenAI, Anthropic, Google Gemini, OpenRouter) receive your selected code and prompts under their own terms. Local providers (Ollama / LM Studio) run on your machine — no AI provider transfer for inference, but uploaded files still live in server storage.",
+    "thirdPartiesBody": "Hosting and database: managed cloud infrastructure (Supabase). AI gateway: managed gateway. Cloud AI providers you choose (OpenAI, Anthropic, Google Gemini, OpenRouter) receive your selected code and prompts under their own terms. Local providers (Ollama / LM Studio) run on your machine — no AI provider transfer for inference, but uploaded files still live in server storage.",
     "minorsTitle": "Minors",
     "minorsBody": "This demo is not directed at persons under 16. Do not create an account if you are below that age.",
     "securityTitle": "Security",

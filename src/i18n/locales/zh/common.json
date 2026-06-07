@@ -74,7 +74,7 @@
     "whyNowTitle": "生成代码很容易,理解它却不是。",
     "whyNowIntro": "AI 助手生成代码的速度超过任何人工团队逐行审查的能力。Decoder 弥补这一差距。",
     "whyNow1Title": "越来越多的代码由 AI 生成",
-    "whyNow1Body": "Copilot、Cursor、Lovable、Claude Code——每个新项目中越来越大的比例并非由维护者亲手编写。",
+    "whyNow1Body": "Copilot、Cursor、Claude Code——每个新项目中越来越大的比例并非由维护者亲手编写。",
     "whyNow2Title": "PR 在扩展,人工审查跟不上",
     "whyNow2Body": "更多 AI 输出意味着更多 diff 要读。没有理解层,审查就会变浅甚至被跳过。",
     "whyNow3Title": "集体的护栏",
@@ -158,18 +158,18 @@
     "dataCollected": {
       "account": "账户:邮箱、显示名与创建时间(由认证模块管理)。",
       "content": "内容:上传的文件保存在服务器的私有存储中(通过 RLS 仅所有者可访问),自最近一次使用起约保留 60 天;元数据(路径、大小、sha256、语言、仓库来源 — zip 或 GitHub)以及生成的 AI 解释。",
-      "credentials": "用户 API 密钥:使用 AES-256-GCM 静态加密,永不返回浏览器。BYOK 为可选项;Lovable AI 作为善意提供的默认选项,无需配置即可使用。",
+      "credentials": "用户 API 密钥:使用 AES-256-GCM 静态加密,永不返回浏览器。BYOK 为可选项;托管 AI 作为善意提供的默认选项,无需配置即可使用。",
       "usage": "使用元数据:每次解释所使用的 AI 提供商与模型、偏好语言与熟练程度、应用角色(如 admin)。无行为画像,无第三方追踪。",
       "notracking": "无广告追踪、无第三方分析、无用户画像。唯一设置的 cookie 为技术性 cookie(侧边栏 UI 偏好),依据意大利数据保护机构 2021 年 6 月 10 日的决定,无需征得同意。"
     },
-    "managedAiTitle": "托管 AI 提供商(Lovable AI)",
-    "managedAiBody": "默认的「Lovable AI」提供商作为善意服务提供,因为 API 密钥由 Decoder 服务器托管。该服务受使用配额限制,可随时停用,无需事先通知或保证持续性。使用时,你的代码和提示词会由 Decoder 服务器转发到外部网关 ai.gateway.lovable.dev,并受 Lovable 的政策约束。你可随时切换为自己的密钥(OpenAI、Anthropic、Gemini、OpenRouter)或本地端点(Ollama、LM Studio)。作者不对第三方提供商的处理政策负责。",
+    "managedAiTitle": "托管 AI 提供商",
+    "managedAiBody": "默认的「托管 AI」提供商作为善意服务提供,因为 API 密钥由 Decoder 服务器托管。该服务受使用配额限制,可随时停用,无需事先通知或保证持续性。使用时,你的代码和提示词会由 Decoder 服务器转发到外部托管的 AI 网关,并受其相关政策约束。你可随时切换为自己的密钥(OpenAI、Anthropic、Gemini、OpenRouter)或本地端点(Ollama、LM Studio)。作者不对第三方提供商的处理政策负责。",
     "gdprTitle": "GDPR(欧盟 2016/679 法规)",
     "gdprIntro": "为运行本 demo 所必需的个人数据处理,在考虑项目非职业性质的前提下,按照与 GDPR 一致的原则进行。",
     "gdpr": {
       "lawful": "合法基础:应数据主体请求采取的合同前措施,以及对 demo 技术运行的合法利益(第 6.1.b 与 6.1.f 条);选择使用外部 AI 提供商时的明示同意(第 6.1.a 条)。",
       "rights": "数据主体权利:访问、更正、删除、可携带、反对与限制处理。可在「设置 → 账户」中导出或删除数据,或通过 GitHub 提交请求。",
-      "transfers": "欧盟外传输:仅当选择位于欧盟以外的 AI 提供商时(如 OpenAI、Anthropic、Lovable AI),并在请求前明确显示。",
+      "transfers": "欧盟外传输:仅当选择位于欧盟以外的 AI 提供商时(如 OpenAI、Anthropic、托管网关),并在请求前明确显示。",
       "retention": "保留期:数据保留至你删除账户或单项内容为止,或直至 demo 停用。",
       "contact": "数据控制者为项目作者,作为以非职业身份行事的自然人,仅可通过 GitHub Issues 联系;若涉及敏感数据,请使用 GitHub 私密 Security Advisories。本项目不符合 GDPR 第 37 条强制任命数据保护官(DPO)的条件,且适用第 30.5 条对员工少于 250 人且不进行高风险或系统性处理的实体在处理记录方面的豁免。你向意大利数据保护机构(Garante per la protezione dei dati personali)提出投诉的权利不受影响。"
     },
@@ -188,7 +188,7 @@
     "liability": {
       "aiOutput": "AI 输出:由人工智能生成的解释、分析、摘要和建议可能包含错误、遗漏或不准确之处。你对核实、解读和使用输出结果承担全部责任。作者不对基于 AI 生成内容所作的任何决定、行为或后果承担责任。",
       "ipCode": "被分析的代码与知识产权:你保证对上传的代码及材料拥有必要的权利或已获得授权。作者不对因你提供的材料而引发的版权、开源许可、专利、商业秘密、保密协议或其他第三方权利的侵权承担责任。",
-      "dataTransfer": "代码传输:在云模式下,上传的源代码会被转发到你所选择的 AI 提供商(包括默认托管提供商 Lovable AI,其使用 Decoder 服务器端持有的密钥)。在本地模式下,上传的文件仍存储在服务器中,而 AI 推理在你的 localhost 上运行。作者不对第三方 AI 提供商的处理政策负责。",
+      "dataTransfer": "代码传输:在云模式下,上传的源代码会被转发到你所选择的 AI 提供商(包括默认的托管提供商,其使用 Decoder 服务器端持有的密钥)。在本地模式下,上传的文件仍存储在服务器中,而 AI 推理在你的 localhost 上运行。作者不对第三方 AI 提供商的处理政策负责。",
       "security": "安全与损害:本软件不提供可用性、完整性或安全性的任何保证。除依法不可排除的故意或重大过失情形外,作者不对因使用或无法使用 Decoder 而产生的任何直接、间接、附带、后果性或惩罚性损害——包括数据丢失、利润损失、业务中断、漏洞或故障——承担责任。",
       "unlawful": "非法或不合规使用:你对使用 Decoder 符合一切适用法律、法规、合同、公司政策及第三方权利负全部责任。作者不对任何未经授权、非法或不合规的使用承担任何责任。"
     }
@@ -248,7 +248,7 @@
       "docs": "改进 /docs 中的用户文档。"
     },
     "roadmapTitle": "未来设想",
-    "roadmapBody": "正在探索的方向记录在仓库的 README 与 .lovable/plan.md 中,不设截止期限,也不保证一定会实现。"
+    "roadmapBody": "正在探索的方向记录在仓库的 README 与内部路线图文件中,不设截止期限,也不保证一定会实现。"
   },
   "openSource": {
     "kicker": "开源",
@@ -329,7 +329,7 @@
   "howToUse": {
     "title": "如何使用 Decoder",
     "intro": "选择 AI 的运行方式，可随时按仓库切换。",
-    "defaultTitle": "Lovable AI（默认）",
+    "defaultTitle": "托管 AI（默认）",
     "defaultBody": "开箱即用——无需密钥与配置，含免费额度。",
     "byokTitle": "自带密钥（BYOK）",
     "byokBody": "使用你自己的 OpenAI、Anthropic、Gemini 或 OpenRouter API 密钥，直接付费给提供商，无加价。",
@@ -518,7 +518,7 @@
     "running": "正在扫描代码库…",
     "runningHint": "正在分批分析源文件,可能需要一分钟。",
     "needsCloud": "扫描整个仓库需要使用云端 AI 提供商。",
-    "needsCloudLong": "分析代码库需要云端提供商（免费的 Lovable AI 或你自己的密钥）。",
+    "needsCloudLong": "分析代码库需要云端提供商（免费的托管 AI 或你自己的密钥）。",
     "repoScore": "仓库评分",
     "bucket": {
       "human": "可能为人类",
@@ -558,7 +558,7 @@
     "configured": "已配置",
     "notConfigured": "未配置",
     "providers": {
-      "lovable": "Lovable AI（默认）",
+      "lovable": "托管 AI（默认）",
       "openai": "OpenAI",
       "anthropic": "Anthropic",
       "gemini": "Google Gemini",
@@ -569,7 +569,7 @@
       "lmstudio": "LM Studio(本地)"
     },
     "lovableSection": "默认 AI 提供商",
-    "lovableIntro": "Lovable AI 已在服务器端预先配置，无需任何密钥即可开始使用 Decoder。仅当你希望使用其他提供商时再在下方添加密钥。",
+    "lovableIntro": "托管 AI 已在服务器端预先配置，无需任何密钥即可开始使用 Decoder。仅当你希望使用其他提供商时再在下方添加密钥。",
     "lovableBadge": "可立即测试 — 无需密钥",
     "localSection": "本地 AI 端点",
     "localIntro": "在本地模式下，浏览器直接调用本机的 AI 进行推理 —— 文件内容不会被发送给 AI 服务提供商。已上传的文件仍存放在你的私有服务器存储中。你需自行负责本地配置。",
@@ -615,7 +615,7 @@
     "securityTitle": "安全与所有权",
     "securityBody": "你的代码、生成的文档和建议的注释归你所有。我们不会使用用户的代码仓库进行模型训练。每张数据表都启用了限定到你账户的行级安全(RLS)。",
     "adminTitle": "成为管理员",
-    "adminBody": "如果你是第一位用户,请前往「设置」,在顶部横幅中点击「成为管理员」。或在 Lovable Cloud SQL 编辑器中执行:SELECT public.promote_to_admin('your-email@example.com');"
+    "adminBody": "如果你是第一位用户,请前往「设置」,在顶部横幅中点击「成为管理员」。或在后端 SQL 编辑器中执行:SELECT public.promote_to_admin('your-email@example.com');"
   },
   "errors": {
     "generic": "出现错误。",
@@ -846,7 +846,7 @@
     "rightsTitle": "你的权利",
     "rightsBody": "访问、更正、删除（整个账户或按单项：项目、仓库、解释、API 密钥）、可携带性（JSON 导出）、限制、反对。可在 设置 → 账户 中行使；若无法访问设置，请通过 GitHub。",
     "thirdPartiesTitle": "第三方",
-    "thirdPartiesBody": "托管与数据库：Lovable Cloud（Supabase）。AI 网关：ai.gateway.lovable.dev。你选择的云端 AI 服务提供商（OpenAI、Anthropic、Google Gemini、OpenRouter）将根据其各自条款收到你选定的代码与提示词。本地服务提供商（Ollama / LM Studio）在你的机器上运行 —— 推理不会传输至 AI 服务提供商，但已上传的文件仍存放在服务器存储中。",
+    "thirdPartiesBody": "托管与数据库：托管云基础设施（Supabase）。AI 网关：托管网关。你选择的云端 AI 服务提供商（OpenAI、Anthropic、Google Gemini、OpenRouter）将根据其各自条款收到你选定的代码与提示词。本地服务提供商（Ollama / LM Studio）在你的机器上运行 —— 推理不会传输至 AI 服务提供商，但已上传的文件仍存放在服务器存储中。",
     "minorsTitle": "未成年人",
     "minorsBody": "此演示不面向 16 岁以下人士。若未满该年龄，请勿创建账户。",
     "securityTitle": "安全",
