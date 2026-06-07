@@ -200,6 +200,39 @@ export type Database = {
           },
         ]
       }
+      user_acknowledgements: {
+        Row: {
+          accepted_at: string
+          accepted_language: string
+          accepted_terms_version: string
+          acknowledgement_type: string
+          id: string
+          ip_address: unknown
+          user_agent: string | null
+          user_id: string
+        }
+        Insert: {
+          accepted_at?: string
+          accepted_language: string
+          accepted_terms_version: string
+          acknowledgement_type: string
+          id?: string
+          ip_address?: unknown
+          user_agent?: string | null
+          user_id: string
+        }
+        Update: {
+          accepted_at?: string
+          accepted_language?: string
+          accepted_terms_version?: string
+          acknowledgement_type?: string
+          id?: string
+          ip_address?: unknown
+          user_agent?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       user_ai_credentials: {
         Row: {
           created_at: string
