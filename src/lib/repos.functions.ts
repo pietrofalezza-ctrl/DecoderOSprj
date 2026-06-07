@@ -122,3 +122,49 @@ export const getFileContent = createServerFn({ method: "POST" })
       content: text,
     };
   });
+
+/**
+ * GDPR Art. 17 — delete a single repository (files, explanations,
+ * storage objects). RLS ensures only the owner can target it.
+ */
+export const deleteRepository = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator(z.object({ id: z.string().uuid() }))
+  .handler(async ({ context, data }) => {
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const uid = context.userId;
+    const { data: owned, error: oErr } = await context.supabase
+      .from("repositories")
+      .select("id")
+      .eq("id", data.id)
+      .maybeSingle();
+    if (oErr) throw oErr;
+    if (!owned) throw new Error("not_found");
+
+    // Storage cleanup
+    try {
+      const { data: list } = await supabaseAdmin.storage
+        .from("repositories")
+        .list(`${uid}/${data.id}`, { limit: 1000 });
+      if (list?.length) {
+        await supabaseAdmin.storage
+          .from("repositories")
+          .remove(list.map((o) => `${uid}/${data.id}/${o.name}`));
+      }
+    } catch {
+      // best-effort
+    }
+
+    const { data: fileIds } = await supabaseAdmin
+      .from("files").select("id").eq("owner_id", uid).eq("repository_id", data.id);
+    if (fileIds?.length) {
+      await supabaseAdmin
+        .from("explanations").delete().eq("owner_id", uid)
+        .in("file_id", fileIds.map((f) => f.id));
+    }
+    await supabaseAdmin.from("files").delete().eq("owner_id", uid).eq("repository_id", data.id);
+    const { error } = await supabaseAdmin
+      .from("repositories").delete().eq("id", data.id).eq("owner_id", uid);
+    if (error) throw error;
+    return { ok: true };
+  });
