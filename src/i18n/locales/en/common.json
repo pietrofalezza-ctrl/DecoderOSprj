@@ -773,8 +773,90 @@
       "removeKeyWarning": "Removing an API key stops all future calls to that provider until you add a new key."
     }
   },
+  "privacy": {
+    "kicker": "Privacy",
+    "title": "Privacy Policy",
+    "intro": "Decoder is a personal open-source case study. This page summarizes what data is processed, why, and how to exercise your rights.",
+    "controllerTitle": "Data controller",
+    "controllerBody": "The project is operated by the individual maintainer as a private individual, not a company. Contact: open a GitHub issue or a private Security Advisory on the repository.",
+    "dataTitle": "What we process",
+    "dataIntro": "Decoder processes only what is needed to deliver the demo:",
+    "data": {
+      "account": "Account: email, display name, language preference.",
+      "files": "Uploaded ZIPs / imported repository files (private bucket, RLS-scoped).",
+      "explanations": "AI-generated explanations and suggested comments you produce.",
+      "keys": "Encrypted BYOK API keys (AES-256-GCM) and a short key hint; provider configuration.",
+      "endpoints": "Local AI endpoint configuration (URL and default model).",
+      "acks": "Acknowledgement records (language, IP address, user agent, timestamp).",
+      "logs": "Operational logs from the hosting platform may include IP address, user agent and request metadata."
+    },
+    "purposesTitle": "Purposes",
+    "purposesBody": "Provide the demo features (storage, BYOK forwarding, AI explanations), prevent abuse, and keep an audit trail of consent.",
+    "lawfulTitle": "Legal basis (EU GDPR)",
+    "lawfulBody": "Performance of the service you request (Art. 6(1)(b)) and legitimate interest in operating a safe public demo (Art. 6(1)(f)).",
+    "retentionTitle": "Retention",
+    "retentionBody": "Account, files, explanations, credentials and endpoints are retained until you delete them or the demo is decommissioned. Acknowledgement records and operational logs may be retained for up to 12 months as a consent / abuse-prevention audit trail.",
+    "rightsTitle": "Your rights",
+    "rightsBody": "Access, rectification, erasure (full account or per item: project, repository, explanation, API key), portability (JSON export), restriction, objection. Exercise from Settings → Account, or via GitHub if Settings is unreachable.",
+    "thirdPartiesTitle": "Third parties",
+    "thirdPartiesBody": "Hosting and database: Lovable Cloud (Supabase). AI gateway: ai.gateway.lovable.dev. Cloud AI providers you choose (OpenAI, Anthropic, Google Gemini, OpenRouter) receive your selected code and prompts under their own terms. Local providers (Ollama / LM Studio) run on your machine — no AI provider transfer for inference, but uploaded files still live in server storage.",
+    "minorsTitle": "Minors",
+    "minorsBody": "This demo is not directed at persons under 16. Do not create an account if you are below that age.",
+    "securityTitle": "Security",
+    "securityBody": "BYOK keys are encrypted at rest with AES-256-GCM. The credentials table has no SELECT policy. Every user-data table uses Row-Level Security scoped to auth.uid(). The service-role key is never bundled into client code.",
+    "noWarrantyTitle": "Disclaimer",
+    "noWarrantyBody": "Decoder is provided as-is, with no warranty. It is not a certified security audit, legal/compliance advice, or production decision system."
+  },
+  "dataFlow": {
+    "kicker": "Transparency",
+    "title": "How your data flows",
+    "intro": "Three modes are supported. Each one routes your code differently. Local mode keeps AI inference on your machine; cloud BYOK sends selected code to the provider you chose.",
+    "localTitle": "Local mode (Ollama / LM Studio)",
+    "cloudTitle": "Cloud BYOK mode (OpenAI / Anthropic / Gemini / OpenRouter)",
+    "githubTitle": "GitHub import mode",
+    "githubBody": "You authorize GitHub. Decoder imports the metadata and file contents of the repositories you select, under the scopes you granted. You can delete imported project data at any time.",
+    "warningsTitle": "Before you upload",
+    "warnings": {
+      "secrets": "Do not upload secrets, tokens or `.env` files.",
+      "env": "Remove `.env`, credentials and customer data from any archive.",
+      "terms": "Review the AI provider's terms before sending real code.",
+      "demo": "Start with a public demo repo or non-sensitive code."
+    },
+    "nodes": {
+      "code": "Your code",
+      "localModel": "Local AI model",
+      "ui": "Decoder UI",
+      "backend": "Decoder backend",
+      "provider": "Selected AI provider",
+      "github": "GitHub",
+      "import": "Decoder import"
+    }
+  },
+  "intendedUse": {
+    "title": "Intended use",
+    "intro": "Decoder is built for:",
+    "items": {
+      "edu": "Educational exploration of source code.",
+      "comprehension": "Code comprehension and onboarding support.",
+      "docs": "Documentation drafting assistance.",
+      "maintain": "Maintainability and refactoring observations.",
+      "learning": "AI-assisted learning."
+    },
+    "notTitle": "Not intended use",
+    "notIntro": "Decoder is NOT designed or suitable for:",
+    "notItems": {
+      "audit": "Certified security audit.",
+      "legal": "Legal or compliance advice.",
+      "production": "Production decision automation.",
+      "highRisk": "High-risk AI decision-making.",
+      "regulated": "Automated employment, credit, insurance, health, law-enforcement or public-authority decisions.",
+      "replace": "Replacing qualified human review."
+    }
+  },
   "footer": {
     "ownership": "Your code and generated documentation belong to you. Decoder never trains on your repositories.",
-    "disclaimer": "Decoder is an open-source code understanding tool. AI-generated explanations may be inaccurate and should be reviewed by a qualified human before being used for technical, security, legal or production decisions."
+    "disclaimer": "Decoder is an open-source educational code-understanding case study. It is not a certified security audit tool, legal/compliance tool, or production decision system. AI-generated outputs may be inaccurate and must be reviewed by a qualified person.",
+    "privacy": "Privacy",
+    "dataFlow": "Data flow"
   }
 }
