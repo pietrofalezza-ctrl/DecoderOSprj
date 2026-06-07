@@ -324,21 +324,40 @@ function WorkspacePage() {
     onError: (e: any) => toast.error(e?.message ?? t("errors.generic")),
   });
 
-  // Best source of findings for the active "issue" tab.
-  const sourceTextForFindings = useMemo(() => {
-    if (mainTab === "quality") return qualityText;
-    if (mainTab === "security") return securityText;
-    return "";
-  }, [mainTab, qualityText, securityText]);
-
   const totalLines = fileQ.data?.content ? fileQ.data.content.split("\n").length : 100_000;
-  const findings: Finding[] = useMemo(
-    () => extractFindings(sourceTextForFindings, totalLines),
-    [sourceTextForFindings, totalLines],
+
+  // Per-tab insight bundles (mapped findings + unmapped file-level points).
+  const summaryBundle = useMemo(
+    () => extractInsightBundle(summaryText, totalLines, "summary"),
+    [summaryText, totalLines],
+  );
+  const qualityBundle = useMemo(
+    () => extractInsightBundle(qualityText, totalLines, "quality"),
+    [qualityText, totalLines],
+  );
+  const securityBundle = useMemo(
+    () => extractInsightBundle(securityText, totalLines, "security"),
+    [securityText, totalLines],
   );
 
+  // Active tab's findings drive the code editor highlights.
+  const findings: Finding[] = useMemo(() => {
+    if (mainTab === "summary") return summaryBundle.findings;
+    if (mainTab === "quality") return qualityBundle.findings;
+    if (mainTab === "security") return securityBundle.findings;
+    return [];
+  }, [mainTab, summaryBundle, qualityBundle, securityBundle]);
+
+  const [activeFindingId, setActiveFindingId] = useState<string | null>(null);
+  const [patchSourceInsight, setPatchSourceInsight] = useState<Finding | null>(null);
+
+  // Clear active highlight when the active tab no longer contains it.
+  useEffect(() => {
+    if (!activeFindingId) return;
+    if (!findings.some((f) => f.id === activeFindingId)) setActiveFindingId(null);
+  }, [findings, activeFindingId]);
+
   const fixSourceAnalysis = useMemo(() => {
-    // Prefer whichever issue analysis the user just ran.
     if (qualityText) return { kind: qualityKind, text: qualityText };
     if (securityText) return { kind: "security" as const, text: securityText };
     return null;
