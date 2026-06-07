@@ -80,16 +80,16 @@ export function AppShell({ children }: { children: ReactNode }) {
                     <Button
                       variant="outline"
                       size="default"
-                      className="ml-2 h-11 gap-2 px-2.5"
+                      className="ml-1 h-11 gap-2 px-2 sm:ml-2 sm:px-2.5"
                       aria-label={t("nav.account")}
                     >
-                      <span className="flex h-9 w-9 items-center justify-center rounded-full bg-primary/15 text-base font-semibold text-primary ring-2 ring-primary/40 transition hover:ring-primary/70">
+                      <span className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/15 text-base font-semibold text-primary ring-2 ring-primary/40 transition hover:ring-primary/70 sm:h-9 sm:w-9">
                         {initial}
                       </span>
                       <span className="hidden max-w-[160px] truncate text-sm font-medium md:inline">
                         {email || t("nav.account")}
                       </span>
-                      <ChevronDown className="h-4 w-4 text-muted-foreground" />
+                      <ChevronDown className="hidden h-4 w-4 text-muted-foreground sm:inline" />
                     </Button>
                   </DropdownMenuTrigger>
                 </TooltipTrigger>
