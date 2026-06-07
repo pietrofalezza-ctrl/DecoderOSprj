@@ -517,7 +517,22 @@ function WorkspacePage() {
           <ResizableHandle />
           <ResizablePanel defaultSize={46} minSize={20}>
             <div className="h-full">
-              {fileQ.data ? (
+              {selectedFolderPath ? (
+                <div className="flex h-full items-center justify-center p-6">
+                  <div className="max-w-md space-y-3 rounded-lg border border-primary/30 bg-primary/5 p-6 text-center">
+                    <ScanSearch className="mx-auto h-8 w-8 text-primary" />
+                    <h3 className="text-base font-semibold">
+                      {t("workspace.folder.title")}
+                    </h3>
+                    <p className="font-mono text-sm text-foreground">
+                      {selectedFolderPath}/
+                    </p>
+                    <p className="text-xs text-muted-foreground">
+                      {t("workspace.folder.emptyHint")}
+                    </p>
+                  </div>
+                </div>
+              ) : fileQ.data ? (
                 <CodeViewer
                   ref={codeRef}
                   content={fileQ.data.content}
@@ -525,8 +540,6 @@ function WorkspacePage() {
                   onSelectionChange={setSelection}
                   findings={findings}
                 />
-
-
               ) : (
                 <div className="flex h-full items-center justify-center p-6">
                   <div className="max-w-md space-y-4 rounded-lg border border-border bg-card p-6 shadow-sm">
