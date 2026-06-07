@@ -95,6 +95,7 @@ function WorkspacePage() {
   const [qualityText, setQualityText] = useState<string>("");
   const [securityText, setSecurityText] = useState<string>("");
   const [aiOriginText, setAiOriginText] = useState<string>("");
+  const [fixText, setFixText] = useState<string>("");
 
   const [repoSheetOpen, setRepoSheetOpen] = useState(false);
   const [repoAiResult, setRepoAiResult] = useState<RepoAiOriginResult | null>(null);
@@ -127,6 +128,7 @@ function WorkspacePage() {
     setQualityText("");
     setSecurityText("");
     setAiOriginText("");
+    setFixText("");
     setSelection(null);
   }, [selectedFileId, providerValue]);
 
