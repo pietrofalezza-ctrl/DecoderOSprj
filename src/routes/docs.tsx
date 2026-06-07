@@ -64,7 +64,7 @@ function DocsPage() {
         </div>
       </header>
 
-      <main className="mx-auto max-w-3xl px-6 py-16">
+      <main className="mx-auto max-w-3xl px-4 py-12 sm:px-6 md:py-16">
         <h1 className="text-4xl font-semibold tracking-tight">{t("docs.title")}</h1>
         <p className="mt-3 text-muted-foreground">{t("docs.intro")}</p>
 

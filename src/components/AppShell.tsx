@@ -53,18 +53,18 @@ export function AppShell({ children }: { children: ReactNode }) {
 
   return (
     <div className="flex min-h-screen flex-col bg-background">
-      <header className="flex h-16 items-center justify-between border-b border-border px-4">
-        <Link to="/dashboard" aria-label={t("brand.name")}>
+      <header className="flex h-16 items-center justify-between border-b border-border px-3 sm:px-4">
+        <Link to="/dashboard" aria-label={t("brand.name")} className="shrink-0">
           <Logo />
         </Link>
-        <div className="flex items-center gap-2">
-          <Button asChild variant="ghost" size="default" className="text-sm font-medium">
+        <div className="flex items-center gap-1 sm:gap-2">
+          <Button asChild variant="ghost" size="default" className="hidden text-sm font-medium sm:inline-flex">
             <Link to="/docs">
               <BookOpen className="mr-2 h-5 w-5" />
               {t("nav.docs")}
             </Link>
           </Button>
-          <Button asChild variant="ghost" size="default" className="text-sm font-medium">
+          <Button asChild variant="ghost" size="default" className="hidden text-sm font-medium sm:inline-flex">
             <a href={t("common.repoUrl")} target="_blank" rel="noreferrer">
               <Github className="mr-2 h-5 w-5" />
               GitHub
@@ -80,16 +80,16 @@ export function AppShell({ children }: { children: ReactNode }) {
                     <Button
                       variant="outline"
                       size="default"
-                      className="ml-2 h-11 gap-2 px-2.5"
+                      className="ml-1 h-11 gap-2 px-2 sm:ml-2 sm:px-2.5"
                       aria-label={t("nav.account")}
                     >
-                      <span className="flex h-9 w-9 items-center justify-center rounded-full bg-primary/15 text-base font-semibold text-primary ring-2 ring-primary/40 transition hover:ring-primary/70">
+                      <span className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/15 text-base font-semibold text-primary ring-2 ring-primary/40 transition hover:ring-primary/70 sm:h-9 sm:w-9">
                         {initial}
                       </span>
                       <span className="hidden max-w-[160px] truncate text-sm font-medium md:inline">
                         {email || t("nav.account")}
                       </span>
-                      <ChevronDown className="h-4 w-4 text-muted-foreground" />
+                      <ChevronDown className="hidden h-4 w-4 text-muted-foreground sm:inline" />
                     </Button>
                   </DropdownMenuTrigger>
                 </TooltipTrigger>

@@ -122,12 +122,14 @@
   }
   html {
     color-scheme: dark;
+    -webkit-text-size-adjust: 100%;
   }
   body {
     background-color: var(--color-background);
     color: var(--color-foreground);
     font-family: var(--font-sans);
     font-feature-settings: "ss01", "cv01";
+    overflow-x: hidden;
   }
   code, pre, .font-mono {
     font-family: var(--font-mono);
@@ -135,6 +137,9 @@
   .font-display {
     font-family: var(--font-display);
     font-feature-settings: "liga", "dlig", "kern";
+  }
+  :where(button, a, [role="button"]) {
+    touch-action: manipulation;
   }
 }
 

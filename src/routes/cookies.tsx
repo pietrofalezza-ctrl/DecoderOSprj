@@ -54,7 +54,7 @@ function CookiesPage() {
         </div>
       </header>
 
-      <main className="mx-auto max-w-3xl px-6 py-16">
+      <main className="mx-auto max-w-3xl px-4 py-12 sm:px-6 md:py-16">
         <p className="text-xs uppercase tracking-wide text-primary">{t("cookies.kicker")}</p>
         <h1 className="mt-2 text-balance text-4xl font-semibold tracking-tight md:text-5xl">
           {t("cookies.title")}

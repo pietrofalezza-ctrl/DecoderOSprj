@@ -1,4 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { useState } from "react";
 import { Trans, useTranslation } from "react-i18next";
 import {
   ArrowRight,
@@ -15,9 +16,17 @@ import {
   Languages,
   Scale,
   HeartHandshake,
+  Menu,
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
 import { LangSwitcher } from "@/components/LangSwitcher";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { Logo } from "@/components/Logo";
@@ -71,6 +80,7 @@ export const Route = createFileRoute("/")({
 
 function Landing() {
   const { t } = useTranslation();
+  const [menuOpen, setMenuOpen] = useState(false);
 
   const nav = [
     { label: t("landing.nav.howItWorks"), href: "#how-it-works" },
@@ -84,8 +94,8 @@ function Landing() {
     <div className="min-h-screen bg-background text-foreground">
       {/* Header */}
       <header className="sticky top-0 z-30 border-b border-border/60 bg-background/80 backdrop-blur">
-        <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-6">
-          <Link to="/" aria-label={t("brand.name")}>
+        <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-2 px-4 sm:px-6">
+          <Link to="/" aria-label={t("brand.name")} className="shrink-0">
             <Logo />
           </Link>
           <nav className="hidden items-center gap-7 text-sm text-muted-foreground md:flex">
@@ -105,13 +115,63 @@ function Landing() {
             <LangSwitcher />
             <ThemeToggle />
             <PublicHeaderAuthSlot />
+            <Sheet open={menuOpen} onOpenChange={setMenuOpen}>
+              <SheetTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="md:hidden h-10 w-10"
+                  aria-label="Open menu"
+                >
+                  <Menu className="h-5 w-5" />
+                </Button>
+              </SheetTrigger>
+              <SheetContent side="right" className="w-72">
+                <SheetHeader>
+                  <SheetTitle>{t("brand.name")}</SheetTitle>
+                </SheetHeader>
+                <nav className="mt-6 flex flex-col gap-1 text-base">
+                  {nav.map((item) =>
+                    "to" in item && item.to ? (
+                      <Link
+                        key={item.label}
+                        to={item.to}
+                        onClick={() => setMenuOpen(false)}
+                        className="rounded-md px-3 py-3 hover:bg-accent"
+                      >
+                        {item.label}
+                      </Link>
+                    ) : (
+                      <a
+                        key={item.label}
+                        href={item.href}
+                        onClick={() => setMenuOpen(false)}
+                        className="rounded-md px-3 py-3 hover:bg-accent"
+                      >
+                        {item.label}
+                      </a>
+                    ),
+                  )}
+                  <a
+                    href={t("common.repoUrl")}
+                    target="_blank"
+                    rel="noreferrer"
+                    onClick={() => setMenuOpen(false)}
+                    className="mt-2 inline-flex items-center gap-2 rounded-md px-3 py-3 hover:bg-accent"
+                  >
+                    <Github className="h-4 w-4" />
+                    GitHub
+                  </a>
+                </nav>
+              </SheetContent>
+            </Sheet>
           </div>
         </div>
       </header>
 
       {/* Hero — editorial */}
       <section className="relative">
-        <div className="mx-auto grid max-w-6xl gap-16 px-6 py-20 md:grid-cols-12 md:py-28">
+        <div className="mx-auto grid max-w-6xl gap-10 px-4 py-12 sm:px-6 md:grid-cols-12 md:gap-16 md:py-28">
           <div className="md:col-span-7 space-y-8">
             <div className="flex flex-wrap gap-6 text-[10px] uppercase tracking-[0.2em] text-muted-foreground font-mono">
               <span className="border-b border-border pb-1">Case Study 01</span>
@@ -119,7 +179,7 @@ function Landing() {
               <span className="border-b border-border pb-1">{t("landing.heroBadgePrivacy")}</span>
             </div>
 
-            <h1 className="font-display text-5xl font-medium leading-[1.05] tracking-tight text-foreground md:text-7xl">
+            <h1 className="font-display text-4xl font-medium leading-[1.05] tracking-tight text-foreground sm:text-5xl md:text-7xl">
               <Trans
                 i18nKey="landing.hero"
                 components={{
@@ -133,8 +193,8 @@ function Landing() {
               {t("landing.heroSubtitle")}
             </p>
 
-            <div className="flex flex-wrap items-center gap-6 pt-2">
-              <Button asChild size="lg" className="rounded-none px-6">
+            <div className="flex flex-wrap items-center gap-4 pt-2 sm:gap-6">
+              <Button asChild size="lg" className="rounded-none px-6 w-full sm:w-auto">
                 <Link to="/auth">
                   {t("landing.ctaStart")}
                   <ArrowRight className="ml-2 h-4 w-4" />
@@ -151,11 +211,11 @@ function Landing() {
               </a>
             </div>
 
-            <div className="pt-10">
+            <div className="pt-8 md:pt-10">
               <p className="mb-4 font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground/70">
                 {t("landing.providersStrip")}
               </p>
-              <div className="flex flex-wrap gap-x-8 gap-y-2 font-mono text-xs tracking-tight text-muted-foreground">
+              <div className="flex flex-wrap gap-x-5 gap-y-2 font-mono text-[11px] tracking-tight text-muted-foreground sm:gap-x-8 sm:text-xs">
                 <span>01. OPENAI</span>
                 <span>02. ANTHROPIC</span>
                 <span>03. GOOGLE</span>
@@ -166,7 +226,7 @@ function Landing() {
           </div>
 
           <div className="md:col-span-5 flex justify-center">
-            <div className="relative w-full aspect-square border border-border bg-card p-8 flex flex-col items-center justify-center">
+            <div className="relative mx-auto w-full max-w-sm aspect-square border border-border bg-card p-6 sm:p-8 flex flex-col items-center justify-center md:max-w-none">
               <span className="absolute left-0 top-0 h-2 w-2 border-l border-t border-border" />
               <span className="absolute right-0 top-0 h-2 w-2 border-r border-t border-border" />
               <span className="absolute bottom-0 left-0 h-2 w-2 border-b border-l border-border" />
@@ -226,7 +286,7 @@ function Landing() {
 
       {/* Open-source strip — guardrail framing */}
       <section className="border-y border-border bg-background">
-        <div className="mx-auto grid max-w-7xl items-center gap-8 px-6 py-10 md:grid-cols-12">
+        <div className="mx-auto grid max-w-7xl items-center gap-6 px-4 py-10 sm:px-6 md:grid-cols-12">
           <div className="md:col-span-7">
             <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-primary">
               {t("landing.osStrip.kicker")}
@@ -273,13 +333,13 @@ function Landing() {
 
       {/* Guardrail mission */}
       <section className="border-b border-border/60 bg-card/40">
-        <div className="mx-auto max-w-7xl px-6 py-20">
+        <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 md:py-20">
           <div className="grid gap-12 md:grid-cols-12">
             <div className="md:col-span-5">
               <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-primary">
                 {t("landing.guardrail.kicker")}
               </p>
-              <h2 className="mt-3 font-display text-4xl font-medium leading-tight tracking-tight md:text-5xl">
+              <h2 className="mt-3 font-display text-3xl font-medium leading-tight tracking-tight sm:text-4xl md:text-5xl">
                 {t("landing.guardrail.title")}
               </h2>
               <p className="mt-5 text-muted-foreground">
@@ -331,12 +391,12 @@ function Landing() {
 
       {/* Why now — AI-generated code era */}
       <section className="border-y border-border/60 bg-card/40">
-        <div className="mx-auto max-w-7xl px-6 py-16">
+        <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 md:py-16">
           <div className="max-w-2xl">
             <p className="text-xs font-semibold uppercase tracking-wide text-primary">
               {t("landing.whyNowKicker")}
             </p>
-            <h2 className="mt-2 font-display text-4xl font-medium tracking-tight md:text-5xl">
+            <h2 className="mt-2 font-display text-3xl font-medium tracking-tight sm:text-4xl md:text-5xl">
               {t("landing.whyNowTitle")}
             </h2>
             <p className="mt-3 text-muted-foreground">{t("landing.whyNowIntro")}</p>
@@ -363,8 +423,8 @@ function Landing() {
 
       {/* How it works */}
       <section id="how-it-works" className="border-t border-border/60 bg-card/40">
-        <div className="mx-auto max-w-7xl px-6 py-16">
-          <h2 className="font-display text-4xl font-medium tracking-tight">{t("landing.howTitle")}</h2>
+        <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 md:py-16">
+          <h2 className="font-display text-3xl font-medium tracking-tight sm:text-4xl">{t("landing.howTitle")}</h2>
           <p className="mt-2 max-w-2xl text-muted-foreground">{t("landing.howIntro")}</p>
           <ol className="mt-10 grid gap-6 md:grid-cols-3">
             <Step n={1} title={t("landing.step1Title")} body={t("landing.step1Body")} />
@@ -375,8 +435,8 @@ function Landing() {
       </section>
 
       {/* Integrations */}
-      <section id="integrations" className="mx-auto max-w-7xl px-6 py-16">
-        <h2 className="font-display text-4xl font-medium tracking-tight">{t("landing.integrationsTitle")}</h2>
+      <section id="integrations" className="mx-auto max-w-7xl px-4 py-12 sm:px-6 md:py-16">
+        <h2 className="font-display text-3xl font-medium tracking-tight sm:text-4xl">{t("landing.integrationsTitle")}</h2>
         <p className="mt-2 max-w-2xl text-muted-foreground">{t("landing.integrationsBody")}</p>
         <div className="mt-8 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
           {["OpenAI", "Anthropic", "Google Gemini", "OpenRouter", "Ollama", "LM Studio", "GitHub"].map(
@@ -394,7 +454,7 @@ function Landing() {
 
       {/* Values strip */}
       <section className="border-t border-border/60 bg-card/40">
-        <div className="mx-auto grid max-w-7xl grid-cols-2 gap-6 px-6 py-12 md:grid-cols-4">
+        <div className="mx-auto grid max-w-7xl grid-cols-2 gap-6 px-4 py-10 sm:px-6 md:grid-cols-4 md:py-12">
           <Value
             icon={<Sparkles className="h-5 w-5" />}
             title={t("landing.value100Open")}
@@ -420,12 +480,12 @@ function Landing() {
 
       {/* Community CTA */}
       <section className="border-t border-border bg-background">
-        <div className="mx-auto max-w-7xl px-6 py-20">
+        <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 md:py-20">
           <div className="max-w-2xl">
             <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-primary">
               {t("landing.community.kicker")}
             </p>
-            <h2 className="mt-2 font-display text-4xl font-medium tracking-tight md:text-5xl">
+            <h2 className="mt-2 font-display text-3xl font-medium tracking-tight sm:text-4xl md:text-5xl">
               {t("landing.community.title")}
             </h2>
             <p className="mt-3 text-muted-foreground">{t("landing.community.body")}</p>
@@ -458,7 +518,7 @@ function Landing() {
 
       {/* Footer */}
       <footer className="border-t border-border/60">
-        <div className="mx-auto max-w-7xl px-6 py-8 text-xs text-muted-foreground">
+        <div className="mx-auto max-w-7xl px-4 py-8 text-xs text-muted-foreground sm:px-6">
           <div className="flex flex-col items-center justify-between gap-3 md:flex-row">
             <Logo />
             <nav className="flex flex-wrap justify-center gap-5">
