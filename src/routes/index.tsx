@@ -80,6 +80,7 @@ export const Route = createFileRoute("/")({
 
 function Landing() {
   const { t } = useTranslation();
+  const [menuOpen, setMenuOpen] = useState(false);
 
   const nav = [
     { label: t("landing.nav.howItWorks"), href: "#how-it-works" },
