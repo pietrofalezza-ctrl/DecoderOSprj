@@ -113,7 +113,8 @@ function SettingsPage() {
 
 
 
-        <section className="space-y-4 rounded-lg border border-border bg-card p-5">
+        <section id="profile" className="space-y-4 rounded-lg border border-border bg-card p-5 scroll-mt-20">
+
           <h2 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
             {t("settings.profileSection")}
           </h2>
@@ -167,7 +168,8 @@ function SettingsPage() {
           </div>
         </section>
 
-        <section className="space-y-4 rounded-lg border border-border bg-card p-5">
+        <section id="local" className="space-y-4 rounded-lg border border-border bg-card p-5 scroll-mt-20">
+
           <h2 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
             {t("settings.localSection")}
           </h2>
@@ -239,7 +241,7 @@ function AccountPrivacySection() {
   });
 
   return (
-    <section className="space-y-4 rounded-lg border border-border bg-card p-5">
+    <section id="account" className="space-y-4 rounded-lg border border-border bg-card p-5 scroll-mt-20">
       <h2 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
         {t("settings.accountSection")}
       </h2>
