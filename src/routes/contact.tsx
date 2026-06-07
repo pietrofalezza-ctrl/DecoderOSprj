@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
-import { ArrowLeft, Mail, ShieldCheck, Bug } from "lucide-react";
+import { ArrowLeft, Github, ShieldCheck, Bug } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { LangSwitcher } from "@/components/LangSwitcher";
@@ -31,7 +31,7 @@ export const Route = createFileRoute("/contact")({
 
 function ContactPage() {
   const { t } = useTranslation();
-  const email = t("contact.email");
+  
 
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -69,10 +69,12 @@ function ContactPage() {
               <p className="mt-2 text-sm text-muted-foreground">{t("contact.privacyBody")}</p>
               <a
                 className="mt-3 inline-flex items-center gap-2 text-sm font-medium text-primary hover:underline"
-                href={`mailto:${email}?subject=${encodeURIComponent("GDPR - Decoder")}`}
+                href={`${t("common.repoUrl")}/issues/new?labels=gdpr&title=${encodeURIComponent("GDPR request")}`}
+                target="_blank"
+                rel="noreferrer"
               >
-                <Mail className="h-4 w-4" />
-                {email}
+                <Github className="h-4 w-4" />
+                {t("contact.privacyCta")}
               </a>
             </div>
           </div>
@@ -86,10 +88,12 @@ function ContactPage() {
               <p className="mt-2 text-sm text-muted-foreground">{t("contact.securityBody")}</p>
               <a
                 className="mt-3 inline-flex items-center gap-2 text-sm font-medium text-primary hover:underline"
-                href={`mailto:${email}?subject=${encodeURIComponent("Security - Decoder")}`}
+                href={`${t("common.repoUrl")}/security/advisories/new`}
+                target="_blank"
+                rel="noreferrer"
               >
-                <Mail className="h-4 w-4" />
-                {email}
+                <Github className="h-4 w-4" />
+                {t("contact.securityCta")}
               </a>
             </div>
           </div>
@@ -103,17 +107,18 @@ function ContactPage() {
               <p className="mt-2 text-sm text-muted-foreground">{t("contact.bugsBody")}</p>
               <a
                 className="mt-3 inline-flex items-center gap-2 text-sm font-medium text-primary hover:underline"
-                href={t("common.repoUrl")}
+                href={`${t("common.repoUrl")}/issues`}
                 target="_blank"
                 rel="noreferrer"
               >
-                GitHub Issues →
+                <Github className="h-4 w-4" />
+                {t("contact.bugsCta")}
               </a>
             </div>
           </div>
         </section>
 
-        <p className="mt-10 text-xs text-muted-foreground">{t("contact.responseTimes")}</p>
+        <p className="mt-10 text-xs text-muted-foreground">{t("contact.cookieNote")}</p>
       </main>
 
       <footer className="border-t border-border/60">
