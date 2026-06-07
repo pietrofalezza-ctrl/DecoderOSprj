@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
-import { ArrowLeft, Mail, ShieldCheck, Bug } from "lucide-react";
+import { ArrowLeft, Github, ShieldCheck, Bug } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { LangSwitcher } from "@/components/LangSwitcher";
