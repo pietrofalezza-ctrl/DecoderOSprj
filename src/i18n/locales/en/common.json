@@ -158,12 +158,12 @@
     "dataCollected": {
       "account": "Account: email, display name and creation timestamp (managed by the auth module).",
       "content": "Content: uploaded files kept in the server's private storage (owner-only access enforced via RLS) with an indicative 60-day retention from last activity, metadata (path, size, sha256, language, repository source — zip or GitHub) and AI explanations.",
-      "credentials": "User API keys: encrypted at rest with AES-256-GCM and never returned to the browser. BYOK is optional — the managed AI is offered as a courtesy without configuration.",
+      "credentials": "User API keys: encrypted at rest with AES-256-GCM and never returned to the browser. Decoder does not provide any server-managed AI: to use a cloud provider you must configure your own key (BYOK).",
       "usage": "Usage metadata: AI provider and model used for each explanation, preferred language and proficiency level, application role (e.g. admin). No behavioural profiling, no third-party tracking.",
       "notracking": "No advertising trackers, no third-party analytics, no profiling. The only cookie set is technical (sidebar UI preference) and requires no consent under the Italian DPA decision of 10 June 2021."
     },
-    "managedAiTitle": "Managed AI provider",
-    "managedAiBody": "The default \"Managed AI\" provider is offered as a courtesy because the API key is managed by the Decoder server. It is subject to usage quotas and may be disabled at any time without notice or continuity. When you use it, your code and prompts are forwarded by the Decoder server to an external managed AI gateway, subject to its policies. You may switch at any time to your own key (OpenAI, Anthropic, Gemini, OpenRouter) or to a local endpoint (Ollama, LM Studio). The author is not liable for third-party providers' processing policies.",
+    "managedAiTitle": "",
+    "managedAiBody": "",
     "gdprTitle": "GDPR (EU Reg. 2016/679)",
     "gdprIntro": "Processing of personal data needed to run the demo is set up consistently with the GDPR, taking into account the project's non-professional nature.",
     "gdpr": {
@@ -329,8 +329,8 @@
   "howToUse": {
     "title": "How to use Decoder",
     "intro": "Pick how the AI runs. You can switch any time, per repository.",
-    "defaultTitle": "Managed AI (default)",
-    "defaultBody": "Ready to use — no key, no setup. Free quota included.",
+    "defaultTitle": "",
+    "defaultBody": "",
     "byokTitle": "Bring your own key (BYOK)",
     "byokBody": "Use OpenAI, Anthropic, Gemini or OpenRouter with your own API key. You pay the provider directly, no markup.",
     "byokCta": "Add your API key",
@@ -517,8 +517,8 @@
     "rerun": "Rescan",
     "running": "Scanning codebase…",
     "runningHint": "Analyzing source files in batches. This may take a minute.",
-    "needsCloud": "A cloud AI provider is required to scan the whole repo.",
-    "needsCloudLong": "A cloud provider (free managed AI or your own key) is required to analyze the codebase.",
+    "needsCloud": "A cloud AI provider (BYOK) is required to scan the whole repo.",
+    "needsCloudLong": "A cloud provider configured with your own key (BYOK) is required to analyze the codebase.",
     "repoScore": "Repository score",
     "bucket": {
       "human": "Likely human",
@@ -558,7 +558,7 @@
     "configured": "Configured",
     "notConfigured": "Not configured",
     "providers": {
-      "lovable": "Managed AI (default)",
+      "lovable": "",
       "openai": "OpenAI",
       "anthropic": "Anthropic",
       "gemini": "Google Gemini",
@@ -568,9 +568,9 @@
       "ollama": "Ollama (local)",
       "lmstudio": "LM Studio (local)"
     },
-    "lovableSection": "Default AI provider",
-    "lovableIntro": "The managed AI is pre-configured server-side. You can start using Decoder without entering any key. Add your own keys below only if you want a different provider.",
-    "lovableBadge": "Ready to test — no key required",
+    "lovableSection": "",
+    "lovableIntro": "",
+    "lovableBadge": "",
     "localSection": "Local AI endpoints",
     "localIntro": "In local mode, the browser calls your localhost AI directly for inference — file bodies are not sent to AI providers. Uploaded files still live in your private server storage. You remain responsible for your local setup.",
     "endpointKind": "Type",

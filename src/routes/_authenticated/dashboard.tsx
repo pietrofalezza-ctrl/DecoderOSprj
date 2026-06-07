@@ -93,17 +93,10 @@ function DashboardPage() {
             <h2 className="text-sm font-semibold">{t("howToUse.title")}</h2>
           </div>
           <p className="mt-1 text-xs text-muted-foreground">{t("howToUse.intro")}</p>
-          <div className="mt-4 grid gap-3 sm:grid-cols-3">
+          <div className="mt-4 grid gap-3 sm:grid-cols-2">
             <div className="rounded-md border border-primary/40 bg-primary/5 p-3">
               <div className="flex items-center gap-2 text-sm font-semibold text-primary">
-                <Sparkles className="h-4 w-4" />
-                {t("howToUse.defaultTitle")}
-              </div>
-              <p className="mt-1 text-xs text-muted-foreground">{t("howToUse.defaultBody")}</p>
-            </div>
-            <div className="rounded-md border border-border p-3">
-              <div className="flex items-center gap-2 text-sm font-semibold">
-                <KeyRound className="h-4 w-4 text-primary" />
+                <KeyRound className="h-4 w-4" />
                 {t("howToUse.byokTitle")}
               </div>
               <p className="mt-1 text-xs text-muted-foreground">{t("howToUse.byokBody")}</p>

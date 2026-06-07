@@ -49,7 +49,7 @@ import { buildPrompt, type Proficiency } from "@/lib/prompt";
 import { buildAnalysisPrompt, type AnalysisKind } from "@/lib/analysis-prompt";
 import { extractInsightBundle, stripFindingsBlock, type Finding } from "@/lib/findings";
 
-type CloudProvider = "lovable" | "openai" | "anthropic" | "gemini" | "openrouter";
+type CloudProvider = "openai" | "anthropic" | "gemini" | "openrouter";
 type ProviderValue = `cloud:${CloudProvider}` | `local:${LocalKind}`;
 type MainTab = "summary" | "quality" | "security" | "ai_origin" | "fix";
 type SummarySub = "human" | "technical";
@@ -187,10 +187,6 @@ function WorkspacePage() {
               : undefined,
           },
         });
-        if ("quotaExceeded" in r && r.quotaExceeded) {
-          toast.error(r.message);
-          return null;
-        }
         return r.content;
       }
       const kind = providerValue.slice(6) as LocalKind;

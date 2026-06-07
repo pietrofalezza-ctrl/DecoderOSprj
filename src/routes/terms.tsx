@@ -183,10 +183,6 @@ function TermsPage() {
           </ul>
         </section>
 
-        <section className="mt-10">
-          <h2 className="text-2xl font-semibold">{t("terms.managedAiTitle")}</h2>
-          <p className="mt-3 text-sm text-muted-foreground">{t("terms.managedAiBody")}</p>
-        </section>
 
         <section className="mt-10">
           <h2 className="text-2xl font-semibold">{t("terms.gdprTitle")}</h2>

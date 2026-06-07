@@ -3,7 +3,7 @@ import { z } from "zod";
 
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 
-const Provider = z.enum(["lovable", "openai", "anthropic", "gemini", "openrouter"]);
+const Provider = z.enum(["openai", "anthropic", "gemini", "openrouter"]);
 const Language = z.enum(["en", "it", "zh"]);
 const Kind = z.enum(["smells", "deadcode", "bugs", "security"]);
 
@@ -56,11 +56,7 @@ export const aggregateFolderAnalysis = createServerFn({ method: "POST" })
     const { buildFolderAggregatePrompt } = await import("./analysis-prompt");
 
     let apiKey: string;
-    if (data.provider === "lovable") {
-      const { assertHostedLovableAllowed } = await import("./hosted-ai-guard.server");
-      assertHostedLovableAllowed(data.provider);
-      apiKey = process.env.LOVABLE_API_KEY!;
-    } else {
+    {
       const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
       const { decryptSecret } = await import("./crypto.server");
       const { data: cred, error } = await supabaseAdmin
