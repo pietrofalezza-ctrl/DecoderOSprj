@@ -593,6 +593,137 @@
     "bugsCta": "Apri Issue su GitHub",
     "cookieNote": "Decoder non usa analytics né tracker di terze parti. L'unico cookie impostato è una preferenza tecnica dell'interfaccia (stato della sidebar): nessun consenso richiesto ai sensi della direttiva ePrivacy."
   },
+  "onboarding": {
+    "stepLabel": "Passo {{current}} di {{total}}",
+    "versionLabel": "Versione avviso: {{version}}",
+    "back": "Indietro",
+    "continue": "Continua",
+    "finish": "Completa onboarding",
+    "saving": "Salvataggio…",
+    "close": "Chiudi",
+    "providerLocal": "Locale",
+    "providerCloud": "Cloud BYOK",
+    "providers": {
+      "ollama": "Ollama (locale)",
+      "lmstudio": "LM Studio (locale)",
+      "openai": "OpenAI",
+      "anthropic": "Anthropic",
+      "gemini": "Google Gemini",
+      "openrouter": "OpenRouter"
+    },
+    "steps": {
+      "s1": {
+        "title": "Benvenuto in Decoder",
+        "body": "Decoder ti aiuta a comprendere codebase, file e porzioni di codice generando spiegazioni, commenti e insight tecnici adattati al tuo livello."
+      },
+      "s2": {
+        "title": "Scegli come viene eseguita l'AI",
+        "subtitle": "Decoder supporta due modalità. Decidi tu dove viene elaborato il codice.",
+        "local": {
+          "title": "Modalità locale",
+          "b1": "Utilizza Ollama, LM Studio o un altro modello locale.",
+          "b2": "Pensata perché il codice venga elaborato localmente.",
+          "b3": "Consigliata per codice sensibile o privato.",
+          "flow": { "code": "Il tuo codice", "model": "Modello locale", "ui": "Interfaccia Decoder" }
+        },
+        "cloud": {
+          "title": "Modalità Cloud BYOK",
+          "b1": "Utilizza la tua API key.",
+          "b2": "Supporta OpenAI, Anthropic, Gemini e OpenRouter.",
+          "b3": "Il codice o i prompt selezionati possono essere inviati al provider scelto.",
+          "b4": "Sei responsabile dei costi e dei termini del provider.",
+          "flow": { "code": "Il tuo codice", "backend": "Backend Decoder", "provider": "Provider AI", "ui": "Interfaccia Decoder" }
+        }
+      },
+      "s3": {
+        "title": "Aggiungi un provider",
+        "subtitle": "Puoi configurare i provider ora o più tardi dalle Impostazioni.",
+        "warning": "Non incollare mai le API key in chat pubbliche, screenshot, issue GitHub o codice frontend.",
+        "configureLater": "Puoi saltare questo passaggio e configurare i provider in seguito da Impostazioni → API key."
+      },
+      "s4": {
+        "title": "Importa il codice",
+        "subtitle": "Scegli come portare il codice in Decoder.",
+        "opts": {
+          "zip": "Carica un archivio ZIP",
+          "paste": "Incolla un singolo file",
+          "github": "Collega una repository GitHub",
+          "demo": "Usa la repository demo"
+        },
+        "safePath": "Inizia con la repository demo o con codice pubblico non sensibile."
+      },
+      "s5": {
+        "title": "Seleziona il tipo di analisi",
+        "subtitle": "Scegli il tipo di insight che Decoder deve generare.",
+        "opts": {
+          "repoSummary": "Riepilogo repository",
+          "fileExplain": "Spiegazione file",
+          "selectionExplain": "Spiegazione codice selezionato",
+          "maintainability": "Osservazioni di manutenibilità",
+          "security": "Osservazioni di sicurezza",
+          "inlineComments": "Suggerimenti di commenti inline"
+        },
+        "disclaimer": "Decoder non fornisce audit di sicurezza certificati né revisione legale/compliance professionale."
+      },
+      "s6": {
+        "title": "Scegli il livello del lettore",
+        "subtitle": "Indica chi deve comprendere la spiegazione.",
+        "levels": {
+          "nonTech": "Lettore non tecnico",
+          "junior": "Sviluppatore junior",
+          "intermediate": "Sviluppatore intermedio",
+          "senior": "Sviluppatore senior",
+          "architect": "Software architect",
+          "cto": "CTO / dirigente tecnico"
+        },
+        "body": "Lo stesso codice può essere spiegato in modo diverso a seconda di chi deve comprenderlo."
+      },
+      "s7": {
+        "title": "Rivedi l'output AI",
+        "subtitle": "L'AI è un assistente utile — non un'autorità.",
+        "points": {
+          "inaccurate": "Le spiegazioni AI possono essere inaccurate o incomplete.",
+          "verify": "Verifica gli output prima di basarci decisioni tecniche, di sicurezza o di produzione.",
+          "actions": "Puoi accettare, rifiutare, modificare o esportare i commenti suggeriti."
+        }
+      },
+      "s8": {
+        "title": "Conferma",
+        "subtitle": "Conferma di aver compreso quanto segue prima di continuare.",
+        "intro": "Tutte le caselle sono obbligatorie. Nessuna è pre-selezionata.",
+        "checks": {
+          "cost": "Comprendo che sono responsabile dei costi generati dalla mia API key.",
+          "providers": "Comprendo che, usando un provider AI cloud, codice e prompt selezionati possono essere inviati al provider scelto.",
+          "authorized": "Confermo di avere diritto e autorizzazione ad analizzare il codice che carico o sincronizzo.",
+          "review": "Comprendo che gli output AI possono essere inaccurati e devono essere verificati da una persona qualificata.",
+          "terms": "Accetto i Termini e Condizioni e la Privacy Policy."
+        }
+      },
+      "s9": {
+        "title": "Inizia in sicurezza",
+        "subtitle": "Prime azioni consigliate.",
+        "actions": {
+          "a1": "Prova la repository demo.",
+          "a2": "Collega un modello locale se usi codice privato.",
+          "a3": "Aggiungi un provider cloud solo se comprendi i termini del provider.",
+          "a4": "Esegui una piccola analisi di file prima di analizzare un intero repository."
+        },
+        "cta": {
+          "demo": "Inizia con il progetto demo",
+          "provider": "Aggiungi provider AI",
+          "dashboard": "Vai alla dashboard"
+        }
+      }
+    },
+    "settings": {
+      "sectionTitle": "Aiuto e Onboarding",
+      "intro": "Rivedi il tour introduttivo e la conferma in qualsiasi momento.",
+      "completedOn": "Completata la versione {{version}} il {{date}}.",
+      "notCompleted": "Non completato",
+      "reopen": "Riapri onboarding",
+      "currentVersion": "Versione onboarding corrente: {{version}}"
+    }
+  },
   "byokAck": {
     "title": "Avviso importante su BYOK e provider AI",
     "versionLabel": "Versione termini: {{version}}",
