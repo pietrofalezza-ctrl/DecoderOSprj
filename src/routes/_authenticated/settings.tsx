@@ -466,3 +466,48 @@ function EndpointRow({
     </div>
   );
 }
+
+function OnboardingHelpSection() {
+  const { t, i18n } = useTranslation();
+  const { completed, record, currentVersion, openOnboarding } = useOnboarding();
+  const fmt = (iso: string) =>
+    new Date(iso).toLocaleDateString(i18n.language, { year: "numeric", month: "short", day: "2-digit" });
+  return (
+    <section
+      id="help"
+      className="space-y-4 rounded-lg border border-border bg-card p-5 scroll-mt-20"
+    >
+      <div className="flex items-start gap-3">
+        <HelpCircle className="mt-0.5 h-5 w-5 shrink-0 text-primary" />
+        <div className="flex-1">
+          <h2 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
+            {t("onboarding.settings.sectionTitle")}
+          </h2>
+          <p className="mt-1 text-xs text-muted-foreground">
+            {t("onboarding.settings.intro")}
+          </p>
+          <div className="mt-3 flex flex-wrap items-center gap-3">
+            {completed && record ? (
+              <span className="text-xs text-foreground">
+                {t("onboarding.settings.completedOn", {
+                  version: record.version,
+                  date: fmt(record.acceptedAt),
+                })}
+              </span>
+            ) : (
+              <span className="inline-flex items-center gap-1 rounded-full bg-amber-500/15 px-2 py-0.5 text-xs font-medium text-amber-700 dark:text-amber-300">
+                {t("onboarding.settings.notCompleted")}
+              </span>
+            )}
+            <Button size="sm" variant="outline" onClick={openOnboarding}>
+              {t("onboarding.settings.reopen")}
+            </Button>
+          </div>
+          <p className="mt-2 text-[11px] text-muted-foreground">
+            {t("onboarding.settings.currentVersion", { version: currentVersion ?? "—" })}
+          </p>
+        </div>
+      </div>
+    </section>
+  );
+}
