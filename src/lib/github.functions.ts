@@ -33,14 +33,24 @@ export const importFromGitHub = createServerFn({ method: "POST" })
     if (!m) throw new Error("invalid_github_url");
     const owner = m[1];
     const repo = m[2];
-    const ref = data.ref || "HEAD";
-
-    // codeload serves repo zip directly — no API token needed for public repos
-    const archiveUrl = `https://codeload.github.com/${owner}/${repo}/zip/${encodeURIComponent(ref)}`;
-    const r = await fetch(archiveUrl, { redirect: "follow" });
-    if (!r.ok) {
-      if (r.status === 404) throw new Error("repo_or_ref_not_found");
-      throw new Error(`github_download_failed_${r.status}`);
+    // codeload doesn't accept "HEAD" — try the user-supplied ref, otherwise main → master
+    const candidates = data.ref ? [data.ref] : ["main", "master"];
+    let r: Response | null = null;
+    let lastStatus = 0;
+    for (const candidate of candidates) {
+      const archiveUrl = `https://codeload.github.com/${owner}/${repo}/zip/refs/heads/${encodeURIComponent(candidate)}`;
+      const res = await fetch(archiveUrl, { redirect: "follow" });
+      if (res.ok) {
+        r = res;
+        break;
+      }
+      lastStatus = res.status;
+      // drain body so the connection can be reused
+      await res.arrayBuffer().catch(() => undefined);
+    }
+    if (!r) {
+      if (lastStatus === 404) throw new Error("repo_or_ref_not_found");
+      throw new Error(`github_download_failed_${lastStatus}`);
     }
     const ab = await r.arrayBuffer();
     if (ab.byteLength > MAX_BYTES) throw new Error("repo_too_large");
