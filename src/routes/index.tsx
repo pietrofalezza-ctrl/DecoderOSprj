@@ -222,9 +222,114 @@ function Landing() {
         </div>
       </section>
 
+      {/* Open-source strip — guardrail framing */}
+      <section className="border-y border-border bg-background">
+        <div className="mx-auto grid max-w-7xl items-center gap-8 px-6 py-10 md:grid-cols-12">
+          <div className="md:col-span-7">
+            <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-primary">
+              {t("landing.osStrip.kicker")}
+            </p>
+            <h2 className="mt-2 font-display text-2xl font-medium tracking-tight md:text-3xl">
+              {t("landing.osStrip.title")}
+            </h2>
+            <p className="mt-2 max-w-2xl text-sm text-muted-foreground">
+              {t("landing.osStrip.body")}
+            </p>
+          </div>
+          <div className="flex flex-wrap items-center gap-3 md:col-span-5 md:justify-end">
+            <Button asChild size="sm" variant="outline" className="rounded-none">
+              <a href={t("common.repoUrl")} target="_blank" rel="noreferrer">
+                <Github className="mr-2 h-4 w-4" />
+                {t("landing.osStrip.ctaRepo")}
+              </a>
+            </Button>
+            <Button asChild size="sm" className="rounded-none">
+              <Link to="/open-source">
+                <GitFork className="mr-2 h-4 w-4" />
+                {t("landing.osStrip.ctaContribute")}
+              </Link>
+            </Button>
+          </div>
+          <div className="md:col-span-12">
+            <div className="flex flex-wrap gap-x-6 gap-y-2 font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
+              <span className="inline-flex items-center gap-1.5">
+                <Scale className="h-3 w-3" />
+                {t("landing.osStrip.license")}
+              </span>
+              <span className="inline-flex items-center gap-1.5">
+                <HeartHandshake className="h-3 w-3" />
+                {t("landing.osStrip.noProfit")}
+              </span>
+              <span className="inline-flex items-center gap-1.5">
+                <Users className="h-3 w-3" />
+                {t("landing.osStrip.communityOwned")}
+              </span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Guardrail mission */}
+      <section className="border-b border-border/60 bg-card/40">
+        <div className="mx-auto max-w-7xl px-6 py-20">
+          <div className="grid gap-12 md:grid-cols-12">
+            <div className="md:col-span-5">
+              <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-primary">
+                {t("landing.guardrail.kicker")}
+              </p>
+              <h2 className="mt-3 font-display text-4xl font-medium leading-tight tracking-tight md:text-5xl">
+                {t("landing.guardrail.title")}
+              </h2>
+              <p className="mt-5 text-muted-foreground">
+                {t("landing.guardrail.intro")}
+              </p>
+              <div className="mt-8">
+                <GuardrailDiagram t={t} />
+              </div>
+            </div>
+
+            <ol className="space-y-6 md:col-span-7">
+              {[
+                {
+                  icon: <ShieldCheck className="h-5 w-5" />,
+                  title: t("landing.guardrail.point1Title"),
+                  body: t("landing.guardrail.point1Body"),
+                },
+                {
+                  icon: <Users className="h-5 w-5" />,
+                  title: t("landing.guardrail.point2Title"),
+                  body: t("landing.guardrail.point2Body"),
+                },
+                {
+                  icon: <GitPullRequest className="h-5 w-5" />,
+                  title: t("landing.guardrail.point3Title"),
+                  body: t("landing.guardrail.point3Body"),
+                },
+              ].map((p, i) => (
+                <li
+                  key={p.title}
+                  className="flex gap-5 border-l-2 border-border pl-6 transition-colors hover:border-primary"
+                >
+                  <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground/70">
+                    0{i + 1}
+                  </span>
+                  <div className="flex-1">
+                    <div className="mb-2 inline-flex h-9 w-9 items-center justify-center rounded-full border border-border bg-background text-primary">
+                      {p.icon}
+                    </div>
+                    <h3 className="font-display text-xl font-medium">{p.title}</h3>
+                    <p className="mt-2 text-sm text-muted-foreground">{p.body}</p>
+                  </div>
+                </li>
+              ))}
+            </ol>
+          </div>
+        </div>
+      </section>
 
       {/* Why now — AI-generated code era */}
       <section className="border-y border-border/60 bg-card/40">
+
         <div className="mx-auto max-w-7xl px-6 py-16">
           <div className="max-w-2xl">
             <p className="text-xs font-semibold uppercase tracking-wide text-primary">
