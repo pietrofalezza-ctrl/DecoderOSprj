@@ -22,6 +22,24 @@ const SearchSchema = z.object({
 
 export const Route = createFileRoute("/auth")({
   validateSearch: (s) => SearchSchema.parse(s),
+  head: () => ({
+    meta: [
+      { title: "Sign in — Decoder" },
+      {
+        name: "description",
+        content:
+          "Sign in or create your Decoder account to start auditing AI-generated code with your own provider keys or a local model.",
+      },
+      { name: "robots", content: "noindex, nofollow" },
+      { property: "og:title", content: "Sign in — Decoder" },
+      {
+        property: "og:description",
+        content:
+          "Access your Decoder workspace — BYOK cloud or fully local code understanding.",
+      },
+      { property: "og:url", content: "https://decoderdev.lovable.app/auth" },
+    ],
+  }),
   component: AuthPage,
 });
 

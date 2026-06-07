@@ -9,19 +9,21 @@ import { PublicHeaderAuthSlot } from "@/components/PublicHeaderAuthSlot";
 export const Route = createFileRoute("/docs")({
   head: () => ({
     meta: [
-      { title: "Decoder — Documentation" },
+      { title: "Documentation — Decoder" },
       {
         name: "description",
         content:
           "How to use Decoder: BYOK cloud providers, local Ollama / LM Studio mode, security and ownership.",
       },
-      { property: "og:title", content: "Decoder — Documentation" },
+      { property: "og:title", content: "Documentation — Decoder" },
       {
         property: "og:description",
         content:
-          "How to use Decoder: BYOK cloud providers, local Ollama / LM Studio mode, security and ownership.",
+          "Get started with Decoder: connect a cloud provider with your own key, or run fully local with Ollama / LM Studio.",
       },
+      { property: "og:url", content: "https://decoderdev.lovable.app/docs" },
     ],
+    links: [{ rel: "canonical", href: "https://decoderdev.lovable.app/docs" }],
   }),
   component: DocsPage,
 });

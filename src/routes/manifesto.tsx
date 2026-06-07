@@ -23,9 +23,9 @@ export const Route = createFileRoute("/manifesto")({
         content:
           "Our principles: open source, privacy-first, BYOK, local-first, multilingual, accessible.",
       },
-      { property: "og:url", content: "https://decoder.lovable.app/manifesto" },
+      { property: "og:url", content: "https://decoderdev.lovable.app/manifesto" },
     ],
-    links: [{ rel: "canonical", href: "https://decoder.lovable.app/manifesto" }],
+    links: [{ rel: "canonical", href: "https://decoderdev.lovable.app/manifesto" }],
   }),
   component: ManifestoPage,
 });

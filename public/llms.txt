@@ -1,0 +1,13 @@
+# Decoder
+
+> Open-source code understanding for the AI era. Read, review and audit code written by Copilot, Cursor, Lovable and your team. BYOK cloud or fully local with Ollama / LM Studio.
+
+Decoder is a non-profit, open-source project that helps developers, students and teams make sense of AI-generated code. It runs against your own provider keys (OpenAI, Anthropic, Google, OpenRouter) or fully locally via Ollama and LM Studio. No vendor lock-in, no telemetry, MIT licensed.
+
+## Pages
+
+- [Home](/): What Decoder is, who it is for, supported providers.
+- [Manifesto](/manifesto): Principles — open source, privacy-first, BYOK, local-first, multilingual.
+- [Documentation](/docs): How to use Decoder — BYOK cloud, local Ollama/LM Studio, security and ownership.
+- [How to review AI-generated code](/docs/how-to-review-ai-code): Guide to auditing code produced by Copilot, Cursor, Lovable and other AI tools.
+- [Terms](/terms): MIT License, permitted uses, trademark restrictions, disclaimer.

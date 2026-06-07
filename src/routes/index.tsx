@@ -37,9 +37,9 @@ export const Route = createFileRoute("/")({
         content:
           "Open-source code understanding for the AI era. BYOK cloud or fully local with Ollama / LM Studio.",
       },
-      { property: "og:url", content: "https://decoder.lovable.app/" },
+      { property: "og:url", content: "https://decoderdev.lovable.app/" },
     ],
-    links: [{ rel: "canonical", href: "https://decoder.lovable.app/" }],
+    links: [{ rel: "canonical", href: "https://decoderdev.lovable.app/" }],
     scripts: [
       {
         type: "application/ld+json",
