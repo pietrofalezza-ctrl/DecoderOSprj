@@ -171,7 +171,7 @@ function Landing() {
 
       {/* Hero — editorial */}
       <section className="relative">
-        <div className="mx-auto grid max-w-6xl gap-16 px-6 py-20 md:grid-cols-12 md:py-28">
+        <div className="mx-auto grid max-w-6xl gap-10 px-4 py-12 sm:px-6 md:grid-cols-12 md:gap-16 md:py-28">
           <div className="md:col-span-7 space-y-8">
             <div className="flex flex-wrap gap-6 text-[10px] uppercase tracking-[0.2em] text-muted-foreground font-mono">
               <span className="border-b border-border pb-1">Case Study 01</span>
@@ -179,7 +179,7 @@ function Landing() {
               <span className="border-b border-border pb-1">{t("landing.heroBadgePrivacy")}</span>
             </div>
 
-            <h1 className="font-display text-5xl font-medium leading-[1.05] tracking-tight text-foreground md:text-7xl">
+            <h1 className="font-display text-4xl font-medium leading-[1.05] tracking-tight text-foreground sm:text-5xl md:text-7xl">
               <Trans
                 i18nKey="landing.hero"
                 components={{
@@ -333,13 +333,13 @@ function Landing() {
 
       {/* Guardrail mission */}
       <section className="border-b border-border/60 bg-card/40">
-        <div className="mx-auto max-w-7xl px-6 py-20">
+        <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 md:py-20">
           <div className="grid gap-12 md:grid-cols-12">
             <div className="md:col-span-5">
               <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-primary">
                 {t("landing.guardrail.kicker")}
               </p>
-              <h2 className="mt-3 font-display text-4xl font-medium leading-tight tracking-tight md:text-5xl">
+              <h2 className="mt-3 font-display text-3xl font-medium leading-tight tracking-tight sm:text-4xl md:text-5xl">
                 {t("landing.guardrail.title")}
               </h2>
               <p className="mt-5 text-muted-foreground">
@@ -391,12 +391,12 @@ function Landing() {
 
       {/* Why now — AI-generated code era */}
       <section className="border-y border-border/60 bg-card/40">
-        <div className="mx-auto max-w-7xl px-6 py-16">
+        <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 md:py-16">
           <div className="max-w-2xl">
             <p className="text-xs font-semibold uppercase tracking-wide text-primary">
               {t("landing.whyNowKicker")}
             </p>
-            <h2 className="mt-2 font-display text-4xl font-medium tracking-tight md:text-5xl">
+            <h2 className="mt-2 font-display text-3xl font-medium tracking-tight sm:text-4xl md:text-5xl">
               {t("landing.whyNowTitle")}
             </h2>
             <p className="mt-3 text-muted-foreground">{t("landing.whyNowIntro")}</p>
@@ -423,8 +423,8 @@ function Landing() {
 
       {/* How it works */}
       <section id="how-it-works" className="border-t border-border/60 bg-card/40">
-        <div className="mx-auto max-w-7xl px-6 py-16">
-          <h2 className="font-display text-4xl font-medium tracking-tight">{t("landing.howTitle")}</h2>
+        <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 md:py-16">
+          <h2 className="font-display text-3xl font-medium tracking-tight sm:text-4xl">{t("landing.howTitle")}</h2>
           <p className="mt-2 max-w-2xl text-muted-foreground">{t("landing.howIntro")}</p>
           <ol className="mt-10 grid gap-6 md:grid-cols-3">
             <Step n={1} title={t("landing.step1Title")} body={t("landing.step1Body")} />
@@ -435,8 +435,8 @@ function Landing() {
       </section>
 
       {/* Integrations */}
-      <section id="integrations" className="mx-auto max-w-7xl px-6 py-16">
-        <h2 className="font-display text-4xl font-medium tracking-tight">{t("landing.integrationsTitle")}</h2>
+      <section id="integrations" className="mx-auto max-w-7xl px-4 py-12 sm:px-6 md:py-16">
+        <h2 className="font-display text-3xl font-medium tracking-tight sm:text-4xl">{t("landing.integrationsTitle")}</h2>
         <p className="mt-2 max-w-2xl text-muted-foreground">{t("landing.integrationsBody")}</p>
         <div className="mt-8 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
           {["OpenAI", "Anthropic", "Google Gemini", "OpenRouter", "Ollama", "LM Studio", "GitHub"].map(
@@ -454,7 +454,7 @@ function Landing() {
 
       {/* Values strip */}
       <section className="border-t border-border/60 bg-card/40">
-        <div className="mx-auto grid max-w-7xl grid-cols-2 gap-6 px-6 py-12 md:grid-cols-4">
+        <div className="mx-auto grid max-w-7xl grid-cols-2 gap-6 px-4 py-10 sm:px-6 md:grid-cols-4 md:py-12">
           <Value
             icon={<Sparkles className="h-5 w-5" />}
             title={t("landing.value100Open")}
@@ -480,12 +480,12 @@ function Landing() {
 
       {/* Community CTA */}
       <section className="border-t border-border bg-background">
-        <div className="mx-auto max-w-7xl px-6 py-20">
+        <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 md:py-20">
           <div className="max-w-2xl">
             <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-primary">
               {t("landing.community.kicker")}
             </p>
-            <h2 className="mt-2 font-display text-4xl font-medium tracking-tight md:text-5xl">
+            <h2 className="mt-2 font-display text-3xl font-medium tracking-tight sm:text-4xl md:text-5xl">
               {t("landing.community.title")}
             </h2>
             <p className="mt-3 text-muted-foreground">{t("landing.community.body")}</p>
