@@ -37,7 +37,7 @@ export const Route = createFileRoute("/")({
       {
         name: "description",
         content:
-          "Open-source code understanding for the AI era. Read, review and audit code written by Copilot, Cursor, Lovable and your team. BYOK cloud or fully local.",
+          "Open-source code understanding for the AI era. Read, review and audit code written by Copilot, Cursor, Claude Code and your team. BYOK cloud or fully local.",
       },
       { property: "og:title", content: "Decoder — Understand AI-generated code" },
       {

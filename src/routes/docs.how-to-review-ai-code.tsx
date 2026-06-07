@@ -8,7 +8,7 @@ import { PublicHeaderAuthSlot } from "@/components/PublicHeaderAuthSlot";
 
 const TITLE = "How to review AI-generated code — a practical guide";
 const DESC =
-  "A practical guide to reviewing code written by Copilot, Cursor, Lovable and other AI tools: hallucinations, security flaws, hidden dependencies, and how to audit them.";
+  "A practical guide to reviewing code written by Copilot, Cursor and other AI tools: hallucinations, security flaws, hidden dependencies, and how to audit them.";
 const URL = "https://decoderdev.lovable.app/docs/how-to-review-ai-code";
 
 export const Route = createFileRoute("/docs/how-to-review-ai-code")({
@@ -91,7 +91,7 @@ function GuidePage() {
           How to review AI-generated code
         </h1>
         <p className="mt-4 text-lg text-muted-foreground">
-          AI coding assistants — Copilot, Cursor, Lovable, Claude Code — can ship working code in
+          AI coding assistants — Copilot, Cursor, Claude Code — can ship working code in
           minutes. They can also ship hallucinated APIs, silent security holes and dependencies you
           never approved. This guide is a practical checklist for reading, reviewing and auditing
           that code before it reaches production.
