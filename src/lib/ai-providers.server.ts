@@ -17,6 +17,34 @@ export function defaultModelFor(p: CloudProvider): string {
   return DEFAULT_MODELS[p];
 }
 
+/**
+ * Surface a safe message to the client while logging the raw upstream body
+ * server-side. Raw bodies can contain quota IDs, deployment names, and
+ * occasionally request fragments — never forward verbatim.
+ */
+async function failSafe(label: string, r: Response): Promise<never> {
+  let body = "";
+  try {
+    body = await r.text();
+  } catch {
+    /* ignore */
+  }
+  console.error(`[ai-providers] ${label} ${r.status}:`, body.slice(0, 2000));
+  if (r.status === 401 || r.status === 403) {
+    throw new Error(`${label} rejected the request (${r.status}). Check that your API key is valid and has access to this model.`);
+  }
+  if (r.status === 429) {
+    throw new Error(`${label} rate limit reached (429). Wait a moment and retry.`);
+  }
+  if (r.status === 402) {
+    throw new Error(`${label} reports insufficient credits or quota (402).`);
+  }
+  if (r.status >= 500) {
+    throw new Error(`${label} is currently unavailable (${r.status}). Try again shortly.`);
+  }
+  throw new Error(`${label} request failed (${r.status}).`);
+}
+
 export async function callCloudProvider(args: {
   provider: CloudProvider;
   apiKey: string;
@@ -42,9 +70,7 @@ export async function callCloudProvider(args: {
         ],
       }),
     });
-    if (r.status === 429) throw new Error("Rate limit reached on Lovable AI Gateway. Try again shortly.");
-    if (r.status === 402) throw new Error("Lovable AI credits exhausted. Add credits in workspace settings.");
-    if (!r.ok) throw new Error(`Lovable AI ${r.status}: ${await r.text()}`);
+    if (!r.ok) await failSafe("Lovable AI", r);
     const j = await r.json();
     return j.choices?.[0]?.message?.content ?? "";
   }
@@ -64,7 +90,7 @@ export async function callCloudProvider(args: {
         ],
       }),
     });
-    if (!r.ok) throw new Error(`OpenAI ${r.status}: ${await r.text()}`);
+    if (!r.ok) await failSafe("OpenAI", r);
     const j = await r.json();
     return j.choices?.[0]?.message?.content ?? "";
   }
@@ -84,7 +110,7 @@ export async function callCloudProvider(args: {
         messages: [{ role: "user", content: user }],
       }),
     });
-    if (!r.ok) throw new Error(`Anthropic ${r.status}: ${await r.text()}`);
+    if (!r.ok) await failSafe("Anthropic", r);
     const j = await r.json();
     return j.content?.[0]?.text ?? "";
   }
@@ -99,7 +125,7 @@ export async function callCloudProvider(args: {
         contents: [{ role: "user", parts: [{ text: user }] }],
       }),
     });
-    if (!r.ok) throw new Error(`Gemini ${r.status}: ${await r.text()}`);
+    if (!r.ok) await failSafe("Gemini", r);
     const j = await r.json();
     return j.candidates?.[0]?.content?.parts?.map((p: any) => p.text).join("") ?? "";
   }
@@ -119,7 +145,7 @@ export async function callCloudProvider(args: {
         ],
       }),
     });
-    if (!r.ok) throw new Error(`OpenRouter ${r.status}: ${await r.text()}`);
+    if (!r.ok) await failSafe("OpenRouter", r);
     const j = await r.json();
     return j.choices?.[0]?.message?.content ?? "";
   }
