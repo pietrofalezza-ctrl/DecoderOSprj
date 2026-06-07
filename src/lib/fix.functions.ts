@@ -3,7 +3,7 @@ import { z } from "zod";
 
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 
-const Provider = z.enum(["lovable", "openai", "anthropic", "gemini", "openrouter"]);
+const Provider = z.enum(["openai", "anthropic", "gemini", "openrouter"]);
 const Language = z.enum(["en", "it", "zh"]);
 const Kind = z.enum(["smells", "deadcode", "bugs", "security"]);
 
@@ -11,11 +11,6 @@ async function resolveCloudKey(
   userId: string,
   provider: z.infer<typeof Provider>,
 ): Promise<string> {
-  if (provider === "lovable") {
-    const { assertHostedLovableAllowed } = await import("./hosted-ai-guard.server");
-    assertHostedLovableAllowed(provider);
-    return process.env.LOVABLE_API_KEY!;
-  }
   const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
   const { decryptSecret } = await import("./crypto.server");
   const { data: cred, error } = await supabaseAdmin

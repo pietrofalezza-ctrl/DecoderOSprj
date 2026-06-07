@@ -108,19 +108,6 @@ function SettingsPage() {
           </nav>
         </header>
 
-        <section className="space-y-3 rounded-lg border border-primary/40 bg-primary/5 p-5">
-          <div className="flex items-start gap-3">
-            <Sparkles className="mt-0.5 h-5 w-5 shrink-0 text-primary" />
-            <div>
-              <h2 className="text-sm font-semibold">{t("settings.lovableSection")}</h2>
-              <p className="mt-1 text-xs text-muted-foreground">{t("settings.lovableIntro")}</p>
-              <p className="mt-2 inline-flex items-center gap-1 rounded-full bg-primary/10 px-2 py-0.5 text-[11px] font-medium text-primary">
-                <ShieldCheck className="h-3 w-3" />
-                {t("settings.lovableBadge")}
-              </p>
-            </div>
-          </div>
-        </section>
 
 
 

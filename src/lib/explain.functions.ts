@@ -3,7 +3,7 @@ import { z } from "zod";
 
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 
-const Provider = z.enum(["lovable", "openai", "anthropic", "gemini", "openrouter"]);
+const Provider = z.enum(["openai", "anthropic", "gemini", "openrouter"]);
 const Proficiency = z.enum([
   "nontech",
   "junior",
@@ -69,23 +69,11 @@ export const explainFile = createServerFn({ method: "POST" })
     const { assertByokAckAccepted } = await import("./byok-acknowledgement.server");
     await assertByokAckAccepted(context.supabase, context.userId);
 
-    // Load credential (skip for Lovable AI which uses the server-side gateway key).
+    // Load BYOK credential. Raw encrypted_key is NOT readable via the Data API
+    // (column-level GRANT excludes it); use the admin client, scoped explicitly
+    // to the JWT user.
     let apiKey: string;
-    if (data.provider === "lovable") {
-      const { assertHostedLovableAllowed } = await import("./hosted-ai-guard.server");
-      assertHostedLovableAllowed(data.provider);
-      const k = process.env.LOVABLE_API_KEY!;
-      // Free-tier daily quota — enforced only for the managed provider.
-      // Returned as a structured result (not thrown) so it isn't reported
-      // as a runtime error in the client.
-      const { checkLovableQuota } = await import("./rate-limit.server");
-      const quota = await checkLovableQuota(context.supabase, context.userId, data.language);
-      if (!quota.ok) {
-        return { quotaExceeded: true as const, message: quota.message };
-      }
-      apiKey = k;
-    } else {
-      const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    {
       const { data: cred, error: cErr } = await supabaseAdmin
         .from("user_ai_credentials")
         .select("encrypted_key")

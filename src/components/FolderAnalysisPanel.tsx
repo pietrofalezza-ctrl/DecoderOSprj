@@ -38,7 +38,7 @@ import { proposeFolderFix } from "@/lib/fix.functions";
 import { extractFindings, stripFindingsBlock, type Finding } from "@/lib/findings";
 import type { AnalysisKind } from "@/lib/analysis-prompt";
 
-type CloudProvider = "lovable" | "openai" | "anthropic" | "gemini" | "openrouter";
+type CloudProvider = "openai" | "anthropic" | "gemini" | "openrouter";
 type FolderKind = Exclude<AnalysisKind, "ai_origin">;
 
 type PerFileEntry = {

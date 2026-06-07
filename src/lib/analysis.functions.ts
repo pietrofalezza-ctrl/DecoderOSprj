@@ -3,7 +3,7 @@ import { z } from "zod";
 
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 
-const Provider = z.enum(["lovable", "openai", "anthropic", "gemini", "openrouter"]);
+const Provider = z.enum(["openai", "anthropic", "gemini", "openrouter"]);
 const Language = z.enum(["en", "it", "zh"]);
 const Kind = z.enum(["smells", "deadcode", "bugs", "security", "ai_origin"]);
 
@@ -48,14 +48,10 @@ export const runAnalysis = createServerFn({ method: "POST" })
     const { assertByokAckAccepted } = await import("./byok-acknowledgement.server");
     await assertByokAckAccepted(context.supabase, context.userId);
 
+    // Raw encrypted_key is NOT readable via the Data API (column-level GRANT
+    // excludes it); use the admin client, scoped explicitly to the JWT user.
     let apiKey: string;
-    if (data.provider === "lovable") {
-      const { assertHostedLovableAllowed } = await import("./hosted-ai-guard.server");
-      assertHostedLovableAllowed(data.provider);
-      apiKey = process.env.LOVABLE_API_KEY!;
-    } else {
-      // Raw encrypted_key is NOT readable via the Data API (column-level GRANT
-      // excludes it); use the admin client, scoped explicitly to the JWT user.
+    {
       const { data: cred, error: cErr } = await supabaseAdmin
         .from("user_ai_credentials")
         .select("encrypted_key")
@@ -181,13 +177,9 @@ export const analyzeRepoAiOrigin = createServerFn({ method: "POST" })
     const sampled = codeFiles.slice(0, MAX_FILES_PER_SCAN);
     const unsampled = Math.max(0, totalCodeFiles - sampled.length);
 
-    // Resolve API key
+    // Resolve BYOK key
     let apiKey: string;
-    if (data.provider === "lovable") {
-      const { assertHostedLovableAllowed } = await import("./hosted-ai-guard.server");
-      assertHostedLovableAllowed(data.provider);
-      apiKey = process.env.LOVABLE_API_KEY!;
-    } else {
+    {
       const { data: cred, error: cErr } = await supabaseAdmin
         .from("user_ai_credentials")
         .select("encrypted_key")
