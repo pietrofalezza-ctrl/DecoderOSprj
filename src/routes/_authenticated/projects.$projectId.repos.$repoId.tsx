@@ -784,11 +784,27 @@ function WorkspacePage() {
                     </TabsContent>
                   </Tabs>
                 </TabsContent>
-                <TabsContent forceMount value="quality" className="m-0 flex-1 overflow-auto px-4 pb-4 data-[state=inactive]:hidden">
-                  <ExplanationView text={qualityText} placeholder={t("analysis.empty")} />
+                <TabsContent forceMount value="quality" className="m-0 flex-1 space-y-3 overflow-auto px-4 pb-4 data-[state=inactive]:hidden">
+                  <ExplanationView text={stripFindingsBlock(qualityText)} placeholder={t("analysis.empty")} />
+                  {qualityText && (
+                    <FindingsList
+                      findings={findings}
+                      onJump={jumpToFinding}
+                      title={t("workspace.findings.title")}
+                      emptyLabel={t("workspace.findings.empty")}
+                    />
+                  )}
                 </TabsContent>
-                <TabsContent forceMount value="security" className="m-0 flex-1 overflow-auto px-4 pb-4 data-[state=inactive]:hidden">
-                  <ExplanationView text={securityText} placeholder={t("analysis.empty")} />
+                <TabsContent forceMount value="security" className="m-0 flex-1 space-y-3 overflow-auto px-4 pb-4 data-[state=inactive]:hidden">
+                  <ExplanationView text={stripFindingsBlock(securityText)} placeholder={t("analysis.empty")} />
+                  {securityText && (
+                    <FindingsList
+                      findings={extractFindings(securityText, totalLines)}
+                      onJump={jumpToFinding}
+                      title={t("workspace.findings.title")}
+                      emptyLabel={t("workspace.findings.empty")}
+                    />
+                  )}
                 </TabsContent>
                 <TabsContent forceMount value="ai_origin" className="m-0 flex-1 overflow-auto px-4 pb-4 data-[state=inactive]:hidden">
                   {aiOriginText ? (
@@ -802,13 +818,45 @@ function WorkspacePage() {
                     </div>
                   )}
                 </TabsContent>
+                <TabsContent forceMount value="fix" className="m-0 flex-1 overflow-hidden p-3 data-[state=inactive]:hidden">
+                  <div className="flex h-full min-h-0 flex-col gap-2">
+                    <div className="flex items-center gap-2">
+                      <Button
+                        size="sm"
+                        onClick={() => fixMut.mutate()}
+                        disabled={!selectedFileId || !providerValue.startsWith("cloud:") || !fixSourceAnalysis || fixMut.isPending}
+                      >
+                        {fixMut.isPending ? (
+                          <Sparkles className="mr-2 h-3.5 w-3.5 animate-pulse" />
+                        ) : (
+                          <Wrench className="mr-2 h-3.5 w-3.5" />
+                        )}
+                        {fixMut.isPending ? t("workspace.fix.generating") : t("workspace.fix.generate")}
+                      </Button>
+                      {!fixSourceAnalysis && (
+                        <span className="text-[11px] text-muted-foreground">
+                          {t("workspace.fix.needsAnalysis")}
+                        </span>
+                      )}
+                    </div>
+                    <div className="min-h-0 flex-1">
+                      <DiffViewer
+                        diff={extractDiffBlock(fixText)}
+                        notes={extractNotes(fixText)}
+                        filename={`${fileQ.data?.path?.split("/").pop() ?? "decoder-fix"}.patch`}
+                      />
+                    </div>
+                  </div>
+                </TabsContent>
 
               </Tabs>
               <div className="border-t border-border px-3 py-2 text-[10px] text-muted-foreground">
                 {t("footer.ownership")}
               </div>
             </div>
+            )}
           </ResizablePanel>
+
         </ResizablePanelGroup>
       </div>
     </AppShell>
