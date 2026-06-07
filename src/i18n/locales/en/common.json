@@ -120,7 +120,7 @@
     "dataCollectedIntro": "Decoder only stores the data strictly required to operate the service:",
     "dataCollected": {
       "account": "Account: email, display name and creation timestamp (managed by the auth module).",
-      "content": "Content: uploaded files kept in the server's private storage (owner-only access enforced via RLS), metadata (path, size, sha256, language, repository source — zip or GitHub) and AI explanations.",
+      "content": "Content: uploaded files kept in the server's private storage (owner-only access enforced via RLS) with a 60-day retention from last activity, metadata (path, size, sha256, language, repository source — zip or GitHub) and AI explanations.",
       "credentials": "User API keys: encrypted at rest with AES-256-GCM and never returned to the browser. BYOK is optional — Lovable AI works without configuration.",
       "usage": "Usage metadata: AI provider and model used for each explanation, preferred language and proficiency level, application role (e.g. admin). No behavioural profiling or third-party tracking.",
       "notracking": "No advertising trackers, no third-party analytics, no profiling."
@@ -134,7 +134,7 @@
       "rights": "Data subject rights: access, rectification, erasure, portability, objection and restriction. Export or delete your data from Settings → Account.",
       "transfers": "Non-EU transfers: only when you choose an AI provider hosted outside the EU (e.g. OpenAI, Anthropic, Lovable AI). The provider is always shown before the request runs.",
       "retention": "Retention: data is kept until you explicitly delete your account or individual items.",
-      "contact": "To exercise your rights or report an incident, open an issue in the project's GitHub repository (link at the bottom of the page). Maintainers operate collectively and anonymously; communication happens only through the public repository channel."
+      "contact": "To exercise your GDPR rights (access, rectification, erasure, portability, objection, restriction) or report an incident, email pietro@codecoder.com. We respond within 30 days."
     },
     "aiActTitle": "EU AI Act compliance (EU Reg. 2024/1689)",
     "aiActIntro": "Decoder is a code-comprehension assistant classified as a limited-risk AI system.",
@@ -192,7 +192,8 @@
       "w1": "We will never use your code to train models, ours or third-party.",
       "w2": "We will never sell your data or share it with brokers.",
       "w3": "We will never add artificial lock-in on AI providers.",
-      "w4": "We will never block the export of your explanations and comments."
+      "w4": "We will never block the export of your explanations and comments.",
+      "w5": "We will never keep your files forever: automatic deletion after 60 days of inactivity."
     },
     "roadmapTitle": "Public roadmap",
     "roadmapBody": "Development phases live in the README and in .lovable/plan.md in the repository. Product decisions are discussed in the open."
