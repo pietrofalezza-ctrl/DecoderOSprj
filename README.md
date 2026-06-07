@@ -2,22 +2,49 @@
 
 > Transform source code into human-readable knowledge.
 
+> ⚠️ **Important / Importante / 重要提示**
+>
+> **EN** — Decoder is an open-source educational code-understanding case study. It is not a certified security audit tool, legal/compliance tool, or production decision system. AI-generated outputs may be inaccurate and must be reviewed by a qualified person. Use the demo only with public, demo or non-sensitive code. Do not upload employer-owned, confidential or third-party code unless you have full authorization.
+>
+> **IT** — Decoder è un case study open source e didattico per la comprensione del codice. Non è uno strumento di audit di sicurezza certificato, consulenza legale/compliance o decisione produttiva. Gli output generati dall'AI possono essere inaccurati e devono essere verificati da una persona qualificata. Usa la demo solo con codice pubblico, demo o non sensibile. Non caricare codice aziendale, riservato o di terzi senza piena autorizzazione.
+>
+> **ZH** — Decoder 是一个开源教育性代码理解案例研究。它不是经认证的安全审计工具、法律/合规工具或生产决策系统。AI 生成的输出可能不准确，必须由具备资质的人员进行审查。请仅使用公开、演示或非敏感代码测试演示版本。除非你拥有完整授权，否则不要上传雇主所有、机密或第三方代码。
+
+## Intended use
+
+- Educational exploration of source code.
+- Code comprehension and onboarding support.
+- Documentation drafting assistance.
+- Maintainability and refactoring observations.
+- AI-assisted learning.
+
+## Not intended use
+
+- Certified security audit.
+- Legal or compliance advice.
+- Production decision automation.
+- High-risk AI decision-making.
+- Automated employment, credit, insurance, health, law-enforcement or public-authority decisions.
+- Replacing qualified human review.
+
+---
+
 De-coder is an open-source, multilingual application that helps developers, project managers, students, technical writers and organizations understand software codebases — whether written by humans or AI.
 
 - 🌍 **Multilingual**: English, Italiano, 简体中文 — switch at any time.
 - 🔑 **BYOK (cloud)**: OpenAI, Anthropic, Google Gemini, OpenRouter. Keys are encrypted at rest (AES-256-GCM) and never returned to the browser.
-- 💻 **Local mode**: Ollama / LM Studio called directly from the browser — your source code never reaches our servers.
+- 💻 **Local mode**: Ollama / LM Studio called directly from the browser for AI inference — file bodies are not sent to AI providers. Uploaded files still live in your private server storage.
 - 🛡️ **You own everything**: your code, your generated documentation, your suggested comments. We never train on user repositories.
 
 ---
 
 ### Italiano
 
-De-coder è un'app open source e multilingua che trasforma il codice sorgente in conoscenza leggibile. Porta la tua chiave AI (cloud) oppure usa Ollama / LM Studio in locale — in modalità locale il codice non lascia mai la tua macchina.
+De-coder è un'app open source e multilingua che trasforma il codice sorgente in conoscenza leggibile. Porta la tua chiave AI (cloud) oppure usa Ollama / LM Studio in locale — in modalità locale il browser chiama direttamente la tua AI per l'inferenza; i contenuti dei file non vengono inviati ai provider AI, ma i file caricati restano nello storage privato del server.
 
 ### 简体中文
 
-De-coder 是一款开源的多语言应用,把源代码转化为人人可读的知识。你可以自带云端 AI 密钥(OpenAI / Anthropic / Gemini / OpenRouter),也可以使用本地 Ollama / LM Studio —— 本地模式下源代码不会离开你的电脑。
+De-coder 是一款开源的多语言应用,把源代码转化为人人可读的知识。你可以自带云端 AI 密钥(OpenAI / Anthropic / Gemini / OpenRouter),也可以使用本地 Ollama / LM Studio —— 本地模式下浏览器直接调用本机的 AI 进行推理；文件内容不会被发送给 AI 服务提供商，但已上传的文件仍存放在你的私有服务器存储中。
 
 ---
 
@@ -25,7 +52,7 @@ De-coder 是一款开源的多语言应用,把源代码转化为人人可读的�
 
 1. Sign in (email/password or Google).
 2. Create a project.
-3. Upload a ZIP of any codebase.
+3. Upload a ZIP of any codebase (start with a demo / public repository).
 4. Pick a file in the tree, choose a proficiency level and Human or Technical summary.
 5. Click **Explain**.
 
@@ -79,10 +106,13 @@ docker run --rm -p 8080:8080 \
   decoder
 ```
 
-### 3. 100% offline AI
+### 3. Local AI inference
 
-In **Settings → Local providers**, configure Ollama (`http://localhost:11434`) or LM Studio (`http://localhost:1234`). Pick the local provider in the workspace and your source code stays on your machine — De-coder's server is not on the request path.
+In **Settings → Local providers**, configure Ollama (`http://localhost:11434`) or LM Studio (`http://localhost:1234`). Pick the local provider in the workspace and AI inference happens on your machine — file bodies are not sent to AI providers. Uploaded files still live in your private server storage (or in your self-hosted instance if you ran option 2 above).
 
+## Configuration
+
+Copy `.env.example` to `.env` (never commit `.env`) and fill in the values. Only the `SUPABASE_*` and `VITE_SUPABASE_*` publishable variables are needed for local dev; service-role and encryption keys are server-only and must never be exposed to the client bundle.
 
 ## Contributing
 
@@ -90,54 +120,8 @@ See [`CONTRIBUTING.md`](./CONTRIBUTING.md).
 
 ## Security
 
-See [`SECURITY.md`](./SECURITY.md). TL;DR: BYOK keys encrypted at rest, no plaintext storage, RLS scoped to `auth.uid()` on every table, source code stays local in Local mode.
+See [`SECURITY.md`](./SECURITY.md). TL;DR: BYOK keys encrypted at rest, no plaintext storage, RLS scoped to `auth.uid()` on every table, and in Local AI mode file bodies are not sent to AI providers.
 
-# De-coder
-
-> Transform source code into human-readable knowledge.
-
-> ⚠️ **Important / Importante / 重要提示**
->
-> **EN** — Decoder is an open-source educational code-understanding case study. It is not a certified security audit tool, legal/compliance tool, or production decision system. AI-generated outputs may be inaccurate and must be reviewed by a qualified person. Use the demo only with public, demo or non-sensitive code. Do not upload employer-owned, confidential or third-party code unless you have full authorization.
->
-> **IT** — Decoder è un case study open source e didattico per la comprensione del codice. Non è uno strumento di audit di sicurezza certificato, consulenza legale/compliance o decisione produttiva. Gli output generati dall'AI possono essere inaccurati e devono essere verificati da una persona qualificata. Usa la demo solo con codice pubblico, demo o non sensibile. Non caricare codice aziendale, riservato o di terzi senza piena autorizzazione.
->
-> **ZH** — Decoder 是一个开源教育性代码理解案例研究。它不是经认证的安全审计工具、法律/合规工具或生产决策系统。AI 生成的输出可能不准确，必须由具备资质的人员进行审查。请仅使用公开、演示或非敏感代码测试演示版本。除非你拥有完整授权，否则不要上传雇主所有、机密或第三方代码。
-
-## Intended use
-
-- Educational exploration of source code.
-- Code comprehension and onboarding support.
-- Documentation drafting assistance.
-- Maintainability and refactoring observations.
-- AI-assisted learning.
-
-## Not intended use
-
-- Certified security audit.
-- Legal or compliance advice.
-- Production decision automation.
-- High-risk AI decision-making.
-- Automated employment, credit, insurance, health, law-enforcement or public-authority decisions.
-- Replacing qualified human review.
-
----
-
-De-coder is an open-source, multilingual application that helps developers, project managers, students, technical writers and organizations understand software codebases — whether written by humans or AI.
-
-- 🌍 **Multilingual**: English, Italiano, 简体中文 — switch at any time.
-- 🔑 **BYOK (cloud)**: OpenAI, Anthropic, Google Gemini, OpenRouter. Keys are encrypted at rest (AES-256-GCM) and never returned to the browser.
-- 💻 **Local mode**: Ollama / LM Studio called directly from the browser for AI inference — file bodies are not sent to AI providers. Uploaded files still live in your private server storage.
-- 🛡️ **You own everything**: your code, your generated documentation, your suggested comments. We never train on user repositories.
-
----
-
-### Italiano
-
-De-coder è un'app open source e multilingua che trasforma il codice sorgente in conoscenza leggibile. Porta la tua chiave AI (cloud) oppure usa Ollama / LM Studio in locale — in modalità locale il browser chiama direttamente la tua AI per l'inferenza; i contenuti dei file non vengono inviati ai provider AI, ma i file caricati restano nello storage privato del server.
-
-### 简体中文
-
-De-coder 是一款开源的多语言应用,把源代码转化为人人可读的知识。你可以自带云端 AI 密钥(OpenAI / Anthropic / Gemini / OpenRouter),也可以使用本地 Ollama / LM Studio —— 本地模式下浏览器直接调用本机的 AI 进行推理；文件内容不会被发送给 AI 服务提供商，但已上传的文件仍存放在你的私有服务器存储中。
+## License
 
 [MIT](./LICENSE).
