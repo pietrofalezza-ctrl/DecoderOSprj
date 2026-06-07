@@ -11,7 +11,9 @@ export const createRepositoryFromZip = createServerFn({ method: "POST" })
     z.object({
       project_id: z.string().uuid(),
       name: z.string().trim().min(1).max(160),
-      zip_base64: z.string().min(1),
+      // ~25 MB decoded payload plus base64 overhead (~33%). Caps the request
+      // at the validation layer before any memory-intensive decoding.
+      zip_base64: z.string().min(1).max(35_000_000),
     }),
   )
   .handler(async ({ context, data }) => {

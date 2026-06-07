@@ -24,6 +24,19 @@ export const Route = createFileRoute("/docs")({
       { property: "og:url", content: "https://decoderdev.lovable.app/docs" },
     ],
     links: [{ rel: "canonical", href: "https://decoderdev.lovable.app/docs" }],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "WebPage",
+          name: "Documentation — Decoder",
+          description:
+            "How to use Decoder: BYOK cloud providers, local Ollama / LM Studio mode, security and ownership.",
+          url: "https://decoderdev.lovable.app/docs",
+        }),
+      },
+    ],
   }),
   component: DocsPage,
 });

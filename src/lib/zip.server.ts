@@ -53,10 +53,16 @@ export function extractZip(zipBytes: Uint8Array): ExtractedFile[] {
 
   for (const [rawPath, bytes] of Object.entries(entries)) {
     if (rawPath.endsWith("/")) continue; // directory
-    const segments = rawPath.split("/").filter(Boolean);
-    // Strip a single common root folder if present (e.g. repo-main/)
+    // Reject absolute paths and Windows drive letters before any processing.
+    if (rawPath.startsWith("/") || /^[a-zA-Z]:[\\/]/.test(rawPath)) continue;
+    // Normalize backslashes so Windows-style zip entries are handled too.
+    const normalized = rawPath.replace(/\\/g, "/");
+    const segments = normalized.split("/").filter(Boolean);
+    // Zip-slip guard: reject any path containing parent-directory segments.
+    if (segments.some((s) => s === "..")) continue;
     if (segments.some((s) => SKIP_DIRS.has(s.toLowerCase()))) continue;
     const path = segments.join("/");
+    if (!path) continue;
     if (bytes.length === 0 || bytes.length > MAX_FILE_BYTES) continue;
 
     const lower = path.toLowerCase();
