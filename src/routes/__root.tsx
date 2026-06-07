@@ -84,7 +84,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
           "Open-source code understanding for the AI era. Read and audit code from Copilot, Cursor and Claude Code. BYOK cloud or fully local.",
       },
       { property: "og:site_name", content: "Decoder" },
-      { property: "og:title", content: "Decoder — Understand AI-generated code" },
+      { property: "og:title", content: "Decoder — Understand AI-generated code, in any language" },
       {
         property: "og:description",
         content:
@@ -92,11 +92,16 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:title", content: "Decoder — Understand AI-generated code" },
+      { name: "twitter:title", content: "Decoder — Understand AI-generated code, in any language" },
       {
         name: "twitter:description",
         content: "Open-source code understanding for the AI era. BYOK cloud or fully local.",
       },
+      { name: "description", content: "Decoder è un progetto personale di studio, open source (MIT) e gratuito. Funziona con la tua chiave API (BYOK) oppure in modalità di inferenza locale." },
+      { property: "og:description", content: "Decoder è un progetto personale di studio, open source (MIT) e gratuito. Funziona con la tua chiave API (BYOK) oppure in modalità di inferenza locale." },
+      { name: "twitter:description", content: "Decoder è un progetto personale di studio, open source (MIT) e gratuito. Funziona con la tua chiave API (BYOK) oppure in modalità di inferenza locale." },
+      { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/J2iSR4buhjcF07fTWbXQWbd48o03/social-images/social-1780850242502-Social_decoder_2.webp" },
+      { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/J2iSR4buhjcF07fTWbXQWbd48o03/social-images/social-1780850242502-Social_decoder_2.webp" },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
