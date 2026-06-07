@@ -31,7 +31,7 @@ export const Route = createFileRoute("/contact")({
 
 function ContactPage() {
   const { t } = useTranslation();
-  const email = t("contact.email");
+  
 
   return (
     <div className="min-h-screen bg-background text-foreground">
