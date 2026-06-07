@@ -76,9 +76,11 @@ export const explainFile = createServerFn({ method: "POST" })
       await assertLovableQuota(context.supabase, context.userId, data.language);
       apiKey = k;
     } else {
-      const { data: cred, error: cErr } = await context.supabase
+      const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+      const { data: cred, error: cErr } = await supabaseAdmin
         .from("user_ai_credentials")
         .select("encrypted_key")
+        .eq("owner_id", context.userId)
         .eq("provider", data.provider)
         .maybeSingle();
       if (cErr || !cred) throw new Error("no_credential_for_provider");

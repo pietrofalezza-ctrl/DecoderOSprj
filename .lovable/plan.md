@@ -1,90 +1,94 @@
-# Piano pre-lancio Decoder
+# Harden RLS for `user_ai_credentials`
 
-Tre protezioni minime prima di promuovere il progetto su LinkedIn/Instagram.
+## Audit (current state)
 
-## 1. Rate limit sul provider gratuito Lovable AI
+| Table | RLS | SELECT | INSERT/UPDATE/DELETE |
+|---|---|---|---|
+| `user_ai_credentials` | ✅ | ❌ no policy (denied) | ✅ `owner_id = auth.uid()` |
+| `user_local_endpoints` | ✅ | ✅ owner-scoped | ✅ owner-scoped |
+| `profiles` | ✅ | self | self |
+| `projects`, `repositories`, `files`, `explanations` | ✅ | owner-scoped | owner-scoped |
+| `user_roles` | ✅ | self + admin | admin-only |
 
-Obiettivo: garantire **usabilità reale** a un utente medio, evitando che un singolo account bruci il budget condiviso.
+All requirements 1, 4–7 are already satisfied at the schema level. The real gaps are:
 
-**Limite proposto: 20 spiegazioni / 24h per utente** sul provider `lovable`.
-Razionale: con proficiency + tipo + lingua già in cache per file (la stessa spiegazione non ricalcola), 20 spiegazioni nuove al giorno coprono comodamente l'esplorazione di un repo medio (≈ 1 sessione di studio approfondito). Provider BYOK (`openai`, `anthropic`, `gemini`, `openrouter`) e provider locali (`ollama`, `lmstudio`): **nessun limite** — paga l'utente o gira in locale.
+- **A.** Two server functions (`analysis.functions.ts`, `explain.functions.ts`) read `encrypted_key` through the **user-scoped** `context.supabase`. With no SELECT policy on `user_ai_credentials`, those reads return zero rows → BYOK providers are effectively broken.
+- **B.** `listProviders` and `exportMyData` read safe metadata (`provider, key_hint, updated_at`) through `context.supabase` and hit the same wall.
+- **C.** No explicit "safe view" exists, so future code is tempted to either add a broad SELECT policy on the base table (leaking `encrypted_key`) or use the admin client from client-reachable paths.
 
-Implementazione:
-- Nuovo file `src/lib/rate-limit.server.ts` con funzione `assertLovableQuota(supabase, userId)` che fa `count` su `explanations` dove `owner_id = userId AND provider = 'lovable' AND created_at > now() - interval '24 hours'` e lancia un errore tipizzato se ≥ 20.
-- In `src/lib/explain.functions.ts`, dentro `explainFile.handler`, chiamare `assertLovableQuota` **solo se `data.provider === 'lovable'` e prima della chiamata al gateway** (dopo il cache lookup, così le cache hit non contano).
-- Errore lanciato: `Error("rate_limit_exceeded")` con messaggio i18n `errors.rateLimitExceeded` ("Hai raggiunto 20 spiegazioni AI gratuite nelle ultime 24h. Aggiungi la tua chiave API in Impostazioni per continuare senza limiti, o usa Ollama/LM Studio in locale.").
-- Gestire l'errore nei componenti che chiamano `explainFile` (toast + CTA verso `/settings`).
-- Aggiungere chiave i18n in `it/en/zh` `common.json`.
+## Fix
 
-Niente tabella nuova, niente Redis: contiamo righe `explanations` esistenti (sono già ownership-scoped via RLS).
+### 1. Migration — safe view, no broad SELECT policy
 
-## 2. Email di contatto GDPR
+Add a SECURITY DEFINER style view (default `security_invoker=off`, owner = `postgres`) that filters by `auth.uid()` and exposes **only** non-sensitive columns. The base table keeps zero SELECT policies, so `encrypted_key` stays unreachable via PostgREST.
 
-Email confermata: **pietro@codecoder.com**.
+```sql
+CREATE OR REPLACE VIEW public.user_ai_credentials_safe AS
+SELECT id, owner_id, provider, key_hint, created_at, updated_at
+FROM public.user_ai_credentials
+WHERE owner_id = auth.uid();
 
-Implementazione:
-- Aggiungere chiave i18n `contact.email = "pietro@codecoder.com"` in `it/en/zh`.
-- Aggiornare `terms.gdpr.contact` per includere l'email cliccabile: "Per esercitare i tuoi diritti GDPR (accesso, rettifica, cancellazione, portabilità, opposizione), scrivi a pietro@codecoder.com. Risponderemo entro 30 giorni."
-- Nuova route pubblica `src/routes/contact.tsx` con:
-  - Titolo "Contatti"
-  - Sezione "Privacy & GDPR" con `mailto:pietro@codecoder.com?subject=GDPR%20-%20Decoder`
-  - Sezione "Bug & feedback" con link al repo GitHub (issues)
-  - Sezione "Sicurezza" con `mailto:pietro@codecoder.com?subject=Security%20-%20Decoder`
-  - Tempi di risposta dichiarati (30gg GDPR, best-effort per il resto)
-  - Head/meta SEO + og tags
-- Aggiungere link "Contatti" al footer in `terms.tsx`, `manifesto.tsx`, `index.tsx`, `docs.tsx` (la nav del footer è ripetuta in ognuno).
+REVOKE ALL ON public.user_ai_credentials_safe FROM PUBLIC, anon;
+GRANT SELECT ON public.user_ai_credentials_safe TO authenticated;
 
-Niente form, niente backend email: solo `mailto:`. Sufficiente per GDPR.
+-- Belt + braces: make sure no one ever grants SELECT on the base table to anon/authenticated.
+REVOKE SELECT ON public.user_ai_credentials FROM anon, authenticated;
+```
 
-## 3. Retention automatica dei file caricati
+No change to existing INSERT/UPDATE/DELETE policies. No SELECT policy added to the base table.
 
-Obiettivo: i ZIP caricati non restano per sempre sul server.
+### 2. Server code — decrypt path moves to admin client
 
-Regola: cancellare `repositories` (e cascading di `files` + `explanations` legate + oggetti storage) se:
-- `repositories.created_at < now() - interval '60 days'` **AND**
-- nessuna `explanations` collegata negli ultimi 30 giorni (via `files.repository_id`).
+In `src/lib/analysis.functions.ts` and `src/lib/explain.functions.ts`, replace:
 
-Implementazione (migration SQL):
-1. Funzione `public.cleanup_stale_repositories()` SECURITY DEFINER che:
-   - Seleziona `repositories.id` "stale" secondo la regola sopra.
-   - Per ogni repo: lista `files.storage_path`, chiama `storage.delete_object('repositories', path)` (oppure raccoglie le path e logga; vedi nota sotto).
-   - `DELETE FROM public.explanations WHERE file_id IN (SELECT id FROM public.files WHERE repository_id = ANY(stale_ids))`.
-   - `DELETE FROM public.files WHERE repository_id = ANY(stale_ids)`.
-   - `DELETE FROM public.repositories WHERE id = ANY(stale_ids)`.
-   - Ritorna count.
-2. `pg_cron` job giornaliero alle **03:00 UTC**: `SELECT public.cleanup_stale_repositories();`.
+```ts
+const { data: cred } = await context.supabase
+  .from("user_ai_credentials").select("encrypted_key")
+  .eq("provider", data.provider).maybeSingle();
+```
 
-Nota tecnica: la cancellazione degli oggetti in Supabase Storage da SQL puro richiede `storage.objects` delete (RLS bypassata con SECURITY DEFINER). In alternativa più sicura: la funzione SQL cancella solo le righe DB + righe `storage.objects` con quel `bucket_id = 'repositories'` e `name = ANY(paths)`. Da decidere in fase di scrittura migration; preferisco la via "delete da `storage.objects`" perché evita una serverFn schedulata.
+with an admin-client read **explicitly scoped to the authenticated user**:
 
-Comunicazione all'utente:
-- Nuova chiave i18n `upload.retentionNotice = "I file restano sul server fino a 60 giorni dall'upload; dopo l'ultima spiegazione, vengono cancellati automaticamente. Esporta sempre quello che ti serve."` mostrata sotto il pulsante di upload (modali upload ZIP e import GitHub).
-- Aggiornare `terms.dataCollected.content` per riflettere la retention 60gg.
-- Aggiornare manifesto IT/EN/ZH con una riga "Retention 60 giorni sui file caricati" nella sezione `localFirst` o `privacy`.
+```ts
+const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+const { data: cred } = await supabaseAdmin
+  .from("user_ai_credentials")
+  .select("encrypted_key")
+  .eq("owner_id", context.userId)
+  .eq("provider", data.provider)
+  .maybeSingle();
+```
 
-## Cosa NON faccio
+`context.userId` comes from `requireSupabaseAuth` (validated JWT), so this is functionally equivalent to RLS but executed server-only. The admin client never reaches the browser (already enforced by `client.server.ts` + `await import(...)` inside the handler).
 
-- Niente captcha, niente rate limit per IP (utenti dietro NAT/VPN si bloccherebbero a vicenda).
-- Niente email transazionali (solo `mailto:`).
-- Niente soft-delete o cestino: i file scaduti vengono cancellati definitivamente.
-- Niente dashboard admin per gestire il rate limit (per ora).
-- Niente modifiche al provider Lovable AI o ai modelli: solo conteggio chiamate.
+### 3. Server code — metadata reads go through the safe view
 
-## File toccati
+- `src/lib/credentials.functions.ts` → `listProviders`: read from `user_ai_credentials_safe` instead of `user_ai_credentials`.
+- `src/lib/account.functions.ts` → `exportMyData`: same swap; redaction guarantee is now enforced by the view, not by the column list.
 
-**Nuovi**
-- `src/lib/rate-limit.server.ts`
-- `src/routes/contact.tsx`
-- Migration SQL: funzione `cleanup_stale_repositories` + pg_cron job
+Both keep using `context.supabase` (user-scoped). With `auth.uid()` inside the view definition the user only ever sees their own metadata.
 
-**Modificati**
-- `src/lib/explain.functions.ts` (chiamata al rate limit per `lovable`)
-- `src/i18n/locales/{it,en,zh}/common.json` (chiavi `errors.rateLimitExceeded`, `contact.*`, `upload.retentionNotice`, manifesto retention)
-- `src/routes/terms.tsx` (footer + `gdpr.contact` + `dataCollected.content`)
-- `src/routes/manifesto.tsx` (footer)
-- `src/routes/index.tsx` + `src/routes/docs.tsx` (footer)
-- Componenti di upload (ZIP/GitHub) per mostrare `retentionNotice` — da identificare in build mode tra `repos.functions.ts` callers
-- Componenti che chiamano `explainFile` per gestire l'errore `rate_limit_exceeded` con toast + CTA
+### 4. Confirm requirements
 
-## Domanda
+1. Client cannot SELECT raw keys → no SELECT policy on base table, REVOKE on anon/authenticated.
+2. Owner can still INSERT/UPDATE/DELETE own rows → unchanged policies.
+3. Safe metadata exposed → `user_ai_credentials_safe` view.
+4. Raw `encrypted_key` only readable via `supabaseAdmin` inside `.handler()`.
+5. `DECODER_ENCRYPTION_KEY` already server-only (read in `crypto.server.ts`); no change.
+6. `supabaseAdmin` imported only via `await import("@/integrations/supabase/client.server")` inside server handlers — never client code.
+7. RLS verified on every user-data table (table above).
+8. Safe view created and is the only client-facing read surface.
 
-Confermi il limite **20 spiegazioni/24h** sul gratuito (con cache esclusa dal conteggio) e la retention **60 giorni**? Se sì procedo in build.
+## Files touched
+
+- **new** `supabase/migrations/<ts>_user_ai_credentials_safe_view.sql`
+- **edit** `src/lib/credentials.functions.ts` (listProviders → safe view)
+- **edit** `src/lib/account.functions.ts` (exportMyData → safe view)
+- **edit** `src/lib/analysis.functions.ts` (decrypt read → supabaseAdmin, scoped by `owner_id`)
+- **edit** `src/lib/explain.functions.ts` (same)
+- **update** security memory: record that base-table SELECT is intentionally denied and the safe view is the only read surface.
+
+## Out of scope
+
+- No changes to `user_local_endpoints`, `profiles`, `projects`, `repositories`, `files`, `explanations`, `user_roles` — all already correctly scoped.
+- No new `is_active` column (requirement 3 mentions "active status" but the current schema has no such field; keys are either present or absent). Adding it would be a feature change, not a security fix — skipping unless you want it added.

@@ -283,7 +283,33 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      user_ai_credentials_safe: {
+        Row: {
+          created_at: string | null
+          id: string | null
+          key_hint: string | null
+          owner_id: string | null
+          provider: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string | null
+          key_hint?: string | null
+          owner_id?: string | null
+          provider?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: string | null
+          key_hint?: string | null
+          owner_id?: string | null
+          provider?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       has_role: {
