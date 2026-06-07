@@ -129,7 +129,7 @@ function OpenSourcePage() {
         </div>
       </header>
 
-      <main className="mx-auto max-w-5xl px-6 py-16">
+      <main className="mx-auto max-w-5xl px-4 py-12 sm:px-6 md:py-16">
         {/* Hero */}
         <section>
           <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-primary">

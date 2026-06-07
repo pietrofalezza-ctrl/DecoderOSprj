@@ -79,7 +79,7 @@ function GuidePage() {
         </div>
       </header>
 
-      <main className="mx-auto max-w-3xl px-6 py-16">
+      <main className="mx-auto max-w-3xl px-4 py-12 sm:px-6 md:py-16">
         <Link
           to="/docs"
           className="inline-flex items-center gap-2 text-xs text-muted-foreground hover:text-foreground"
