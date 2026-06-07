@@ -45,7 +45,7 @@ export const runAnalysis = createServerFn({ method: "POST" })
       .maybeSingle();
     if (cached) return { content: cached.content, cached: true };
 
-    const { assertByokAckAccepted } = await import("./byok-acknowledgement.functions");
+    const { assertByokAckAccepted } = await import("./byok-acknowledgement.server");
     await assertByokAckAccepted(context.supabase, context.userId);
 
     let apiKey: string;
@@ -157,7 +157,7 @@ export const analyzeRepoAiOrigin = createServerFn({ method: "POST" })
     }),
   )
   .handler(async ({ context, data }) => {
-    const { assertByokAckAccepted } = await import("./byok-acknowledgement.functions");
+    const { assertByokAckAccepted } = await import("./byok-acknowledgement.server");
     await assertByokAckAccepted(context.supabase, context.userId);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { decryptSecret } = await import("./crypto.server");

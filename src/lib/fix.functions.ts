@@ -42,7 +42,7 @@ export const proposeFileFix = createServerFn({ method: "POST" })
     }),
   )
   .handler(async ({ context, data }) => {
-    const { assertByokAckAccepted } = await import("./byok-acknowledgement.functions");
+    const { assertByokAckAccepted } = await import("./byok-acknowledgement.server");
     await assertByokAckAccepted(context.supabase, context.userId);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { callCloudProvider } = await import("./ai-providers.server");
@@ -101,7 +101,7 @@ export const proposeFolderFix = createServerFn({ method: "POST" })
     }),
   )
   .handler(async ({ context, data }) => {
-    const { assertByokAckAccepted } = await import("./byok-acknowledgement.functions");
+    const { assertByokAckAccepted } = await import("./byok-acknowledgement.server");
     await assertByokAckAccepted(context.supabase, context.userId);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { callCloudProvider } = await import("./ai-providers.server");

@@ -1,12 +1,11 @@
 import { createServerFn } from "@tanstack/react-start";
-import { getRequestHeader, setResponseStatus } from "@tanstack/react-start/server";
+import { getRequestHeader } from "@tanstack/react-start/server";
 import { z } from "zod";
 
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import {
   BYOK_ACK_TYPE,
   BYOK_TERMS_VERSION,
-  BYOK_ACK_ERROR,
 } from "./byok-acknowledgement";
 
 const Lang = z.enum(["en", "it", "zh"]).catch("en");
@@ -70,30 +69,3 @@ export const listByokAckHistory = createServerFn({ method: "GET" })
     if (error) throw error;
     return { items: data ?? [] };
   });
-
-/**
- * Server-side guard used inside other server functions. Throws with a
- * recognizable code so the client UI can pop the BYOK modal.
- *
- * Must be called with a Supabase client scoped to the current user (so RLS
- * applies). The 403 response status is the wire signal the client listens
- * to in addition to the error message.
- */
-export async function assertByokAckAccepted(
-  supabase: { from: (t: string) => any },
-  userId: string,
-): Promise<void> {
-  const { data, error } = await supabase
-    .from("user_acknowledgements")
-    .select("id")
-    .eq("user_id", userId)
-    .eq("acknowledgement_type", BYOK_ACK_TYPE)
-    .eq("accepted_terms_version", BYOK_TERMS_VERSION)
-    .limit(1)
-    .maybeSingle();
-  if (error) throw error;
-  if (!data) {
-    setResponseStatus(403);
-    throw new Error(BYOK_ACK_ERROR);
-  }
-}
