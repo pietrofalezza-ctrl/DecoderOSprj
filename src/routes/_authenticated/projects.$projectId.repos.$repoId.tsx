@@ -47,7 +47,7 @@ import { exportRepoMarkdown } from "@/lib/export.functions";
 import { callLocalProvider, type LocalKind } from "@/lib/local-ai";
 import { buildPrompt, type Proficiency } from "@/lib/prompt";
 import { buildAnalysisPrompt, type AnalysisKind } from "@/lib/analysis-prompt";
-import { extractInsightBundle, stripFindingsBlock, type Finding, type InsightCategory } from "@/lib/findings";
+import { extractInsightBundle, stripFindingsBlock, type Finding } from "@/lib/findings";
 
 type CloudProvider = "lovable" | "openai" | "anthropic" | "gemini" | "openrouter";
 type ProviderValue = `cloud:${CloudProvider}` | `local:${LocalKind}`;
