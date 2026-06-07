@@ -1,62 +1,61 @@
 ## Obiettivo
-Garantire che `LOVABLE_API_KEY` non venga mai usata per servire utenti finali senza opt-in esplicito del proprietario del progetto, mantenendo l'app BYOK-pure di default.
 
-## Strategia
-Trasformare "Lovable AI" da provider sempre disponibile a **provider opt-in via env var del proprietario** (`ALLOW_HOSTED_LOVABLE_AI=true`). Quando il flag è off (default), il provider è invisibile in UI e rigettato server-side.
+Togliere l'email pubblica e gli impegni di tempi di risposta dalla pagina `/contact`, convogliare tutto su GitHub (Issues + Security Advisories privati), valutare il banner cookie e chiarire chi fa cosa sul versante "ispezioni".
 
-## Modifiche
+---
 
-### 1. Gating server-side (5 file)
-In `explain.functions.ts`, `analysis.functions.ts` (2 punti), `folder-analysis.functions.ts`, `fix.functions.ts`, prima del controllo `data.provider === "lovable"`:
+## 1. Pagina `/contact` — rimuovere email e SLA
 
-```ts
-if (data.provider === "lovable" && process.env.ALLOW_HOSTED_LOVABLE_AI !== "true") {
-  throw new Error("hosted_lovable_ai_disabled");
-}
-```
+In `src/routes/contact.tsx`:
 
-Risultato: anche se un client truccato inviasse `provider: "lovable"`, viene rifiutato.
+- Eliminare i blocchi `mailto:` (Privacy/GDPR e Security): niente indirizzo in chiaro, niente link email.
+- Sostituire ogni CTA con un link a GitHub:
+  - **Privacy & GDPR** → link a una nuova issue template `gdpr-request` su `common.repoUrl` (`/issues/new?labels=gdpr&template=gdpr-request.md`). Testo: "Apri una richiesta su GitHub (anche in forma riservata via Security Advisory se contiene dati personali)".
+  - **Sicurezza** → link a GitHub Security Advisories (`/security/advisories/new`), che è il canale privato standard. Nessun indirizzo email esposto.
+  - **Bug/feedback** → resta GitHub Issues (già così).
+- Rimuovere completamente la riga `contact.responseTimes` (nessuna promessa di SLA finché non c'è obbligo formale).
+- Mantenere il tono: "canale unico, pubblico e tracciabile = GitHub; per segnalazioni riservate usa Security Advisories".
 
-### 2. Estensione quota free-tier
-La quota oggi protegge solo `explainFile`. Estenderla a `analyzeFile`, `analyzeFolderAggregate`, `proposeFix`. `analyzeRepoAiOrigin` consuma 30 file → conta come 30 chiamate verso la quota o blocchiamo del tutto su provider lovable (più semplice: blocchiamo).
+Aggiornare le 3 locali (`en`, `it`, `zh`):
 
-### 3. Esposizione del flag al client
-Nuova server fn `getHostedAiAvailability()` in `src/lib/credentials.functions.ts`:
-- Ritorna `{ hostedLovableEnabled: boolean }` leggendo `process.env.ALLOW_HOSTED_LOVABLE_AI === "true"`.
+- `contact.privacyBody` → testo senza email, rimanda a GitHub.
+- `contact.securityBody` → testo senza email, rimanda a Security Advisories privati.
+- `contact.bugsBody` → invariato salvo togliere riferimenti a tempi.
+- Cancellare `contact.responseTimes`.
+- Aggiungere chiavi nuove: `contact.privacyCta` ("Apri richiesta GDPR su GitHub"), `contact.securityCta` ("Apri Security Advisory privato"), `contact.bugsCta` ("Apri Issue").
+- In `landing` / `footer.contact` (riga 172 di `it/common.json`): togliere l'email e il "30 giorni", rimandare a `/contact`.
 
-Già esiste `lovableAvailable` ma controlla solo la presenza della key → va cambiato per riflettere anche il flag.
+Stessa pulizia in qualunque altra pagina che cita l'email: rapida grep su `pietro@codecoder.com` nei locali per non lasciare residui.
 
-### 4. UI: nascondere "Lovable AI" quando disabilitato
-- `src/components/FolderAnalysisPanel.tsx`: rimuovere `"lovable"` dalla lista provider quando flag off; cambiare default a "openai".
-- Selettori provider in pagina repo (`src/routes/_authenticated/projects.$projectId.repos.$repoId.tsx`): stesso filtro.
-- Pagina credenziali (`/account` o equivalente): mostrare badge "Hosted AI: disabled by owner" quando off, link alla guida BYOK.
+---
 
-### 5. Documentazione e i18n
-- Aggiungere chiave `settings.hostedDisabled` in `it/en/zh common.json` con messaggio "Il provider Lovable AI è disabilitato. Configura una tua chiave o usa Ollama/LM Studio."
-- Aggiornare `manifesto.tsx` aggiungendo riga: "Di default nessun utente consuma crediti del manutentore: BYOK o locale, sempre."
-- Aggiornare `/open-source` e `/docs` per documentare il flag `ALLOW_HOSTED_LOVABLE_AI` per chi self-hosta.
+## 2. Cookie banner
 
-### 6. Errore 402/429 utente-friendly
-Quando una chiamata BYOK fallisce con 402/429, già gestito in `ai-providers.server.ts` via `failSafe`. Aggiungere mapping esplicito per provider Lovable nei rari casi in cui il flag fosse on:
-- 402 → "Hosted AI fund exhausted. Switch to your own key."
-- 429 → "Hosted AI rate-limited. Use your own key for unlimited."
+Stato attuale: l'app **non usa** analytics, tag manager, pixel marketing o tracker terzi. L'unico cookie tecnico è `sidebar_state` (preferenza UI, strettamente necessario).
 
-### 7. (Operativo, no codice) Nei tuoi Project Secrets
-NON impostare `ALLOW_HOSTED_LOVABLE_AI` → il default è off, quindi zero rischio di addebito sulla tua carta.
+Conseguenza GDPR/ePrivacy: **non è obbligatorio** un banner di consenso. Basta una menzione nella pagina `/terms` (o nuova sezione "Cookie" dentro Terms) che spieghi: "usiamo solo cookie tecnici strettamente necessari; nessun tracciamento, nessun consenso richiesto".
+
+Proposta: **non aggiungere il banner ora**. Aggiungere invece un breve paragrafo "Cookie" dentro `/terms` (3 righe x 3 lingue). Se in futuro si attiva un'analytics, allora si introduce il banner.
+
+---
+
+## 3. "Chi si occupa di queste ispezioni?" — risposta sintetica
+
+Non un capitolo del piano, è una chiarificazione per te (non genera codice):
+
+- **GDPR (privacy, diritti dell'interessato, data breach):** il Titolare del trattamento sei tu (o la società che pubblica Decoder). In Italia l'autorità di controllo è il **Garante per la protezione dei dati personali**. Senza dipendenti/utenti su larga scala non sei obbligato a nominare un DPO. Le ispezioni vere e proprie le fa il Garante solo su segnalazione o audit programmati: per un open source senza tracking il rischio operativo è basso, ma sei comunque tu a dover rispondere se arriva una richiesta.
+- **Sicurezza applicativa:** non c'è un ente che "ispeziona" il codice. La responsabilità è del maintainer. Il canale standard è GitHub Security Advisories + eventuale CVE tramite GitHub stesso (CNA).
+- **Marketplace/host (Lovable, Supabase, Cloudflare):** ognuno ha le proprie policy e può sospendere il progetto se viola i ToS, ma non sono "ispettori GDPR".
+- **Audit volontari:** se vuoi un bollino, puoi farti certificare ISO 27001 / SOC 2 da auditor terzi, ma è oneroso e non richiesto per un progetto open source senza clienti enterprise.
+
+Quindi: oggi le "ispezioni" coincidono di fatto con le segnalazioni della community via GitHub — coerente con la scelta di rimuovere l'email e centralizzare tutto là.
+
+---
 
 ## File toccati
-- `src/lib/explain.functions.ts`
-- `src/lib/analysis.functions.ts`
-- `src/lib/folder-analysis.functions.ts`
-- `src/lib/fix.functions.ts`
-- `src/lib/credentials.functions.ts`
-- `src/lib/rate-limit.server.ts` (estensione quota)
-- `src/components/FolderAnalysisPanel.tsx`
-- `src/routes/_authenticated/projects.$projectId.repos.$repoId.tsx`
-- `src/routes/manifesto.tsx`, `src/routes/docs.tsx`, `src/routes/open-source.tsx` (testo)
-- `src/i18n/locales/{it,en,zh}/common.json`
 
-## Verifica
-- Smoke test: con flag off, server fn con `provider: "lovable"` → 500 `hosted_lovable_ai_disabled`.
-- UI: selettore provider non mostra "Lovable AI" quando flag off.
-- Smoke test BYOK: con OpenAI key salvata, `explainFile({ provider: "openai" })` funziona e nessuna chiamata al gateway Lovable.
+- `src/routes/contact.tsx` (rimozione card email, nuovi CTA GitHub, no responseTimes)
+- `src/i18n/locales/{en,it,zh}/common.json` (testi contact.*, rimozione email in `landing.footer.contact`, aggiunta paragrafo cookie in `terms.*`)
+- `src/routes/terms.tsx` (sezione "Cookie" — solo se la struttura usa stringhe i18n già pronte; altrimenti aggiungo blocco statico minimale)
+
+Nessuna modifica a logica backend, RLS, o credenziali.
