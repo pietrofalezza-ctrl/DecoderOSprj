@@ -196,7 +196,13 @@
     "title": "我们相信代码应当易于理解",
     "intro": "Decoder 旨在打破编写代码者与需要理解、维护、评估或解释代码者之间的壁垒 —— 同时不辜负使用者的信任。",
     "principlesTitle": "我们的原则",
+    "whyGuardrailTitle": "为什么需要护栏",
+    "whyGuardrailBody": "生成式 AI 是看似可信的预言者,而非可靠的工具:它产出令人信服的代码,却可能隐藏 bug、漏洞或错误的架构选择。没有独立的核验工具,我们会把每个回答当作真理。Decoder 就是这种反制力 —— 开源以保持可审查,社区拥有以保持诚实。",
     "principles": {
+      "guardrail": {
+        "title": "持续演进的护栏",
+        "body": "Decoder 是一个独立的核验工具,掌握在用户手中,随社区与 AI 来源一同成长。它不取代你的判断 —— 它放大你的判断。"
+      },
       "open": {
         "title": "真正的开源",
         "body": "MIT 许可证。可自由使用、修改和分发。无隐藏组件。由匿名贡献者集体维护。"
@@ -228,10 +234,54 @@
       "w2": "绝不出售你的数据,也不与数据经纪人共享。",
       "w3": "绝不在 AI 提供商上设置人为锁定。",
       "w4": "绝不阻止你导出解释与注释。",
-      "w5": "绝不永久保留你的文件：60 天无活动后自动删除。"
+      "w5": "绝不永久保留你的文件：60 天无活动后自动删除。",
+      "w6": "绝不取代你的判断:我们是护栏,不是预言者。"
+    },
+    "contributingTitle": "如何参与贡献",
+    "contributingBody": "Decoder 由使用者共同维护。轻量治理:issue 变成讨论,讨论变成 PR。没有侵入式 CLA,没有官僚流程。",
+    "contributing": {
+      "rules": "扩展分析规则(src/lib/analysis-prompt.ts),覆盖新的代码异味或语言。",
+      "translations": "在 src/i18n/locales/ 中创建文件夹,新增一种语言。",
+      "providers": "集成新的 AI 提供商或兼容 OpenAI API 的本地引擎。",
+      "docs": "改进 /docs 中的用户文档与代码审查指南。"
     },
     "roadmapTitle": "公开路线图",
     "roadmapBody": "开发阶段记录在仓库的 README 与 .lovable/plan.md 中。产品决策公开讨论。"
+  },
+  "openSource": {
+    "kicker": "开源",
+    "title": "用于质询 AI 的开放护栏",
+    "intro": "Decoder 是公开代码、公开提示、公开规则。诞生为案例研究,作为公共财产维护 —— 因为只有当任何人都能阅读并改进它时,AI 的护栏才有意义。",
+    "ctaRepo": "在 GitHub 打开",
+    "ctaContribute": "贡献",
+    "openTitle": "什么是开放的",
+    "open": {
+      "codeTitle": "源代码",
+      "codeBody": "整个应用,前端与后端,均采用 MIT 协议。",
+      "promptsTitle": "分析提示",
+      "promptsBody": "我们给 LLM 的解释、质量与安全审查指令 —— 可由社区编辑。",
+      "rulesTitle": "规则与评分",
+      "rulesBody": "发现严重度、分析类型、聚合标准:全部在仓库中公开。",
+      "i18nTitle": "翻译",
+      "i18nBody": "目前三种官方语言,每新增一种语言只需一个 PR。",
+      "designTitle": "设计系统",
+      "designBody": "src/styles.css 与 src/components/ui 中的语义令牌与无障碍组件。"
+    },
+    "roadmapTitle": "公开路线图",
+    "roadmapIntro": "下一步的工作领域。公开讨论,社区可编辑。",
+    "roadmap": {
+      "r1": "把分析规则扩展到新语言(Rust、Go、Kotlin、Swift)。",
+      "r2": "VS Code 插件,在 PR 审查时调用护栏。",
+      "r3": "为典型 AI 生成代码异味建立共享社区规则库。",
+      "r4": "Diff 感知模式:仅核验 PR 中变更的部分。",
+      "r5": "溯源:逐块跟踪 AI 来源(Copilot、Cursor、ChatGPT)。"
+    },
+    "extendTitle": "扩展护栏",
+    "extendBody": "分析提示位于 src/lib/analysis-prompt.ts。新增一种 kind,编写指令,提交 PR:社区审阅,我们一起打磨。",
+    "extendCta": "查看提示文件",
+    "communityTitle": "由谁构建",
+    "communityBody": "Decoder 由匿名贡献者维护。你的 issue、PR 或翻译都是护栏的一部分。",
+    "joinCta": "在 GitHub 加入"
   },
   "auth": {
     "title": "登录 Decoder",
