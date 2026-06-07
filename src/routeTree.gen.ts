@@ -15,6 +15,7 @@ import { Route as DocsRouteImport } from './routes/docs'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as DocsHowToReviewAiCodeRouteImport } from './routes/docs.how-to-review-ai-code'
 import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated/settings'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedProjectsProjectIdRouteImport } from './routes/_authenticated/projects.$projectId'
@@ -50,6 +51,11 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DocsHowToReviewAiCodeRoute = DocsHowToReviewAiCodeRouteImport.update({
+  id: '/how-to-review-ai-code',
+  path: '/how-to-review-ai-code',
+  getParentRoute: () => DocsRoute,
+} as any)
 const AuthenticatedSettingsRoute = AuthenticatedSettingsRouteImport.update({
   id: '/settings',
   path: '/settings',
@@ -82,11 +88,12 @@ const AuthenticatedProjectsProjectIdReposRepoIdRoute =
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
-  '/docs': typeof DocsRoute
+  '/docs': typeof DocsRouteWithChildren
   '/manifesto': typeof ManifestoRoute
   '/terms': typeof TermsRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/settings': typeof AuthenticatedSettingsRoute
+  '/docs/how-to-review-ai-code': typeof DocsHowToReviewAiCodeRoute
   '/projects/$projectId': typeof AuthenticatedProjectsProjectIdRouteWithChildren
   '/projects/$projectId/': typeof AuthenticatedProjectsProjectIdIndexRoute
   '/projects/$projectId/repos/$repoId': typeof AuthenticatedProjectsProjectIdReposRepoIdRoute
@@ -94,11 +101,12 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
-  '/docs': typeof DocsRoute
+  '/docs': typeof DocsRouteWithChildren
   '/manifesto': typeof ManifestoRoute
   '/terms': typeof TermsRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/settings': typeof AuthenticatedSettingsRoute
+  '/docs/how-to-review-ai-code': typeof DocsHowToReviewAiCodeRoute
   '/projects/$projectId': typeof AuthenticatedProjectsProjectIdIndexRoute
   '/projects/$projectId/repos/$repoId': typeof AuthenticatedProjectsProjectIdReposRepoIdRoute
 }
@@ -107,11 +115,12 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/auth': typeof AuthRoute
-  '/docs': typeof DocsRoute
+  '/docs': typeof DocsRouteWithChildren
   '/manifesto': typeof ManifestoRoute
   '/terms': typeof TermsRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/settings': typeof AuthenticatedSettingsRoute
+  '/docs/how-to-review-ai-code': typeof DocsHowToReviewAiCodeRoute
   '/_authenticated/projects/$projectId': typeof AuthenticatedProjectsProjectIdRouteWithChildren
   '/_authenticated/projects/$projectId/': typeof AuthenticatedProjectsProjectIdIndexRoute
   '/_authenticated/projects/$projectId/repos/$repoId': typeof AuthenticatedProjectsProjectIdReposRepoIdRoute
@@ -126,6 +135,7 @@ export interface FileRouteTypes {
     | '/terms'
     | '/dashboard'
     | '/settings'
+    | '/docs/how-to-review-ai-code'
     | '/projects/$projectId'
     | '/projects/$projectId/'
     | '/projects/$projectId/repos/$repoId'
@@ -138,6 +148,7 @@ export interface FileRouteTypes {
     | '/terms'
     | '/dashboard'
     | '/settings'
+    | '/docs/how-to-review-ai-code'
     | '/projects/$projectId'
     | '/projects/$projectId/repos/$repoId'
   id:
@@ -150,6 +161,7 @@ export interface FileRouteTypes {
     | '/terms'
     | '/_authenticated/dashboard'
     | '/_authenticated/settings'
+    | '/docs/how-to-review-ai-code'
     | '/_authenticated/projects/$projectId'
     | '/_authenticated/projects/$projectId/'
     | '/_authenticated/projects/$projectId/repos/$repoId'
@@ -159,7 +171,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AuthRoute: typeof AuthRoute
-  DocsRoute: typeof DocsRoute
+  DocsRoute: typeof DocsRouteWithChildren
   ManifestoRoute: typeof ManifestoRoute
   TermsRoute: typeof TermsRoute
 }
@@ -207,6 +219,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/docs/how-to-review-ai-code': {
+      id: '/docs/how-to-review-ai-code'
+      path: '/how-to-review-ai-code'
+      fullPath: '/docs/how-to-review-ai-code'
+      preLoaderRoute: typeof DocsHowToReviewAiCodeRouteImport
+      parentRoute: typeof DocsRoute
     }
     '/_authenticated/settings': {
       id: '/_authenticated/settings'
@@ -280,11 +299,21 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
 const AuthenticatedRouteRouteWithChildren =
   AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
 
+interface DocsRouteChildren {
+  DocsHowToReviewAiCodeRoute: typeof DocsHowToReviewAiCodeRoute
+}
+
+const DocsRouteChildren: DocsRouteChildren = {
+  DocsHowToReviewAiCodeRoute: DocsHowToReviewAiCodeRoute,
+}
+
+const DocsRouteWithChildren = DocsRoute._addFileChildren(DocsRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AuthRoute: AuthRoute,
-  DocsRoute: DocsRoute,
+  DocsRoute: DocsRouteWithChildren,
   ManifestoRoute: ManifestoRoute,
   TermsRoute: TermsRoute,
 }
