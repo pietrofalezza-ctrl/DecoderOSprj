@@ -234,6 +234,73 @@ function SettingsPage() {
   );
 }
 
+function AcknowledgementSection() {
+  const { t, i18n } = useTranslation();
+  const { accepted, record, currentVersion, openAck } = useByokAck();
+  const fetchHistory = useServerFn(listByokAckHistory);
+  const history = useQuery({ queryKey: ["byok-ack-history"], queryFn: () => fetchHistory() });
+
+  const fmt = (iso: string) =>
+    new Date(iso).toLocaleDateString(i18n.language, {
+      year: "numeric",
+      month: "short",
+      day: "2-digit",
+    });
+
+  return (
+    <section
+      id="acknowledgements"
+      className="space-y-4 rounded-lg border border-border bg-card p-5 scroll-mt-20"
+    >
+      <div className="flex items-start gap-3">
+        <FileCheck2 className="mt-0.5 h-5 w-5 shrink-0 text-primary" />
+        <div className="flex-1">
+          <h2 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
+            {t("byokAck.settings.sectionTitle")}
+          </h2>
+          {accepted && record ? (
+            <p className="mt-2 text-sm">
+              {t("byokAck.settings.acceptedOn", {
+                version: record.version,
+                date: fmt(record.acceptedAt),
+                language: record.language,
+              })}
+            </p>
+          ) : (
+            <div className="mt-2 flex flex-wrap items-center gap-3">
+              <span className="inline-flex items-center gap-1 rounded-full bg-destructive/10 px-2 py-0.5 text-xs font-medium text-destructive">
+                {t("byokAck.settings.notAcceptedBadge")}
+              </span>
+              <Button size="sm" onClick={() => openAck()}>
+                {t("byokAck.settings.openCta")}
+              </Button>
+            </div>
+          )}
+          <p className="mt-1 text-xs text-muted-foreground">
+            {t("byokAck.settings.currentVersion", { version: currentVersion ?? "—" })}
+          </p>
+        </div>
+      </div>
+
+      {history.data?.items.length ? (
+        <div>
+          <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+            {t("byokAck.settings.history")}
+          </p>
+          <ul className="mt-2 space-y-1 text-xs text-muted-foreground">
+            {history.data.items.map((it: any, i: number) => (
+              <li key={i} className="flex items-center justify-between border-b border-border/40 py-1 last:border-0">
+                <span>v{it.accepted_terms_version}</span>
+                <span>{fmt(it.accepted_at)} · {it.accepted_language}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ) : null}
+    </section>
+  );
+}
+
 function AccountPrivacySection() {
   const { t } = useTranslation();
   const exportFn = useServerFn(exportMyData);
