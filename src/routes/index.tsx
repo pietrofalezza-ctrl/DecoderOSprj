@@ -19,7 +19,7 @@ import { Button } from "@/components/ui/button";
 import { LangSwitcher } from "@/components/LangSwitcher";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { Logo } from "@/components/Logo";
-import { HeroIllustration } from "@/components/HeroIllustration";
+
 import { PublicHeaderAuthSlot } from "@/components/PublicHeaderAuthSlot";
 
 export const Route = createFileRoute("/")({
@@ -101,74 +101,121 @@ function Landing() {
         </div>
       </header>
 
-      {/* Hero */}
-      <section className="relative overflow-hidden">
-        <div
-          aria-hidden
-          className="pointer-events-none absolute inset-0 opacity-60"
-          style={{ background: "var(--gradient-hero)" }}
-        />
-        <div className="relative mx-auto grid max-w-7xl gap-12 px-6 py-16 md:grid-cols-2 md:py-24">
-          <div className="flex flex-col justify-center">
-            <div className="mb-5 flex flex-wrap gap-2 text-xs">
-              <Badge icon={<Sparkles className="h-3 w-3" />} label={t("landing.heroBadgeOpen")} />
-              <Badge icon={<Lock className="h-3 w-3" />} label={t("landing.heroBadgePrivacy")} />
-              <Badge icon={<Bot className="h-3 w-3" />} label={t("landing.heroBadgeAiEra")} />
+      {/* Hero — editorial */}
+      <section className="relative">
+        <div className="mx-auto grid max-w-6xl gap-16 px-6 py-20 md:grid-cols-12 md:py-28">
+          <div className="md:col-span-7 space-y-8">
+            <div className="flex flex-wrap gap-6 text-[10px] uppercase tracking-[0.2em] text-muted-foreground font-mono">
+              <span className="border-b border-border pb-1">Case Study 01</span>
+              <span className="border-b border-border pb-1">{t("landing.heroBadgeOpen")}</span>
+              <span className="border-b border-border pb-1">{t("landing.heroBadgePrivacy")}</span>
             </div>
-            <h1 className="text-balance text-4xl font-semibold leading-[1.1] tracking-tight md:text-6xl">
+
+            <h1 className="font-display text-5xl font-medium leading-[1.05] tracking-tight text-foreground md:text-7xl">
               <Trans
                 i18nKey="landing.hero"
                 components={{
-                  1: (
-                    <span
-                      className="bg-clip-text text-transparent"
-                      style={{ backgroundImage: "var(--gradient-accent)" }}
-                    />
-                  ),
-                  2: (
-                    <span
-                      className="bg-clip-text text-transparent"
-                      style={{ backgroundImage: "var(--gradient-accent)" }}
-                    />
-                  ),
+                  1: <span className="italic" />,
+                  2: <span className="italic" />,
                 }}
               />
             </h1>
-            <p className="mt-6 max-w-xl text-balance text-base text-muted-foreground md:text-lg">
+
+            <p className="max-w-xl text-lg font-light leading-relaxed text-muted-foreground">
               {t("landing.heroSubtitle")}
             </p>
-            <div className="mt-8 flex flex-wrap items-center gap-3">
-              <Button asChild size="lg">
+
+            <div className="flex flex-wrap items-center gap-6 pt-2">
+              <Button asChild size="lg" className="rounded-none px-6">
                 <Link to="/auth">
                   {t("landing.ctaStart")}
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </Link>
               </Button>
-              <Button asChild variant="outline" size="lg">
-                <a href={t("common.repoUrl")} target="_blank" rel="noreferrer">
-                  {t("landing.ctaGithub")}
-                  <Github className="ml-2 h-4 w-4" />
-                </a>
-              </Button>
+              <a
+                href={t("common.repoUrl")}
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex items-center gap-2 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
+              >
+                <Github className="h-5 w-5" />
+                {t("landing.ctaGithub")}
+              </a>
             </div>
-            <div className="mt-10">
-              <p className="text-xs uppercase tracking-wide text-muted-foreground">
+
+            <div className="pt-10">
+              <p className="mb-4 font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground/70">
                 {t("landing.providersStrip")}
               </p>
-              <div className="mt-3 flex flex-wrap items-center gap-x-6 gap-y-3 text-sm text-muted-foreground">
-                <ProviderChip name="OpenAI" />
-                <ProviderChip name="Anthropic" />
-                <ProviderChip name="Google Gemini" />
-                <ProviderChip name="OpenRouter" />
-                <ProviderChip name="Ollama" />
+              <div className="flex flex-wrap gap-x-8 gap-y-2 font-mono text-xs tracking-tight text-muted-foreground">
+                <span>01. OPENAI</span>
+                <span>02. ANTHROPIC</span>
+                <span>03. GOOGLE</span>
+                <span>04. OPENROUTER</span>
+                <span>05. OLLAMA</span>
               </div>
             </div>
           </div>
-          <div className="relative flex items-center">
-            <HeroIllustration />
+
+          <div className="md:col-span-5 flex justify-center">
+            <div className="relative w-full aspect-square border border-border bg-card p-8 flex flex-col items-center justify-center">
+              <span className="absolute left-0 top-0 h-2 w-2 border-l border-t border-border" />
+              <span className="absolute right-0 top-0 h-2 w-2 border-r border-t border-border" />
+              <span className="absolute bottom-0 left-0 h-2 w-2 border-b border-l border-border" />
+              <span className="absolute bottom-0 right-0 h-2 w-2 border-b border-r border-border" />
+
+              <div className="w-full space-y-6 opacity-90">
+                <div className="flex items-center justify-between gap-4">
+                  <div className="h-px flex-1 bg-border" />
+                  <div className="border border-border px-3 py-1 font-mono text-[10px] text-muted-foreground">
+                    RAW_INPUT
+                  </div>
+                  <div className="h-px flex-1 bg-border" />
+                </div>
+
+                <div className="relative border border-border p-6">
+                  <div className="space-y-3">
+                    <div className="h-1.5 w-full bg-muted" />
+                    <div className="h-1.5 w-3/4 bg-muted" />
+                    <div className="h-1.5 w-5/6 bg-muted/60" />
+                    <div className="h-1.5 w-1/2 bg-muted" />
+                  </div>
+                </div>
+
+                <div className="flex justify-center">
+                  <div className="relative h-12 w-px bg-border">
+                    <span className="absolute -left-1 bottom-0 h-2 w-2 rotate-45 border-b border-r border-border" />
+                  </div>
+                </div>
+
+                <div className="border border-border bg-background/40 p-6">
+                  <div className="mb-4 flex justify-between">
+                    <span className="h-2 w-2 rounded-full bg-muted-foreground/60" />
+                    <span className="font-mono text-[9px] text-muted-foreground">
+                      PARSED_SCHEMA.V1
+                    </span>
+                  </div>
+                  <div className="space-y-2">
+                    <div className="flex gap-2">
+                      <div className="h-1 w-4 bg-muted-foreground/60" />
+                      <div className="h-1 w-full bg-muted" />
+                    </div>
+                    <div className="flex gap-2">
+                      <div className="h-1 w-4 bg-muted-foreground/60" />
+                      <div className="h-1 w-2/3 bg-muted" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="absolute bottom-4 font-mono text-[9px] uppercase tracking-[0.2em] text-muted-foreground/60">
+                Analysis · Logic Visualization
+              </div>
+            </div>
           </div>
         </div>
       </section>
+
 
       {/* Why now — AI-generated code era */}
       <section className="border-y border-border/60 bg-card/40">
@@ -177,7 +224,7 @@ function Landing() {
             <p className="text-xs font-semibold uppercase tracking-wide text-primary">
               {t("landing.whyNowKicker")}
             </p>
-            <h2 className="mt-2 text-3xl font-semibold tracking-tight md:text-4xl">
+            <h2 className="mt-2 font-display text-4xl font-medium tracking-tight md:text-5xl">
               {t("landing.whyNowTitle")}
             </h2>
             <p className="mt-3 text-muted-foreground">{t("landing.whyNowIntro")}</p>
@@ -226,7 +273,7 @@ function Landing() {
       {/* How it works */}
       <section id="how-it-works" className="border-t border-border/60 bg-card/40">
         <div className="mx-auto max-w-7xl px-6 py-16">
-          <h2 className="text-3xl font-semibold tracking-tight">{t("landing.howTitle")}</h2>
+          <h2 className="font-display text-4xl font-medium tracking-tight">{t("landing.howTitle")}</h2>
           <p className="mt-2 max-w-2xl text-muted-foreground">{t("landing.howIntro")}</p>
           <ol className="mt-10 grid gap-6 md:grid-cols-3">
             <Step n={1} title={t("landing.step1Title")} body={t("landing.step1Body")} />
@@ -238,7 +285,7 @@ function Landing() {
 
       {/* Integrations */}
       <section id="integrations" className="mx-auto max-w-7xl px-6 py-16">
-        <h2 className="text-3xl font-semibold tracking-tight">{t("landing.integrationsTitle")}</h2>
+        <h2 className="font-display text-4xl font-medium tracking-tight">{t("landing.integrationsTitle")}</h2>
         <p className="mt-2 max-w-2xl text-muted-foreground">{t("landing.integrationsBody")}</p>
         <div className="mt-8 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
           {["OpenAI", "Anthropic", "Google Gemini", "OpenRouter", "Ollama", "LM Studio", "GitHub"].map(
