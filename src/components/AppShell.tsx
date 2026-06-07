@@ -53,18 +53,18 @@ export function AppShell({ children }: { children: ReactNode }) {
 
   return (
     <div className="flex min-h-screen flex-col bg-background">
-      <header className="flex h-16 items-center justify-between border-b border-border px-4">
-        <Link to="/dashboard" aria-label={t("brand.name")}>
+      <header className="flex h-16 items-center justify-between border-b border-border px-3 sm:px-4">
+        <Link to="/dashboard" aria-label={t("brand.name")} className="shrink-0">
           <Logo />
         </Link>
-        <div className="flex items-center gap-2">
-          <Button asChild variant="ghost" size="default" className="text-sm font-medium">
+        <div className="flex items-center gap-1 sm:gap-2">
+          <Button asChild variant="ghost" size="default" className="hidden text-sm font-medium sm:inline-flex">
             <Link to="/docs">
               <BookOpen className="mr-2 h-5 w-5" />
               {t("nav.docs")}
             </Link>
           </Button>
-          <Button asChild variant="ghost" size="default" className="text-sm font-medium">
+          <Button asChild variant="ghost" size="default" className="hidden text-sm font-medium sm:inline-flex">
             <a href={t("common.repoUrl")} target="_blank" rel="noreferrer">
               <Github className="mr-2 h-5 w-5" />
               GitHub
