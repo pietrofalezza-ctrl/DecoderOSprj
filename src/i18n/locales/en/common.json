@@ -449,6 +449,19 @@
     "notFoundBody": "The address you opened doesn't exist or has been moved.",
     "boundaryTitle": "This page didn't load"
   },
+  "contact": {
+    "email": "pietro@codecoder.com",
+    "kicker": "Contacts",
+    "title": "How to reach us",
+    "intro": "Decoder is a non-profit open source project. These are the official channels for privacy, security and feedback.",
+    "privacyTitle": "Privacy & GDPR",
+    "privacyBody": "To exercise your GDPR rights (access, rectification, erasure, portability, objection, restriction) email the address below. Response guaranteed within 30 days.",
+    "securityTitle": "Security",
+    "securityBody": "Found a vulnerability? Report it privately at the address below before disclosing it publicly.",
+    "bugsTitle": "Bugs & feedback",
+    "bugsBody": "For bugs, ideas, improvements: open a GitHub issue. Best-effort response.",
+    "responseTimes": "Indicative SLAs: GDPR within 30 days · security within 7 days · feedback best-effort."
+  },
   "footer": {
     "ownership": "Your code and generated documentation belong to you. Decoder never trains on your repositories.",
     "disclaimer": "Decoder is an open-source code understanding tool. AI-generated explanations may be inaccurate and should be reviewed by a qualified human before being used for technical, security, legal or production decisions."
