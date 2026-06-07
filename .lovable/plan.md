@@ -1,61 +1,36 @@
 ## Obiettivo
 
-Rafforzare la narrazione open source di Decoder, posizionandolo esplicitamente come **guardrail comunitario** — uno strumento in mano agli utenti, in evoluzione continua, per interrogare in modo critico le sorgenti AI (Copilot, Cursor, Lovable, ChatGPT, ecc.). Coerente con lo scope: Decoder già esiste per leggere/auditare codice AI; manca la cornice valoriale chiara.
+1. Eliminare la ridondanza tra **Funzionalità** e **Come funziona** sulla landing.
+2. Risolvere i crash ricorrenti della preview (errore di parsing del code-splitter di TanStack Router su `src/routes/index.tsx` riga 599, che si manifesta come "SSR rendering failed" / "Failed to fetch dynamically imported module").
 
-## Cosa cambia in UI
+## 1. Consolidare le sezioni della landing (`src/routes/index.tsx`)
 
-### 1. Landing (`src/routes/index.tsx`)
-- **Nuova sezione "Guardrail" tra hero e "Why now"**: titolo forte (es. *"Il tuo guardrail open source nell'era dell'AI"*), pittogramma a tre colonne con la metafora `AI sorgente → Decoder (guardrail) → tu`, e tre punti chiave:
-  - *Verifica, non fiducia cieca* — ogni risposta AI è interrogabile
-  - *In mano agli utenti* — codice aperto, ispezionabile, forkabile
-  - *In evoluzione continua* — la community estende le regole di audit
-- **Aggiornamento "Why now"**: il terzo card diventa esplicitamente "Guardrail collettivo" invece di "Eye"
-- **Strip "Open Source" subito sotto l'hero**: badge GitHub + stelle live (link) + licenza MIT + link "Contribuisci"
-- **Sezione "Community-driven" prima del footer**: 3 CTA — *Apri un'issue*, *Proponi una regola di analisi*, *Traduci Decoder* — con link diretti a GitHub
+- Rimuovere completamente la sezione `#features` (righe ~363–382) e il relativo helper `Feature` (righe ~606+) — i tre punti (Multi-provider, BYOK, Privacy) sono già coperti da:
+  - la **Values strip** (4 valori, inclusi BYOK/Privacy/Open),
+  - la sezione **Integrations** (multi-provider esplicito),
+  - **Come funziona** (i 3 step operativi).
+- Rimuovere la voce **Funzionalità** dalla nav (`landing.nav.features`) e dai link footer; mantenere "Come funziona", "Integrazioni", "Open Source", "Manifesto".
+- Rinominare l'ancora di navigazione principale del flusso operativo come **"Come funziona"** (resta `#how-it-works`).
+- Pulire le chiavi i18n inutilizzate (`landing.feature1*`–`feature3*`, `landing.nav.features`) in `it/en/zh common.json`.
 
-### 2. Manifesto (`src/routes/manifesto.tsx`)
-- Nuovo **principio "Guardrail in evoluzione"** in cima alla lista (prima di `open`): definisce la missione
-- Nuova sezione **"Perché serve un guardrail"** tra intro e principi: 2-3 paragrafi sul rischio dell'AI come oracolo, sulla necessità di strumenti di verifica indipendenti e community-owned
-- Nuova sezione **"Come contribuire"** prima della roadmap: link a repo, guida CONTRIBUTING, governance leggera (issue → discussione → PR), elenco aree di contribuzione (regole di analisi, traduzioni, provider locali, prompt)
-- Aggiornare il blocco "Cosa non faremo mai" con un punto in più: *"Non sostituiremo mai il tuo giudizio — siamo un guardrail, non un oracolo"*
+Risultato: landing più lineare → Hero → Open Source strip → Guardrail → Why now → **Come funziona** → Integrazioni → Values → Community → Footer.
 
-### 3. Nuova pagina `/open-source` (route `src/routes/open-source.tsx`)
-Pagina dedicata, linkata dalla nav header (sostituisce o affianca "Manifesto"), con:
-- **Hero**: missione guardrail in una frase
-- **Sezione "Cosa è aperto"**: codice, prompt di analisi, regole di scoring, traduzioni, design tokens — ognuno con link diretto al file/cartella su GitHub
-- **Sezione "Roadmap pubblica"**: estratto delle prossime milestone (statico per ora, alimentato dalle stringhe i18n)
-- **Sezione "Contributors"**: griglia statica con avatar GitHub via `https://github.com/{user}.png` (lista iniziale curata, espandibile)
-- **Sezione "Estendi le regole"**: spiegazione che le prompt di analisi (`src/lib/analysis-prompt.ts`) sono modificabili dalla community, con esempio di PR
-- **Footer CTA**: GitHub, Discord/Discussions, contatto
+## 2. Stabilizzare la pagina (fix crash)
 
-### 4. Header / Nav
-- Sostituire la voce attuale `landing.nav.openSource` (che oggi punta a `/manifesto`) con due voci: **"Open Source"** → `/open-source`, **"Manifesto"** → `/manifesto`
-- Aggiornare anche i footer di tutte le pagine pubbliche per coerenza
+L'errore `Unexpected token (599:2)` viene dal `router-code-splitter-plugin` quando trasforma `index.tsx`. La causa probabile è la dimensione/complessità del file unita ai due blocchi vuoti (righe 594–596) e ai numerosi helper JSX inline nel file di route. Interventi:
 
-## Aggiornamenti i18n
+- Estrarre gli helper di presentazione in un file dedicato `src/components/landing/` (uno per file o un `landing-bits.tsx`):
+  - `GuardrailDiagram`, `CommunityCard`, `ProviderChip`, `WhyNowCard`, `Step`, `Value`, `OpenSourceStripItem` (quelli effettivamente usati dopo la pulizia).
+- Lasciare in `src/routes/index.tsx` solo il `createFileRoute`, l'`head()`, il componente `Landing` e gli import. Questo riduce drasticamente il file e elimina i pattern che mandano in crash il code-splitter.
+- Rimuovere le righe vuote anomale e verificare il bilanciamento JSX dopo l'estrazione.
 
-In `src/i18n/locales/{it,en,zh}/common.json`:
-- Nuove chiavi `landing.guardrail.*` (kicker, title, intro, 3 punti)
-- Nuove chiavi `landing.community.*` (titolo + 3 CTA)
-- Nuove chiavi `manifesto.guardrail.*`, `manifesto.whyGuardrail.*`, `manifesto.contributing.*`
-- Nuovo namespace `openSource.*` per la nuova pagina (hero, sezioni, CTA, contributors label)
-- Aggiornare `landing.whyNow3*` con tono "guardrail collettivo"
+## 3. Verifica
 
-## SEO
-
-- `<title>` e meta della nuova pagina `/open-source` ottimizzati per "open source AI code review guardrail"
-- JSON-LD `SoftwareApplication` su `/open-source` con `license` e `codeRepository`
-- Aggiungere link `<link rel="alternate">` alle 3 lingue se non già presenti
-
-## Dettagli tecnici
-
-- Tutte le nuove sezioni usano i token semantici esistenti (`border-border`, `bg-card`, `text-primary`, `font-display`) — nessun colore custom
-- Nessun nuovo pacchetto: icone Lucide già installate (`ShieldCheck`, `GitFork`, `Users`, `MessageSquare`, `Languages`, `Bot`)
-- Avatar contributors: `<img>` con `loading="lazy"` da `github.com/{user}.png?size=80` — nessuna chiamata API runtime
-- Nessuna modifica al backend, all'auth o ai server functions — è lavoro puramente di frontend/contenuto
-- Compatibilità totale con i contenuti esistenti: nulla viene rimosso, solo esteso
+- Hard reload della preview, controllo `daemon_logs` Vite per assenza di `Internal server error` sul file.
+- Verifica visiva: nav senza "Funzionalità", una sola sezione operativa ("Come funziona"), nessun salto di ancora rotto.
 
 ## File toccati
 
-- modificati: `src/routes/index.tsx`, `src/routes/manifesto.tsx`, `src/i18n/locales/it/common.json`, `src/i18n/locales/en/common.json`, `src/i18n/locales/zh/common.json`
-- creati: `src/routes/open-source.tsx`, eventualmente `src/components/GuardrailDiagram.tsx` (componente decorativo riutilizzabile)
+- `src/routes/index.tsx` (snellito)
+- nuovo `src/components/landing/landing-bits.tsx` (helper estratti)
+- `src/i18n/locales/{it,en,zh}/common.json` (pulizia chiavi)
