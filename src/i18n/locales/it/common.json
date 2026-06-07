@@ -593,6 +593,55 @@
     "bugsCta": "Apri Issue su GitHub",
     "cookieNote": "Decoder non usa analytics né tracker di terze parti. L'unico cookie impostato è una preferenza tecnica dell'interfaccia (stato della sidebar): nessun consenso richiesto ai sensi della direttiva ePrivacy."
   },
+  "byokAck": {
+    "title": "Avviso importante su BYOK e provider AI",
+    "versionLabel": "Versione termini: {{version}}",
+    "saving": "Salvataggio…",
+    "cta": "Accetto e continuo",
+    "cancel": "Annulla",
+    "body": {
+      "p1": "Stai utilizzando la tua chiave API personale verso un provider AI di terze parti.",
+      "p2": "Sei tu il solo responsabile dei costi generati con il tuo account presso il provider scelto.",
+      "p3": "Decoder non controlla i prezzi, la fatturazione, i rate limit, i tempi di conservazione dei dati o il comportamento dei modelli del provider.",
+      "p4": "Se scegli un provider AI cloud, gli snippet di codice, i contenuti del repository o i prompt da te selezionati possono essere inviati a quel provider per l'elaborazione.",
+      "p5": "Non inviare codice riservato, proprietario, regolamentato, personale, di proprietà del datore di lavoro o di terzi se non sei autorizzato a farlo e non hai esaminato i termini del provider.",
+      "p6": "In modalità locale Decoder è pensato per elaborare il codice in locale, ma resti responsabile della tua configurazione locale, dei modelli, dei plugin e della rete.",
+      "p7": "Le spiegazioni generate dall'IA possono essere inaccurate e devono essere riviste da una persona qualificata prima di un uso tecnico, di sicurezza, legale, di compliance o in produzione.",
+      "p8": "Decoder è uno strumento open source educativo per la comprensione del codice: non fornisce audit di sicurezza certificati, consulenza legale, consulenza di compliance né garanzie di produzione."
+    },
+    "checks": {
+      "cost": "Comprendo di essere responsabile dei costi generati dalla mia chiave API.",
+      "providers": "Comprendo che i provider AI cloud possono ricevere il codice o i prompt che scelgo di analizzare.",
+      "authorized": "Confermo di essere autorizzato ad analizzare il codice che invio.",
+      "review": "Comprendo che le spiegazioni generate dall'IA possono essere inaccurate e richiedono revisione umana.",
+      "terms": "Accetto i Termini e l'Informativa sulla Privacy."
+    },
+    "dataFlow": {
+      "toggle": "Vedi flusso dati",
+      "localTitle": "Modalità locale",
+      "cloudTitle": "Modalità cloud BYOK",
+      "userMachine": "Macchina utente",
+      "localModel": "Modello locale",
+      "decoderUi": "UI Decoder",
+      "codeSelection": "Selezione di codice",
+      "decoderBackend": "Backend Decoder",
+      "aiProvider": "Provider AI"
+    },
+    "links": {
+      "terms": "Termini e Condizioni",
+      "privacy": "Informativa Privacy",
+      "docs": "Documentazione provider"
+    },
+    "settings": {
+      "sectionTitle": "Consensi e termini",
+      "acceptedOn": "Hai accettato la versione {{version}} il {{date}} (lingua: {{language}}).",
+      "currentVersion": "Versione corrente dei termini: {{version}}",
+      "notAcceptedBadge": "Consenso mancante",
+      "openCta": "Apri l'avviso",
+      "history": "Storico consensi",
+      "removeKeyWarning": "Rimuovendo una chiave API tutte le future chiamate verso quel provider falliranno fino al reinserimento."
+    }
+  },
   "footer": {
     "ownership": "Il tuo codice e la documentazione generata appartengono a te. Decoder non addestra modelli sulle tue repository.",
     "disclaimer": "Decoder è uno strumento open source per la comprensione del codice. Le spiegazioni generate dall'AI possono contenere errori e devono essere verificate da una persona qualificata prima di essere usate per decisioni tecniche, di sicurezza, legali o di produzione."
