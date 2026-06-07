@@ -11,7 +11,10 @@ import {
   Trash2,
   FileCheck2,
   AlertTriangle,
+  HelpCircle,
 } from "lucide-react";
+
+import { useOnboarding } from "@/components/onboarding/OnboardingProvider";
 
 import { AppShell } from "@/components/AppShell";
 import { Button } from "@/components/ui/button";
@@ -151,6 +154,7 @@ function SettingsPage() {
         </section>
 
         <AcknowledgementSection />
+        <OnboardingHelpSection />
 
         <section id="byok" className="space-y-4 rounded-lg border border-border bg-card p-5 scroll-mt-20">
           <h2 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
