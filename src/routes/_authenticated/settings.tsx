@@ -149,11 +149,17 @@ function SettingsPage() {
           </Button>
         </section>
 
+        <AcknowledgementSection />
+
         <section id="byok" className="space-y-4 rounded-lg border border-border bg-card p-5 scroll-mt-20">
           <h2 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
             {t("settings.byokSection")}
           </h2>
           <p className="text-xs text-muted-foreground">{t("settings.byokIntro")}</p>
+          <div className="flex items-start gap-2 rounded-md border border-amber-500/30 bg-amber-500/5 p-3 text-xs text-amber-900 dark:text-amber-200">
+            <AlertTriangle className="mt-0.5 h-3.5 w-3.5 shrink-0" />
+            <span>{t("byokAck.settings.removeKeyWarning")}</span>
+          </div>
           <div className="space-y-3">
             {PROVIDERS.map((p) => {
               const existing = prov.data?.keys.find((k) => k.provider === p);
@@ -162,11 +168,21 @@ function SettingsPage() {
                   key={p}
                   provider={p}
                   hint={existing?.key_hint ?? null}
-                  onSave={async (key) => {
-                    await saveKey({ data: { provider: p, api_key: key } });
-                    qc.invalidateQueries({ queryKey: ["providers"] });
-                    toast.success(t("settings.saved"));
-                  }}
+                  onSave={(key) =>
+                    new Promise<void>((resolve) => {
+                      void requireAck(async () => {
+                        try {
+                          await saveKey({ data: { provider: p, api_key: key } });
+                          qc.invalidateQueries({ queryKey: ["providers"] });
+                          toast.success(t("settings.saved"));
+                        } catch (e: any) {
+                          toast.error(e?.message ?? t("errors.generic"));
+                        } finally {
+                          resolve();
+                        }
+                      });
+                    })
+                  }
                   onRemove={async () => {
                     await removeKey({ data: { provider: p } });
                     qc.invalidateQueries({ queryKey: ["providers"] });
@@ -176,6 +192,7 @@ function SettingsPage() {
             })}
           </div>
         </section>
+
 
         <section id="local" className="space-y-4 rounded-lg border border-border bg-card p-5 scroll-mt-20">
 
