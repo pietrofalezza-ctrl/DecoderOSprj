@@ -438,7 +438,46 @@ function Landing() {
         </div>
       </section>
 
+      {/* Community CTA */}
+      <section className="border-t border-border bg-background">
+        <div className="mx-auto max-w-7xl px-6 py-20">
+          <div className="max-w-2xl">
+            <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-primary">
+              {t("landing.community.kicker")}
+            </p>
+            <h2 className="mt-2 font-display text-4xl font-medium tracking-tight md:text-5xl">
+              {t("landing.community.title")}
+            </h2>
+            <p className="mt-3 text-muted-foreground">{t("landing.community.body")}</p>
+          </div>
+          <div className="mt-10 grid gap-5 md:grid-cols-3">
+            <CommunityCard
+              icon={<MessageSquare className="h-5 w-5" />}
+              title={t("landing.community.cta1Title")}
+              body={t("landing.community.cta1Body")}
+              link={t("landing.community.cta1Link")}
+              href={`${t("common.repoUrl")}/issues`}
+            />
+            <CommunityCard
+              icon={<GitPullRequest className="h-5 w-5" />}
+              title={t("landing.community.cta2Title")}
+              body={t("landing.community.cta2Body")}
+              link={t("landing.community.cta2Link")}
+              href={`${t("common.repoUrl")}/blob/main/src/lib/analysis-prompt.ts`}
+            />
+            <CommunityCard
+              icon={<Languages className="h-5 w-5" />}
+              title={t("landing.community.cta3Title")}
+              body={t("landing.community.cta3Body")}
+              link={t("landing.community.cta3Link")}
+              href={`${t("common.repoUrl")}/tree/main/src/i18n/locales`}
+            />
+          </div>
+        </div>
+      </section>
+
       {/* Footer */}
+
       <footer className="border-t border-border/60">
         <div className="mx-auto max-w-7xl px-6 py-8 text-xs text-muted-foreground">
           <div className="flex flex-col items-center justify-between gap-3 md:flex-row">
