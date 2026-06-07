@@ -593,6 +593,137 @@
     "bugsCta": "在 GitHub 提交 Issue",
     "cookieNote": "Decoder 不使用任何分析工具或第三方追踪器。唯一设置的 Cookie 是界面技术偏好（侧边栏状态）：根据 ePrivacy 指令无需用户同意。"
   },
+  "onboarding": {
+    "stepLabel": "第 {{current}} 步，共 {{total}} 步",
+    "versionLabel": "提示版本：{{version}}",
+    "back": "上一步",
+    "continue": "继续",
+    "finish": "完成引导",
+    "saving": "保存中…",
+    "close": "关闭",
+    "providerLocal": "本地",
+    "providerCloud": "云端 BYOK",
+    "providers": {
+      "ollama": "Ollama（本地）",
+      "lmstudio": "LM Studio（本地）",
+      "openai": "OpenAI",
+      "anthropic": "Anthropic",
+      "gemini": "Google Gemini",
+      "openrouter": "OpenRouter"
+    },
+    "steps": {
+      "s1": {
+        "title": "欢迎使用 Decoder",
+        "body": "Decoder 可帮助你理解代码库、文件和代码片段，并根据你的水平生成解释、注释和技术洞察。"
+      },
+      "s2": {
+        "title": "选择 AI 的运行方式",
+        "subtitle": "Decoder 支持两种模式，你可控制代码在何处被处理。",
+        "local": {
+          "title": "本地模式",
+          "b1": "使用 Ollama、LM Studio 或其他本地模型。",
+          "b2": "代码可在本地处理。",
+          "b3": "推荐用于敏感或私有代码。",
+          "flow": { "code": "你的代码", "model": "本地模型", "ui": "Decoder 界面" }
+        },
+        "cloud": {
+          "title": "云端 BYOK 模式",
+          "b1": "使用你自己的 API 密钥。",
+          "b2": "支持 OpenAI、Anthropic、Gemini 和 OpenRouter。",
+          "b3": "所选代码或提示词可能会被发送给所选服务提供商。",
+          "b4": "你需自行承担服务商的费用并遵守其条款。",
+          "flow": { "code": "你的代码", "backend": "Decoder 后端", "provider": "AI 服务商", "ui": "Decoder 界面" }
+        }
+      },
+      "s3": {
+        "title": "添加服务提供商",
+        "subtitle": "你可以现在配置或稍后在设置中配置。",
+        "warning": "切勿在公开聊天、截图、GitHub issue 或前端代码中粘贴 API 密钥。",
+        "configureLater": "可跳过此步骤，稍后在 设置 → API 密钥 中配置。"
+      },
+      "s4": {
+        "title": "导入代码",
+        "subtitle": "选择将代码引入 Decoder 的方式。",
+        "opts": {
+          "zip": "上传 ZIP 压缩包",
+          "paste": "粘贴单个文件",
+          "github": "连接 GitHub 仓库",
+          "demo": "使用演示仓库"
+        },
+        "safePath": "建议先从演示仓库或非敏感的公开代码开始。"
+      },
+      "s5": {
+        "title": "选择分析类型",
+        "subtitle": "选择 Decoder 应生成的洞察类型。",
+        "opts": {
+          "repoSummary": "仓库概要",
+          "fileExplain": "文件解释",
+          "selectionExplain": "选定代码解释",
+          "maintainability": "可维护性观察",
+          "security": "安全性观察",
+          "inlineComments": "内联注释建议"
+        },
+        "disclaimer": "Decoder 不提供经过认证的安全审计或专业的法律/合规审查。"
+      },
+      "s6": {
+        "title": "选择读者水平",
+        "subtitle": "指定需要理解解释的对象。",
+        "levels": {
+          "nonTech": "非技术读者",
+          "junior": "初级开发者",
+          "intermediate": "中级开发者",
+          "senior": "高级开发者",
+          "architect": "软件架构师",
+          "cto": "CTO / 技术管理者"
+        },
+        "body": "同一段代码可根据不同读者的需求以不同方式解释。"
+      },
+      "s7": {
+        "title": "审阅 AI 输出",
+        "subtitle": "AI 是一个有用的助手，而非权威。",
+        "points": {
+          "inaccurate": "AI 解释可能不准确或不完整。",
+          "verify": "在依据其做出技术、安全或生产决策前请进行核实。",
+          "actions": "你可以接受、拒绝、编辑或导出建议的注释。"
+        }
+      },
+      "s8": {
+        "title": "确认",
+        "subtitle": "请在继续前确认你已理解以下内容。",
+        "intro": "所有复选框均为必选，无任何预先勾选。",
+        "checks": {
+          "cost": "我理解我需要自行承担由我的 API 密钥产生的费用。",
+          "providers": "我理解在使用云端 AI 服务提供商时，所选代码和提示词可能会被发送给所选服务提供商。",
+          "authorized": "我确认我有权分析我上传或同步的代码。",
+          "review": "我理解 AI 输出可能不准确，必须由具备资质的人员进行审查。",
+          "terms": "我接受《服务条款》和《隐私政策》。"
+        }
+      },
+      "s9": {
+        "title": "安全启动",
+        "subtitle": "建议的首选操作。",
+        "actions": {
+          "a1": "试用演示仓库。",
+          "a2": "如分析私有代码，请连接本地模型。",
+          "a3": "仅在了解服务商条款后再添加云端服务。",
+          "a4": "在分析完整仓库前先尝试小文件分析。"
+        },
+        "cta": {
+          "demo": "从演示项目开始",
+          "provider": "添加 AI 提供商",
+          "dashboard": "进入仪表板"
+        }
+      }
+    },
+    "settings": {
+      "sectionTitle": "帮助与引导",
+      "intro": "随时回顾介绍引导与确认。",
+      "completedOn": "已于 {{date}} 完成版本 {{version}}。",
+      "notCompleted": "未完成",
+      "reopen": "重新打开引导",
+      "currentVersion": "当前引导版本：{{version}}"
+    }
+  },
   "byokAck": {
     "title": "关于 BYOK 和 AI 服务提供商的重要提示",
     "versionLabel": "条款版本:{{version}}",
