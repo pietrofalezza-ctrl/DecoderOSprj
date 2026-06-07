@@ -773,8 +773,90 @@
       "removeKeyWarning": "移除 API 密钥后,所有面向该提供商的后续调用将失败,直到重新添加密钥为止。"
     }
   },
+  "privacy": {
+    "kicker": "隐私",
+    "title": "隐私政策",
+    "intro": "Decoder 是一个个人开源案例研究。本页面总结了处理哪些数据、为什么处理，以及如何行使你的权利。",
+    "controllerTitle": "数据控制者",
+    "controllerBody": "本项目由维护者作为自然人个人运营，而非公司。联系方式：在 GitHub 仓库中提交 issue 或私有 Security Advisory。",
+    "dataTitle": "处理的数据",
+    "dataIntro": "Decoder 仅处理交付此演示所必需的数据：",
+    "data": {
+      "account": "账户：邮箱、显示名称、语言偏好。",
+      "files": "上传的 ZIP / 导入的仓库文件（私有存储桶，按 RLS 限制）。",
+      "explanations": "你生成的 AI 解释与建议注释。",
+      "keys": "加密后的 BYOK API 密钥（AES-256-GCM）和短提示；服务提供商配置。",
+      "endpoints": "本地 AI 端点配置（URL 和默认模型）。",
+      "acks": "确认记录（语言、IP 地址、User-Agent、时间戳）。",
+      "logs": "托管平台的运营日志可能包含 IP 地址、User-Agent 及请求元数据。"
+    },
+    "purposesTitle": "目的",
+    "purposesBody": "提供演示功能（存储、BYOK 转发、AI 解释）、防止滥用，并保留同意的审计记录。",
+    "lawfulTitle": "法律依据（欧盟 GDPR）",
+    "lawfulBody": "履行你所请求的服务（第 6(1)(b) 条）以及运行安全公共演示的合法利益（第 6(1)(f) 条）。",
+    "retentionTitle": "保留期限",
+    "retentionBody": "账户、文件、解释、凭据和端点会保留至你删除或演示停用为止。确认记录与运营日志可能保留最长 12 个月，用作同意 / 防滥用的审计追踪。",
+    "rightsTitle": "你的权利",
+    "rightsBody": "访问、更正、删除（整个账户或按单项：项目、仓库、解释、API 密钥）、可携带性（JSON 导出）、限制、反对。可在 设置 → 账户 中行使；若无法访问设置，请通过 GitHub。",
+    "thirdPartiesTitle": "第三方",
+    "thirdPartiesBody": "托管与数据库：Lovable Cloud（Supabase）。AI 网关：ai.gateway.lovable.dev。你选择的云端 AI 服务提供商（OpenAI、Anthropic、Google Gemini、OpenRouter）将根据其各自条款收到你选定的代码与提示词。本地服务提供商（Ollama / LM Studio）在你的机器上运行 —— 推理不会传输至 AI 服务提供商，但已上传的文件仍存放在服务器存储中。",
+    "minorsTitle": "未成年人",
+    "minorsBody": "此演示不面向 16 岁以下人士。若未满该年龄，请勿创建账户。",
+    "securityTitle": "安全",
+    "securityBody": "BYOK 密钥以 AES-256-GCM 加密存储。凭据表无 SELECT 策略。每个用户数据表均启用按 auth.uid() 限定的 RLS。服务角色密钥从未打包进客户端代码。",
+    "noWarrantyTitle": "免责声明",
+    "noWarrantyBody": "Decoder 按 \"现状\" 提供，不附带任何保证。它不是经认证的安全审计、法律/合规建议或生产决策系统。"
+  },
+  "dataFlow": {
+    "kicker": "透明度",
+    "title": "你的数据如何流动",
+    "intro": "支持三种模式，每种模式以不同方式路由你的代码。本地模式将 AI 推理保留在你的机器上；云端 BYOK 模式会将选定代码发送给你所选的服务提供商。",
+    "localTitle": "本地模式（Ollama / LM Studio）",
+    "cloudTitle": "云端 BYOK 模式（OpenAI / Anthropic / Gemini / OpenRouter）",
+    "githubTitle": "GitHub 导入模式",
+    "githubBody": "你授权 GitHub。Decoder 按你授予的范围导入所选仓库的元数据和文件内容。你可以随时删除已导入的项目数据。",
+    "warningsTitle": "上传前请注意",
+    "warnings": {
+      "secrets": "不要上传机密、令牌或 `.env` 文件。",
+      "env": "请从任何归档中移除 `.env`、凭据和客户数据。",
+      "terms": "在发送真实代码前，请阅读 AI 服务提供商的条款。",
+      "demo": "建议从公开的演示仓库或非敏感代码开始。"
+    },
+    "nodes": {
+      "code": "你的代码",
+      "localModel": "本地 AI 模型",
+      "ui": "Decoder 界面",
+      "backend": "Decoder 后端",
+      "provider": "所选 AI 服务提供商",
+      "github": "GitHub",
+      "import": "Decoder 导入"
+    }
+  },
+  "intendedUse": {
+    "title": "预期用途",
+    "intro": "Decoder 适用于：",
+    "items": {
+      "edu": "源代码的教育性探索。",
+      "comprehension": "代码理解与入职支持。",
+      "docs": "文档起草辅助。",
+      "maintain": "可维护性与重构观察。",
+      "learning": "AI 辅助学习。"
+    },
+    "notTitle": "非预期用途",
+    "notIntro": "Decoder 不适用于：",
+    "notItems": {
+      "audit": "经认证的安全审计。",
+      "legal": "法律或合规建议。",
+      "production": "生产决策自动化。",
+      "highRisk": "高风险 AI 决策。",
+      "regulated": "就业、信贷、保险、健康、执法或公共部门的自动化决策。",
+      "replace": "替代具备资质的人工审查。"
+    }
+  },
   "footer": {
     "ownership": "你的代码和生成的文档属于你自己。Decoder 不会用你的仓库训练模型。",
-    "disclaimer": "Decoder 是一个开源代码理解工具。AI 生成的解释可能不准确，在用于技术、安全、法律或生产决策之前，应由具备资质的人员进行审查。"
+    "disclaimer": "Decoder 是一个开源教育性代码理解案例研究。它不是经认证的安全审计工具、法律/合规工具或生产决策系统。AI 生成的输出可能不准确，必须由具备资质的人员进行审查。",
+    "privacy": "隐私",
+    "dataFlow": "数据流"
   }
 }
