@@ -50,7 +50,7 @@ export const aggregateFolderAnalysis = createServerFn({ method: "POST" })
     }),
   )
   .handler(async ({ context, data }) => {
-    const { assertByokAckAccepted } = await import("./byok-acknowledgement.functions");
+    const { assertByokAckAccepted } = await import("./byok-acknowledgement.server");
     await assertByokAckAccepted(context.supabase, context.userId);
     const { callCloudProvider } = await import("./ai-providers.server");
     const { buildFolderAggregatePrompt } = await import("./analysis-prompt");
