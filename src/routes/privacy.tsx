@@ -105,6 +105,7 @@ function PrivacyPage() {
           <nav className="flex flex-wrap gap-5">
             <Link to="/terms" className="hover:text-foreground">{t("landing.nav.terms")}</Link>
             <Link to="/privacy" className="hover:text-foreground">{t("footer.privacy")}</Link>
+            <Link to="/cookies" className="hover:text-foreground">{t("footer.cookies")}</Link>
             <Link to="/data-flow" className="hover:text-foreground">{t("footer.dataFlow")}</Link>
             <Link to="/manifesto" className="hover:text-foreground">{t("landing.nav.manifesto")}</Link>
           </nav>

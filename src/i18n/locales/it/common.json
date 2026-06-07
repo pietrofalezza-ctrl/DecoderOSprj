@@ -861,6 +861,39 @@
     "ownership": "Il tuo codice e la documentazione generata appartengono a te. Decoder non addestra modelli sulle tue repository.",
     "disclaimer": "Decoder è un case study open source e didattico per la comprensione del codice. Non è uno strumento di audit di sicurezza certificato, consulenza legale/compliance o decisione produttiva. Gli output generati dall'AI possono essere inaccurati e devono essere verificati da una persona qualificata.",
     "privacy": "Privacy",
+    "cookies": "Cookie",
     "dataFlow": "Flusso dati"
+  },
+  "cookies": {
+    "kicker": "Cookie Policy",
+    "title": "Cookie e archiviazione locale",
+    "intro": "Decoder è privacy-first. Usa solo archiviazione strettamente necessaria e funzionale per mantenerti autenticato e ricordare le tue preferenze. Nessuna analitica, nessun marketing, nessuna profilazione, nessun tracciamento di terze parti.",
+    "noBanner": {
+      "title": "Perché non c'è un banner cookie",
+      "body": "Secondo le linee guida ePrivacy e GDPR, l'archiviazione strettamente necessaria e puramente funzionale legata a una funzione che l'utente utilizza esplicitamente non richiede consenso preventivo. Non carichiamo alcun tracker non essenziale, quindi un banner di consenso sarebbe un attrito inutile."
+    },
+    "whatWeUseTitle": "Cosa salviamo realmente",
+    "whatWeUseBody": "Elenco completo di cookie e archiviazione del browser usati da Decoder:",
+    "col": { "name": "Nome", "purpose": "Finalità", "storage": "Archiviazione", "retention": "Durata" },
+    "rows": {
+      "auth": { "name": "sb-* (Supabase auth)", "purpose": "Ti mantiene autenticato in modo sicuro", "storage": "Cookie / localStorage", "retention": "Fino al logout o alla scadenza del token" },
+      "lang": { "name": "i18nextLng", "purpose": "Ricorda la lingua dell'interfaccia", "storage": "localStorage", "retention": "Fino alla pulizia dei dati del browser" },
+      "theme": { "name": "theme", "purpose": "Ricorda la preferenza tema chiaro/scuro", "storage": "localStorage", "retention": "Fino alla pulizia dei dati del browser" },
+      "disclaimer": { "name": "decoder.disclaimer.acceptedAt", "purpose": "Registra che hai visto il disclaimer di accesso", "storage": "localStorage", "retention": "Fino alla pulizia dei dati del browser" },
+      "ack": { "name": "user_acknowledgements", "purpose": "Salva la tua accettazione BYOK e l'onboarding", "storage": "Database server (tuo account)", "retention": "Fino all'eliminazione dell'account o dell'accettazione" }
+    },
+    "noTrackingTitle": "Cosa NON usiamo",
+    "noTrackingBody": "Decoder non carica nessuno dei seguenti elementi:",
+    "noTracking": {
+      "analytics": "Strumenti di analitica (Google Analytics, Plausible, Vercel Analytics, PostHog, Mixpanel, Amplitude, Segment, …)",
+      "marketing": "Cookie di marketing/pubblicità e tag di remarketing",
+      "heatmaps": "Heatmap o registrazione sessione (Hotjar, FullStory, …)",
+      "pixels": "Pixel di terze parti (Meta Pixel, LinkedIn Insight, Google Tag Manager, …)"
+    },
+    "thirdPartyTitle": "Chiamate a terze parti",
+    "thirdPartyBody": "Quando analizzi codice, le richieste possono essere inviate al provider AI che configuri esplicitamente (BYOK) o a un modello locale che esegui tu stesso. Tali provider hanno le proprie policy. Vedi la pagina Flusso dati per i dettagli.",
+    "controlTitle": "Come cancellare o revocare",
+    "controlBody": "Puoi disconnetterti in qualsiasi momento, cancellare l'archiviazione del browser o eliminare il tuo account e le accettazioni da Impostazioni. Rimuovere una API key interrompe le future chiamate verso quel provider.",
+    "updated": "Ultimo aggiornamento: 07/06/2026"
   }
 }
