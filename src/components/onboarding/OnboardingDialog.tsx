@@ -388,6 +388,17 @@ function StepAck({
           </label>
         ))}
       </div>
+      <div className="flex flex-wrap gap-x-4 gap-y-1 text-[11px] text-muted-foreground">
+        <a href="/terms" target="_blank" rel="noreferrer" className="text-primary hover:underline">
+          {t("byokAck.links.terms")}
+        </a>
+        <a href="/privacy" target="_blank" rel="noreferrer" className="text-primary hover:underline">
+          {t("byokAck.links.privacy")}
+        </a>
+        <a href="/data-flow" target="_blank" rel="noreferrer" className="text-primary hover:underline">
+          {t("footer.dataFlow")}
+        </a>
+      </div>
     </div>
   );
 }
