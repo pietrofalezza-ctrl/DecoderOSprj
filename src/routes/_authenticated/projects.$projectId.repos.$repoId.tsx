@@ -967,6 +967,30 @@ function WorkspacePage() {
                         </span>
                       )}
                     </div>
+                    {patchSourceInsight && fixText && (
+                      <div className="flex items-center justify-between gap-2 rounded-md border border-primary/30 bg-primary/5 px-2 py-1.5 text-[11px]">
+                        <span className="truncate">
+                          <span className="font-semibold text-primary">{t("insights.patchFrom")}: </span>
+                          {patchSourceInsight.title}
+                          <span className="ml-2 font-mono text-muted-foreground">
+                            {t("insights.lineRange", {
+                              range:
+                                patchSourceInsight.start_line === patchSourceInsight.end_line
+                                  ? `${patchSourceInsight.start_line}`
+                                  : `${patchSourceInsight.start_line}–${patchSourceInsight.end_line}`,
+                            })}
+                          </span>
+                        </span>
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          className="h-6 px-2 text-[10px]"
+                          onClick={() => jumpToFinding(patchSourceInsight)}
+                        >
+                          {t("insights.backToInsight")}
+                        </Button>
+                      </div>
+                    )}
                     <div className="min-h-0 flex-1">
                       <DiffViewer
                         diff={extractDiffBlock(fixText)}
