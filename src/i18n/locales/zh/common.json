@@ -1,7 +1,7 @@
 {
   "brand": {
     "name": "Decoder",
-    "tagline": "把源代码转化为人人可读的知识"
+    "tagline": "一个用于与 AI 一起阅读代码的开源工具"
   },
   "common": {
     "back": "返回",
@@ -28,11 +28,11 @@
     "zh": "简体中文"
   },
   "landing": {
-    "hero": "越来越多的代码由 <1>AI</1> 编写。你仍然需要 <2>理解它</2>。",
-    "heroSubtitle": "Decoder 是一个个人学习项目,免费且开源(MIT)。由一位作者在业余时间维护,并接受社区贡献。它不是产品,也不是商业服务:只是可阅读、可 fork、可理解的公开代码。BYOK 或本地推理模式。",
-    "heroBadgeOpen": "个人项目 · 开源 · 免费",
-    "heroBadgePrivacy": "BYOK · 可选本地模式",
-    "heroBadgeAiEra": "个人教学实验",
+    "hero": "越来越多的代码由 <1>AI</1> 编写。Decoder 帮助你<2>阅读它</2>。",
+    "heroSubtitle": "Decoder 是一个个人学习项目,开源(MIT)且免费。可使用你自己的 API 密钥(BYOK)或本地推理模式。",
+    "heroBadgeOpen": "个人项目 · 开源",
+    "heroBadgePrivacy": "BYOK 或本地推理",
+    "heroBadgeAiEra": "公开的代码与提示词",
     "ctaStart": "立即开始",
     "ctaSignIn": "登录",
     "ctaGithub": "在 GitHub 上查看",
@@ -64,46 +64,46 @@
     "integrationsBody": "支持你已在使用的 AI 提供商以及公开 GitHub 仓库。",
     "value100Open": "100%",
     "valueOpenSource": "开源",
-    "valuePrivacy": "隐私优先",
+    "valuePrivacy": "隐私",
     "valuePrivacyBody": "数据归你所有",
-    "valueNoLockin": "无供应商锁定",
+    "valueNoLockin": "BYOK",
     "valueNoLockinBody": "随心选择模型",
-    "valueForAll": "面向所有人",
-    "valueForAllBody": "从初级到 CTO",
-    "whyNowKicker": "为什么是现在",
-    "whyNowTitle": "生成代码很容易,理解它却不是。",
-    "whyNowIntro": "AI 助手生成代码的速度超过任何人工团队逐行审查的能力。Decoder 弥补这一差距。",
+    "valueForAll": "多种阅读深度",
+    "valueForAllBody": "从简洁到技术细节",
+    "whyNowKicker": "背景",
+    "whyNowTitle": "阅读 AI 生成的代码需要时间。",
+    "whyNowIntro": "AI 助手生成代码的速度超过团队逐行审查的速度。Decoder 提供一个辅助的二次阅读层。",
     "whyNow1Title": "越来越多的代码由 AI 生成",
     "whyNow1Body": "Copilot、Cursor、Claude Code——每个新项目中越来越大的比例并非由维护者亲手编写。",
-    "whyNow2Title": "PR 在扩展,人工审查跟不上",
-    "whyNow2Body": "更多 AI 输出意味着更多 diff 要读。没有理解层,审查就会变浅甚至被跳过。",
-    "whyNow3Title": "集体的护栏",
-    "whyNow3Body": "Decoder 是一个开放的工具,掌握在用户手中,用于质询 AI 的回答,而不是盲目信任。分析规则随社区共同成长。",
+    "whyNow2Title": "更多需要阅读的 diff",
+    "whyNow2Body": "更多 AI 输出意味着更多代码要审查。一个理解层有助于不跳过重要部分。",
+    "whyNow3Title": "公开的提示词与规则",
+    "whyNow3Body": "分析提示词位于仓库中,可由社区扩展。回答背后没有隐藏逻辑。",
     "osStrip": {
-      "kicker": "100% 开源 · MIT",
-      "title": "护栏掌握在你手中,而不是 AI 手中",
-      "body": "Decoder 是公开、可审查、可 fork 的代码。AI 来源在演进,护栏也在演进 —— 因为我们一起构建它。",
+      "kicker": "开源 · MIT",
+      "title": "公开且可审查的代码",
+      "body": "Decoder 采用 MIT 许可证发布。代码、分析提示词与规则均位于仓库中,可阅读、可修改。",
       "ctaRepo": "浏览仓库",
       "ctaContribute": "贡献",
       "license": "MIT 许可证",
       "noProfit": "非营利",
-      "communityOwned": "社区共有"
+      "communityOwned": "欢迎贡献"
     },
     "guardrail": {
-      "kicker": "使命",
-      "title": "面向生成式 AI 时代的开源护栏",
-      "intro": "AI 写代码越多,就越需要一个独立工具来阅读、质询并理解它。Decoder 就是这个工具 —— 开放、可审查、持续演进。",
-      "point1Title": "核验,而非盲信",
-      "point1Body": "每个 AI 回答都是假设,不是判决。Decoder 让你逐行质询。",
-      "point2Title": "在用户手中",
-      "point2Body": "开放代码、开放提示、开放规则。没有黑盒:阅读、修改、fork。",
-      "point3Title": "持续演进",
-      "point3Body": "随着模型变化,分析规则由社区扩展。护栏与使用者一同成长。"
+      "kicker": "Decoder 做什么",
+      "title": "一个用于阅读 AI 生成代码的开放工具",
+      "intro": "Decoder 使用第二个模型与公开的提示词,帮助你重新阅读 AI 产出的代码。它不是正确性的保证:只是多一层阅读,需要与你自己的判断结合。",
+      "point1Title": "需要核验的输出",
+      "point1Body": "每个 AI 回答都是假设,应当始终核验。Decoder 逐行展示解释、质量与安全观察。",
+      "point2Title": "公开的代码与提示词",
+      "point2Body": "源代码、提示词与分析规则均位于仓库中。你可以阅读、修改或 fork。",
+      "point3Title": "可由社区扩展",
+      "point3Body": "分析规则可以通过 Pull Request 扩展,以覆盖新的语言或代码异味。"
     },
     "community": {
-      "kicker": "社区驱动",
-      "title": "由使用者共同构建",
-      "body": "Decoder 因为用户的贡献而变得更好。提交 issue、提出新的分析规则、翻译界面:每一份贡献都让护栏更稳固。",
+      "kicker": "贡献",
+      "title": "欢迎贡献",
+      "body": "Decoder 因用户的贡献而改进。提交 issue、新的分析规则或翻译都是参与方式。",
       "cta1Title": "提交 issue",
       "cta1Body": "报告 bug、提出想法、讨论产品决策。",
       "cta1Link": "前往 issues",
@@ -199,7 +199,7 @@
     "intro": "Decoder 是一个个人学习项目,开源且免费。本说明描述它的设计思路、存在原因以及它不做的事情。",
     "principlesTitle": "项目选择",
     "whyGuardrailTitle": "为什么做这个实验",
-    "whyGuardrailBody": "生成式 AI 可以产出令人信服的代码,但其中可能隐藏 bug、可商榷的设计选择或漏洞。本项目作为个人练习,用以研究借助另一个模型与公开的提示词进行「二次阅读」是否有助于理解。它不能替代专业的静态分析、安全审计或人工代码评审工具。",
+    "whyGuardrailBody": "生成式 AI 可能产出看似正确的代码,但其中可能存在 bug 或不够理想的设计选择。本项目作为个人练习,用以研究借助另一个模型与公开的提示词进行「二次阅读」是否有助于理解。它不能替代专业的静态分析、安全审计或人工代码评审工具。",
     "principles": {
       "guardrail": {
         "title": "学习工具",
@@ -253,7 +253,7 @@
   "openSource": {
     "kicker": "开源",
     "title": "公开的代码、提示词与规则",
-    "intro": "Decoder 是一个开放的学习实验:代码、分析提示词与规则均在公开仓库中,因为只有这样才适合分享这种个人项目。",
+    "intro": "Decoder 是一个开放的学习实验:代码、分析提示词与规则均在公开仓库中。",
     "ctaRepo": "在 GitHub 打开",
     "ctaContribute": "贡献",
     "openTitle": "什么是开放的",
@@ -273,7 +273,7 @@
     "roadmapIntro": "下一步的工作领域。公开讨论,社区可编辑。",
     "roadmap": {
       "r1": "把分析规则扩展到新语言(Rust、Go、Kotlin、Swift)。",
-      "r2": "VS Code 插件,在 PR 审查时调用护栏。",
+      "r2": "VS Code 插件,在 PR 审查时调用 Decoder。",
       "r3": "为典型 AI 生成代码异味建立共享社区规则库。",
       "r4": "Diff 感知模式:仅核验 PR 中变更的部分。",
       "r5": "溯源:逐块跟踪 AI 来源(Copilot、Cursor、ChatGPT)。"

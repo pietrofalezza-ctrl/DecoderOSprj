@@ -1,7 +1,7 @@
 {
   "brand": {
     "name": "Decoder",
-    "tagline": "Transform source code into human-readable knowledge"
+    "tagline": "An open-source tool for reading code alongside AI"
   },
   "common": {
     "back": "Back",
@@ -28,11 +28,11 @@
     "zh": "简体中文"
   },
   "landing": {
-    "hero": "More and more code is written by <1>AI</1>. You still need to <2>understand it</2>.",
-    "heroSubtitle": "Decoder is a personal study project, free and open source (MIT). Maintained in spare time by a single author with help from the community. Not a product, not a commercial service: just public code to read, fork and understand. BYOK or local-inference mode.",
-    "heroBadgeOpen": "Personal project · Open source · Free",
-    "heroBadgePrivacy": "BYOK · Optional local mode",
-    "heroBadgeAiEra": "Personal didactic experiment",
+    "hero": "A growing share of code is written by <1>AI</1>. Decoder helps you <2>read it</2>.",
+    "heroSubtitle": "Decoder is a personal study project, open source (MIT) and free. It works with your own API key (BYOK) or in local-inference mode.",
+    "heroBadgeOpen": "Personal project · Open source",
+    "heroBadgePrivacy": "BYOK or local inference",
+    "heroBadgeAiEra": "Public code and prompts",
     "ctaStart": "Get started",
     "ctaSignIn": "Sign in",
     "ctaGithub": "View on GitHub",
@@ -64,46 +64,46 @@
     "integrationsBody": "Works with the AI providers you already use and with your public GitHub repositories.",
     "value100Open": "100%",
     "valueOpenSource": "Open Source",
-    "valuePrivacy": "Privacy First",
+    "valuePrivacy": "Privacy",
     "valuePrivacyBody": "Your data stays yours",
-    "valueNoLockin": "No Vendor Lock-in",
+    "valueNoLockin": "BYOK",
     "valueNoLockinBody": "Use the models you prefer",
-    "valueForAll": "For everyone",
-    "valueForAllBody": "From junior to CTO",
-    "whyNowKicker": "Why now",
-    "whyNowTitle": "Generating code is easy. Understanding it isn't.",
-    "whyNowIntro": "AI assistants ship code faster than any human team can review line by line. Decoder closes that gap.",
+    "valueForAll": "Multiple depth levels",
+    "valueForAllBody": "From concise to technical",
+    "whyNowKicker": "Context",
+    "whyNowTitle": "Reading AI-generated code takes time.",
+    "whyNowIntro": "AI assistants ship code faster than a team can review it line by line. Decoder offers a second, assisted reading layer.",
     "whyNow1Title": "A growing share of code is AI-generated",
     "whyNow1Body": "Copilot, Cursor, Claude Code — an increasing portion of every new project wasn't written by the people who have to maintain it.",
-    "whyNow2Title": "PRs scale, human reviews don't",
-    "whyNow2Body": "More AI output means more diffs to read. Without a comprehension layer, reviews go shallow or get skipped.",
-    "whyNow3Title": "A collective guardrail",
-    "whyNow3Body": "Decoder is an open tool, in users' hands, to question AI answers instead of trusting them blindly. The analysis rules grow with the community.",
+    "whyNow2Title": "More diffs to read",
+    "whyNow2Body": "More AI output means more code to review. A comprehension layer helps you not skip the important parts.",
+    "whyNow3Title": "Public prompts and rules",
+    "whyNow3Body": "Analysis prompts live in the repository and can be extended by the community. No hidden logic behind the answers.",
     "osStrip": {
-      "kicker": "100% Open Source · MIT",
-      "title": "A guardrail in your hands, not in the AI's",
-      "body": "Decoder is public, inspectable, forkable code. As AI sources evolve, the guardrail evolves too — because we build it together.",
+      "kicker": "Open Source · MIT",
+      "title": "Public, inspectable code",
+      "body": "Decoder is released under the MIT license. Code, analysis prompts and rules live in the repository, readable and editable.",
       "ctaRepo": "Explore the repo",
       "ctaContribute": "Contribute",
       "license": "MIT License",
       "noProfit": "Non-profit",
-      "communityOwned": "Community-owned"
+      "communityOwned": "Open to contributions"
     },
     "guardrail": {
-      "kicker": "The mission",
-      "title": "An open-source guardrail for the generative-AI era",
-      "intro": "The more AI writes code, the more we need an independent tool to read it, question it and understand it. Decoder is that tool — open, inspectable, continuously evolving.",
-      "point1Title": "Verify, don't trust blindly",
-      "point1Body": "Every AI answer is a hypothesis, not a verdict. Decoder gives you the tools to question it line by line.",
-      "point2Title": "In users' hands",
-      "point2Body": "Open code, open prompts, open rules. No black boxes: read it, change it, fork it.",
-      "point3Title": "Continuously evolving",
-      "point3Body": "As models change, the analysis rules are extended by the community. The guardrail grows with the people who use it."
+      "kicker": "What Decoder does",
+      "title": "An open tool to read AI-generated code",
+      "intro": "Decoder helps you re-read code produced by an AI using a second model and public prompts. It is not a correctness guarantee: it is one more reading layer, to be combined with your own judgement.",
+      "point1Title": "Output to verify",
+      "point1Body": "Every AI answer is a hypothesis and should always be verified. Decoder shows explanations, quality and security observations line by line.",
+      "point2Title": "Public code and prompts",
+      "point2Body": "Source code, prompts and analysis rules live in the repository. You can read, edit or fork them.",
+      "point3Title": "Extendable by the community",
+      "point3Body": "Analysis rules can be extended via pull requests to cover new languages or new smells."
     },
     "community": {
-      "kicker": "Community-driven",
-      "title": "Built by the people who use it",
-      "body": "Decoder gets better when users contribute. Open an issue, propose a new analysis rule, translate the UI: every contribution strengthens the guardrail for everyone.",
+      "kicker": "Contributions",
+      "title": "Open to contributions",
+      "body": "Decoder improves through user contributions. Issues, new analysis rules or translations are all ways to take part.",
       "cta1Title": "Open an issue",
       "cta1Body": "Report a bug, propose an idea, discuss a product choice.",
       "cta1Link": "Go to issues",
@@ -199,7 +199,7 @@
     "intro": "Decoder is a personal study project, open source and free. These notes describe how it is designed, why it exists and what it does not do.",
     "principlesTitle": "Project choices",
     "whyGuardrailTitle": "Why this experiment",
-    "whyGuardrailBody": "Generative AI can produce convincing code that still hides bugs, questionable choices or vulnerabilities. This project is a personal exercise to study whether a second reading layer — assisted by another model and using public prompts — can help understanding it. It does not replace professional tools for static analysis, security review or human code review.",
+    "whyGuardrailBody": "Generative AI can produce code that looks correct but still contains bugs or sub-optimal choices. This project is a personal exercise to study whether a second reading layer — assisted by another model and using public prompts — can help understanding it. It does not replace professional tools for static analysis, security review or human code review.",
     "principles": {
       "guardrail": {
         "title": "A study tool",
@@ -253,7 +253,7 @@
   "openSource": {
     "kicker": "Open Source",
     "title": "Public code, prompts and rules",
-    "intro": "Decoder is an open study experiment: code, analysis prompts and rules live in the public repository, because that is the only way to share a personal project of this kind.",
+    "intro": "Decoder is an open study experiment: code, analysis prompts and rules live in the public repository.",
     "ctaRepo": "Open on GitHub",
     "ctaContribute": "Contribute",
     "openTitle": "What's open",
@@ -273,7 +273,7 @@
     "roadmapIntro": "Next areas of work. Discussed in the open, editable by the community.",
     "roadmap": {
       "r1": "Extend analysis rules to new languages (Rust, Go, Kotlin, Swift).",
-      "r2": "VS Code plugin that invokes the guardrail during PR review.",
+      "r2": "VS Code plugin that invokes Decoder during PR review.",
       "r3": "Shared community library of rules for typical AI-generated code smells.",
       "r4": "Diff-aware mode: verify only the parts changed in a PR.",
       "r5": "Provenance: track AI origin (Copilot, Cursor, ChatGPT) block by block."
