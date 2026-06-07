@@ -5,18 +5,6 @@
 const LOVABLE_DAILY_LIMIT = 20;
 const WINDOW_HOURS = 24;
 
-type SupabaseLike = {
-  from: (table: string) => {
-    select: (cols: string, opts: { count: "exact"; head: true }) => {
-      eq: (col: string, val: string) => {
-        eq: (col: string, val: string) => {
-          gte: (col: string, val: string) => Promise<{ count: number | null; error: unknown }>;
-        };
-      };
-    };
-  };
-};
-
 type Lang = "en" | "it" | "zh";
 
 const messages: Record<Lang, string> = {
@@ -33,7 +21,7 @@ export class LovableQuotaError extends Error {
 }
 
 export async function assertLovableQuota(
-  supabase: SupabaseLike,
+  supabase: any,
   userId: string,
   language: Lang,
 ): Promise<void> {
