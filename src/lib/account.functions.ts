@@ -11,7 +11,7 @@ export const exportMyData = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
     const sb = context.supabase;
-    const [profile, projects, repos, files, explanations, creds, endpoints, roles] =
+    const [profile, projects, repos, files, explanations, creds, endpoints] =
       await Promise.all([
         sb.from("profiles").select("*").eq("id", context.userId).maybeSingle(),
         sb.from("projects").select("*"),
@@ -20,7 +20,6 @@ export const exportMyData = createServerFn({ method: "POST" })
         sb.from("explanations").select("id, file_id, provider, model, language, explanation_type, proficiency, created_at, content"),
         sb.from("user_ai_credentials").select("provider, key_hint, created_at, updated_at"),
         sb.from("user_local_endpoints").select("kind, base_url, default_model, created_at, updated_at"),
-        sb.from("user_roles").select("role, created_at"),
       ]);
 
     return {
@@ -33,7 +32,7 @@ export const exportMyData = createServerFn({ method: "POST" })
       explanations: explanations.data ?? [],
       ai_credentials_redacted: creds.data ?? [],
       local_endpoints: endpoints.data ?? [],
-      roles: roles.data ?? [],
+
       notice:
         "Encrypted AI provider keys are intentionally redacted. To retrieve a key, ask the provider directly.",
     };

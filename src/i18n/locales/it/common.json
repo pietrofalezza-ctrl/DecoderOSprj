@@ -297,6 +297,8 @@
     "noProvider": "Aggiungi una chiave API in Impostazioni per attivare le spiegazioni AI.",
     "analyzeWholeRepo": "Scansiona repo",
     "runFile": "Esegui analisi su questo file",
+    "selectionToggle": "Usa solo la selezione nell'editor (righe {{from}}–{{to}})",
+
     "howTo": {
       "title": "Come avviare un'analisi",
       "step1": "Scegli un file dall'albero a sinistra",
@@ -369,7 +371,9 @@
     "language": "Lingua preferita",
     "save": "Salva",
     "saved": "Salvato.",
+    "pageIntro": "Profilo, chiavi API (BYOK), endpoint locali e account: tutto in questa pagina. Usa i collegamenti qui sotto per saltare a una sezione.",
     "byokSection": "Provider AI (BYOK)",
+
     "byokIntro": "Decoder non salva mai le tue chiavi in chiaro. Il tuo codice non viene usato per addestrare modelli.",
     "addKey": "Salva chiave",
     "removeKey": "Rimuovi",

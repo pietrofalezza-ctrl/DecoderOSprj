@@ -9,7 +9,8 @@ import { Sparkles, Copy, Download, ShieldCheck, FileDown, BugPlay, Bot, ScanSear
 
 import { AppShell } from "@/components/AppShell";
 import { FileTree } from "@/components/FileTree";
-import { CodeViewer } from "@/components/CodeViewer";
+import { CodeViewer, type CodeSelection } from "@/components/CodeViewer";
+
 import { Button } from "@/components/ui/button";
 import {
   Select,
@@ -89,6 +90,10 @@ function WorkspacePage() {
 
   const [repoSheetOpen, setRepoSheetOpen] = useState(false);
   const [repoAiResult, setRepoAiResult] = useState<RepoAiOriginResult | null>(null);
+  const [selection, setSelection] = useState<CodeSelection | null>(null);
+  const [useSelection, setUseSelection] = useState(true);
+
+
 
 
   const cloudKeys = provs.data?.keys ?? [];
@@ -108,13 +113,17 @@ function WorkspacePage() {
     queryFn: () => getContent({ data: { file_id: selectedFileId! } }),
   });
 
-  // Reset all outputs when context changes
+  // Reset all outputs (and code selection) when context changes
   useEffect(() => {
     setSummaryText("");
     setQualityText("");
     setSecurityText("");
     setAiOriginText("");
+    setSelection(null);
   }, [selectedFileId, providerValue]);
+
+  const activeSnippet = useSelection && selection ? selection : null;
+
 
   // Open the repo-level AI-origin sheet when ?view=analyze. Use derived state
   // so it works synchronously on first render (no flash, no race with effects).
@@ -159,6 +168,13 @@ function WorkspacePage() {
             proficiency,
             explanation_type: summarySub,
             language: lang,
+            snippet: activeSnippet
+              ? {
+                  content: activeSnippet.content,
+                  start_line: activeSnippet.startLine,
+                  end_line: activeSnippet.endLine,
+                }
+              : undefined,
           },
         });
         return r.content;
@@ -166,12 +182,16 @@ function WorkspacePage() {
       const kind = providerValue.slice(6) as LocalKind;
       const endpoint = localEndpoints.find((e) => e.kind === kind);
       if (!endpoint || !fileQ.data) throw new Error("not_ready");
+      const promptPath = activeSnippet
+        ? `${fileQ.data.path} (selezione righe ${activeSnippet.startLine}–${activeSnippet.endLine})`
+        : fileQ.data.path;
+      const promptContent = activeSnippet ? activeSnippet.content : fileQ.data.content;
       const { system, user } = buildPrompt({
         proficiency,
         explanationType: summarySub,
         language: lang,
-        filePath: fileQ.data.path,
-        fileContent: fileQ.data.content,
+        filePath: promptPath,
+        fileContent: promptContent,
       });
       const text = await callLocalProvider({
         kind,
@@ -180,24 +200,28 @@ function WorkspacePage() {
         system,
         user,
       });
-      try {
-        await saveLocal({
-          data: {
-            file_id: selectedFileId,
-            proficiency,
-            explanation_type: summarySub,
-            language: lang,
-            content: text,
-            kind,
-            model: endpoint.default_model ?? undefined,
-          },
-        });
-      } catch {}
+      // Cache only full-file explanations.
+      if (!activeSnippet) {
+        try {
+          await saveLocal({
+            data: {
+              file_id: selectedFileId,
+              proficiency,
+              explanation_type: summarySub,
+              language: lang,
+              content: text,
+              kind,
+              model: endpoint.default_model ?? undefined,
+            },
+          });
+        } catch {}
+      }
       return text;
     },
     onSuccess: (text) => setSummaryText(text),
     onError: (e: any) => toast.error(e?.message ?? t("errors.generic")),
   });
+
 
   async function runAnalysisKind(kind: AnalysisKind): Promise<string> {
     if (!selectedFileId || !providerValue) throw new Error("missing");
@@ -416,7 +440,12 @@ function WorkspacePage() {
           <ResizablePanel defaultSize={46} minSize={20}>
             <div className="h-full">
               {fileQ.data ? (
-                <CodeViewer content={fileQ.data.content} language={fileQ.data.language} />
+                <CodeViewer
+                  content={fileQ.data.content}
+                  language={fileQ.data.language}
+                  onSelectionChange={setSelection}
+                />
+
               ) : (
                 <div className="flex h-full items-center justify-center p-6">
                   <div className="max-w-md space-y-4 rounded-lg border border-border bg-card p-6 shadow-sm">
@@ -532,7 +561,24 @@ function WorkspacePage() {
                     </SelectContent>
                   </Select>
                 )}
+                {mainTab === "summary" && selection && (
+                  <label className="flex cursor-pointer items-start gap-2 rounded-md border border-primary/40 bg-primary/5 p-2 text-[11px] text-primary">
+                    <input
+                      type="checkbox"
+                      className="mt-0.5 h-3.5 w-3.5 accent-primary"
+                      checked={useSelection}
+                      onChange={(e) => setUseSelection(e.target.checked)}
+                    />
+                    <span>
+                      {t("workspace.selectionToggle", {
+                        from: selection.startLine,
+                        to: selection.endLine,
+                      })}
+                    </span>
+                  </label>
+                )}
                 {/* Status pill */}
+
                 <div
                   className={
                     "flex items-center gap-1.5 rounded-md border px-2 py-1 text-[11px] font-medium " +
@@ -606,27 +652,27 @@ function WorkspacePage() {
                     </Button>
                   </div>
                 </div>
-                <TabsContent value="summary" className="m-0 flex-1 overflow-auto px-4 pb-4">
+                <TabsContent forceMount value="summary" className="m-0 flex-1 overflow-auto px-4 pb-4 data-[state=inactive]:hidden">
                   <Tabs value={summarySub} onValueChange={(v) => setSummarySub(v as SummarySub)}>
                     <TabsList className="mt-2">
                       <TabsTrigger value="human">{t("workspace.tabs.human")}</TabsTrigger>
                       <TabsTrigger value="technical">{t("workspace.tabs.technical")}</TabsTrigger>
                     </TabsList>
-                    <TabsContent value="human" className="m-0 pt-2">
+                    <TabsContent forceMount value="human" className="m-0 pt-2 data-[state=inactive]:hidden">
                       <ExplanationView text={summaryText} />
                     </TabsContent>
-                    <TabsContent value="technical" className="m-0 pt-2">
+                    <TabsContent forceMount value="technical" className="m-0 pt-2 data-[state=inactive]:hidden">
                       <ExplanationView text={summaryText} />
                     </TabsContent>
                   </Tabs>
                 </TabsContent>
-                <TabsContent value="quality" className="m-0 flex-1 overflow-auto px-4 pb-4">
+                <TabsContent forceMount value="quality" className="m-0 flex-1 overflow-auto px-4 pb-4 data-[state=inactive]:hidden">
                   <ExplanationView text={qualityText} placeholder={t("analysis.empty")} />
                 </TabsContent>
-                <TabsContent value="security" className="m-0 flex-1 overflow-auto px-4 pb-4">
+                <TabsContent forceMount value="security" className="m-0 flex-1 overflow-auto px-4 pb-4 data-[state=inactive]:hidden">
                   <ExplanationView text={securityText} placeholder={t("analysis.empty")} />
                 </TabsContent>
-                <TabsContent value="ai_origin" className="m-0 flex-1 overflow-auto px-4 pb-4">
+                <TabsContent forceMount value="ai_origin" className="m-0 flex-1 overflow-auto px-4 pb-4 data-[state=inactive]:hidden">
                   {aiOriginText ? (
                     <ExplanationView text={aiOriginText} />
                   ) : (
@@ -638,6 +684,7 @@ function WorkspacePage() {
                     </div>
                   )}
                 </TabsContent>
+
               </Tabs>
               <div className="border-t border-border px-3 py-2 text-[10px] text-muted-foreground">
                 {t("footer.ownership")}

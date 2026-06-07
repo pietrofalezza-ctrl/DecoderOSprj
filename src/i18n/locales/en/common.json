@@ -297,6 +297,8 @@
     "noProvider": "Add an API key in Settings to enable AI explanations.",
     "analyzeWholeRepo": "Scan whole repo",
     "runFile": "Run analysis on this file",
+    "selectionToggle": "Use only the editor selection (lines {{from}}–{{to}})",
+
     "howTo": {
       "title": "How to start an analysis",
       "step1": "Pick a file from the tree on the left",
@@ -369,7 +371,9 @@
     "language": "Preferred language",
     "save": "Save",
     "saved": "Saved.",
+    "pageIntro": "Profile, API keys (BYOK), local endpoints and account — all on this page. Use the links below to jump to a section.",
     "byokSection": "AI providers (BYOK)",
+
     "byokIntro": "Decoder never stores your keys in plain text. Your code is never used for training.",
     "addKey": "Save key",
     "removeKey": "Remove",
