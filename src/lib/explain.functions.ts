@@ -72,8 +72,13 @@ export const explainFile = createServerFn({ method: "POST" })
       const k = process.env.LOVABLE_API_KEY;
       if (!k) throw new Error("lovable_ai_not_configured");
       // Free-tier daily quota — enforced only for the managed provider.
-      const { assertLovableQuota } = await import("./rate-limit.server");
-      await assertLovableQuota(context.supabase, context.userId, data.language);
+      // Returned as a structured result (not thrown) so it isn't reported
+      // as a runtime error in the client.
+      const { checkLovableQuota } = await import("./rate-limit.server");
+      const quota = await checkLovableQuota(context.supabase, context.userId, data.language);
+      if (!quota.ok) {
+        return { quotaExceeded: true as const, message: quota.message };
+      }
       apiKey = k;
     } else {
       const { supabaseAdmin } = await import("@/integrations/supabase/client.server");

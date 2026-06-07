@@ -177,6 +177,10 @@ function WorkspacePage() {
               : undefined,
           },
         });
+        if ("quotaExceeded" in r && r.quotaExceeded) {
+          toast.error(r.message);
+          return null;
+        }
         return r.content;
       }
       const kind = providerValue.slice(6) as LocalKind;
