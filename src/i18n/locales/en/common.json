@@ -264,6 +264,7 @@
     "githubRef": "Branch / tag (optional)",
     "githubRefPlaceholder": "main",
     "githubOnlyPublic": "Only public repositories are supported in this build.",
+    "retentionNotice": "Files stay on the server for up to 60 days after their last explanation, then they're deleted automatically. Always export anything you need.",
     "import": "Import",
     "analyzeCodebase": "Analyze codebase",
     "capabilityExplain": "Explain any file",
