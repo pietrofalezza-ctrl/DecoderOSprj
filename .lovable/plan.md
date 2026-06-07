@@ -1,62 +1,42 @@
-Eseguo in sequenza 5 blocchi. Prima ho bisogno di alcune conferme rapide (vedi fondo), poi procedo.
+# Fix navigation flash & stability pass
 
-## 1. Post di lancio (LinkedIn + Instagram)
+## Root cause
 
-Output: file Markdown + immagini infografica generate, salvati in `/mnt/documents/launch/` e consegnati come `<presentation-artifact>`.
+The dark-blue flash on every click inside the authenticated area comes from TanStack Router's default empty pending state:
 
-- **3 post LinkedIn** (manifesto OS, problema/soluzione, BYOK + privacy locale)
-- **5 slide carosello Instagram** (hook, problema, cosa fa Decoder, BYOK/locale, CTA repo)
-- Copy in italiano (tono divulgativo, taglio "case study open source", no marketing for-profit)
-- Infografiche generate con `imagegen` (premium per leggibilità testo), palette coerente col sito
+1. `src/routes/_authenticated/route.tsx` runs `supabase.auth.getUser()` in `beforeLoad` on **every** navigation. `getUser()` is a network call (hits `/auth/v1/user`), 200–800 ms.
+2. The router has no `defaultPendingComponent`, no `defaultPendingMs`, and `defaultPreloadStaleTime: 0`. While the loader runs, the current Outlet unmounts and the browser shows the bare `<body>` (which is `bg-background`, deep dark) → perceived as a "blue flash".
+3. Preload-on-intent isn't enabled, so hovering a Link doesn't warm the loader.
 
-## 2. Tone of voice homepage → "case study OS"
+## Changes
 
-File: `src/routes/index.tsx` (+ locali `it/en/zh`).
+### 1. `src/router.tsx` — smarter pending + preload
+- `defaultPendingMs: 200` (don't render pending UI for fast navs).
+- `defaultPendingMinMs: 400` (avoid flicker once shown).
+- `defaultPreloadStaleTime: 30_000` (reuse preload data on actual nav).
+- `defaultPreload: "intent"` (warm loaders on hover/focus).
+- `defaultPendingComponent`: minimal top-of-page progress bar (semi-transparent overlay), **not** a full-screen background swap — keeps current UI visible underneath.
 
-- Hero: sostituire claim product-y con framing "case study open source / esperimento didattico"
-- Aggiungere badge/sezione "Open source · No profit · BYOK" sopra la piega
-- CTA primaria → "Vedi su GitHub" + secondaria "Prova la demo"
-- Footer/about: una riga esplicita "Questo progetto non è commerciale, è un case study pubblico su [tema]"
-- Rimuovere linguaggio tipo "soluzione", "piattaforma", "azienda" se presente
+### 2. `src/routes/_authenticated/route.tsx` — use cached session
+- Replace `supabase.auth.getUser()` (network) with `supabase.auth.getSession()` (reads local storage, sync-ish, instant).
+- Still redirect to `/auth` when no session. The existing `onAuthStateChange` in `__root.tsx` already invalidates the router on sign-in/out, so the gate stays correct.
 
-## 3. Link repo GitHub visibile
+### 3. `src/routes/__root.tsx` — keep shell mounted during pending
+- Add a lightweight `<RouterPendingIndicator />` (uses `useRouterState({select: s => s.status})`) inside `RootComponent` so the AppShell/Outlet doesn't visually disappear during transitions.
 
-Verifica attuale: controllare header/footer/homepage per link a GitHub. Se assente o nascosto:
-- Aggiungere icona GitHub in `AppShell` header (top-right, accanto a lingua/tema)
-- Aggiungere link nel footer della landing
-- Aggiungere CTA "⭐ Star on GitHub" nella hero
+### 4. Small stability fixes found while auditing
+- Add `errorComponent` to the `_authenticated` layout route so a failed auth check renders the styled error card instead of bubbling to root (avoids second flash).
+- Ensure `Toaster` is rendered outside the `<Outlet />` (already true) so toasts survive route transitions — verify no regressions.
 
-(Mi servirà l'URL della repo — vedi domande)
+## Out of scope
+- No copy, design-token, or backend changes.
+- No new dependencies.
 
-## 4. Security scan + SEO scan
+## Technical details
 
-- `security--run_security_scan` → review findings, fix quelli azionabili (RLS, GRANT, policy), aggiornare security memory
-- `supabase--linter` per check addizionale DB
-- `seo_chat--trigger_scan` → poi indirizzare al pannello SEO
+```text
+Before:  click → unmount Outlet → blank bg-background → loader resolves → mount
+After:   click → Outlet stays mounted → top progress bar after 200ms (only if needed) → swap
+```
 
-## 5. Review styling ("non sembri un altro sito vibe-coded")
-
-Audit rapido di `src/styles.css` + landing per identificare pattern generici (gradiente viola, Inter, card uguali, hero centrato classico). Poi propongo **3 direzioni di redesign** rendrizzate via `design--create_directions` (richiede screenshot della home — lo catturo io in build mode) e tu scegli. Direzioni candidate:
-
-- **Editoriale/brutalist**: serif display + mono, griglia asimmetrica, tanto bianco, no gradient
-- **Terminal/dev-tool**: mono ovunque, palette ad alto contrasto stile IDE, ASCII accents
-- **Documentary OS**: tipografia tecnica + colori desaturati + micro-annotazioni stile paper accademico
-
-Una volta scelta, applico tokens (`src/styles.css`) e ricompongo landing + AppShell.
-
----
-
-## Tecnico (per riferimento)
-
-- I post sono artefatti `/mnt/documents`, NON entrano nel codice
-- Gli scan girano in background; per SEO mostro `<presentation-open-seo-review>`
-- Il redesign tocca solo presentation (CSS tokens + JSX landing/AppShell), nessuna logica di business
-
----
-
-## Domande prima di partire
-
-1. **URL repo GitHub** (per link e CTA dei post)?
-2. **Tema specifico del case study OS** da menzionare nei post e in homepage (es. "analisi codice locale con LLM", "BYOK privacy-first", altro)?
-3. **Lingua post**: solo IT, o anche EN?
-4. **Redesign**: procedo subito a generare le 3 direzioni dopo i post, o vuoi vederle separatamente in un turno dedicato?
+`defaultPreloadStaleTime: 30_000` means a route preloaded on hover is reused for 30s when actually clicked; combined with cached-session auth check, most intra-app navigations resolve synchronously.
