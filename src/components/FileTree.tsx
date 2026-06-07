@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { ChevronRight, ChevronDown, File, Folder } from "lucide-react";
+import { ChevronRight, ChevronDown, File, Folder, ScanSearch } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 
@@ -33,19 +33,33 @@ function buildTree(files: FileItem[]): Node {
   return root;
 }
 
+export type FileTreeProps = {
+  files: FileItem[];
+  selectedId?: string | null;
+  selectedFolderPath?: string | null;
+  onSelect: (f: FileItem) => void;
+  onSelectFolder?: (path: string) => void;
+};
+
 export function FileTree({
   files,
   selectedId,
+  selectedFolderPath,
   onSelect,
-}: {
-  files: FileItem[];
-  selectedId?: string | null;
-  onSelect: (f: FileItem) => void;
-}) {
+  onSelectFolder,
+}: FileTreeProps) {
   const root = useMemo(() => buildTree(files), [files]);
   return (
     <div className="text-sm">
-      <NodeView node={root} depth={0} selectedId={selectedId} onSelect={onSelect} startOpen />
+      <NodeView
+        node={root}
+        depth={0}
+        selectedId={selectedId}
+        selectedFolderPath={selectedFolderPath ?? null}
+        onSelect={onSelect}
+        onSelectFolder={onSelectFolder}
+        startOpen
+      />
     </div>
   );
 }
@@ -54,13 +68,17 @@ function NodeView({
   node,
   depth,
   selectedId,
+  selectedFolderPath,
   onSelect,
+  onSelectFolder,
   startOpen,
 }: {
   node: Node;
   depth: number;
   selectedId?: string | null;
+  selectedFolderPath: string | null;
   onSelect: (f: FileItem) => void;
+  onSelectFolder?: (path: string) => void;
   startOpen?: boolean;
 }) {
   const [open, setOpen] = useState(startOpen || depth < 1);
@@ -76,7 +94,14 @@ function NodeView({
       <ul>
         {children.map((c) => (
           <li key={c.path}>
-            <NodeView node={c} depth={depth} selectedId={selectedId} onSelect={onSelect} />
+            <NodeView
+              node={c}
+              depth={depth}
+              selectedId={selectedId}
+              selectedFolderPath={selectedFolderPath}
+              onSelect={onSelect}
+              onSelectFolder={onSelectFolder}
+            />
           </li>
         ))}
       </ul>
@@ -100,22 +125,58 @@ function NodeView({
     );
   }
 
+  const isFolderSelected = selectedFolderPath === node.path;
+
   return (
     <div>
-      <button
-        onClick={() => setOpen((o) => !o)}
-        className="flex w-full items-center gap-1 rounded px-1.5 py-0.5 text-left hover:bg-accent"
+      <div
+        className={cn(
+          "group flex w-full items-center gap-1 rounded px-1.5 py-0.5 hover:bg-accent",
+          isFolderSelected && "bg-primary/10 text-primary",
+        )}
         style={{ paddingLeft: depth * 12 + 6 }}
       >
-        {open ? <ChevronDown className="h-3.5 w-3.5" /> : <ChevronRight className="h-3.5 w-3.5" />}
-        <Folder className="h-3.5 w-3.5 text-muted-foreground" />
-        <span className="truncate">{node.name}</span>
-      </button>
+        <button
+          onClick={() => setOpen((o) => !o)}
+          className="flex flex-1 items-center gap-1 text-left"
+        >
+          {open ? (
+            <ChevronDown className="h-3.5 w-3.5" />
+          ) : (
+            <ChevronRight className="h-3.5 w-3.5" />
+          )}
+          <Folder className="h-3.5 w-3.5 text-muted-foreground" />
+          <span className="truncate">{node.name}</span>
+        </button>
+        {onSelectFolder && (
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              onSelectFolder(node.path);
+            }}
+            className={cn(
+              "shrink-0 rounded p-0.5 text-muted-foreground opacity-0 transition hover:bg-primary/15 hover:text-primary group-hover:opacity-100",
+              isFolderSelected && "text-primary opacity-100",
+            )}
+            title="Analizza questa cartella"
+            aria-label="Analizza questa cartella"
+          >
+            <ScanSearch className="h-3.5 w-3.5" />
+          </button>
+        )}
+      </div>
       {open && (
         <ul>
           {children.map((c) => (
             <li key={c.path}>
-              <NodeView node={c} depth={depth + 1} selectedId={selectedId} onSelect={onSelect} />
+              <NodeView
+                node={c}
+                depth={depth + 1}
+                selectedId={selectedId}
+                selectedFolderPath={selectedFolderPath}
+                onSelect={onSelect}
+                onSelectFolder={onSelectFolder}
+              />
             </li>
           ))}
         </ul>
