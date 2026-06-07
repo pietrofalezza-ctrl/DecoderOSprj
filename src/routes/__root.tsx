@@ -12,6 +12,7 @@ import { useEffect, type ReactNode } from "react";
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { I18nBootstrap } from "@/components/I18nBootstrap";
+import { RouterPendingIndicator } from "@/components/RouterPendingIndicator";
 import { Toaster } from "@/components/ui/sonner";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -158,6 +159,7 @@ function RootComponent() {
   return (
     <QueryClientProvider client={queryClient}>
       <I18nBootstrap>
+        <RouterPendingIndicator />
         <Outlet />
         <Toaster richColors position="top-right" />
       </I18nBootstrap>
