@@ -221,6 +221,9 @@ function TermsPage() {
             <Link to="/docs" className="hover:text-foreground">
               {t("landing.nav.docs")}
             </Link>
+            <Link to="/contact" className="hover:text-foreground">
+              {t("contact.kicker")}
+            </Link>
             <a
               href={t("common.repoUrl")}
               target="_blank"

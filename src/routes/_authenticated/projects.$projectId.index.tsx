@@ -154,6 +154,9 @@ function ProjectPage() {
                   <p className="text-xs text-muted-foreground">
                     {t("project.githubOnlyPublic")}
                   </p>
+                  <p className="text-xs text-muted-foreground">
+                    {t("project.retentionNotice")}
+                  </p>
                 </div>
                 <DialogFooter>
                   <Button
