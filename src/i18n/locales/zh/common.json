@@ -449,6 +449,19 @@
     "notFoundBody": "你打开的地址不存在或已被移动。",
     "boundaryTitle": "此页面加载失败"
   },
+  "contact": {
+    "email": "pietro@codecoder.com",
+    "kicker": "联系方式",
+    "title": "如何联系我们",
+    "intro": "Decoder 是一个非营利开源项目。以下是隐私、安全与反馈的官方渠道。",
+    "privacyTitle": "隐私与 GDPR",
+    "privacyBody": "如需行使 GDPR 权利（访问、更正、删除、可携带、反对、限制），请发邮件至下方地址。30 天内必回复。",
+    "securityTitle": "安全",
+    "securityBody": "发现漏洞？请在公开披露前以保密方式发送邮件至下方地址。",
+    "bugsTitle": "Bug 与反馈",
+    "bugsBody": "Bug、想法、改进建议：请在 GitHub 提交 issue。尽力回复。",
+    "responseTimes": "参考时效：GDPR 30 天 · 安全 7 天 · 反馈尽力而为。"
+  },
   "footer": {
     "ownership": "你的代码和生成的文档属于你自己。Decoder 不会用你的仓库训练模型。",
     "disclaimer": "Decoder 是一个开源代码理解工具。AI 生成的解释可能不准确，在用于技术、安全、法律或生产决策之前，应由具备资质的人员进行审查。"
