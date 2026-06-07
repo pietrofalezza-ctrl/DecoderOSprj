@@ -13,6 +13,11 @@ import {
   Bot,
   GitPullRequest,
   Eye,
+  GitFork,
+  MessageSquare,
+  Languages,
+  Scale,
+  HeartHandshake,
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -68,7 +73,8 @@ function Landing() {
     { label: t("landing.nav.features"), href: "#features" },
     { label: t("landing.nav.howItWorks"), href: "#how-it-works" },
     { label: t("landing.nav.integrations"), href: "#integrations" },
-    { label: t("landing.nav.openSource"), to: "/manifesto" as const },
+    { label: t("landing.nav.openSource"), to: "/open-source" as const },
+    { label: t("landing.nav.manifesto"), to: "/manifesto" as const },
     { label: t("landing.nav.docs"), to: "/docs" as const },
   ];
 
@@ -216,9 +222,114 @@ function Landing() {
         </div>
       </section>
 
+      {/* Open-source strip — guardrail framing */}
+      <section className="border-y border-border bg-background">
+        <div className="mx-auto grid max-w-7xl items-center gap-8 px-6 py-10 md:grid-cols-12">
+          <div className="md:col-span-7">
+            <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-primary">
+              {t("landing.osStrip.kicker")}
+            </p>
+            <h2 className="mt-2 font-display text-2xl font-medium tracking-tight md:text-3xl">
+              {t("landing.osStrip.title")}
+            </h2>
+            <p className="mt-2 max-w-2xl text-sm text-muted-foreground">
+              {t("landing.osStrip.body")}
+            </p>
+          </div>
+          <div className="flex flex-wrap items-center gap-3 md:col-span-5 md:justify-end">
+            <Button asChild size="sm" variant="outline" className="rounded-none">
+              <a href={t("common.repoUrl")} target="_blank" rel="noreferrer">
+                <Github className="mr-2 h-4 w-4" />
+                {t("landing.osStrip.ctaRepo")}
+              </a>
+            </Button>
+            <Button asChild size="sm" className="rounded-none">
+              <Link to="/open-source">
+                <GitFork className="mr-2 h-4 w-4" />
+                {t("landing.osStrip.ctaContribute")}
+              </Link>
+            </Button>
+          </div>
+          <div className="md:col-span-12">
+            <div className="flex flex-wrap gap-x-6 gap-y-2 font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
+              <span className="inline-flex items-center gap-1.5">
+                <Scale className="h-3 w-3" />
+                {t("landing.osStrip.license")}
+              </span>
+              <span className="inline-flex items-center gap-1.5">
+                <HeartHandshake className="h-3 w-3" />
+                {t("landing.osStrip.noProfit")}
+              </span>
+              <span className="inline-flex items-center gap-1.5">
+                <Users className="h-3 w-3" />
+                {t("landing.osStrip.communityOwned")}
+              </span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Guardrail mission */}
+      <section className="border-b border-border/60 bg-card/40">
+        <div className="mx-auto max-w-7xl px-6 py-20">
+          <div className="grid gap-12 md:grid-cols-12">
+            <div className="md:col-span-5">
+              <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-primary">
+                {t("landing.guardrail.kicker")}
+              </p>
+              <h2 className="mt-3 font-display text-4xl font-medium leading-tight tracking-tight md:text-5xl">
+                {t("landing.guardrail.title")}
+              </h2>
+              <p className="mt-5 text-muted-foreground">
+                {t("landing.guardrail.intro")}
+              </p>
+              <div className="mt-8">
+                <GuardrailDiagram t={t} />
+              </div>
+            </div>
+
+            <ol className="space-y-6 md:col-span-7">
+              {[
+                {
+                  icon: <ShieldCheck className="h-5 w-5" />,
+                  title: t("landing.guardrail.point1Title"),
+                  body: t("landing.guardrail.point1Body"),
+                },
+                {
+                  icon: <Users className="h-5 w-5" />,
+                  title: t("landing.guardrail.point2Title"),
+                  body: t("landing.guardrail.point2Body"),
+                },
+                {
+                  icon: <GitPullRequest className="h-5 w-5" />,
+                  title: t("landing.guardrail.point3Title"),
+                  body: t("landing.guardrail.point3Body"),
+                },
+              ].map((p, i) => (
+                <li
+                  key={p.title}
+                  className="flex gap-5 border-l-2 border-border pl-6 transition-colors hover:border-primary"
+                >
+                  <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground/70">
+                    0{i + 1}
+                  </span>
+                  <div className="flex-1">
+                    <div className="mb-2 inline-flex h-9 w-9 items-center justify-center rounded-full border border-border bg-background text-primary">
+                      {p.icon}
+                    </div>
+                    <h3 className="font-display text-xl font-medium">{p.title}</h3>
+                    <p className="mt-2 text-sm text-muted-foreground">{p.body}</p>
+                  </div>
+                </li>
+              ))}
+            </ol>
+          </div>
+        </div>
+      </section>
 
       {/* Why now — AI-generated code era */}
       <section className="border-y border-border/60 bg-card/40">
+
         <div className="mx-auto max-w-7xl px-6 py-16">
           <div className="max-w-2xl">
             <p className="text-xs font-semibold uppercase tracking-wide text-primary">
@@ -327,12 +438,54 @@ function Landing() {
         </div>
       </section>
 
+      {/* Community CTA */}
+      <section className="border-t border-border bg-background">
+        <div className="mx-auto max-w-7xl px-6 py-20">
+          <div className="max-w-2xl">
+            <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-primary">
+              {t("landing.community.kicker")}
+            </p>
+            <h2 className="mt-2 font-display text-4xl font-medium tracking-tight md:text-5xl">
+              {t("landing.community.title")}
+            </h2>
+            <p className="mt-3 text-muted-foreground">{t("landing.community.body")}</p>
+          </div>
+          <div className="mt-10 grid gap-5 md:grid-cols-3">
+            <CommunityCard
+              icon={<MessageSquare className="h-5 w-5" />}
+              title={t("landing.community.cta1Title")}
+              body={t("landing.community.cta1Body")}
+              link={t("landing.community.cta1Link")}
+              href={`${t("common.repoUrl")}/issues`}
+            />
+            <CommunityCard
+              icon={<GitPullRequest className="h-5 w-5" />}
+              title={t("landing.community.cta2Title")}
+              body={t("landing.community.cta2Body")}
+              link={t("landing.community.cta2Link")}
+              href={`${t("common.repoUrl")}/blob/main/src/lib/analysis-prompt.ts`}
+            />
+            <CommunityCard
+              icon={<Languages className="h-5 w-5" />}
+              title={t("landing.community.cta3Title")}
+              body={t("landing.community.cta3Body")}
+              link={t("landing.community.cta3Link")}
+              href={`${t("common.repoUrl")}/tree/main/src/i18n/locales`}
+            />
+          </div>
+        </div>
+      </section>
+
       {/* Footer */}
+
       <footer className="border-t border-border/60">
         <div className="mx-auto max-w-7xl px-6 py-8 text-xs text-muted-foreground">
           <div className="flex flex-col items-center justify-between gap-3 md:flex-row">
             <Logo />
-            <nav className="flex gap-5">
+            <nav className="flex flex-wrap justify-center gap-5">
+              <Link to="/open-source" className="hover:text-foreground">
+                {t("landing.nav.openSource")}
+              </Link>
               <Link to="/manifesto" className="hover:text-foreground">
                 {t("landing.nav.manifesto")}
               </Link>
@@ -373,6 +526,73 @@ function Badge({ icon, label }: { icon: React.ReactNode; label: string }) {
     </span>
   );
 }
+
+function GuardrailDiagram({ t }: { t: (k: string) => string }) {
+  return (
+    <div className="border border-border bg-background p-5 font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
+      <div className="flex items-center justify-between gap-3">
+        <div className="flex-1 border border-border bg-card px-2 py-3 text-center">
+          <Bot className="mx-auto mb-1.5 h-4 w-4 text-foreground" />
+          AI source
+        </div>
+        <div className="flex flex-col items-center text-foreground">
+          <span className="h-px w-6 bg-border" />
+          <ArrowRight className="h-3 w-3" />
+        </div>
+        <div className="flex-1 border-2 border-primary bg-primary/5 px-2 py-3 text-center text-primary">
+          <ShieldCheck className="mx-auto mb-1.5 h-4 w-4" />
+          Decoder
+        </div>
+        <div className="flex flex-col items-center text-foreground">
+          <span className="h-px w-6 bg-border" />
+          <ArrowRight className="h-3 w-3" />
+        </div>
+        <div className="flex-1 border border-border bg-card px-2 py-3 text-center">
+          <Users className="mx-auto mb-1.5 h-4 w-4 text-foreground" />
+          You
+        </div>
+      </div>
+      <p className="mt-3 text-[9px] normal-case tracking-normal text-muted-foreground/80">
+        {t("landing.guardrail.intro").split(". ")[0]}.
+      </p>
+    </div>
+  );
+}
+
+function CommunityCard({
+  icon,
+  title,
+  body,
+  link,
+  href,
+}: {
+  icon: React.ReactNode;
+  title: string;
+  body: string;
+  link: string;
+  href: string;
+}) {
+  return (
+    <a
+      href={href}
+      target="_blank"
+      rel="noreferrer"
+      className="group flex flex-col gap-3 border border-border bg-card p-6 transition-colors hover:border-primary hover:bg-background"
+    >
+      <span className="inline-flex h-10 w-10 items-center justify-center rounded-lg bg-accent text-accent-foreground">
+        {icon}
+      </span>
+      <h3 className="font-display text-lg font-medium">{title}</h3>
+      <p className="text-sm text-muted-foreground">{body}</p>
+      <span className="mt-auto inline-flex items-center gap-1.5 text-xs font-medium text-primary">
+        {link}
+        <ArrowRight className="h-3 w-3 transition-transform group-hover:translate-x-1" />
+      </span>
+    </a>
+  );
+}
+
+
 
 function ProviderChip({ name }: { name: string }) {
   return (

@@ -77,8 +77,43 @@
     "whyNow1Body": "Copilot, Cursor, Lovable, Claude Code: una porzione sempre più ampia di ogni nuovo progetto non è stata scritta da chi la deve mantenere.",
     "whyNow2Title": "Le PR si moltiplicano, le review umane no",
     "whyNow2Body": "Più output IA significa più diff da leggere. Senza un layer di comprensione, le review diventano superficiali o vengono saltate.",
-    "whyNow3Title": "Capire ≠ generare",
-    "whyNow3Body": "Decoder spiega, mappa l'architettura, evidenzia rischi di sicurezza e logica del codice già esistente — anche di quello che non hai scritto tu.",
+    "whyNow3Title": "Un guardrail collettivo",
+    "whyNow3Body": "Decoder è uno strumento aperto, in mano agli utenti, per interrogare le risposte dell'IA invece di accettarle alla cieca. Le regole di analisi crescono con la community.",
+    "osStrip": {
+      "kicker": "100% Open Source · MIT",
+      "title": "Un guardrail nelle tue mani, non in quelle dell'IA",
+      "body": "Decoder è codice pubblico, ispezionabile e forkabile. Mentre i sorgenti AI evolvono, evolve anche il guardrail — perché lo costruiamo insieme.",
+      "ctaRepo": "Esplora la repository",
+      "ctaContribute": "Contribuisci",
+      "license": "Licenza MIT",
+      "noProfit": "Nessun fine di lucro",
+      "communityOwned": "Comunitario"
+    },
+    "guardrail": {
+      "kicker": "La missione",
+      "title": "Un guardrail open source per l'era dell'IA generativa",
+      "intro": "Più l'IA scrive codice, più serve uno strumento indipendente per leggerlo, metterlo in discussione e capirlo. Decoder è quello strumento — aperto, ispezionabile, in continua evoluzione.",
+      "point1Title": "Verifica, non fiducia cieca",
+      "point1Body": "Ogni risposta di un'IA è un'ipotesi, non un verdetto. Decoder ti dà gli strumenti per interrogarla riga per riga.",
+      "point2Title": "In mano agli utenti",
+      "point2Body": "Codice aperto, prompt aperti, regole aperte. Niente scatole nere: leggi, modifica, forki.",
+      "point3Title": "In evoluzione continua",
+      "point3Body": "Mentre i modelli cambiano, le regole di analisi vengono estese dalla community. Il guardrail cresce con chi lo usa."
+    },
+    "community": {
+      "kicker": "Community-driven",
+      "title": "Costruito da chi lo usa",
+      "body": "Decoder migliora quando gli utenti contribuiscono. Apri una issue, proponi una nuova regola di analisi, traduci l'interfaccia: ogni contributo rafforza il guardrail per tutti.",
+      "cta1Title": "Apri una issue",
+      "cta1Body": "Segnala un bug, proponi un'idea o discuti una scelta di prodotto.",
+      "cta1Link": "Vai alle issue",
+      "cta2Title": "Proponi una regola di analisi",
+      "cta2Body": "I prompt di analisi sono in chiaro. Estendili per coprire nuovi rischi o nuovi linguaggi.",
+      "cta2Link": "Guarda i prompt",
+      "cta3Title": "Traduci Decoder",
+      "cta3Body": "Porta Decoder nella tua lingua aggiungendo un file in src/i18n/locales.",
+      "cta3Link": "Vai alle traduzioni"
+    },
     "mockup": {
       "projects": "Progetti",
       "repository": "Repository",
@@ -161,7 +196,13 @@
     "title": "Crediamo che il codice debba essere comprensibile",
     "intro": "Decoder esiste per abbattere la barriera tra chi scrive il codice e chi lo deve capire, mantenere, valutare o spiegare. Senza tradire la fiducia di chi lo usa.",
     "principlesTitle": "I nostri principi",
+    "whyGuardrailTitle": "Perché serve un guardrail",
+    "whyGuardrailBody": "L'IA generativa è un oracolo plausibile, non affidabile: produce codice convincente che può nascondere bug, vulnerabilità o scelte architetturali sbagliate. Senza uno strumento indipendente di verifica, il rischio è accettare ogni risposta come verità. Decoder è quel contropotere — open source per restare ispezionabile, comunitario per restare onesto.",
     "principles": {
+      "guardrail": {
+        "title": "Guardrail in evoluzione",
+        "body": "Decoder è uno strumento di verifica indipendente, in mano agli utenti, che cresce con la community man mano che evolvono le sorgenti AI. Non sostituisce il tuo giudizio: lo potenzia."
+      },
       "open": {
         "title": "Open source per davvero",
         "body": "Licenza MIT. Libero di usare, modificare e distribuire. Nessun componente nascosto. Mantenuto collettivamente in forma anonima."
@@ -193,10 +234,54 @@
       "w2": "Non venderemo i tuoi dati né li condivideremo con broker.",
       "w3": "Non aggiungeremo lock-in artificiali sui provider AI.",
       "w4": "Non bloccheremo l'export delle tue spiegazioni e dei tuoi commenti.",
-      "w5": "Non conserveremo per sempre i tuoi file: cancellazione automatica dopo 60 giorni di inattività."
+      "w5": "Non conserveremo per sempre i tuoi file: cancellazione automatica dopo 60 giorni di inattività.",
+      "w6": "Non sostituiremo mai il tuo giudizio: siamo un guardrail, non un oracolo."
+    },
+    "contributingTitle": "Come contribuire",
+    "contributingBody": "Decoder è co-mantenuto da chi lo usa. Governance leggera: una issue diventa una discussione, una discussione diventa una PR. Niente CLA invasivi, niente burocrazia.",
+    "contributing": {
+      "rules": "Estendi le regole di analisi (src/lib/analysis-prompt.ts) per coprire nuovi smell o linguaggi.",
+      "translations": "Aggiungi una lingua creando una cartella in src/i18n/locales/.",
+      "providers": "Integra nuovi provider AI o motori locali compatibili con OpenAI API.",
+      "docs": "Migliora la documentazione utente in /docs e le guide di review."
     },
     "roadmapTitle": "Roadmap pubblica",
     "roadmapBody": "Le fasi di sviluppo sono documentate nel README e nel file .lovable/plan.md del repository. Le decisioni di prodotto vengono discusse in pubblico."
+  },
+  "openSource": {
+    "kicker": "Open Source",
+    "title": "Un guardrail aperto per interrogare l'IA",
+    "intro": "Decoder è codice pubblico, prompt pubblici, regole pubbliche. Nato come case study, mantenuto come bene comune — perché un guardrail per l'IA ha senso solo se chiunque può leggerlo e migliorarlo.",
+    "ctaRepo": "Apri su GitHub",
+    "ctaContribute": "Contribuisci",
+    "openTitle": "Cosa è aperto",
+    "open": {
+      "codeTitle": "Codice sorgente",
+      "codeBody": "Tutta l'applicazione, frontend e backend, sotto licenza MIT.",
+      "promptsTitle": "Prompt di analisi",
+      "promptsBody": "Le istruzioni che diamo agli LLM per spiegare, valutare qualità e sicurezza — modificabili dalla community.",
+      "rulesTitle": "Regole e scoring",
+      "rulesBody": "Severità delle findings, kind di analisi, criteri di aggregazione: tutto in chiaro nel repository.",
+      "i18nTitle": "Traduzioni",
+      "i18nBody": "Tre lingue ufficiali oggi, espandibili con una PR per ogni nuova lingua.",
+      "designTitle": "Design system",
+      "designBody": "Token semantici e componenti accessibili in src/styles.css e src/components/ui."
+    },
+    "roadmapTitle": "Roadmap pubblica",
+    "roadmapIntro": "Le prossime aree di lavoro. Discusse in pubblico, modificabili dalla community.",
+    "roadmap": {
+      "r1": "Estensione delle regole di analisi a nuovi linguaggi (Rust, Go, Kotlin, Swift).",
+      "r2": "Plugin VS Code che richiama il guardrail durante la review delle PR.",
+      "r3": "Libreria condivisa di regole community per smell tipici del codice generato da IA.",
+      "r4": "Modalità diff-aware: verifica solo le porzioni cambiate in una PR.",
+      "r5": "Provenance: tracciamento dell'origine AI (Copilot, Cursor, ChatGPT) blocco per blocco."
+    },
+    "extendTitle": "Estendi il guardrail",
+    "extendBody": "I prompt di analisi vivono in src/lib/analysis-prompt.ts. Aggiungi un nuovo kind, scrivi le istruzioni, apri una PR: la community la valuta, la rifiniamo insieme.",
+    "extendCta": "Vedi il file dei prompt",
+    "communityTitle": "Chi lo costruisce",
+    "communityBody": "Decoder è manutenuto da contributori anonimi. La tua issue, la tua PR o la tua traduzione fanno parte del guardrail.",
+    "joinCta": "Unisciti su GitHub"
   },
   "auth": {
     "title": "Accedi a Decoder",

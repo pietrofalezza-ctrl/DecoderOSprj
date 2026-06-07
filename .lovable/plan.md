@@ -1,70 +1,61 @@
-## Cosa aggiungo
+## Obiettivo
 
-Tre estensioni al workspace di analisi (`/projects/$projectId/repos/$repoId`), tutte sopra il flusso esistente: nessuna scrittura su Git, nessuna nuova tabella.
+Rafforzare la narrazione open source di Decoder, posizionandolo esplicitamente come **guardrail comunitario** — uno strumento in mano agli utenti, in evoluzione continua, per interrogare in modo critico le sorgenti AI (Copilot, Cursor, Lovable, ChatGPT, ecc.). Coerente con lo scope: Decoder già esiste per leggere/auditare codice AI; manca la cornice valoriale chiara.
 
-### 1) Analisi su intere cartelle
+## Cosa cambia in UI
 
-**UI** — `FileTree`: ogni nodo cartella diventa selezionabile (oltre al toggle apri/chiudi) tramite un piccolo bottone "Analizza cartella" che appare on-hover/quando la cartella è attiva. Selezionare una cartella imposta uno stato `selectedFolder` (path) in alternativa a `selectedFileId`.
+### 1. Landing (`src/routes/index.tsx`)
+- **Nuova sezione "Guardrail" tra hero e "Why now"**: titolo forte (es. *"Il tuo guardrail open source nell'era dell'AI"*), pittogramma a tre colonne con la metafora `AI sorgente → Decoder (guardrail) → tu`, e tre punti chiave:
+  - *Verifica, non fiducia cieca* — ogni risposta AI è interrogabile
+  - *In mano agli utenti* — codice aperto, ispezionabile, forkabile
+  - *In evoluzione continua* — la community estende le regole di audit
+- **Aggiornamento "Why now"**: il terzo card diventa esplicitamente "Guardrail collettivo" invece di "Eye"
+- **Strip "Open Source" subito sotto l'hero**: badge GitHub + stelle live (link) + licenza MIT + link "Contribuisci"
+- **Sezione "Community-driven" prima del footer**: 3 CTA — *Apri un'issue*, *Proponi una regola di analisi*, *Traduci Decoder* — con link diretti a GitHub
 
-**Comportamento** (= "Entrambe"):
-- Il pannello destro mostra una vista **Cartella** con: elenco file figli, tab `Quality / Bugs / Security / AI origin`, bottone "Esegui su tutta la cartella".
-- L'esecuzione è batch sequenziale (riusa `runAnalysis` per ogni file), con barra di progresso `n/N` e cancel.
-- Al termine: **report aggregato** generato da una nuova serverFn `aggregateFolderAnalysis` che fa un'unica chiamata LLM passando i risultati per-file accorciati → produce sintesi a livello cartella (top issue, pattern ricorrenti, severità). Mostro report + tabella per-file espandibile.
-- Cache: ogni per-file passa già dalla cache `explanations` esistente (per `file_sha256` + `explanation_type`). L'aggregato viene memorizzato in `explanations` con `file_id = primo file` + `explanation_type = "folder_aggregate:<kind>:<folder_path_hash>"` per riusarlo finché i file non cambiano.
+### 2. Manifesto (`src/routes/manifesto.tsx`)
+- Nuovo **principio "Guardrail in evoluzione"** in cima alla lista (prima di `open`): definisce la missione
+- Nuova sezione **"Perché serve un guardrail"** tra intro e principi: 2-3 paragrafi sul rischio dell'AI come oracolo, sulla necessità di strumenti di verifica indipendenti e community-owned
+- Nuova sezione **"Come contribuire"** prima della roadmap: link a repo, guida CONTRIBUTING, governance leggera (issue → discussione → PR), elenco aree di contribuzione (regole di analisi, traduzioni, provider locali, prompt)
+- Aggiornare il blocco "Cosa non faremo mai" con un punto in più: *"Non sostituiremo mai il tuo giudizio — siamo un guardrail, non un oracolo"*
 
-### 2) Highlight per riga con tooltip
+### 3. Nuova pagina `/open-source` (route `src/routes/open-source.tsx`)
+Pagina dedicata, linkata dalla nav header (sostituisce o affianca "Manifesto"), con:
+- **Hero**: missione guardrail in una frase
+- **Sezione "Cosa è aperto"**: codice, prompt di analisi, regole di scoring, traduzioni, design tokens — ognuno con link diretto al file/cartella su GitHub
+- **Sezione "Roadmap pubblica"**: estratto delle prossime milestone (statico per ora, alimentato dalle stringhe i18n)
+- **Sezione "Contributors"**: griglia statica con avatar GitHub via `https://github.com/{user}.png` (lista iniziale curata, espandibile)
+- **Sezione "Estendi le regole"**: spiegazione che le prompt di analisi (`src/lib/analysis-prompt.ts`) sono modificabili dalla community, con esempio di PR
+- **Footer CTA**: GitHub, Discord/Discussions, contatto
 
-**Prompt** — aggiorno `buildAnalysisPrompt` per chiedere al modello, oltre al Markdown attuale, un blocco finale strutturato:
-````
-```findings-json
-[
-  {"start_line": 42, "end_line": 47, "severity": "high", "title": "…", "message": "…"}
-]
-```
-````
-Parsing tollerante (`extractFindings(text)`): se il blocco manca, niente highlight (nessuna regressione).
+### 4. Header / Nav
+- Sostituire la voce attuale `landing.nav.openSource` (che oggi punta a `/manifesto`) con due voci: **"Open Source"** → `/open-source`, **"Manifesto"** → `/manifesto`
+- Aggiornare anche i footer di tutte le pagine pubbliche per coerenza
 
-**CodeViewer** — accetta `findings: Finding[]`. Uso le API Monaco già disponibili:
-- `editor.createDecorationsCollection` con `className` colorato per severity (background sulla riga + bordo a sinistra).
-- `editor.deltaDecorations` per glyph margin (icona discreta a fianco numero riga) — uso bullet point con CSS, non immagini.
-- Hover tooltip via `monaco.languages.registerHoverProvider(language, …)` che restituisce il `message` del finding alla riga corrente.
-- Click su un finding nel pannello laterale → `editor.revealLineInCenter(start_line)` + selezione.
+## Aggiornamenti i18n
 
-Lista findings sincronizzata: nuovo `FindingsList` sotto il testo Markdown nei tab Quality/Bugs/Security.
+In `src/i18n/locales/{it,en,zh}/common.json`:
+- Nuove chiavi `landing.guardrail.*` (kicker, title, intro, 3 punti)
+- Nuove chiavi `landing.community.*` (titolo + 3 CTA)
+- Nuove chiavi `manifesto.guardrail.*`, `manifesto.whyGuardrail.*`, `manifesto.contributing.*`
+- Nuovo namespace `openSource.*` per la nuova pagina (hero, sezioni, CTA, contributors label)
+- Aggiornare `landing.whyNow3*` con tono "guardrail collettivo"
 
-### 3) Modifiche pronte al copia-incolla (diff unified)
+## SEO
 
-**Nuovo tab "Fix" nel pannello analisi** (visibile quando ci sono findings e il modello li supporta).
-- Bottone "Genera patch" → nuova serverFn `proposeFix(file_id, findings_or_kind)` che chiede al modello una patch in formato `unified diff` (`--- a/path` / `+++ b/path` / hunk `@@`). Prompt vincolato: "Restituisci SOLO un blocco ```diff con un unified diff applicabile con `git apply`. Non riscrivere parti non strettamente necessarie."
-- UI: render del diff con syntax highlighting (riuso Monaco in `language="diff"`, read-only).
-- Tre bottoni: **Copia diff** (clipboard), **Scarica .patch** (blob download con nome `<file>.patch`), **Mostra istruzioni** (popover: `git apply file.patch` / drag-in IDE).
-- Per le **cartelle**: la patch è multi-file (tutti gli hunk concatenati), scaricabile come `<folder>.patch`.
+- `<title>` e meta della nuova pagina `/open-source` ottimizzati per "open source AI code review guardrail"
+- JSON-LD `SoftwareApplication` su `/open-source` con `license` e `codeRepository`
+- Aggiungere link `<link rel="alternate">` alle 3 lingue se non già presenti
 
-Nessuna modifica al filesystem dell'app né al repo dell'utente: solo testo da copiare.
+## Dettagli tecnici
 
-## File toccati / nuovi
+- Tutte le nuove sezioni usano i token semantici esistenti (`border-border`, `bg-card`, `text-primary`, `font-display`) — nessun colore custom
+- Nessun nuovo pacchetto: icone Lucide già installate (`ShieldCheck`, `GitFork`, `Users`, `MessageSquare`, `Languages`, `Bot`)
+- Avatar contributors: `<img>` con `loading="lazy"` da `github.com/{user}.png?size=80` — nessuna chiamata API runtime
+- Nessuna modifica al backend, all'auth o ai server functions — è lavoro puramente di frontend/contenuto
+- Compatibilità totale con i contenuti esistenti: nulla viene rimosso, solo esteso
 
-**Nuovi:**
-- `src/lib/findings.ts` — tipo `Finding`, `extractFindings(text)`, `severityClass()`.
-- `src/lib/fix.functions.ts` — serverFn `proposeFix` e `proposeFolderFix`.
-- `src/lib/folder-analysis.functions.ts` — serverFn `aggregateFolderAnalysis` + helper batch.
-- `src/components/FindingsList.tsx` — lista finding cliccabile.
-- `src/components/DiffViewer.tsx` — Monaco read-only `diff` + bottoni copia/scarica.
-- `src/components/FolderAnalysisPanel.tsx` — tab cartella (batch + aggregato + findings cross-file).
+## File toccati
 
-**Modificati:**
-- `src/components/FileTree.tsx` — bottone "Analizza cartella" sui nodi folder, prop `onSelectFolder`.
-- `src/components/CodeViewer.tsx` — nuova prop `findings`, decorations + gutter + hover provider; espone `revealLine` via `ref`.
-- `src/lib/analysis-prompt.ts` — istruzioni per il blocco `findings-json` finale (per i kind non-`ai_origin`).
-- `src/routes/_authenticated/projects.$projectId.repos.$repoId.tsx` — stato `selectedFolder`, switch pannello file vs cartella, passaggio findings al CodeViewer, nuovo tab "Fix".
-- `src/i18n/locales/{en,it,zh}/common.json` — nuove stringhe (`workspace.folder.*`, `workspace.findings.*`, `workspace.fix.*`).
-
-## Note tecniche
-
-- **Worker runtime**: tutto resta dentro `createServerFn`, nessun pacchetto Node-only. Il diff è solo testo prodotto dal modello, niente `diff` libs lato server.
-- **Backpressure batch cartelle**: limito a `MAX_FILES_PER_FOLDER = 20` per chiamata (configurabile), saltando file binari/extra-grossi come già fa `analyzeRepoAiOrigin`.
-- **Costi**: la cache `explanations` esistente evita di rifatturare per-file. L'aggregato è 1 chiamata in più per cartella.
-- **Locali (Ollama/LM Studio)**: il batch e il fix funzionano anche con provider locali (riuso `callLocalProvider`); l'aggregato viene scritto in cache via `saveLocalAnalysis` esteso.
-- **Backward compatible**: la prop `findings` su `CodeViewer` è opzionale; se manca, comportamento attuale. Il blocco `findings-json` in coda al markdown è ignorato dal render se non parsato.
-
-Tempo stimato: ~6–8 edits coordinati, niente migrazioni DB.
+- modificati: `src/routes/index.tsx`, `src/routes/manifesto.tsx`, `src/i18n/locales/it/common.json`, `src/i18n/locales/en/common.json`, `src/i18n/locales/zh/common.json`
+- creati: `src/routes/open-source.tsx`, eventualmente `src/components/GuardrailDiagram.tsx` (componente decorativo riutilizzabile)
