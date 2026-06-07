@@ -120,7 +120,7 @@
     "dataCollectedIntro": "Decoder 仅存储运行服务所必需的数据：",
     "dataCollected": {
       "account": "账户：邮箱、显示名与创建时间（由认证模块管理）。",
-      "content": "内容：上传的文件保存在服务器的私有存储中（通过 RLS 仅所有者可访问）、元数据（路径、大小、sha256、语言、仓库来源 — zip 或 GitHub）以及生成的 AI 解释。",
+      "content": "内容：上传的文件保存在服务器的私有存储中（通过 RLS 仅所有者可访问），自最近一次使用起保留 60 天，元数据（路径、大小、sha256、语言、仓库来源 — zip 或 GitHub）以及生成的 AI 解释。",
       "credentials": "用户 API 密钥：使用 AES-256-GCM 静态加密，永不返回浏览器。BYOK 可选，Lovable AI 无需配置即可使用。",
       "usage": "使用元数据：每次解释所使用的 AI 提供商与模型、偏好语言与熟练程度、应用角色（如 admin）。无行为画像，无第三方追踪。",
       "notracking": "无广告追踪、无第三方分析、无用户画像。"
@@ -134,7 +134,7 @@
       "rights": "数据主体权利：访问、更正、删除、可携带、反对与限制处理。可在「设置 → 账户」中导出或删除数据。",
       "transfers": "欧盟外传输：仅当选择位于欧盟以外的 AI 提供商时（如 OpenAI、Anthropic、Lovable AI），并在请求前明确显示。",
       "retention": "保留期：数据保留至你明确删除账户或单项内容为止。",
-      "contact": "如需行使权利或报告事件，请在项目 GitHub 仓库（页面底部链接）提交 issue。维护者以匿名集体方式运作；沟通仅通过仓库的公共渠道进行。"
+      "contact": "如需行使 GDPR 权利（访问、更正、删除、可携带、反对、限制）或报告事件，请发邮件至 pietro@codecoder.com，我们将在 30 天内回复。"
     },
     "aiActTitle": "欧盟人工智能法案合规（欧盟 2024/1689 法规）",
     "aiActIntro": "Decoder 是被归类为有限风险的代码理解助手。",
@@ -192,7 +192,8 @@
       "w1": "绝不使用你的代码训练我们或第三方的模型。",
       "w2": "绝不出售你的数据,也不与数据经纪人共享。",
       "w3": "绝不在 AI 提供商上设置人为锁定。",
-      "w4": "绝不阻止你导出解释与注释。"
+      "w4": "绝不阻止你导出解释与注释。",
+      "w5": "绝不永久保留你的文件：60 天无活动后自动删除。"
     },
     "roadmapTitle": "公开路线图",
     "roadmapBody": "开发阶段记录在仓库的 README 与 .lovable/plan.md 中。产品决策公开讨论。"
@@ -263,6 +264,7 @@
     "githubRef": "分支 / 标签(可选)",
     "githubRefPlaceholder": "main",
     "githubOnlyPublic": "此版本仅支持公开仓库。",
+    "retentionNotice": "文件在最后一次解释后最长保留 60 天，之后自动删除。请务必导出你需要的内容。",
     "import": "导入",
     "analyzeCodebase": "分析代码库",
     "capabilityExplain": "解释任何文件",
@@ -446,6 +448,19 @@
     "notFoundTitle": "未找到页面",
     "notFoundBody": "你打开的地址不存在或已被移动。",
     "boundaryTitle": "此页面加载失败"
+  },
+  "contact": {
+    "email": "pietro@codecoder.com",
+    "kicker": "联系方式",
+    "title": "如何联系我们",
+    "intro": "Decoder 是一个非营利开源项目。以下是隐私、安全与反馈的官方渠道。",
+    "privacyTitle": "隐私与 GDPR",
+    "privacyBody": "如需行使 GDPR 权利（访问、更正、删除、可携带、反对、限制），请发邮件至下方地址。30 天内必回复。",
+    "securityTitle": "安全",
+    "securityBody": "发现漏洞？请在公开披露前以保密方式发送邮件至下方地址。",
+    "bugsTitle": "Bug 与反馈",
+    "bugsBody": "Bug、想法、改进建议：请在 GitHub 提交 issue。尽力回复。",
+    "responseTimes": "参考时效：GDPR 30 天 · 安全 7 天 · 反馈尽力而为。"
   },
   "footer": {
     "ownership": "你的代码和生成的文档属于你自己。Decoder 不会用你的仓库训练模型。",

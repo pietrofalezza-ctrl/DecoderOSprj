@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as TermsRouteImport } from './routes/terms'
 import { Route as ManifestoRouteImport } from './routes/manifesto'
 import { Route as DocsRouteImport } from './routes/docs'
+import { Route as ContactRouteImport } from './routes/contact'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
@@ -20,6 +21,7 @@ import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticat
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedProjectsProjectIdRouteImport } from './routes/_authenticated/projects.$projectId'
 import { Route as AuthenticatedProjectsProjectIdIndexRouteImport } from './routes/_authenticated/projects.$projectId.index'
+import { Route as ApiPublicHooksCleanupStaleRepositoriesRouteImport } from './routes/api/public/hooks/cleanup-stale-repositories'
 import { Route as AuthenticatedProjectsProjectIdReposRepoIdRouteImport } from './routes/_authenticated/projects.$projectId.repos.$repoId'
 
 const TermsRoute = TermsRouteImport.update({
@@ -35,6 +37,11 @@ const ManifestoRoute = ManifestoRouteImport.update({
 const DocsRoute = DocsRouteImport.update({
   id: '/docs',
   path: '/docs',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ContactRoute = ContactRouteImport.update({
+  id: '/contact',
+  path: '/contact',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthRoute = AuthRouteImport.update({
@@ -78,6 +85,12 @@ const AuthenticatedProjectsProjectIdIndexRoute =
     path: '/',
     getParentRoute: () => AuthenticatedProjectsProjectIdRoute,
   } as any)
+const ApiPublicHooksCleanupStaleRepositoriesRoute =
+  ApiPublicHooksCleanupStaleRepositoriesRouteImport.update({
+    id: '/api/public/hooks/cleanup-stale-repositories',
+    path: '/api/public/hooks/cleanup-stale-repositories',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const AuthenticatedProjectsProjectIdReposRepoIdRoute =
   AuthenticatedProjectsProjectIdReposRepoIdRouteImport.update({
     id: '/repos/$repoId',
@@ -88,6 +101,7 @@ const AuthenticatedProjectsProjectIdReposRepoIdRoute =
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
+  '/contact': typeof ContactRoute
   '/docs': typeof DocsRouteWithChildren
   '/manifesto': typeof ManifestoRoute
   '/terms': typeof TermsRoute
@@ -95,18 +109,21 @@ export interface FileRoutesByFullPath {
   '/settings': typeof AuthenticatedSettingsRoute
   '/docs/how-to-review-ai-code': typeof DocsHowToReviewAiCodeRoute
   '/projects/$projectId': typeof AuthenticatedProjectsProjectIdRouteWithChildren
+  '/api/public/hooks/cleanup-stale-repositories': typeof ApiPublicHooksCleanupStaleRepositoriesRoute
   '/projects/$projectId/': typeof AuthenticatedProjectsProjectIdIndexRoute
   '/projects/$projectId/repos/$repoId': typeof AuthenticatedProjectsProjectIdReposRepoIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
+  '/contact': typeof ContactRoute
   '/docs': typeof DocsRouteWithChildren
   '/manifesto': typeof ManifestoRoute
   '/terms': typeof TermsRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/settings': typeof AuthenticatedSettingsRoute
   '/docs/how-to-review-ai-code': typeof DocsHowToReviewAiCodeRoute
+  '/api/public/hooks/cleanup-stale-repositories': typeof ApiPublicHooksCleanupStaleRepositoriesRoute
   '/projects/$projectId': typeof AuthenticatedProjectsProjectIdIndexRoute
   '/projects/$projectId/repos/$repoId': typeof AuthenticatedProjectsProjectIdReposRepoIdRoute
 }
@@ -115,6 +132,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/auth': typeof AuthRoute
+  '/contact': typeof ContactRoute
   '/docs': typeof DocsRouteWithChildren
   '/manifesto': typeof ManifestoRoute
   '/terms': typeof TermsRoute
@@ -122,6 +140,7 @@ export interface FileRoutesById {
   '/_authenticated/settings': typeof AuthenticatedSettingsRoute
   '/docs/how-to-review-ai-code': typeof DocsHowToReviewAiCodeRoute
   '/_authenticated/projects/$projectId': typeof AuthenticatedProjectsProjectIdRouteWithChildren
+  '/api/public/hooks/cleanup-stale-repositories': typeof ApiPublicHooksCleanupStaleRepositoriesRoute
   '/_authenticated/projects/$projectId/': typeof AuthenticatedProjectsProjectIdIndexRoute
   '/_authenticated/projects/$projectId/repos/$repoId': typeof AuthenticatedProjectsProjectIdReposRepoIdRoute
 }
@@ -130,6 +149,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/auth'
+    | '/contact'
     | '/docs'
     | '/manifesto'
     | '/terms'
@@ -137,18 +157,21 @@ export interface FileRouteTypes {
     | '/settings'
     | '/docs/how-to-review-ai-code'
     | '/projects/$projectId'
+    | '/api/public/hooks/cleanup-stale-repositories'
     | '/projects/$projectId/'
     | '/projects/$projectId/repos/$repoId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/auth'
+    | '/contact'
     | '/docs'
     | '/manifesto'
     | '/terms'
     | '/dashboard'
     | '/settings'
     | '/docs/how-to-review-ai-code'
+    | '/api/public/hooks/cleanup-stale-repositories'
     | '/projects/$projectId'
     | '/projects/$projectId/repos/$repoId'
   id:
@@ -156,6 +179,7 @@ export interface FileRouteTypes {
     | '/'
     | '/_authenticated'
     | '/auth'
+    | '/contact'
     | '/docs'
     | '/manifesto'
     | '/terms'
@@ -163,6 +187,7 @@ export interface FileRouteTypes {
     | '/_authenticated/settings'
     | '/docs/how-to-review-ai-code'
     | '/_authenticated/projects/$projectId'
+    | '/api/public/hooks/cleanup-stale-repositories'
     | '/_authenticated/projects/$projectId/'
     | '/_authenticated/projects/$projectId/repos/$repoId'
   fileRoutesById: FileRoutesById
@@ -171,9 +196,11 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AuthRoute: typeof AuthRoute
+  ContactRoute: typeof ContactRoute
   DocsRoute: typeof DocsRouteWithChildren
   ManifestoRoute: typeof ManifestoRoute
   TermsRoute: typeof TermsRoute
+  ApiPublicHooksCleanupStaleRepositoriesRoute: typeof ApiPublicHooksCleanupStaleRepositoriesRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -197,6 +224,13 @@ declare module '@tanstack/react-router' {
       path: '/docs'
       fullPath: '/docs'
       preLoaderRoute: typeof DocsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/contact': {
+      id: '/contact'
+      path: '/contact'
+      fullPath: '/contact'
+      preLoaderRoute: typeof ContactRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/auth': {
@@ -254,6 +288,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/projects/$projectId/'
       preLoaderRoute: typeof AuthenticatedProjectsProjectIdIndexRouteImport
       parentRoute: typeof AuthenticatedProjectsProjectIdRoute
+    }
+    '/api/public/hooks/cleanup-stale-repositories': {
+      id: '/api/public/hooks/cleanup-stale-repositories'
+      path: '/api/public/hooks/cleanup-stale-repositories'
+      fullPath: '/api/public/hooks/cleanup-stale-repositories'
+      preLoaderRoute: typeof ApiPublicHooksCleanupStaleRepositoriesRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/_authenticated/projects/$projectId/repos/$repoId': {
       id: '/_authenticated/projects/$projectId/repos/$repoId'
@@ -313,9 +354,12 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AuthRoute: AuthRoute,
+  ContactRoute: ContactRoute,
   DocsRoute: DocsRouteWithChildren,
   ManifestoRoute: ManifestoRoute,
   TermsRoute: TermsRoute,
+  ApiPublicHooksCleanupStaleRepositoriesRoute:
+    ApiPublicHooksCleanupStaleRepositoriesRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
