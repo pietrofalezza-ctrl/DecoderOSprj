@@ -36,6 +36,32 @@ export function buildAnalysisPrompt(args: {
 
   const isAiOrigin = args.kind === "ai_origin";
 
+  const findingsBlock = isAiOrigin
+    ? ""
+    : `
+
+AFTER the prose, append a fenced code block with language tag \`findings-json\` containing a JSON array of the concrete locations referenced in your prose. Each item has shape:
+{
+  "start_line": <integer>,
+  "end_line": <integer>,
+  "severity": "info" | "low" | "medium" | "high" | "critical",
+  "title": "<short label, <=80 chars>",
+  "message": "<one-paragraph explanation tying it to the prose above>"
+}
+Rules:
+- Use the SAME line numbers you see in the file source below (1-indexed).
+- Include only findings that point to specific lines/ranges. Omit generic remarks.
+- Maximum 25 items. Keep it small and high-signal.
+- If there are NO findings, output an empty array \`[]\`.
+- Do NOT add any commentary inside the fenced block — JSON only.
+
+Example:
+\`\`\`findings-json
+[
+  {"start_line": 42, "end_line": 47, "severity": "high", "title": "Missing await on async call", "message": "fetchUser is async but its promise is dropped, leaving subsequent logic to run on undefined."}
+]
+\`\`\``;
+
   const formatRules = isAiOrigin
     ? `OUTPUT FORMAT — STRICT:
 Line 1 MUST be exactly: SCORE: <number 0-100>
@@ -45,7 +71,7 @@ Then a short Markdown body (under ~250 words) with two sections:
 - "Counter-signals" — bullets that pulled it down.
 End with one sentence reminding the reader this is a heuristic estimate, not proof.`
     : `If no issues are found, say so plainly — do not invent findings.
-Keep it under ~500 words.`;
+Keep the prose under ~500 words.${findingsBlock}`;
 
   const system = `You are Decoder, performing a focused source-code review.
 Reply in ${langName}, using Markdown with clear headings.
@@ -58,5 +84,90 @@ Never fabricate code paths you cannot infer from the file.`;
       ? args.fileContent.slice(0, 60_000) + "\n…[truncated]"
       : args.fileContent;
   const user = `File: ${args.filePath}\n\n\`\`\`\n${content}\n\`\`\``;
+  return { system, user };
+}
+
+// Prompt for a per-file unified-diff patch given the prior analysis output.
+export function buildFixPrompt(args: {
+  language: ExplanationLanguage;
+  filePath: string;
+  fileContent: string;
+  analysisMarkdown: string;
+  kindLabel: string;
+}): { system: string; user: string } {
+  const langName =
+    args.language === "it"
+      ? "Italian"
+      : args.language === "zh"
+        ? "Simplified Chinese"
+        : "English";
+
+  const system = `You are Decoder, producing a minimal, safe code patch.
+Reply in ${langName} for any prose. The patch itself uses standard unified-diff syntax.
+
+OUTPUT FORMAT — STRICT:
+1) A single fenced code block tagged \`diff\` containing a VALID unified diff.
+   - First two lines per file MUST be: "--- a/<path>" and "+++ b/<path>".
+   - Use one or more "@@ -<old>,<count> +<new>,<count> @@" hunk headers.
+   - Prefix unchanged context lines with a single space, removed lines with "-", added lines with "+".
+   - Keep at least 3 lines of unchanged context around each change when possible.
+   - Modify ONLY what is needed to address the issues; do not reformat untouched code.
+   - Preserve existing indentation style (tabs vs spaces).
+2) After the diff block, a short Markdown section "Notes" (<=120 words) explaining what changed and why, and any manual follow-up required.
+If no safe fix is possible, output an empty diff block (\`\`\`diff\n\`\`\`) and explain in Notes.
+Never invent symbols, imports, or APIs that are not in the file or its obvious context.`;
+
+  const trimmed =
+    args.fileContent.length > 60_000
+      ? args.fileContent.slice(0, 60_000) + "\n…[truncated]"
+      : args.fileContent;
+
+  const user = `Target file path (use this exact path in the diff headers): ${args.filePath}
+Analysis focus: ${args.kindLabel}
+
+=== PRIOR ANALYSIS (resolve these issues) ===
+${args.analysisMarkdown.slice(0, 12_000)}
+
+=== CURRENT FILE CONTENT ===
+\`\`\`
+${trimmed}
+\`\`\`
+`;
+  return { system, user };
+}
+
+// Aggregated folder-level report from per-file analyses.
+export function buildFolderAggregatePrompt(args: {
+  language: ExplanationLanguage;
+  kindLabel: string;
+  folderPath: string;
+  perFile: Array<{ path: string; excerpt: string }>;
+}): { system: string; user: string } {
+  const langName =
+    args.language === "it"
+      ? "Italian"
+      : args.language === "zh"
+        ? "Simplified Chinese"
+        : "English";
+  const system = `You are Decoder, producing a folder-level synthesis of per-file code reviews.
+Reply in ${langName}, using Markdown.
+Sections (in order):
+1) "## Sintesi" — 3-6 lines summarising the overall health of the folder.
+2) "## Pattern ricorrenti" — bullets of issues that repeat across multiple files (cite file names).
+3) "## Priorità" — ordered list (most urgent first) with the top 5-8 items to fix and the affected files.
+4) "## Per file" — short bullet per file with the headline issue (omit files with no findings).
+Do not invent findings. Base everything on the per-file inputs provided.`;
+
+  const items = args.perFile
+    .map((p) => `### ${p.path}\n${p.excerpt.slice(0, 4_000)}`)
+    .join("\n\n");
+
+  const user = `Folder: ${args.folderPath}
+Analysis focus: ${args.kindLabel}
+Number of files: ${args.perFile.length}
+
+=== PER-FILE REPORTS ===
+${items.slice(0, 50_000)}
+`;
   return { system, user };
 }
