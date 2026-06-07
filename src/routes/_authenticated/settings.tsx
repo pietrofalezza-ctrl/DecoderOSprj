@@ -25,12 +25,8 @@ import {
   saveLocalEndpoint,
   deleteLocalEndpoint,
 } from "@/lib/credentials.functions";
-import {
-  adminBootstrapStatus,
-  claimFirstAdmin,
-  isAdmin,
-} from "@/lib/admin.functions";
 import { exportMyData, deleteMyAccount } from "@/lib/account.functions";
+
 import { supabase } from "@/integrations/supabase/client";
 
 type Provider = "openai" | "anthropic" | "gemini" | "openrouter";
