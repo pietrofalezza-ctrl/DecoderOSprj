@@ -12,9 +12,9 @@ async function resolveCloudKey(
   provider: z.infer<typeof Provider>,
 ): Promise<string> {
   if (provider === "lovable") {
-    const k = process.env.LOVABLE_API_KEY;
-    if (!k) throw new Error("lovable_ai_not_configured");
-    return k;
+    const { assertHostedLovableAllowed } = await import("./hosted-ai-guard.server");
+    assertHostedLovableAllowed(provider);
+    return process.env.LOVABLE_API_KEY!;
   }
   const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
   const { decryptSecret } = await import("./crypto.server");
