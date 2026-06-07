@@ -1,47 +1,70 @@
+# Revisione tono degli speech
+
 ## Obiettivo
-Decoder deve offrire solo due modalità AI:
+Allineare tutti i testi rivolti all'utente a un tono **sobrio, descrittivo e onesto**, coerente con la natura del progetto (esperimento personale, open source, gratuito). Eliminare formule da pitch startup, slogan enfatici e claim "forti".
 
-1. **Locale**: Ollama / LM Studio.
-2. **BYOK**: chiavi API dell’utente per OpenAI, Anthropic, Gemini, OpenRouter.
+## Linee guida di tono
+- Niente claim assoluti o promesse ("colma il divario", "guardrail per l'era dell'IA", "in mano agli utenti, non dell'IA").
+- Niente contrapposizioni a effetto ("Generare codice è facile. Capirlo no.", "Verifica, non fiducia cieca", "Niente scatole nere").
+- Niente etichette identitarie ("Community-driven", "Privacy First", "Per tutti").
+- Verbi descrittivi al posto di verbi-manifesto ("aiuta a leggere" invece di "interroga riga per riga").
+- Mantenere il messaggio: è uno strumento di studio personale, BYOK o locale, codice e prompt pubblici.
 
-Non deve più esistere una terza opzione “AI gestita”, “gratuita”, “predefinita”, “senza chiave” o basata sulla chiave Lovable.
+## File da modificare (solo copy)
+Tutti e tre i locale, mantenuti allineati semanticamente:
+- `src/i18n/locales/it/common.json`
+- `src/i18n/locales/en/common.json`
+- `src/i18n/locales/zh/common.json`
 
-## Fix previsti
+## Sezioni interessate
 
-### 1. Rimuovere la modalità AI gestita dalla UI
-- Eliminare dalla pagina Impostazioni il riquadro “Provider AI predefinito / AI gestita”.
-- Rimuovere il provider `lovable` dalle label traducibili in italiano, inglese e cinese.
-- Aggiornare i testi “Come usare Decoder” per mostrare solo:
-  - BYOK
-  - Locale
-- Rimuovere qualsiasi riferimento a quota gratuita, “nessuna chiave richiesta”, “ready to test”, “managed AI”, “AI gestita”, “托管 AI”.
+**1. Tagline globale** (`tagline`)
+- Da: "Trasforma il codice sorgente in conoscenza leggibile"
+- A: "Uno strumento open source per leggere il codice insieme all'IA"
 
-### 2. Rimuovere la modalità AI gestita dalla logica applicativa
-- Modificare i tipi `CloudProvider` per escludere `lovable`.
-- Rimuovere `lovable` dagli input validator server-side in:
-  - explain
-  - analysis
-  - fix/patch
-  - folder analysis
-  - repo AI-origin scan
-- Rimuovere ogni branch che legge `process.env.LOVABLE_API_KEY` per richieste generate dall’utente.
-- Rimuovere il fallback/synthetic provider da `listProviders`: la lista deve contenere solo chiavi BYOK salvate dall’utente e endpoint locali.
+**2. Landing hero** (`landing.hero*`)
+- Hero: togliere l'enfasi del "ma" contrapposto. Es.: "Una parte crescente del codice è scritta dall'IA. Decoder aiuta a leggerla."
+- heroSubtitle: ridurre, togliere "Mantenuto a tempo perso", restare fattuali: progetto personale, open source MIT, BYOK o inferenza locale.
+- Badge: rimuovere "Esperimento didattico personale" (ridondante) e ammorbidire i restanti.
 
-### 3. Rimuovere il gateway gestito dal codice AI utente
-- Eliminare il ramo `provider === "lovable"` in `ai-providers.server.ts`.
-- Eliminare il modello default associato al provider gestito.
-- Rimuovere o rendere inutilizzati i file/guard dedicati a hosted AI e quota gratuita (`hosted-ai-guard.server.ts`, `rate-limit.server.ts`) se non più referenziati.
+**3. Sezione "Perché ora"** (`landing.whyNow*`)
+- Titolo: da "Generare codice è facile. Capirlo no." → "Leggere codice generato dall'IA richiede tempo."
+- Intro: rimuovere "colma quel divario"; descrivere cosa fa lo strumento.
+- whyNow3: rimuovere "guardrail collettivo"; parlare di prompt e regole pubbliche.
 
-### 4. Aggiornare copy legale/privacy
-- Sostituire i testi che dicono che BYOK è opzionale perché esiste un provider gestito.
-- Chiarire che le chiamate cloud avvengono solo quando l’utente configura e usa una propria chiave BYOK.
-- Nei trasferimenti extra-UE, rimuovere il riferimento al gateway gestito.
+**4. Strip open source** (`landing.osStrip`)
+- Titolo: rimuovere la formula "guardrail nelle tue mani, non in quelle dell'IA".
+- Body: descrittivo (codice pubblico, ispezionabile, contributi aperti).
+- Rimuovere etichetta "Comunitario" se troppo identitaria → "Contributi aperti".
 
-### 5. Mantenere le feature esistenti senza regressioni
-- Le analisi file, summary, quality, security, AI-origin e patch continueranno a funzionare con BYOK.
-- Le analisi locali continueranno a funzionare con Ollama / LM Studio dove già supportate.
-- Le schermate che richiedono un provider cloud mostreranno “configura una chiave BYOK” invece di suggerire AI gratuita/gestita.
+**5. Missione / guardrail** (`landing.guardrail`)
+- Rinominare concettualmente da "La missione" a "Cosa fa Decoder".
+- Sostituire "guardrail open source per l'era dell'IA generativa" con descrizione neutra ("Uno strumento aperto per leggere il codice generato dall'IA").
+- Punti: togliere "Verifica, non fiducia cieca", "In mano agli utenti", "In evoluzione continua" → titoli descrittivi (es. "Output da verificare", "Codice e prompt pubblici", "Estendibile dalla community").
 
-## Note tecniche
-- Non verranno rimossi gli identificatori infrastrutturali non legati all’uso AI da parte dell’utente, come dominio preview/canonical o helper di autenticazione interni, salvo testo visibile all’utente.
-- Non serve una migrazione database: eventuali vecchie righe storiche con provider `lovable` possono restare come record legacy, ma non saranno più selezionabili né invocabili dall’app.
+**6. Community** (`landing.community`)
+- Kicker "Community-driven" → "Contributi"
+- Titolo "Costruito da chi lo usa" → "Aperto ai contributi"
+- Body più asciutto.
+
+**7. Value props** (`landing.value*`)
+- "Privacy First" → "Privacy"
+- "Nessun Vendor Lock-in" → "BYOK"
+- "Per tutti" → "Più livelli di lettura" (più aderente)
+
+**8. Manifesto** (`manifesto.*`)
+- Già in tono "note di progetto"; solo piccole limature: rimuovere residui enfatici ("nasconde bug, scelte discutibili o vulnerabilità" → "può contenere bug o scelte non ottimali").
+
+**9. Open source page** (`openSource.*`)
+- Intro: togliere "è solo così che ha senso condividere"; restare descrittivi.
+- Roadmap: rimuovere "guardrail" dal punto VS Code.
+
+## Vincoli
+- Solo modifiche di copy nei tre file di locale.
+- Nessuna modifica a componenti, logica, chiavi i18n (preservare struttura JSON e nomi chiave).
+- Mantenere parità semantica IT / EN / ZH.
+- Non rimuovere disclaimer legali o tecnici.
+
+## Verifica
+- Diff sui tre `common.json`, rilettura sezioni `landing`, `manifesto`, `openSource`, `tagline`.
+- Nessuna chiave aggiunta o rinominata → nessun impatto sui componenti.
