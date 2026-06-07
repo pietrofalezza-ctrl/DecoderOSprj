@@ -8,7 +8,7 @@
     "home": "Home",
     "tryAgain": "Riprova",
     "goToDashboard": "Vai alla dashboard",
-    "repoUrl": "https://github.com/de-coder/de-coder"
+    "repoUrl": "https://github.com/pietrofalezza-ctrl/DecoderOSprj"
   },
   "nav": {
     "dashboard": "Dashboard",
@@ -29,10 +29,10 @@
   },
   "landing": {
     "hero": "Sempre più codice è scritto dall'IA, <1>ma</1> tu hai ancora bisogno di comprenderlo.",
-    "heroSubtitle": "Decoder è il layer di comprensione del codice nell'era dell'IA. Leggi, revisiona e fai audit del codice generato da Copilot, Cursor, Lovable o dai tuoi colleghi — in italiano, alla tua profondità tecnica.",
-    "heroBadgeOpen": "Open Source",
-    "heroBadgePrivacy": "Privacy First",
-    "heroBadgeAiEra": "Per l'era del codice IA",
+    "heroSubtitle": "Decoder è un case study open source — un esperimento didattico su come LLM e codice possano dialogare in modo trasparente. Non è un prodotto commerciale: è codice pubblico, replicabile, da leggere, forkare e capire. BYOK o 100% locale.",
+    "heroBadgeOpen": "Case study OS · No profit",
+    "heroBadgePrivacy": "Privacy First · BYOK",
+    "heroBadgeAiEra": "Esperimento didattico LLM + codice",
     "ctaStart": "Inizia ora",
     "ctaSignIn": "Accedi",
     "ctaGithub": "Vedi su GitHub",
