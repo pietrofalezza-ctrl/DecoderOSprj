@@ -76,12 +76,15 @@ function WorkspacePage() {
   const saveLocalA = useServerFn(saveLocalAnalysis);
   const exportFn = useServerFn(exportRepoMarkdown);
   const repoAiOriginFn = useServerFn(analyzeRepoAiOrigin);
+  const proposeFix = useServerFn(proposeFileFix);
   const search = Route.useSearch();
 
   const repo = useQuery({ queryKey: ["repo", repoId], queryFn: () => getRepo({ data: { id: repoId } }) });
   const provs = useQuery({ queryKey: ["providers"], queryFn: () => providersFn() });
 
   const [selectedFileId, setSelectedFileId] = useState<string | null>(null);
+  const [selectedFolderPath, setSelectedFolderPath] = useState<string | null>(null);
+  const codeRef = useRef<CodeViewerHandle | null>(null);
   const [proficiency, setProficiency] = useState<Proficiency>("intermediate");
   const [providerValue, setProviderValue] = useState<ProviderValue | "">("");
   const [mainTab, setMainTab] = useState<MainTab>("summary");
