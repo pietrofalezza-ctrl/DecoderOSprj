@@ -324,12 +324,57 @@ function WorkspacePage() {
     onError: (e: any) => toast.error(e?.message ?? t("errors.generic")),
   });
 
+  // Best source of findings for the active "issue" tab.
+  const sourceTextForFindings = useMemo(() => {
+    if (mainTab === "quality") return qualityText;
+    if (mainTab === "security") return securityText;
+    return "";
+  }, [mainTab, qualityText, securityText]);
+
+  const totalLines = fileQ.data?.content ? fileQ.data.content.split("\n").length : 100_000;
+  const findings: Finding[] = useMemo(
+    () => extractFindings(sourceTextForFindings, totalLines),
+    [sourceTextForFindings, totalLines],
+  );
+
+  const fixSourceAnalysis = useMemo(() => {
+    // Prefer whichever issue analysis the user just ran.
+    if (qualityText) return { kind: qualityKind, text: qualityText };
+    if (securityText) return { kind: "security" as const, text: securityText };
+    return null;
+  }, [qualityText, securityText, qualityKind]);
+
+  const fixMut = useMutation({
+    mutationFn: async () => {
+      if (!selectedFileId) throw new Error("no_file");
+      if (!providerValue.startsWith("cloud:")) throw new Error(t("workspace.fix.needsCloud"));
+      if (!fixSourceAnalysis) throw new Error(t("workspace.fix.needsAnalysis"));
+      const provider = providerValue.slice(6) as CloudProvider;
+      const r = await proposeFix({
+        data: {
+          file_id: selectedFileId,
+          kind: fixSourceAnalysis.kind,
+          language: lang,
+          provider,
+          analysis_markdown: fixSourceAnalysis.text,
+        },
+      });
+      return r.content;
+    },
+    onSuccess: (text) => {
+      setFixText(text);
+      setMainTab("fix");
+    },
+    onError: (e: any) => toast.error(e?.message ?? t("errors.generic")),
+  });
+
   const activeText = useMemo(() => {
     if (mainTab === "summary") return summaryText;
     if (mainTab === "quality") return qualityText;
     if (mainTab === "ai_origin") return aiOriginText;
+    if (mainTab === "fix") return fixText;
     return securityText;
-  }, [mainTab, summaryText, qualityText, securityText, aiOriginText]);
+  }, [mainTab, summaryText, qualityText, securityText, aiOriginText, fixText]);
 
   const mdFilename = useMemo(() => {
     const base = fileQ.data?.path?.split("/").pop() ?? "explanation";
@@ -340,7 +385,9 @@ function WorkspacePage() {
           ? `quality.${qualityKind}`
           : mainTab === "ai_origin"
             ? `ai-origin`
-            : `security`;
+            : mainTab === "fix"
+              ? `fix`
+              : `security`;
     return `${base}.${suffix}.md`;
   }, [fileQ.data?.path, mainTab, summarySub, proficiency, qualityKind]);
 
@@ -370,13 +417,22 @@ function WorkspacePage() {
     if (mainTab === "summary") explainMut.mutate();
     else if (mainTab === "quality") qualityMut.mutate();
     else if (mainTab === "ai_origin") aiOriginMut.mutate();
+    else if (mainTab === "fix") fixMut.mutate();
     else securityMut.mutate();
   };
   const isRunning =
     (mainTab === "summary" && explainMut.isPending) ||
     (mainTab === "quality" && qualityMut.isPending) ||
     (mainTab === "ai_origin" && aiOriginMut.isPending) ||
-    (mainTab === "security" && securityMut.isPending);
+    (mainTab === "security" && securityMut.isPending) ||
+    (mainTab === "fix" && fixMut.isPending);
+
+  const jumpToFinding = (f: Finding) => {
+    codeRef.current?.revealLine(f.start_line, {
+      select: { from: f.start_line, to: f.end_line },
+    });
+  };
+
 
   const canRunRepoAi = providerValue.startsWith("cloud:");
 
