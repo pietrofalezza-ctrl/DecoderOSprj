@@ -577,17 +577,19 @@
     "boundaryTitle": "Questa pagina non si è caricata"
   },
   "contact": {
-    "email": "pietro@codecoder.com",
     "kicker": "Contatti",
     "title": "Come raggiungerci",
-    "intro": "Decoder è un progetto open source no-profit. Ecco i canali ufficiali per privacy, sicurezza e feedback.",
+    "intro": "Decoder è un progetto open source no-profit. Tutti i canali ufficiali passano da GitHub: pubblico per i bug, privato (Security Advisories) per vulnerabilità e dati personali.",
     "privacyTitle": "Privacy & GDPR",
-    "privacyBody": "Per esercitare i tuoi diritti GDPR (accesso, rettifica, cancellazione, portabilità, opposizione, limitazione) scrivi all'indirizzo qui sotto. Risposta garantita entro 30 giorni.",
+    "privacyBody": "Per esercitare i tuoi diritti GDPR (accesso, rettifica, cancellazione, portabilità, opposizione, limitazione) apri una richiesta sul repository. Se la richiesta contiene dati personali, usa il canale privato Security Advisories.",
+    "privacyCta": "Apri richiesta GDPR su GitHub",
     "securityTitle": "Sicurezza",
-    "securityBody": "Hai trovato una vulnerabilità? Segnalala in modo riservato all'indirizzo qui sotto prima di renderla pubblica.",
+    "securityBody": "Hai trovato una vulnerabilità? Segnalala in modo riservato tramite GitHub Security Advisories — il canale è privato fino al fix coordinato.",
+    "securityCta": "Apri Security Advisory privato",
     "bugsTitle": "Bug & feedback",
-    "bugsBody": "Per bug, idee, miglioramenti: apri una issue su GitHub. Risposta best-effort.",
-    "responseTimes": "Tempi indicativi: GDPR entro 30 giorni · sicurezza entro 7 giorni · feedback best-effort."
+    "bugsBody": "Per bug, idee e miglioramenti apri una issue pubblica sul repository.",
+    "bugsCta": "Apri Issue su GitHub",
+    "cookieNote": "Decoder non usa analytics né tracker di terze parti. L'unico cookie impostato è una preferenza tecnica dell'interfaccia (stato della sidebar): nessun consenso richiesto ai sensi della direttiva ePrivacy."
   },
   "footer": {
     "ownership": "Il tuo codice e la documentazione generata appartengono a te. Decoder non addestra modelli sulle tue repository.",
