@@ -55,9 +55,9 @@ export const aggregateFolderAnalysis = createServerFn({ method: "POST" })
 
     let apiKey: string;
     if (data.provider === "lovable") {
-      const k = process.env.LOVABLE_API_KEY;
-      if (!k) throw new Error("lovable_ai_not_configured");
-      apiKey = k;
+      const { assertHostedLovableAllowed } = await import("./hosted-ai-guard.server");
+      assertHostedLovableAllowed(data.provider);
+      apiKey = process.env.LOVABLE_API_KEY!;
     } else {
       const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
       const { decryptSecret } = await import("./crypto.server");

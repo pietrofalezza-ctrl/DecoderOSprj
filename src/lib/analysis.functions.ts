@@ -47,9 +47,9 @@ export const runAnalysis = createServerFn({ method: "POST" })
 
     let apiKey: string;
     if (data.provider === "lovable") {
-      const k = process.env.LOVABLE_API_KEY;
-      if (!k) throw new Error("lovable_ai_not_configured");
-      apiKey = k;
+      const { assertHostedLovableAllowed } = await import("./hosted-ai-guard.server");
+      assertHostedLovableAllowed(data.provider);
+      apiKey = process.env.LOVABLE_API_KEY!;
     } else {
       // Raw encrypted_key is NOT readable via the Data API (column-level GRANT
       // excludes it); use the admin client, scoped explicitly to the JWT user.
@@ -179,9 +179,9 @@ export const analyzeRepoAiOrigin = createServerFn({ method: "POST" })
     // Resolve API key
     let apiKey: string;
     if (data.provider === "lovable") {
-      const k = process.env.LOVABLE_API_KEY;
-      if (!k) throw new Error("lovable_ai_not_configured");
-      apiKey = k;
+      const { assertHostedLovableAllowed } = await import("./hosted-ai-guard.server");
+      assertHostedLovableAllowed(data.provider);
+      apiKey = process.env.LOVABLE_API_KEY!;
     } else {
       const { data: cred, error: cErr } = await supabaseAdmin
         .from("user_ai_credentials")
