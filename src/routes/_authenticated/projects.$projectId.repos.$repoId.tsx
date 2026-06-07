@@ -731,11 +731,22 @@ function WorkspacePage() {
                 <div className="flex items-center justify-between px-2 pt-2">
                   <TabsList>
                     <TabsTrigger value="summary">{t("workspace.tabs.summary")}</TabsTrigger>
-                    <TabsTrigger value="quality">{t("workspace.tabs.quality")}</TabsTrigger>
+                    <TabsTrigger value="quality" className="gap-1">
+                      {t("workspace.tabs.quality")}
+                      {mainTab !== "quality" && findings.length > 0 && qualityText && (
+                        <span className="rounded-full bg-primary/15 px-1.5 text-[10px] tabular-nums text-primary">
+                          {findings.length}
+                        </span>
+                      )}
+                    </TabsTrigger>
                     <TabsTrigger value="security">{t("workspace.tabs.security")}</TabsTrigger>
                     <TabsTrigger value="ai_origin" className="gap-1">
                       <Bot className="h-3 w-3" />
                       {t("workspace.tabs.aiOrigin")}
+                    </TabsTrigger>
+                    <TabsTrigger value="fix" className="gap-1">
+                      <Wrench className="h-3 w-3" />
+                      {t("workspace.tabs.fix")}
                     </TabsTrigger>
                   </TabsList>
                   <div className="flex items-center gap-1">
