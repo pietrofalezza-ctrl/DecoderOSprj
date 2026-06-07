@@ -1,15 +1,18 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 import { z } from "zod";
-import { Sparkles, Copy, Download, ShieldCheck, FileDown, BugPlay, Bot, ScanSearch, ArrowLeft, ArrowRight, KeyRound, CheckCircle2, AlertCircle, Play } from "lucide-react";
+import { Sparkles, Copy, Download, ShieldCheck, FileDown, BugPlay, Bot, ScanSearch, ArrowLeft, ArrowRight, KeyRound, CheckCircle2, AlertCircle, Play, Wrench } from "lucide-react";
 
 import { AppShell } from "@/components/AppShell";
 import { FileTree } from "@/components/FileTree";
-import { CodeViewer, type CodeSelection } from "@/components/CodeViewer";
+import { CodeViewer, type CodeSelection, type CodeViewerHandle } from "@/components/CodeViewer";
+import { FindingsList } from "@/components/FindingsList";
+import { DiffViewer, extractDiffBlock, extractNotes } from "@/components/DiffViewer";
+import { FolderAnalysisPanel } from "@/components/FolderAnalysisPanel";
 
 import { Button } from "@/components/ui/button";
 import {
