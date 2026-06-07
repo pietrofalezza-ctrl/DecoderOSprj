@@ -14,8 +14,6 @@ async function resolveCloudKey(
   if (provider === "lovable") {
     const { assertHostedLovableAllowed } = await import("./hosted-ai-guard.server");
     assertHostedLovableAllowed(provider);
-    const { assertByokAckAccepted } = await import("./byok-acknowledgement.functions");
-    await assertByokAckAccepted(supabase, userId);
     return process.env.LOVABLE_API_KEY!;
   }
   const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
@@ -44,6 +42,8 @@ export const proposeFileFix = createServerFn({ method: "POST" })
     }),
   )
   .handler(async ({ context, data }) => {
+    const { assertByokAckAccepted } = await import("./byok-acknowledgement.functions");
+    await assertByokAckAccepted(context.supabase, context.userId);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { callCloudProvider } = await import("./ai-providers.server");
     const { buildFixPrompt } = await import("./analysis-prompt");
@@ -101,6 +101,8 @@ export const proposeFolderFix = createServerFn({ method: "POST" })
     }),
   )
   .handler(async ({ context, data }) => {
+    const { assertByokAckAccepted } = await import("./byok-acknowledgement.functions");
+    await assertByokAckAccepted(context.supabase, context.userId);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { callCloudProvider } = await import("./ai-providers.server");
     const { buildFixPrompt } = await import("./analysis-prompt");
