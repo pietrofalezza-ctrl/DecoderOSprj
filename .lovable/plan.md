@@ -1,30 +1,39 @@
-## Grafiche LinkedIn (italiano) per Decoder
+## Rigenerazione grafiche LinkedIn — stile unificato "Problema/Soluzione"
 
-Genererò **3 immagini** (una per ogni post LinkedIn già scritto in `launch/posts_IT.md`), salvate in `/mnt/documents/launch/`.
+Rigenero tutte e 3 le grafiche LinkedIn usando lo **stesso stile della slide 2** (sfondo crema #f5f3ee, serif drammatico per il payoff, mono rosso per il label, hairline divider, contrasto editoriale tipo NYT/Swiss), aggiungendo un tocco più **edutainment**: ogni grafica avrà un piccolo "visual device" giocoso/didattico in alto (tipo il `PR↑↑↑ / REVIEW UMANE →` della slide 2) che illustra il concetto in modo immediato, senza cambiare i payoff.
 
-### Formato
-- **Dimensioni**: 1200×1200 px (quadrato, ottimale per il feed LinkedIn — massima area visibile su mobile e desktop)
-- **Stile coerente** con le slide Instagram già esistenti (stesso linguaggio visivo, palette, tipografia tecnica/editoriale), ma con layout pensato per il singolo post LinkedIn (più "statement", meno "carosello")
-- **Branding**: "DECODER" + URL GitHub presente in modo discreto su ogni immagine
-- **Premium quality** (testo nitido e leggibile)
+### Stile condiviso (locked)
+- 1200×1200, sfondo crema `#f5f3ee`
+- Label rosso mono in alto a sinistra: `DECODER · [SEZIONE]`
+- Visual device nero in alto (tipografico, no icone generiche)
+- Hairline divider orizzontale
+- Payoff principale in serif drammatico nero (stesso peso/scala della slide 2)
+- Sub-line sans-serif piccola grigia
+- `github.com/pietrofalezza-ctrl/DecoderOSprj` bottom-right
+- Premium quality
 
-### Le 3 grafiche
+### Le 3 grafiche (payoff invariati)
 
-1. **`li_post_1_manifesto.png`** — Manifesto / case study OS
-   Statement centrale: *"Un case study open source su come LLM e codebase possono dialogare — in modo trasparente."*
-   Tag: MIT · BYOK · 100% Locale
+1. **`li_post_1_manifesto_v2.png`** — `DECODER · MANIFESTO`
+   - Visual device: `{ LLM } = { CODE }` (in mono, con il `=` evidenziato — richiama il logo)
+   - Payoff: *"Un case study open source su come LLM e codebase possono dialogare — in modo trasparente."*
+   - Sub: `MIT · BYOK · 100% LOCALE`
 
-2. **`li_post_2_problema.png`** — Problema / soluzione
-   Statement: *"Sempre più codice in produzione non l'ha scritto nessuno del team. Prima di generarne altro, capiamo meglio quello che già esiste."*
-   Visivo: contrasto "PR ↑ / Review umane →"
+2. **`li_post_2_problema_v2.png`** — già perfetta, **la rigenero identica** per coerenza di set (stesso prompt della v1)
+   - Payoff invariato: *"Sempre più codice in produzione non l'ha scritto nessuno del team."*
 
-3. **`li_post_3_byok.png`** — BYOK + Locale, perché conta
-   Statement: *"Il tuo codice è tuo. BYOK o 100% offline con Ollama / LM Studio."*
-   Visivo: tre punti chiave (Privacy · Costi · Offline)
+3. **`li_post_3_byok_v2.png`** — `DECODER · BYOK + LOCALE`
+   - Visual device: `[ TUO CODICE ] → [ TUO LLM ]` (con freccia che NON passa per un cloud — piccolo "✗ cloud" barrato sotto, in mono)
+   - Payoff: *"Il tuo codice è tuo. BYOK o 100% offline con Ollama / LM Studio."*
+   - Sub: `PRIVACY · COSTI · OFFLINE`
+
+### File
+- Salvataggio in `/mnt/documents/launch/` con suffisso `_v2` (mantengo le v1 esistenti per confronto)
+- QA visivo dopo generazione: leggibilità testo italiano, allineamento, niente overflow
 
 ### Fuori scope
-- Niente nuove varianti delle slide Instagram (restano quelle già generate)
-- Niente formato orizzontale 1200×627 (a meno che tu non lo voglia: dimmelo e lo aggiungo)
-- Niente modifiche al testo dei post in `posts_IT.md`
+- Nessuna modifica ai testi dei payoff
+- Nessuna modifica alle slide Instagram
+- Nessun formato orizzontale aggiuntivo
 
 Confermi e procedo?
