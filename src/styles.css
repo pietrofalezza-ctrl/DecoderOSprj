@@ -137,3 +137,37 @@
     font-feature-settings: "liga", "dlig", "kern";
   }
 }
+
+/* Decoder analysis findings — Monaco line decorations */
+.decoder-finding {
+  border-left: 3px solid transparent;
+}
+.decoder-finding--high {
+  background-color: rgba(239, 68, 68, 0.14) !important;
+  border-left-color: rgb(239, 68, 68);
+}
+.decoder-finding--medium {
+  background-color: rgba(245, 158, 11, 0.14) !important;
+  border-left-color: rgb(245, 158, 11);
+}
+.decoder-finding--low {
+  background-color: rgba(56, 189, 248, 0.12) !important;
+  border-left-color: rgb(56, 189, 248);
+}
+.decoder-finding--info {
+  background-color: rgba(148, 163, 184, 0.12) !important;
+  border-left-color: rgb(148, 163, 184);
+}
+.decoder-finding--active {
+  outline: 1px dashed rgba(255, 255, 255, 0.35);
+}
+.decoder-finding-glyph {
+  background-color: currentColor;
+  width: 4px !important;
+  margin-left: 6px;
+  border-radius: 2px;
+}
+.decoder-finding-glyph--high { color: rgb(239, 68, 68); }
+.decoder-finding-glyph--medium { color: rgb(245, 158, 11); }
+.decoder-finding-glyph--low { color: rgb(56, 189, 248); }
+.decoder-finding-glyph--info { color: rgb(148, 163, 184); }
