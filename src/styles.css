@@ -171,3 +171,23 @@
 .decoder-finding-glyph--medium { color: rgb(245, 158, 11); }
 .decoder-finding-glyph--low { color: rgb(56, 189, 248); }
 .decoder-finding-glyph--info { color: rgb(148, 163, 184); }
+
+/* Category-colored decorations (used when a finding has a category). */
+.decoder-cat--summary       { background-color: rgba(20, 184, 166, 0.12) !important; border-left-color: rgb(20, 184, 166); }
+.decoder-cat--comment       { background-color: rgba(20, 184, 166, 0.10) !important; border-left-color: rgb(20, 184, 166); }
+.decoder-cat--quality       { background-color: rgba(245, 158, 11, 0.14) !important; border-left-color: rgb(245, 158, 11); }
+.decoder-cat--security      { background-color: rgba(239, 68, 68, 0.14) !important;  border-left-color: rgb(239, 68, 68); }
+.decoder-cat--architecture  { background-color: rgba(59, 130, 246, 0.12) !important; border-left-color: rgb(59, 130, 246); }
+.decoder-cat--ai-origin     { background-color: rgba(139, 92, 246, 0.12) !important; border-left-color: rgb(139, 92, 246); }
+
+.decoder-cat-glyph--summary      { color: rgb(20, 184, 166); }
+.decoder-cat-glyph--comment      { color: rgb(20, 184, 166); }
+.decoder-cat-glyph--quality      { color: rgb(245, 158, 11); }
+.decoder-cat-glyph--security     { color: rgb(239, 68, 68); }
+.decoder-cat-glyph--architecture { color: rgb(59, 130, 246); }
+.decoder-cat-glyph--ai-origin    { color: rgb(139, 92, 246); }
+
+.decoder-finding--active-strong {
+  outline: 2px solid rgba(255, 255, 255, 0.5);
+  outline-offset: -2px;
+}
