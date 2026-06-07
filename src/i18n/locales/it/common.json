@@ -322,7 +322,9 @@
     "empty": "Non hai ancora progetti.",
     "projectNamePlaceholder": "Nome progetto",
     "projectDescPlaceholder": "Descrizione (opzionale)",
-    "create": "Crea"
+    "create": "Crea",
+    "deleteProject": "Elimina progetto",
+    "deleteProjectConfirm": "Eliminare il progetto \"{{name}}\" con tutti i suoi repository, file e spiegazioni? L'operazione è irreversibile."
   },
   "howToUse": {
     "title": "Come usare Decoder",
