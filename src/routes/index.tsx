@@ -224,7 +224,7 @@ function Landing() {
             <p className="text-xs font-semibold uppercase tracking-wide text-primary">
               {t("landing.whyNowKicker")}
             </p>
-            <h2 className="mt-2 text-3xl font-semibold tracking-tight md:text-4xl">
+            <h2 className="mt-2 font-display text-4xl font-medium tracking-tight md:text-5xl">
               {t("landing.whyNowTitle")}
             </h2>
             <p className="mt-3 text-muted-foreground">{t("landing.whyNowIntro")}</p>
@@ -273,7 +273,7 @@ function Landing() {
       {/* How it works */}
       <section id="how-it-works" className="border-t border-border/60 bg-card/40">
         <div className="mx-auto max-w-7xl px-6 py-16">
-          <h2 className="text-3xl font-semibold tracking-tight">{t("landing.howTitle")}</h2>
+          <h2 className="font-display text-4xl font-medium tracking-tight">{t("landing.howTitle")}</h2>
           <p className="mt-2 max-w-2xl text-muted-foreground">{t("landing.howIntro")}</p>
           <ol className="mt-10 grid gap-6 md:grid-cols-3">
             <Step n={1} title={t("landing.step1Title")} body={t("landing.step1Body")} />
@@ -285,7 +285,7 @@ function Landing() {
 
       {/* Integrations */}
       <section id="integrations" className="mx-auto max-w-7xl px-6 py-16">
-        <h2 className="text-3xl font-semibold tracking-tight">{t("landing.integrationsTitle")}</h2>
+        <h2 className="font-display text-4xl font-medium tracking-tight">{t("landing.integrationsTitle")}</h2>
         <p className="mt-2 max-w-2xl text-muted-foreground">{t("landing.integrationsBody")}</p>
         <div className="mt-8 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
           {["OpenAI", "Anthropic", "Google Gemini", "OpenRouter", "Ollama", "LM Studio", "GitHub"].map(
