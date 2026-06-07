@@ -56,7 +56,6 @@ function SettingsPage() {
   const saveEndpoint = useServerFn(saveLocalEndpoint);
   const removeEndpoint = useServerFn(deleteLocalEndpoint);
   const { requireAck } = useByokAck();
-  const { requireAck } = useByokAck();
 
   const profile = useQuery({ queryKey: ["profile"], queryFn: () => getProfile() });
   const prov = useQuery({ queryKey: ["providers"], queryFn: () => list() });
