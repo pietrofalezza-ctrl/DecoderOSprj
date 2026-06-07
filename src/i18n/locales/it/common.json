@@ -318,7 +318,49 @@
       "technical": "Riassunto tecnico",
       "quality": "Qualità",
       "security": "Sicurezza",
-      "aiOrigin": "Origine AI"
+      "aiOrigin": "Origine AI",
+      "fix": "Fix"
+    },
+    "findings": {
+      "title": "Punti evidenziati",
+      "empty": "Nessun riferimento di riga rilevato. Esegui un'analisi per evidenziare i punti nel codice.",
+      "jumpHint": "Clicca un finding per evidenziarlo nell'editor"
+    },
+    "folder": {
+      "title": "Cartella selezionata",
+      "close": "Chiudi",
+      "kind": "Tipo di analisi",
+      "needsCloud": "L'analisi di una cartella richiede un provider cloud.",
+      "fileCount": "{{count}} file da analizzare (su {{total}} nella cartella)",
+      "truncated": "+{{count}} file non analizzati per contenere i costi",
+      "runAll": "Analizza tutta la cartella",
+      "runningLabel": "In corso… {{done}}/{{total}}",
+      "tabSummary": "Sintesi cartella",
+      "tabFiles": "Per file",
+      "aggregating": "Sintesi finale in corso…",
+      "aggregatePending": "Analisi completata. Generazione della sintesi cartella…",
+      "emptyHint": "Premi \"Analizza tutta la cartella\" per iniziare.",
+      "noFindings": "Nessun finding strutturato per questo file."
+    },
+    "fix": {
+      "tab": "Fix",
+      "generate": "Genera patch per questo file",
+      "generateFolder": "Genera patch combinata per la cartella",
+      "generating": "Generazione patch…",
+      "empty": "Nessun diff disponibile. Esegui prima l'analisi e poi genera la patch.",
+      "noFindings": "Nessun finding su cui basare la patch.",
+      "needsAnalysis": "Esegui prima un'analisi su questo file.",
+      "needsCloud": "La generazione di patch richiede un provider cloud.",
+      "copyDiff": "Copia diff",
+      "copied": "Diff copiato negli appunti.",
+      "downloadPatch": "Scarica .patch",
+      "showRaw": "Solo testo",
+      "showEditor": "Editor",
+      "howToApply": "Come applicare",
+      "howToTitle": "Applica la patch al tuo repo",
+      "how1": "Salva il file .patch nella radice del tuo progetto.",
+      "how3": "Verifica con `git diff` e committa le modifiche.",
+      "notes": "Note del modello"
     }
   },
   "analysis": {

@@ -318,7 +318,49 @@
       "technical": "Technical summary",
       "quality": "Quality",
       "security": "Security",
-      "aiOrigin": "AI origin"
+      "aiOrigin": "AI origin",
+      "fix": "Fix"
+    },
+    "findings": {
+      "title": "Highlighted spots",
+      "empty": "No line references detected. Run an analysis to highlight spots in the code.",
+      "jumpHint": "Click a finding to highlight it in the editor"
+    },
+    "folder": {
+      "title": "Selected folder",
+      "close": "Close",
+      "kind": "Analysis kind",
+      "needsCloud": "Folder analysis requires a cloud provider.",
+      "fileCount": "{{count}} files queued (of {{total}} in folder)",
+      "truncated": "+{{count}} files skipped to control cost",
+      "runAll": "Analyze whole folder",
+      "runningLabel": "Running… {{done}}/{{total}}",
+      "tabSummary": "Folder summary",
+      "tabFiles": "Per file",
+      "aggregating": "Generating folder summary…",
+      "aggregatePending": "Analysis complete. Generating folder summary…",
+      "emptyHint": "Press \"Analyze whole folder\" to start.",
+      "noFindings": "No structured findings for this file."
+    },
+    "fix": {
+      "tab": "Fix",
+      "generate": "Generate patch for this file",
+      "generateFolder": "Generate combined folder patch",
+      "generating": "Generating patch…",
+      "empty": "No diff yet. Run the analysis first, then generate a patch.",
+      "noFindings": "No findings to base the patch on.",
+      "needsAnalysis": "Run an analysis on this file first.",
+      "needsCloud": "Patch generation requires a cloud provider.",
+      "copyDiff": "Copy diff",
+      "copied": "Diff copied to clipboard.",
+      "downloadPatch": "Download .patch",
+      "showRaw": "Plain text",
+      "showEditor": "Editor",
+      "howToApply": "How to apply",
+      "howToTitle": "Apply the patch to your repo",
+      "how1": "Save the .patch file at your project root.",
+      "how3": "Review with `git diff` and commit.",
+      "notes": "Model notes"
     }
   },
   "analysis": {
