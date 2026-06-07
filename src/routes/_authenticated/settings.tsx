@@ -4,7 +4,14 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
-import { ShieldCheck, Sparkles, Download, Trash2 } from "lucide-react";
+import {
+  ShieldCheck,
+  Sparkles,
+  Download,
+  Trash2,
+  FileCheck2,
+  AlertTriangle,
+} from "lucide-react";
 
 import { AppShell } from "@/components/AppShell";
 import { Button } from "@/components/ui/button";
@@ -26,6 +33,8 @@ import {
   deleteLocalEndpoint,
 } from "@/lib/credentials.functions";
 import { exportMyData, deleteMyAccount } from "@/lib/account.functions";
+import { listByokAckHistory } from "@/lib/byok-acknowledgement.functions";
+import { useByokAck } from "@/hooks/use-byok-ack";
 
 import { supabase } from "@/integrations/supabase/client";
 
