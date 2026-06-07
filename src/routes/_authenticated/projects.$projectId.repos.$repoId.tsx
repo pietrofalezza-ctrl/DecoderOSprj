@@ -608,13 +608,50 @@ function WorkspacePage() {
                   </div>
                 </div>
               ) : fileQ.data ? (
-                <CodeViewer
-                  ref={codeRef}
-                  content={fileQ.data.content}
-                  language={fileQ.data.language}
-                  onSelectionChange={setSelection}
-                  findings={findings}
-                />
+                <div className="relative h-full">
+                  <CodeViewer
+                    ref={codeRef}
+                    content={fileQ.data.content}
+                    language={fileQ.data.language}
+                    onSelectionChange={setSelection}
+                    findings={findings}
+                    activeFindingId={activeFindingId}
+                    onMarkerClick={(f) => {
+                      setActiveFindingId(f.id ?? null);
+                      // surface its tab if the active one doesn't contain it
+                      if (f.category === "summary" || f.category === "comment") setMainTab("summary");
+                      else if (f.category === "security") setMainTab("security");
+                      else if (f.category === "quality") setMainTab("quality");
+                    }}
+                  />
+                  {selection && (
+                    <div className="pointer-events-auto absolute right-3 top-3 z-20 flex flex-wrap items-center gap-1 rounded-md border border-border bg-card/95 p-1 shadow-md backdrop-blur">
+                      <span className="px-1.5 text-[10px] font-mono text-muted-foreground">
+                        {t("insights.lineRange", {
+                          range:
+                            selection.startLine === selection.endLine
+                              ? `${selection.startLine}`
+                              : `${selection.startLine}–${selection.endLine}`,
+                        })}
+                      </span>
+                      <Button size="sm" variant="ghost" className="h-6 px-2 text-[10px]" onClick={() => runFromSelection("explain")}>
+                        {t("insights.selection.explain")}
+                      </Button>
+                      <Button size="sm" variant="ghost" className="h-6 px-2 text-[10px]" onClick={() => runFromSelection("summarize")}>
+                        {t("insights.selection.summarize")}
+                      </Button>
+                      <Button size="sm" variant="ghost" className="h-6 px-2 text-[10px]" onClick={() => runFromSelection("comment")}>
+                        {t("insights.selection.comment")}
+                      </Button>
+                      <Button size="sm" variant="ghost" className="h-6 px-2 text-[10px]" onClick={() => runFromSelection("quality")}>
+                        {t("insights.selection.quality")}
+                      </Button>
+                      <Button size="sm" variant="ghost" className="h-6 px-2 text-[10px]" onClick={() => runFromSelection("security")}>
+                        {t("insights.selection.security")}
+                      </Button>
+                    </div>
+                  )}
+                </div>
               ) : (
                 <div className="flex h-full items-center justify-center p-6">
                   <div className="max-w-md space-y-4 rounded-lg border border-border bg-card p-6 shadow-sm">
@@ -845,27 +882,40 @@ function WorkspacePage() {
                     </Button>
                   </div>
                 </div>
-                <TabsContent forceMount value="summary" className="m-0 flex-1 overflow-auto px-4 pb-4 data-[state=inactive]:hidden">
+                <TabsContent forceMount value="summary" className="m-0 flex-1 space-y-3 overflow-auto px-4 pb-4 data-[state=inactive]:hidden">
                   <Tabs value={summarySub} onValueChange={(v) => setSummarySub(v as SummarySub)}>
                     <TabsList className="mt-2">
                       <TabsTrigger value="human">{t("workspace.tabs.human")}</TabsTrigger>
                       <TabsTrigger value="technical">{t("workspace.tabs.technical")}</TabsTrigger>
                     </TabsList>
                     <TabsContent forceMount value="human" className="m-0 pt-2 data-[state=inactive]:hidden">
-                      <ExplanationView text={summaryText} />
+                      <ExplanationView text={stripFindingsBlock(summaryText)} />
                     </TabsContent>
                     <TabsContent forceMount value="technical" className="m-0 pt-2 data-[state=inactive]:hidden">
-                      <ExplanationView text={summaryText} />
+                      <ExplanationView text={stripFindingsBlock(summaryText)} />
                     </TabsContent>
                   </Tabs>
+                  {summaryText && (
+                    <InsightPanel
+                      findings={summaryBundle.findings}
+                      unmapped={summaryBundle.unmapped}
+                      activeId={activeFindingId}
+                      onAction={handleInsightAction}
+                      defaultCategory="summary"
+                      emptyLabel={t("workspace.findings.empty")}
+                    />
+                  )}
                 </TabsContent>
                 <TabsContent forceMount value="quality" className="m-0 flex-1 space-y-3 overflow-auto px-4 pb-4 data-[state=inactive]:hidden">
                   <ExplanationView text={stripFindingsBlock(qualityText)} placeholder={t("analysis.empty")} />
                   {qualityText && (
-                    <FindingsList
-                      findings={findings}
-                      onJump={jumpToFinding}
-                      title={t("workspace.findings.title")}
+                    <InsightPanel
+                      findings={qualityBundle.findings}
+                      unmapped={qualityBundle.unmapped}
+                      activeId={activeFindingId}
+                      onAction={handleInsightAction}
+                      canPatch={providerValue.startsWith("cloud:")}
+                      defaultCategory="quality"
                       emptyLabel={t("workspace.findings.empty")}
                     />
                   )}
@@ -873,10 +923,13 @@ function WorkspacePage() {
                 <TabsContent forceMount value="security" className="m-0 flex-1 space-y-3 overflow-auto px-4 pb-4 data-[state=inactive]:hidden">
                   <ExplanationView text={stripFindingsBlock(securityText)} placeholder={t("analysis.empty")} />
                   {securityText && (
-                    <FindingsList
-                      findings={extractFindings(securityText, totalLines)}
-                      onJump={jumpToFinding}
-                      title={t("workspace.findings.title")}
+                    <InsightPanel
+                      findings={securityBundle.findings}
+                      unmapped={securityBundle.unmapped}
+                      activeId={activeFindingId}
+                      onAction={handleInsightAction}
+                      canPatch={providerValue.startsWith("cloud:")}
+                      defaultCategory="security"
                       emptyLabel={t("workspace.findings.empty")}
                     />
                   )}
