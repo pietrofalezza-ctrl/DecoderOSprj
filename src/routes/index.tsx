@@ -286,7 +286,7 @@ function Landing() {
 
       {/* Open-source strip — guardrail framing */}
       <section className="border-y border-border bg-background">
-        <div className="mx-auto grid max-w-7xl items-center gap-8 px-6 py-10 md:grid-cols-12">
+        <div className="mx-auto grid max-w-7xl items-center gap-6 px-4 py-10 sm:px-6 md:grid-cols-12">
           <div className="md:col-span-7">
             <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-primary">
               {t("landing.osStrip.kicker")}
@@ -518,7 +518,7 @@ function Landing() {
 
       {/* Footer */}
       <footer className="border-t border-border/60">
-        <div className="mx-auto max-w-7xl px-6 py-8 text-xs text-muted-foreground">
+        <div className="mx-auto max-w-7xl px-4 py-8 text-xs text-muted-foreground sm:px-6">
           <div className="flex flex-col items-center justify-between gap-3 md:flex-row">
             <Logo />
             <nav className="flex flex-wrap justify-center gap-5">
