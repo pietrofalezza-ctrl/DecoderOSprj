@@ -113,13 +113,17 @@ function WorkspacePage() {
     queryFn: () => getContent({ data: { file_id: selectedFileId! } }),
   });
 
-  // Reset all outputs when context changes
+  // Reset all outputs (and code selection) when context changes
   useEffect(() => {
     setSummaryText("");
     setQualityText("");
     setSecurityText("");
     setAiOriginText("");
+    setSelection(null);
   }, [selectedFileId, providerValue]);
+
+  const activeSnippet = useSelection && selection ? selection : null;
+
 
   // Open the repo-level AI-origin sheet when ?view=analyze. Use derived state
   // so it works synchronously on first render (no flash, no race with effects).
@@ -164,6 +168,13 @@ function WorkspacePage() {
             proficiency,
             explanation_type: summarySub,
             language: lang,
+            snippet: activeSnippet
+              ? {
+                  content: activeSnippet.content,
+                  start_line: activeSnippet.startLine,
+                  end_line: activeSnippet.endLine,
+                }
+              : undefined,
           },
         });
         return r.content;
@@ -171,12 +182,16 @@ function WorkspacePage() {
       const kind = providerValue.slice(6) as LocalKind;
       const endpoint = localEndpoints.find((e) => e.kind === kind);
       if (!endpoint || !fileQ.data) throw new Error("not_ready");
+      const promptPath = activeSnippet
+        ? `${fileQ.data.path} (selezione righe ${activeSnippet.startLine}–${activeSnippet.endLine})`
+        : fileQ.data.path;
+      const promptContent = activeSnippet ? activeSnippet.content : fileQ.data.content;
       const { system, user } = buildPrompt({
         proficiency,
         explanationType: summarySub,
         language: lang,
-        filePath: fileQ.data.path,
-        fileContent: fileQ.data.content,
+        filePath: promptPath,
+        fileContent: promptContent,
       });
       const text = await callLocalProvider({
         kind,
@@ -185,24 +200,28 @@ function WorkspacePage() {
         system,
         user,
       });
-      try {
-        await saveLocal({
-          data: {
-            file_id: selectedFileId,
-            proficiency,
-            explanation_type: summarySub,
-            language: lang,
-            content: text,
-            kind,
-            model: endpoint.default_model ?? undefined,
-          },
-        });
-      } catch {}
+      // Cache only full-file explanations.
+      if (!activeSnippet) {
+        try {
+          await saveLocal({
+            data: {
+              file_id: selectedFileId,
+              proficiency,
+              explanation_type: summarySub,
+              language: lang,
+              content: text,
+              kind,
+              model: endpoint.default_model ?? undefined,
+            },
+          });
+        } catch {}
+      }
       return text;
     },
     onSuccess: (text) => setSummaryText(text),
     onError: (e: any) => toast.error(e?.message ?? t("errors.generic")),
   });
+
 
   async function runAnalysisKind(kind: AnalysisKind): Promise<string> {
     if (!selectedFileId || !providerValue) throw new Error("missing");
