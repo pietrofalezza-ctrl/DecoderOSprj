@@ -4,7 +4,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
-import { Upload, Github, ScanSearch, Sparkles, Bot, ShieldAlert, FileText } from "lucide-react";
+import { Upload, Github, ScanSearch, Sparkles, Bot, ShieldAlert, FileText, Trash2 } from "lucide-react";
 
 import { AppShell } from "@/components/AppShell";
 import { Button } from "@/components/ui/button";
@@ -19,7 +19,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { getProject } from "@/lib/projects.functions";
-import { createRepositoryFromZip } from "@/lib/repos.functions";
+import { createRepositoryFromZip, deleteRepository } from "@/lib/repos.functions";
 import { importFromGitHub } from "@/lib/github.functions";
 
 export const Route = createFileRoute("/_authenticated/projects/$projectId/")({
@@ -33,6 +33,7 @@ function ProjectPage() {
   const qc = useQueryClient();
   const get = useServerFn(getProject);
   const upload = useServerFn(createRepositoryFromZip);
+  const removeRepo = useServerFn(deleteRepository);
   const importGh = useServerFn(importFromGitHub);
   const fileRef = useRef<HTMLInputElement>(null);
   const [uploading, setUploading] = useState(false);
@@ -228,6 +229,25 @@ function ProjectPage() {
                     <ScanSearch className="mr-1.5 h-3.5 w-3.5" />
                     {t("project.analyzeCodebase")}
                   </Link>
+                </Button>
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  aria-label={t("project.deleteRepo")}
+                  title={t("project.deleteRepo")}
+                  onClick={async () => {
+                    if (!window.confirm(t("project.deleteRepoConfirm", { name: r.name }))) return;
+                    try {
+                      await removeRepo({ data: { id: r.id } });
+                      qc.invalidateQueries({ queryKey: ["project", projectId] });
+                      toast.success(t("settings.deleteDone"));
+                    } catch (err: any) {
+                      toast.error(err?.message ?? t("errors.generic"));
+                    }
+                  }}
+                  className="text-muted-foreground hover:bg-destructive/10 hover:text-destructive"
+                >
+                  <Trash2 className="h-3.5 w-3.5" />
                 </Button>
               </div>
             </div>
