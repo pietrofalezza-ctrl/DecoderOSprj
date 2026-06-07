@@ -51,9 +51,12 @@ export const runAnalysis = createServerFn({ method: "POST" })
       if (!k) throw new Error("lovable_ai_not_configured");
       apiKey = k;
     } else {
-      const { data: cred, error: cErr } = await context.supabase
+      // Raw encrypted_key is NOT readable via the Data API (column-level GRANT
+      // excludes it); use the admin client, scoped explicitly to the JWT user.
+      const { data: cred, error: cErr } = await supabaseAdmin
         .from("user_ai_credentials")
         .select("encrypted_key")
+        .eq("owner_id", context.userId)
         .eq("provider", data.provider)
         .maybeSingle();
       if (cErr || !cred) throw new Error("no_credential_for_provider");
@@ -180,9 +183,10 @@ export const analyzeRepoAiOrigin = createServerFn({ method: "POST" })
       if (!k) throw new Error("lovable_ai_not_configured");
       apiKey = k;
     } else {
-      const { data: cred, error: cErr } = await context.supabase
+      const { data: cred, error: cErr } = await supabaseAdmin
         .from("user_ai_credentials")
         .select("encrypted_key")
+        .eq("owner_id", context.userId)
         .eq("provider", data.provider)
         .maybeSingle();
       if (cErr || !cred) throw new Error("no_credential_for_provider");

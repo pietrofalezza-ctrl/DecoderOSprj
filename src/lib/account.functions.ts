@@ -18,7 +18,7 @@ export const exportMyData = createServerFn({ method: "POST" })
         sb.from("repositories").select("*"),
         sb.from("files").select("id, repository_id, path, language, size_bytes, sha256, created_at"),
         sb.from("explanations").select("id, file_id, provider, model, language, explanation_type, proficiency, created_at, content"),
-        sb.from("user_ai_credentials").select("provider, key_hint, created_at, updated_at"),
+        sb.from("user_ai_credentials_safe").select("provider, key_hint, created_at, updated_at"),
         sb.from("user_local_endpoints").select("kind, base_url, default_model, created_at, updated_at"),
       ]);
 

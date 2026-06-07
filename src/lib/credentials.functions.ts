@@ -9,7 +9,7 @@ export const listProviders = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
     const { data: keys, error } = await context.supabase
-      .from("user_ai_credentials")
+      .from("user_ai_credentials_safe")
       .select("provider, key_hint, updated_at");
     if (error) throw error;
     const { data: endpoints, error: eErr } = await context.supabase
