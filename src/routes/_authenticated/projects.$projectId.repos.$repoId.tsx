@@ -9,7 +9,8 @@ import { Sparkles, Copy, Download, ShieldCheck, FileDown, BugPlay, Bot, ScanSear
 
 import { AppShell } from "@/components/AppShell";
 import { FileTree } from "@/components/FileTree";
-import { CodeViewer } from "@/components/CodeViewer";
+import { CodeViewer, type CodeSelection } from "@/components/CodeViewer";
+
 import { Button } from "@/components/ui/button";
 import {
   Select,
@@ -89,6 +90,10 @@ function WorkspacePage() {
 
   const [repoSheetOpen, setRepoSheetOpen] = useState(false);
   const [repoAiResult, setRepoAiResult] = useState<RepoAiOriginResult | null>(null);
+  const [selection, setSelection] = useState<CodeSelection | null>(null);
+  const [useSelection, setUseSelection] = useState(true);
+
+
 
 
   const cloudKeys = provs.data?.keys ?? [];
