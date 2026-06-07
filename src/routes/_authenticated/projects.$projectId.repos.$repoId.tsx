@@ -42,14 +42,16 @@ import { getRepository, getFileContent } from "@/lib/repos.functions";
 import { listProviders } from "@/lib/credentials.functions";
 import { explainFile, saveLocalExplanation } from "@/lib/explain.functions";
 import { runAnalysis, saveLocalAnalysis, analyzeRepoAiOrigin } from "@/lib/analysis.functions";
+import { proposeFileFix } from "@/lib/fix.functions";
 import { exportRepoMarkdown } from "@/lib/export.functions";
 import { callLocalProvider, type LocalKind } from "@/lib/local-ai";
 import { buildPrompt, type Proficiency } from "@/lib/prompt";
 import { buildAnalysisPrompt, type AnalysisKind } from "@/lib/analysis-prompt";
+import { extractFindings, stripFindingsBlock, type Finding } from "@/lib/findings";
 
 type CloudProvider = "lovable" | "openai" | "anthropic" | "gemini" | "openrouter";
 type ProviderValue = `cloud:${CloudProvider}` | `local:${LocalKind}`;
-type MainTab = "summary" | "quality" | "security" | "ai_origin";
+type MainTab = "summary" | "quality" | "security" | "ai_origin" | "fix";
 type SummarySub = "human" | "technical";
 
 const SearchSchema = z.object({
