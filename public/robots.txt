@@ -7,4 +7,4 @@ Disallow: /admin
 Disallow: /settings
 Disallow: /projects
 
-Sitemap: https://decoderdev.lovable.app/sitemap.xml
+Sitemap: https://decoderead.dev/sitemap.xml

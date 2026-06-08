@@ -97,9 +97,6 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         name: "twitter:description",
         content: "Open-source code understanding for the AI era. BYOK cloud or fully local.",
       },
-      { name: "description", content: "Decoder è un progetto personale di studio, open source (MIT) e gratuito. Funziona con la tua chiave API (BYOK) oppure in modalità di inferenza locale." },
-      { property: "og:description", content: "Decoder è un progetto personale di studio, open source (MIT) e gratuito. Funziona con la tua chiave API (BYOK) oppure in modalità di inferenza locale." },
-      { name: "twitter:description", content: "Decoder è un progetto personale di studio, open source (MIT) e gratuito. Funziona con la tua chiave API (BYOK) oppure in modalità di inferenza locale." },
       { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/J2iSR4buhjcF07fTWbXQWbd48o03/social-images/social-1780850242502-Social_decoder_2.webp" },
       { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/J2iSR4buhjcF07fTWbXQWbd48o03/social-images/social-1780850242502-Social_decoder_2.webp" },
     ],
@@ -122,7 +119,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
           "@context": "https://schema.org",
           "@type": "WebSite",
           name: "Decoder",
-          url: "https://decoderdev.lovable.app",
+          url: "https://decoderead.dev",
           description:
             "Open-source code understanding for the AI era — read, review and audit AI-generated code.",
         }),
@@ -165,7 +162,9 @@ function RootComponent() {
     <QueryClientProvider client={queryClient}>
       <I18nBootstrap>
         <RouterPendingIndicator />
-        <Outlet />
+        <main>
+          <Outlet />
+        </main>
         <Toaster richColors position="top-right" />
       </I18nBootstrap>
     </QueryClientProvider>

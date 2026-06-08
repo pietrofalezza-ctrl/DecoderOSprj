@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url><loc>https://decoderdev.lovable.app/</loc><changefreq>weekly</changefreq><priority>1.0</priority></url>
-  <url><loc>https://decoderdev.lovable.app/manifesto</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://decoderdev.lovable.app/open-source</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://decoderdev.lovable.app/docs</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://decoderdev.lovable.app/docs/how-to-review-ai-code</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://decoderdev.lovable.app/data-flow</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
-  <url><loc>https://decoderdev.lovable.app/contact</loc><changefreq>yearly</changefreq><priority>0.4</priority></url>
-  <url><loc>https://decoderdev.lovable.app/terms</loc><changefreq>monthly</changefreq><priority>0.5</priority></url>
-  <url><loc>https://decoderdev.lovable.app/privacy</loc><changefreq>monthly</changefreq><priority>0.5</priority></url>
-  <url><loc>https://decoderdev.lovable.app/cookies</loc><changefreq>yearly</changefreq><priority>0.3</priority></url>
+  <url><loc>https://decoderead.dev/</loc><changefreq>weekly</changefreq><priority>1.0</priority></url>
+  <url><loc>https://decoderead.dev/manifesto</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://decoderead.dev/open-source</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://decoderead.dev/docs</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://decoderead.dev/docs/how-to-review-ai-code</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://decoderead.dev/data-flow</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://decoderead.dev/contact</loc><changefreq>yearly</changefreq><priority>0.4</priority></url>
+  <url><loc>https://decoderead.dev/terms</loc><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://decoderead.dev/privacy</loc><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://decoderead.dev/cookies</loc><changefreq>yearly</changefreq><priority>0.3</priority></url>
 </urlset>
