@@ -1,0 +1,1 @@
+DROP POLICY IF EXISTS "own creds read safe columns" ON public.user_ai_credentials;
