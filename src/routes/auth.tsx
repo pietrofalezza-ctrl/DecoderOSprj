@@ -150,7 +150,30 @@ function AuthPage() {
     }
   };
 
-  const headline =
+  const sendReset = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const value = forgotEmail.trim();
+    if (!value) return;
+    setLoading(true);
+    try {
+      // Fire-and-forget: always show the same neutral message regardless of
+      // whether the address is registered, to prevent account enumeration.
+      await supabase.auth.resetPasswordForEmail(value, {
+        redirectTo: window.location.origin + "/reset-password",
+      });
+    } catch {
+      /* swallow — neutral response */
+    } finally {
+      toast.success(
+        "If an account exists for that email, we've sent a reset link.",
+      );
+      setForgotOpen(false);
+      setForgotEmail("");
+      setLoading(false);
+    }
+  };
+
+
     mode === "signup" ? t("auth.signUpHeadline") : t("auth.signInHeadline");
   const subline =
     mode === "signup" ? t("auth.signUpSubline") : t("auth.signInSubline");
