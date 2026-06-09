@@ -79,7 +79,7 @@ function ResetPasswordPage() {
     issuedRef.current = true;
     (async () => {
       try {
-        const res = await issue({});
+        const res = await issue();
         if (res?.emailHint) setEmailHint(res.emailHint);
         if (res?.cooldownSeconds) setCooldown(res.cooldownSeconds);
         if (res?.resent) {
@@ -101,7 +101,7 @@ function ResetPasswordPage() {
   const resend = async () => {
     if (cooldown > 0) return;
     try {
-      const res = await issue({});
+      const res = await issue();
       if (res?.emailHint) setEmailHint(res.emailHint);
       if (res?.cooldownSeconds) setCooldown(res.cooldownSeconds);
       toast.success("A fresh verification code is on its way.");
