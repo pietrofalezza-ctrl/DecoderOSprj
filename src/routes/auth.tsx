@@ -2,7 +2,7 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
-import { AlertCircle, LogIn, UserPlus } from "lucide-react";
+import { AlertCircle, LogIn, Mail, UserPlus } from "lucide-react";
 import { z } from "zod";
 
 import { Button } from "@/components/ui/button";
@@ -62,6 +62,8 @@ function AuthPage() {
   const [loading, setLoading] = useState(false);
   const [accepted, setAccepted] = useState(false);
   const [highlight, setHighlight] = useState(false);
+  const [forgotOpen, setForgotOpen] = useState(false);
+  const [forgotEmail, setForgotEmail] = useState("");
   const disclaimerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -144,6 +146,29 @@ function AuthPage() {
         navigate({ to: target, replace: true });
       }
     } finally {
+      setLoading(false);
+    }
+  };
+
+  const sendReset = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const value = forgotEmail.trim();
+    if (!value) return;
+    setLoading(true);
+    try {
+      // Fire-and-forget: always show the same neutral message regardless of
+      // whether the address is registered, to prevent account enumeration.
+      await supabase.auth.resetPasswordForEmail(value, {
+        redirectTo: window.location.origin + "/reset-password",
+      });
+    } catch {
+      /* swallow — neutral response */
+    } finally {
+      toast.success(
+        "If an account exists for that email, we've sent a reset link.",
+      );
+      setForgotOpen(false);
+      setForgotEmail("");
       setLoading(false);
     }
   };
@@ -294,7 +319,52 @@ function AuthPage() {
                 </>
               )}
             </Button>
+
+            {mode === "signin" && (
+              <div className="pt-1 text-right">
+                <button
+                  type="button"
+                  onClick={() => setForgotOpen((v) => !v)}
+                  className="text-xs text-muted-foreground underline-offset-2 hover:text-foreground hover:underline"
+                >
+                  Forgot password?
+                </button>
+              </div>
+            )}
           </form>
+
+          {mode === "signin" && forgotOpen && (
+            <form
+              onSubmit={sendReset}
+              className="mt-3 space-y-2 rounded-md border border-border bg-muted/30 p-3"
+            >
+              <Label htmlFor="forgot-email" className="text-xs">
+                Enter the email on your account
+              </Label>
+              <Input
+                id="forgot-email"
+                type="email"
+                required
+                placeholder="you@example.com"
+                value={forgotEmail}
+                onChange={(e) => setForgotEmail(e.target.value)}
+              />
+              <p className="text-[11px] text-muted-foreground">
+                We'll email a one-time reset link to that address only. Link
+                expires in 15 minutes.
+              </p>
+              <Button
+                type="submit"
+                size="sm"
+                variant="secondary"
+                className="w-full"
+                disabled={loading}
+              >
+                <Mail className="mr-2 h-3.5 w-3.5" />
+                Send reset link
+              </Button>
+            </form>
+          )}
 
           <div className="my-4 flex items-center gap-2 text-xs text-muted-foreground">
             <div className="h-px flex-1 bg-border" />
