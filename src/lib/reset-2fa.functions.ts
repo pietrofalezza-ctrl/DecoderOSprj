@@ -114,7 +114,7 @@ export const issueResetChallenge = createServerFn({ method: "POST" })
 
     const { error: enqErr } = await supabaseAdmin.rpc("enqueue_email", {
       queue_name: "transactional_emails",
-      payload: payload as unknown as Record<string, unknown>,
+      payload: payload as never,
     });
     if (enqErr) {
       console.error("[reset-2fa] enqueue failed", enqErr);
