@@ -173,7 +173,7 @@ function AuthPage() {
     }
   };
 
-
+  const headline =
     mode === "signup" ? t("auth.signUpHeadline") : t("auth.signInHeadline");
   const subline =
     mode === "signup" ? t("auth.signUpSubline") : t("auth.signInSubline");
