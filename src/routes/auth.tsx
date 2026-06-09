@@ -62,6 +62,8 @@ function AuthPage() {
   const [loading, setLoading] = useState(false);
   const [accepted, setAccepted] = useState(false);
   const [highlight, setHighlight] = useState(false);
+  const [forgotOpen, setForgotOpen] = useState(false);
+  const [forgotEmail, setForgotEmail] = useState("");
   const disclaimerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
