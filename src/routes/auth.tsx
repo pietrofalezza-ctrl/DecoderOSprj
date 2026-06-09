@@ -2,7 +2,7 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
-import { AlertCircle, LogIn, UserPlus } from "lucide-react";
+import { AlertCircle, LogIn, Mail, UserPlus } from "lucide-react";
 import { z } from "zod";
 
 import { Button } from "@/components/ui/button";
