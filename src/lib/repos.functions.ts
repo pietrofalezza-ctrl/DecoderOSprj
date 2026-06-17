@@ -17,15 +17,26 @@ export const createRepositoryFromZip = createServerFn({ method: "POST" })
     }),
   )
   .handler(async ({ context, data }) => {
-    const { extractZip } = await import("./zip.server");
+    const { extractZipWithReport } = await import("./zip.server");
     const { sha256Hex } = await import("./crypto.server");
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { ensureRepositoryStorageBucket } = await import("./repository-storage.server");
 
     const zipBytes = Uint8Array.from(Buffer.from(data.zip_base64, "base64"));
     if (zipBytes.length > MAX_ZIP_BYTES) throw new Error("zip_too_large");
 
-    const files = extractZip(zipBytes);
+    const project = await context.supabase
+      .from("projects")
+      .select("id")
+      .eq("id", data.project_id)
+      .maybeSingle();
+    if (project.error) throw project.error;
+    if (!project.data) throw new Error("project_not_found");
+
+    const extraction = extractZipWithReport(zipBytes);
+    const files = extraction.files;
     if (files.length === 0) throw new Error("no_files");
+    await ensureRepositoryStorageBucket(supabaseAdmin);
 
     const { data: repo, error: rErr } = await context.supabase
       .from("repositories")
@@ -48,6 +59,14 @@ export const createRepositoryFromZip = createServerFn({ method: "POST" })
       size_bytes: number;
       sha256: string;
       storage_path: string;
+      static_scan_status: "pending" | "scanning" | "safe" | "warn" | "block";
+      static_scan_started_at: null;
+      static_scan_finished_at: null;
+      static_scan_report: null;
+      static_entropy_global: null;
+      static_entropy_window: null;
+      static_decision: null;
+      static_last_error: null;
     }> = [];
 
     for (const f of files) {
@@ -68,6 +87,14 @@ export const createRepositoryFromZip = createServerFn({ method: "POST" })
         size_bytes: f.bytes.length,
         sha256: sha,
         storage_path: storagePath,
+        static_scan_status: "pending",
+        static_scan_started_at: null,
+        static_scan_finished_at: null,
+        static_scan_report: null,
+        static_entropy_global: null,
+        static_entropy_window: null,
+        static_decision: null,
+        static_last_error: null,
       });
     }
 
@@ -77,6 +104,13 @@ export const createRepositoryFromZip = createServerFn({ method: "POST" })
       const { error: fErr } = await context.supabase.from("files").insert(chunk);
       if (fErr) throw fErr;
     }
+
+    const { triggerStaticScanForRepository } = await import("./static-scan-queue.server");
+    triggerStaticScanForRepository({
+      supabase: context.supabase,
+      supabaseAdmin,
+      repositoryId: repo.id,
+    });
 
     return { repository_id: repo.id, file_count: files.length };
   });
@@ -91,13 +125,29 @@ export const getRepository = createServerFn({ method: "POST" })
       .eq("id", data.id)
       .maybeSingle();
     if (error) throw error;
+    if (!repo) throw new Error("repo_not_found");
+    const { data: projectData, error: pErr } = await context.supabase
+      .from("projects")
+      .select("analysis_mode")
+      .eq("id", repo.project_id)
+      .maybeSingle();
+    if (pErr) throw pErr;
+
+    const static_scan_summary = await fetchStaticScanSummary(context.supabase, data.id);
     const { data: files, error: fErr } = await context.supabase
       .from("files")
-      .select("id, path, language, size_bytes")
+      .select(
+        "id, path, language, size_bytes, owner_id, static_scan_status, static_entropy_global, static_entropy_window, static_decision, static_last_error",
+      )
       .eq("repository_id", data.id)
       .order("path");
     if (fErr) throw fErr;
-    return { repository: repo, files: files ?? [] };
+    return {
+      repository: repo,
+      project_analysis_mode: projectData?.analysis_mode ?? "both",
+      files: files ?? [],
+      static_scan_summary,
+    };
   });
 
 export const getFileContent = createServerFn({ method: "POST" })
@@ -106,8 +156,10 @@ export const getFileContent = createServerFn({ method: "POST" })
   .handler(async ({ context, data }) => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data: file, error } = await context.supabase
-      .from("files")
-      .select("id, path, language, storage_path, sha256")
+        .from("files")
+      .select(
+        "id, path, language, storage_path, sha256, static_scan_status, static_scan_report, static_decision, static_entropy_global, static_entropy_window, static_last_error",
+      )
       .eq("id", data.file_id)
       .maybeSingle();
     if (error || !file) throw error ?? new Error("not_found");
@@ -121,6 +173,12 @@ export const getFileContent = createServerFn({ method: "POST" })
       path: file.path,
       language: file.language,
       sha256: file.sha256,
+      static_scan_status: file.static_scan_status,
+      static_scan_decision: file.static_decision,
+      static_entropy_global: file.static_entropy_global,
+      static_entropy_window: file.static_entropy_window,
+      static_scan_report: file.static_scan_report,
+      static_last_error: file.static_last_error,
       content: text,
     };
   });
@@ -170,3 +228,30 @@ export const deleteRepository = createServerFn({ method: "POST" })
     if (error) throw error;
     return { ok: true };
   });
+
+async function fetchStaticScanSummary(
+  supabase: any,
+  repositoryId: string,
+) {
+  const total = await supabase.from("files").select("id", { head: true, count: "exact" }).eq("repository_id", repositoryId);
+  const [pending, scanning, safe, warn, block] = await Promise.all([
+    supabase.from("files").select("id", { head: true, count: "exact" }).eq("repository_id", repositoryId).eq("static_scan_status", "pending"),
+    supabase.from("files").select("id", { head: true, count: "exact" }).eq("repository_id", repositoryId).eq("static_scan_status", "scanning"),
+    supabase.from("files").select("id", { head: true, count: "exact" }).eq("repository_id", repositoryId).eq("static_scan_status", "safe"),
+    supabase.from("files").select("id", { head: true, count: "exact" }).eq("repository_id", repositoryId).eq("static_scan_status", "warn"),
+    supabase.from("files").select("id", { head: true, count: "exact" }).eq("repository_id", repositoryId).eq("static_scan_status", "block"),
+  ]);
+
+  if (total.error || pending.error || scanning.error || safe.error || warn.error || block.error) {
+    throw total.error ?? pending.error ?? scanning.error ?? safe.error ?? warn.error ?? block.error ?? new Error("static_summary_failed");
+  }
+
+  return {
+    total: Number(total.count ?? 0),
+    pending: Number(pending.count ?? 0),
+    scanning: Number(scanning.count ?? 0),
+    safe: Number(safe.count ?? 0),
+    warn: Number(warn.count ?? 0),
+    block: Number(block.count ?? 0),
+  };
+}

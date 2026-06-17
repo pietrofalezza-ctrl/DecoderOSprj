@@ -25,9 +25,10 @@ export const importFromGitHub = createServerFn({ method: "POST" })
     }),
   )
   .handler(async ({ context, data }) => {
-    const { extractZip } = await import("./zip.server");
+    const { extractZipWithReport } = await import("./zip.server");
     const { sha256Hex } = await import("./crypto.server");
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { ensureRepositoryStorageBucket } = await import("./repository-storage.server");
 
     const m = data.url.match(/github\.com\/([^/]+)\/([^/]+?)(?:\.git)?\/?$/);
     if (!m) throw new Error("invalid_github_url");
@@ -56,8 +57,18 @@ export const importFromGitHub = createServerFn({ method: "POST" })
     if (ab.byteLength > MAX_BYTES) throw new Error("repo_too_large");
     const bytes = new Uint8Array(ab);
 
-    const files = extractZip(bytes);
+    const project = await context.supabase
+      .from("projects")
+      .select("id")
+      .eq("id", data.project_id)
+      .maybeSingle();
+    if (project.error) throw project.error;
+    if (!project.data) throw new Error("project_not_found");
+
+    const extraction = extractZipWithReport(bytes);
+    const files = extraction.files;
     if (files.length === 0) throw new Error("no_files");
+    await ensureRepositoryStorageBucket(supabaseAdmin);
 
     const repoName = `${owner}/${repo}${data.ref ? `@${data.ref}` : ""}`;
     const { data: repoRow, error: rErr } = await context.supabase
@@ -81,6 +92,14 @@ export const importFromGitHub = createServerFn({ method: "POST" })
       size_bytes: number;
       sha256: string;
       storage_path: string;
+      static_scan_status: "pending" | "scanning" | "safe" | "warn" | "block";
+      static_scan_started_at: null;
+      static_scan_finished_at: null;
+      static_scan_report: null;
+      static_entropy_global: null;
+      static_entropy_window: null;
+      static_decision: null;
+      static_last_error: null;
     }> = [];
     for (const f of files) {
       const sha = sha256Hex(f.bytes);
@@ -100,6 +119,14 @@ export const importFromGitHub = createServerFn({ method: "POST" })
         size_bytes: f.bytes.length,
         sha256: sha,
         storage_path: storagePath,
+        static_scan_status: "pending",
+        static_scan_started_at: null,
+        static_scan_finished_at: null,
+        static_scan_report: null,
+        static_entropy_global: null,
+        static_entropy_window: null,
+        static_decision: null,
+        static_last_error: null,
       });
     }
     for (let i = 0; i < rows.length; i += 500) {
@@ -107,6 +134,12 @@ export const importFromGitHub = createServerFn({ method: "POST" })
       const { error: fErr } = await context.supabase.from("files").insert(chunk);
       if (fErr) throw fErr;
     }
+    const { triggerStaticScanForRepository } = await import("./static-scan-queue.server");
+    triggerStaticScanForRepository({
+      supabase: context.supabase,
+      supabaseAdmin,
+      repositoryId: repoRow.id,
+    });
 
     return { repository_id: repoRow.id, file_count: files.length };
   });

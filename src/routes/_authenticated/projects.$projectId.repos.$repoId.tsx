@@ -5,7 +5,26 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 import { z } from "zod";
-import { Sparkles, Copy, Download, ShieldCheck, FileDown, BugPlay, Bot, ScanSearch, ArrowLeft, ArrowRight, KeyRound, CheckCircle2, AlertCircle, Play, Wrench } from "lucide-react";
+import {
+  Sparkles,
+  Copy,
+  Download,
+  ShieldCheck,
+  FileDown,
+  BugPlay,
+  Bot,
+  ScanSearch,
+  ArrowLeft,
+  ArrowRight,
+  KeyRound,
+  CheckCircle2,
+  AlertCircle,
+  Play,
+  Wrench,
+  ShieldAlert,
+  FileBadge2,
+  AlertTriangle,
+} from "lucide-react";
 
 import { AppShell } from "@/components/AppShell";
 import { FileTree } from "@/components/FileTree";
@@ -47,11 +66,17 @@ import { exportRepoMarkdown } from "@/lib/export.functions";
 import { callLocalProvider, type LocalKind } from "@/lib/local-ai";
 import { buildPrompt, type Proficiency } from "@/lib/prompt";
 import { buildAnalysisPrompt, type AnalysisKind } from "@/lib/analysis-prompt";
-import { extractInsightBundle, stripFindingsBlock, type Finding } from "@/lib/findings";
+import {
+  extractInsightBundle,
+  stripFindingsBlock,
+  severityBadgeClass,
+  type Finding,
+} from "@/lib/findings";
+import { runStaticMalwareScan, type StaticMalwareAssessment } from "@/lib/static-malware.functions";
 
 type CloudProvider = "openai" | "anthropic" | "gemini" | "openrouter";
 type ProviderValue = `cloud:${CloudProvider}` | `local:${LocalKind}`;
-type MainTab = "summary" | "quality" | "security" | "ai_origin" | "fix";
+type MainTab = "summary" | "quality" | "security" | "ai_origin" | "malware" | "fix";
 type SummarySub = "human" | "technical";
 
 const SearchSchema = z.object({
@@ -77,10 +102,13 @@ function WorkspacePage() {
   const exportFn = useServerFn(exportRepoMarkdown);
   const repoAiOriginFn = useServerFn(analyzeRepoAiOrigin);
   const proposeFix = useServerFn(proposeFileFix);
+  const runMalware = useServerFn(runStaticMalwareScan);
   const search = Route.useSearch();
 
   const repo = useQuery({ queryKey: ["repo", repoId], queryFn: () => getRepo({ data: { id: repoId } }) });
   const provs = useQuery({ queryKey: ["providers"], queryFn: () => providersFn() });
+  const analysisMode = repo.data?.project_analysis_mode ?? "both";
+  const llmEnabled = analysisMode !== "static";
 
   const [selectedFileId, setSelectedFileId] = useState<string | null>(null);
   const [selectedFolderPath, setSelectedFolderPath] = useState<string | null>(null);
@@ -96,6 +124,8 @@ function WorkspacePage() {
   const [securityText, setSecurityText] = useState<string>("");
   const [aiOriginText, setAiOriginText] = useState<string>("");
   const [fixText, setFixText] = useState<string>("");
+  const [malwareText, setMalwareText] = useState<string>("");
+  const [malwareReport, setMalwareReport] = useState<StaticMalwareAssessment | null>(null);
 
   const [repoSheetOpen, setRepoSheetOpen] = useState(false);
   const [repoAiResult, setRepoAiResult] = useState<RepoAiOriginResult | null>(null);
@@ -107,14 +137,18 @@ function WorkspacePage() {
 
   const cloudKeys = provs.data?.keys ?? [];
   const localEndpoints = provs.data?.endpoints ?? [];
-  const hasAny = cloudKeys.length > 0 || localEndpoints.length > 0;
+  const hasAny = llmEnabled && (cloudKeys.length > 0 || localEndpoints.length > 0);
 
   useEffect(() => {
+    if (!llmEnabled) {
+      setProviderValue("");
+      return;
+    }
     if (providerValue) return;
     if (cloudKeys[0]) setProviderValue(`cloud:${cloudKeys[0].provider as CloudProvider}`);
     else if (localEndpoints[0])
       setProviderValue(`local:${localEndpoints[0].kind as LocalKind}`);
-  }, [provs.data, providerValue, cloudKeys, localEndpoints]);
+  }, [llmEnabled, provs.data, providerValue, cloudKeys, localEndpoints]);
 
   const fileQ = useQuery({
     enabled: !!selectedFileId,
@@ -129,15 +163,31 @@ function WorkspacePage() {
     setSecurityText("");
     setAiOriginText("");
     setFixText("");
+    setMalwareText("");
+    setMalwareReport(null);
     setSelection(null);
   }, [selectedFileId, providerValue]);
+
+  useEffect(() => {
+    if (!llmEnabled && mainTab !== "malware") {
+      setMainTab("malware");
+    }
+  }, [llmEnabled, mainTab]);
+
+  useEffect(() => {
+    if (!llmEnabled) {
+      setSelectedFolderPath(null);
+      setRepoSheetOpen(false);
+      setRepoAiResult(null);
+    }
+  }, [llmEnabled]);
 
   const activeSnippet = useSelection && selection ? selection : null;
 
 
   // Open the repo-level AI-origin sheet when ?view=analyze. Use derived state
   // so it works synchronously on first render (no flash, no race with effects).
-  const repoSheetOpenDerived = search.view === "analyze" ? true : repoSheetOpen;
+  const repoSheetOpenDerived = llmEnabled && search.view === "analyze" ? true : repoSheetOpen;
   const onRepoSheetOpenChange = (open: boolean) => {
     setRepoSheetOpen(open);
     if (!open && search.view === "analyze") {
@@ -150,20 +200,21 @@ function WorkspacePage() {
   const [autoStarted, setAutoStarted] = useState(false);
   useEffect(() => {
     if (
+      llmEnabled &&
       search.view === "analyze" &&
       provs.isSuccess &&
       !autoStarted &&
       !repoAiResult &&
-      providerValue.startsWith("cloud:")
+      providerValue && providerValue.startsWith("cloud:")
     ) {
       setAutoStarted(true);
       repoAiMut.mutate();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [search.view, provs.isSuccess, providerValue, autoStarted, repoAiResult]);
+  }, [llmEnabled, search.view, provs.isSuccess, providerValue, autoStarted, repoAiResult]);
 
 
-  const isLocal = providerValue.startsWith("local:");
+  const isLocal = llmEnabled && providerValue.startsWith("local:");
   const lang = (i18n.resolvedLanguage as "en" | "it" | "zh") || "en";
 
   const explainMut = useMutation({
@@ -285,6 +336,17 @@ function WorkspacePage() {
     onError: (e: any) => toast.error(e?.message ?? t("errors.generic")),
   });
 
+  const malwareMut = useMutation({
+    mutationFn: async () => {
+      if (!selectedFileId) throw new Error("missing_file");
+      const report = await runMalware({ data: { file_id: selectedFileId } });
+      setMalwareReport(report);
+      setMalwareText(formatMalwareReport(report));
+    },
+    onSuccess: () => {},
+    onError: (e: any) => toast.error(e?.message ?? t("errors.generic")),
+  });
+
   const aiOriginMut = useMutation({
     mutationFn: () => runAnalysisKind("ai_origin"),
     onSuccess: (text) => setAiOriginText(text),
@@ -299,7 +361,9 @@ function WorkspacePage() {
         data: { repo_id: repoId, provider, language: lang },
       });
     },
-    onSuccess: (r) => setRepoAiResult(r as RepoAiOriginResult),
+    onSuccess: (r) => {
+      if (llmEnabled) setRepoAiResult(r as RepoAiOriginResult);
+    },
     onError: (e: any) => toast.error(e?.message ?? t("errors.generic")),
   });
 
@@ -387,6 +451,7 @@ function WorkspacePage() {
     if (mainTab === "summary") return summaryText;
     if (mainTab === "quality") return qualityText;
     if (mainTab === "ai_origin") return aiOriginText;
+    if (mainTab === "malware") return malwareText;
     if (mainTab === "fix") return fixText;
     return securityText;
   }, [mainTab, summaryText, qualityText, securityText, aiOriginText, fixText]);
@@ -400,6 +465,8 @@ function WorkspacePage() {
           ? `quality.${qualityKind}`
           : mainTab === "ai_origin"
             ? `ai-origin`
+            : mainTab === "malware"
+              ? `malware`
             : mainTab === "fix"
               ? `fix`
               : `security`;
@@ -432,6 +499,7 @@ function WorkspacePage() {
     if (mainTab === "summary") explainMut.mutate();
     else if (mainTab === "quality") qualityMut.mutate();
     else if (mainTab === "ai_origin") aiOriginMut.mutate();
+    else if (mainTab === "malware") malwareMut.mutate();
     else if (mainTab === "fix") fixMut.mutate();
     else securityMut.mutate();
   };
@@ -440,6 +508,7 @@ function WorkspacePage() {
     (mainTab === "quality" && qualityMut.isPending) ||
     (mainTab === "ai_origin" && aiOriginMut.isPending) ||
     (mainTab === "security" && securityMut.isPending) ||
+    (mainTab === "malware" && malwareMut.isPending) ||
     (mainTab === "fix" && fixMut.isPending);
 
   const jumpToFinding = (f: Finding) => {
@@ -505,53 +574,70 @@ function WorkspacePage() {
   };
 
 
-  const canRunRepoAi = providerValue.startsWith("cloud:");
+  const canRunRepoAi = llmEnabled && providerValue.startsWith("cloud:");
 
+  const tabNeedsProvider =
+    llmEnabled &&
+    (mainTab === "summary" ||
+      mainTab === "quality" ||
+      mainTab === "security" ||
+      mainTab === "ai_origin" ||
+      mainTab === "fix");
   const statusKind: "ready" | "needFile" | "needProvider" =
-    !providerValue ? "needProvider" : !selectedFileId ? "needFile" : "ready";
+    !selectedFileId
+      ? "needFile"
+      : tabNeedsProvider && !providerValue
+        ? "needProvider"
+        : "ready";
 
   return (
     <AppShell>
-      {/* Repo-scan sheet hoisted to shell level so it can't be hidden by
-          a narrow resizable panel and opens deterministically from URL. */}
-      <Sheet open={repoSheetOpenDerived} onOpenChange={onRepoSheetOpenChange}>
-        <SheetContent side="right" className="w-full p-0 sm:max-w-xl">
-          <SheetHeader className="border-b border-border p-4">
-            <SheetTitle className="flex items-center gap-2">
-              <Bot className="h-5 w-5 text-primary" />
-              {t("aiOrigin.title")}
-            </SheetTitle>
-          </SheetHeader>
-          <div className="h-[calc(100vh-4rem)]">
-            <AiOriginPanel
-              result={repoAiResult}
-              isRunning={repoAiMut.isPending}
-              onRun={() => repoAiMut.mutate()}
-              canRun={canRunRepoAi}
-            />
-          </div>
-        </SheetContent>
-      </Sheet>
+      {llmEnabled && (
+        <Sheet open={repoSheetOpenDerived} onOpenChange={onRepoSheetOpenChange}>
+          <SheetContent side="right" className="w-full p-0 sm:max-w-xl">
+            <SheetHeader className="border-b border-border p-4">
+              <SheetTitle className="flex items-center gap-2">
+                <Bot className="h-5 w-5 text-primary" />
+                {t("aiOrigin.title")}
+              </SheetTitle>
+            </SheetHeader>
+            <div className="h-[calc(100vh-4rem)]">
+              <AiOriginPanel
+                result={repoAiResult}
+                isRunning={repoAiMut.isPending}
+                onRun={() => repoAiMut.mutate()}
+                canRun={canRunRepoAi}
+              />
+            </div>
+          </SheetContent>
+        </Sheet>
+      )}
 
       <div className="h-[calc(100vh-3.5rem)]">
         <ResizablePanelGroup orientation="horizontal">
           <ResizablePanel defaultSize={20} minSize={14}>
             <div className="flex h-full flex-col border-r border-border bg-sidebar">
-              <div className="flex items-center justify-between gap-2 border-b border-border px-3 py-2">
-                <span className="truncate text-xs font-medium uppercase text-muted-foreground">
-                  {repo.data?.repository?.name ?? t("workspace.files")}
-                </span>
-                <div className="flex shrink-0 items-center gap-1">
-                  <Button
-                    size="sm"
-                    variant="secondary"
-                    className="h-7 px-2 text-[11px]"
-                    title={t("workspace.analyzeWholeRepo")}
-                    onClick={() => setRepoSheetOpen(true)}
-                  >
-                    <ScanSearch className="mr-1 h-3.5 w-3.5" />
-                    {t("workspace.analyzeWholeRepo")}
-                  </Button>
+                <div className="flex items-center justify-between gap-2 border-b border-border px-3 py-2">
+                  <span className="truncate text-xs font-medium uppercase text-muted-foreground">
+                    {repo.data?.repository?.name ?? t("workspace.files")}
+                  </span>
+                  <div className="flex shrink-0 items-center gap-1">
+                  {llmEnabled ? (
+                    <Button
+                      size="sm"
+                      variant="secondary"
+                      className="h-7 px-2 text-[11px]"
+                      title={t("workspace.analyzeWholeRepo")}
+                      onClick={() => setRepoSheetOpen(true)}
+                    >
+                      <ScanSearch className="mr-1 h-3.5 w-3.5" />
+                      {t("workspace.analyzeWholeRepo")}
+                    </Button>
+                  ) : (
+                    <span className="rounded-full border border-primary/30 bg-primary/5 px-2 py-1 text-[11px] text-primary">
+                      {t("workspace.staticOnlyMode")}
+                    </span>
+                  )}
                   <Button
                     size="sm"
                     variant="ghost"
@@ -575,10 +661,10 @@ function WorkspacePage() {
                         setSelectedFileId(f.id);
                         setSelectedFolderPath(null);
                       }}
-                      onSelectFolder={(p) => {
+                      onSelectFolder={llmEnabled ? (p) => {
                         setSelectedFolderPath(p);
                         setSelectedFileId(null);
-                      }}
+                      } : undefined}
                     />
                   )}
                 </div>
@@ -706,44 +792,51 @@ function WorkspacePage() {
                       </SelectContent>
                     </Select>
                   </div>
-                  <div>
-                    <label className="text-[10px] uppercase text-muted-foreground">
-                      {t("workspace.provider")}
-                    </label>
-                    <Select
-                      value={providerValue}
-                      onValueChange={(v) => setProviderValue(v as ProviderValue)}
-                      disabled={!hasAny}
-                    >
-                      <SelectTrigger className="h-8">
-                        <SelectValue placeholder="—" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {cloudKeys.length > 0 && (
-                          <SelectGroup>
-                            <SelectLabel>{t("workspace.cloud")}</SelectLabel>
-                            {cloudKeys.map((k) => (
-                              <SelectItem key={k.provider} value={`cloud:${k.provider}`}>
-                                {t(`settings.providers.${k.provider}`)}
-                              </SelectItem>
-                            ))}
-                          </SelectGroup>
-                        )}
-                        {localEndpoints.length > 0 && (
-                          <SelectGroup>
-                            <SelectLabel>{t("workspace.local")}</SelectLabel>
-                            {localEndpoints.map((e) => (
-                              <SelectItem key={e.kind} value={`local:${e.kind}`}>
-                                {t(`settings.endpoints.${e.kind}`)}
-                              </SelectItem>
-                            ))}
-                          </SelectGroup>
-                        )}
-                      </SelectContent>
-                    </Select>
-                  </div>
+                  {llmEnabled ? (
+                    <div>
+                      <label className="text-[10px] uppercase text-muted-foreground">
+                        {t("workspace.provider")}
+                      </label>
+                      <Select
+                        value={providerValue}
+                        onValueChange={(v) => setProviderValue(v as ProviderValue)}
+                        disabled={!hasAny}
+                      >
+                        <SelectTrigger className="h-8">
+                          <SelectValue placeholder="—" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {cloudKeys.length > 0 && (
+                            <SelectGroup>
+                              <SelectLabel>{t("workspace.cloud")}</SelectLabel>
+                              {cloudKeys.map((k) => (
+                                <SelectItem key={k.provider} value={`cloud:${k.provider}`}>
+                                  {t(`settings.providers.${k.provider}`)}
+                                </SelectItem>
+                              ))}
+                            </SelectGroup>
+                          )}
+                          {localEndpoints.length > 0 && (
+                            <SelectGroup>
+                              <SelectLabel>{t("workspace.local")}</SelectLabel>
+                              {localEndpoints.map((e) => (
+                                <SelectItem key={e.kind} value={`local:${e.kind}`}>
+                                  {t(`settings.endpoints.${e.kind}`)}
+                                </SelectItem>
+                              ))}
+                            </SelectGroup>
+                          )}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  ) : (
+                    <div className="rounded-md border border-primary/30 bg-primary/5 p-3 text-[11px] text-primary">
+                      <div className="font-medium">{t("workspace.staticOnlyMode")}</div>
+                      <p className="mt-1 text-muted-foreground">{t("workspace.staticOnlyBody")}</p>
+                    </div>
+                  )}
                 </div>
-                {!hasAny && (
+                {llmEnabled && !hasAny && (
                   <div className="flex items-center justify-between gap-2 rounded-md border border-amber-500/40 bg-amber-500/5 p-2">
                     <span className="text-[11px] text-amber-700 dark:text-amber-300">
                       {t("workspace.noProvider")}
@@ -756,13 +849,13 @@ function WorkspacePage() {
                     </Button>
                   </div>
                 )}
-                {isLocal && (
+                {llmEnabled && isLocal && (
                   <p className="flex items-center gap-1 text-[11px] text-primary">
                     <ShieldCheck className="h-3 w-3" />
                     {t("workspace.localPledge")}
                   </p>
                 )}
-                {mainTab === "quality" && (
+                {llmEnabled && mainTab === "quality" && (
                   <Select value={qualityKind} onValueChange={(v) => setQualityKind(v as typeof qualityKind)}>
                     <SelectTrigger className="h-8">
                       <SelectValue />
@@ -776,7 +869,7 @@ function WorkspacePage() {
                     </SelectContent>
                   </Select>
                 )}
-                {mainTab === "summary" && selection && (
+                {llmEnabled && mainTab === "summary" && selection && (
                   <label className="flex cursor-pointer items-start gap-2 rounded-md border border-primary/40 bg-primary/5 p-2 text-[11px] text-primary">
                     <input
                       type="checkbox"
@@ -815,7 +908,9 @@ function WorkspacePage() {
                   size="default"
                   className="h-10 w-full text-sm font-semibold"
                   onClick={runMain}
-                  disabled={!selectedFileId || !providerValue || isRunning}
+                  disabled={
+                    !selectedFileId || (tabNeedsProvider && !providerValue) || isRunning
+                  }
                 >
                   {isRunning ? (
                     <Sparkles className="mr-2 h-4 w-4 animate-pulse" />
@@ -828,7 +923,9 @@ function WorkspacePage() {
                     ? mainTab === "summary"
                       ? t("workspace.explaining")
                       : t("workspace.analyzing")
-                    : t("workspace.runFile")}
+                    : llmEnabled
+                      ? t("workspace.runFile")
+                      : t("workspace.runStatic")}
                 </Button>
               </div>
               <Tabs
@@ -838,24 +935,34 @@ function WorkspacePage() {
               >
                 <div className="flex items-center justify-between px-2 pt-2">
                   <TabsList>
-                    <TabsTrigger value="summary">{t("workspace.tabs.summary")}</TabsTrigger>
-                    <TabsTrigger value="quality" className="gap-1">
-                      {t("workspace.tabs.quality")}
-                      {mainTab !== "quality" && findings.length > 0 && qualityText && (
-                        <span className="rounded-full bg-primary/15 px-1.5 text-[10px] tabular-nums text-primary">
-                          {findings.length}
-                        </span>
-                      )}
+                    {llmEnabled && <TabsTrigger value="summary">{t("workspace.tabs.summary")}</TabsTrigger>}
+                    {llmEnabled && (
+                      <TabsTrigger value="quality" className="gap-1">
+                        {t("workspace.tabs.quality")}
+                        {mainTab !== "quality" && findings.length > 0 && qualityText && (
+                          <span className="rounded-full bg-primary/15 px-1.5 text-[10px] tabular-nums text-primary">
+                            {findings.length}
+                          </span>
+                        )}
+                      </TabsTrigger>
+                    )}
+                    {llmEnabled && <TabsTrigger value="security">{t("workspace.tabs.security")}</TabsTrigger>}
+                    <TabsTrigger value="malware" className="gap-1">
+                      <ShieldAlert className="h-3 w-3" />
+                      {t("workspace.tabs.malware")}
                     </TabsTrigger>
-                    <TabsTrigger value="security">{t("workspace.tabs.security")}</TabsTrigger>
-                    <TabsTrigger value="ai_origin" className="gap-1">
-                      <Bot className="h-3 w-3" />
-                      {t("workspace.tabs.aiOrigin")}
-                    </TabsTrigger>
-                    <TabsTrigger value="fix" className="gap-1">
-                      <Wrench className="h-3 w-3" />
-                      {t("workspace.tabs.fix")}
-                    </TabsTrigger>
+                    {llmEnabled && (
+                      <>
+                        <TabsTrigger value="ai_origin" className="gap-1">
+                          <Bot className="h-3 w-3" />
+                          {t("workspace.tabs.aiOrigin")}
+                        </TabsTrigger>
+                        <TabsTrigger value="fix" className="gap-1">
+                          <Wrench className="h-3 w-3" />
+                          {t("workspace.tabs.fix")}
+                        </TabsTrigger>
+                      </>
+                    )}
                   </TabsList>
                   <div className="flex items-center gap-1">
                     <Button
@@ -878,7 +985,8 @@ function WorkspacePage() {
                     </Button>
                   </div>
                 </div>
-                <TabsContent forceMount value="summary" className="m-0 flex-1 space-y-3 overflow-auto px-4 pb-4 data-[state=inactive]:hidden">
+                {llmEnabled && (
+                  <TabsContent forceMount value="summary" className="m-0 flex-1 space-y-3 overflow-auto px-4 pb-4 data-[state=inactive]:hidden">
                   <Tabs value={summarySub} onValueChange={(v) => setSummarySub(v as SummarySub)}>
                     <TabsList className="mt-2">
                       <TabsTrigger value="human">{t("workspace.tabs.human")}</TabsTrigger>
@@ -901,8 +1009,10 @@ function WorkspacePage() {
                       emptyLabel={t("workspace.findings.empty")}
                     />
                   )}
-                </TabsContent>
-                <TabsContent forceMount value="quality" className="m-0 flex-1 space-y-3 overflow-auto px-4 pb-4 data-[state=inactive]:hidden">
+                  </TabsContent>
+                )}
+                {llmEnabled && (
+                  <TabsContent forceMount value="quality" className="m-0 flex-1 space-y-3 overflow-auto px-4 pb-4 data-[state=inactive]:hidden">
                   <ExplanationView text={stripFindingsBlock(qualityText)} placeholder={t("analysis.empty")} />
                   {qualityText && (
                     <InsightPanel
@@ -915,8 +1025,10 @@ function WorkspacePage() {
                       emptyLabel={t("workspace.findings.empty")}
                     />
                   )}
-                </TabsContent>
-                <TabsContent forceMount value="security" className="m-0 flex-1 space-y-3 overflow-auto px-4 pb-4 data-[state=inactive]:hidden">
+                  </TabsContent>
+                )}
+                {llmEnabled && (
+                  <TabsContent forceMount value="security" className="m-0 flex-1 space-y-3 overflow-auto px-4 pb-4 data-[state=inactive]:hidden">
                   <ExplanationView text={stripFindingsBlock(securityText)} placeholder={t("analysis.empty")} />
                   {securityText && (
                     <InsightPanel
@@ -929,8 +1041,14 @@ function WorkspacePage() {
                       emptyLabel={t("workspace.findings.empty")}
                     />
                   )}
+                  </TabsContent>
+                )}
+                <TabsContent forceMount value="malware" className="m-0 flex-1 space-y-3 overflow-auto px-4 pb-4 data-[state=inactive]:hidden">
+                  <ExplanationView text={malwareText || t("analysis.empty")} />
+                  {malwareReport && <MalwareReportPanel report={malwareReport} />}
                 </TabsContent>
-                <TabsContent forceMount value="ai_origin" className="m-0 flex-1 overflow-auto px-4 pb-4 data-[state=inactive]:hidden">
+                {llmEnabled && (
+                  <TabsContent forceMount value="ai_origin" className="m-0 flex-1 overflow-auto px-4 pb-4 data-[state=inactive]:hidden">
                   {aiOriginText ? (
                     <ExplanationView text={aiOriginText} />
                   ) : (
@@ -941,8 +1059,10 @@ function WorkspacePage() {
                       </p>
                     </div>
                   )}
-                </TabsContent>
-                <TabsContent forceMount value="fix" className="m-0 flex-1 overflow-hidden p-3 data-[state=inactive]:hidden">
+                  </TabsContent>
+                )}
+                {llmEnabled && (
+                  <TabsContent forceMount value="fix" className="m-0 flex-1 overflow-hidden p-3 data-[state=inactive]:hidden">
                   <div className="flex h-full min-h-0 flex-col gap-2">
                     <div className="flex items-center gap-2">
                       <Button
@@ -995,7 +1115,8 @@ function WorkspacePage() {
                       />
                     </div>
                   </div>
-                </TabsContent>
+                  </TabsContent>
+                )}
 
               </Tabs>
               <div className="border-t border-border px-3 py-2 text-[10px] text-muted-foreground">
@@ -1029,6 +1150,119 @@ function AiBadge() {
     <div className="inline-flex items-center gap-1.5 rounded-full border border-primary/40 bg-primary/10 px-2.5 py-0.5 text-[11px] font-medium text-primary">
       <Sparkles className="h-3 w-3" />
       {t("workspace.aiGeneratedBadge")}
+    </div>
+  );
+}
+
+function formatMalwareReport(report: StaticMalwareAssessment): string {
+  const lines = [
+    "# Offline static malware scan",
+    "",
+    `Decision: ${report.decision.toUpperCase()}`,
+    `Risk score: ${report.riskScore}/100`,
+    `File: ${report.filePath}`,
+    `Size: ${report.fileSize} bytes`,
+    `Magic signature: ${report.magicDetected} (${report.magicSignature})`,
+    `Extension: .${report.fileExt || "(unknown)"}`,
+    "",
+    `Entropy: global ${report.entropy.global.toFixed(4)}; max 256-byte window ${report.entropy.maxWindow.toFixed(4)} at ${report.entropy.maxWindowOffset}`,
+    `Printable ratio: ${(report.metrics.printableRatio * 100).toFixed(1)}%`,
+    `Control-char ratio: ${(report.metrics.controlCharRatio * 100).toFixed(1)}%`,
+    "",
+    "## Signals",
+    ...report.findings.map((finding) => `- [${finding.severity}] ${finding.title} (${finding.code})`),
+  ];
+  return lines.join("\n");
+}
+
+function MalwareReportPanel({ report }: { report: StaticMalwareAssessment }) {
+  return (
+    <div className="space-y-3">
+      <div className="rounded-md border border-border bg-card/40 p-2.5">
+        <div className="flex flex-wrap items-center gap-2">
+          <span
+            className={`rounded border px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide ${
+              report.decision === "block"
+                ? "border-red-500/40 bg-red-500/10 text-red-700 dark:text-red-300"
+                : report.decision === "warn"
+                  ? "border-amber-500/40 bg-amber-500/10 text-amber-700 dark:text-amber-300"
+                  : "border-emerald-500/40 bg-emerald-500/10 text-emerald-700 dark:text-emerald-300"
+            }`}
+          >
+            Decision: {report.decision}
+          </span>
+          <span
+            className="rounded border border-border bg-muted/50 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide"
+          >
+            Risk: {report.riskScore}/100
+          </span>
+          <span className="rounded border border-border bg-muted/40 px-2 py-0.5 text-[10px] text-muted-foreground">
+            {report.fileSize} bytes
+          </span>
+          <span className="rounded border border-border bg-muted/40 px-2 py-0.5 text-[10px] text-muted-foreground">
+            Entropy global {report.entropy.global.toFixed(3)}
+          </span>
+        </div>
+      </div>
+
+      <div className="rounded-md border border-border bg-card/30 p-2.5">
+        <div className="flex items-center gap-1.5 text-xs font-semibold text-muted-foreground">
+          <FileBadge2 className="h-4 w-4" />
+          Heuristic signals
+        </div>
+        {report.findings.length === 0 ? (
+          <p className="mt-2 text-sm text-muted-foreground">
+            No suspicious static signals found for this file.
+          </p>
+        ) : (
+          <ul className="mt-2 space-y-2">
+            {report.findings.map((finding) => (
+              <li
+                key={finding.code}
+                className="rounded border border-border bg-card/60 p-2.5"
+              >
+                <div className="flex flex-wrap items-center gap-2">
+                  <span
+                    className={`rounded border px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide ${severityBadgeClass(
+                      finding.severity === "low"
+                        ? "low"
+                        : finding.severity === "medium"
+                          ? "medium"
+                          : "high",
+                    )}`}
+                  >
+                    {finding.severity}
+                  </span>
+                  <span className="rounded border border-border bg-background px-1.5 py-0.5 text-[10px] text-muted-foreground">
+                    {finding.code}
+                  </span>
+                  <span className="rounded border border-border bg-background px-1.5 py-0.5 text-[10px] text-muted-foreground">
+                    {finding.decision === "block" ? "block" : "warn"}
+                  </span>
+                </div>
+                <p className="mt-1 text-sm text-foreground">{finding.title}</p>
+                <p className="mt-1 text-xs text-muted-foreground">
+                  {finding.description}
+                </p>
+                <p className="mt-1 text-[10px] text-muted-foreground">
+                  Confidence: {finding.confidence}
+                </p>
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
+
+      <div className="rounded-md border border-dashed border-border p-2.5 text-xs text-muted-foreground">
+        <div className="mb-1 flex items-center gap-1.5 text-sm font-semibold text-foreground">
+          <AlertTriangle className="h-3.5 w-3.5" />
+          Interpretation
+        </div>
+        <p>
+          This is a purely offline static heuristic. Use it as a first-pass risk flag, not as a proof
+          of malware.
+        </p>
+      </div>
     </div>
   );
 }

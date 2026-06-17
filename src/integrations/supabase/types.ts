@@ -151,9 +151,90 @@ export type Database = {
           },
         ]
       }
+      analysis_activities: {
+        Row: {
+          activity_kind: string
+          created_at: string
+          file_id: string | null
+          id: string
+          language: string | null
+          model: string | null
+          owner_id: string
+          project_id: string | null
+          query_text: string | null
+          repository_id: string | null
+          result_metadata: Json
+          result_summary: string | null
+          status: string
+          provider: string | null
+        }
+        Insert: {
+          activity_kind: string
+          created_at?: string
+          file_id?: string | null
+          id?: string
+          language?: string | null
+          model?: string | null
+          owner_id: string
+          project_id?: string | null
+          query_text?: string | null
+          repository_id?: string | null
+          result_metadata?: Json
+          result_summary?: string | null
+          status?: string
+          provider?: string | null
+        }
+        Update: {
+          activity_kind?: string
+          created_at?: string
+          file_id?: string | null
+          id?: string
+          language?: string | null
+          model?: string | null
+          owner_id?: string
+          project_id?: string | null
+          query_text?: string | null
+          repository_id?: string | null
+          result_metadata?: Json
+          result_summary?: string | null
+          status?: string
+          provider?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "analysis_activities_file_id_fkey"
+            columns: ["file_id"]
+            isOneToOne: false
+            referencedRelation: "files"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "analysis_activities_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "analysis_activities_repository_id_fkey"
+            columns: ["repository_id"]
+            isOneToOne: false
+            referencedRelation: "repositories"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       files: {
         Row: {
           created_at: string
+          static_decision: string | null
+          static_entropy_global: number | null
+          static_entropy_window: number | null
+          static_last_error: string | null
+          static_scan_finished_at: string | null
+          static_scan_report: Json | null
+          static_scan_started_at: string | null
+          static_scan_status: string
           id: string
           language: string | null
           owner_id: string
@@ -165,6 +246,14 @@ export type Database = {
         }
         Insert: {
           created_at?: string
+          static_decision?: string | null
+          static_entropy_global?: number | null
+          static_entropy_window?: number | null
+          static_last_error?: string | null
+          static_scan_finished_at?: string | null
+          static_scan_report?: Json | null
+          static_scan_started_at?: string | null
+          static_scan_status?: string
           id?: string
           language?: string | null
           owner_id: string
@@ -176,6 +265,14 @@ export type Database = {
         }
         Update: {
           created_at?: string
+          static_decision?: string | null
+          static_entropy_global?: number | null
+          static_entropy_window?: number | null
+          static_last_error?: string | null
+          static_scan_finished_at?: string | null
+          static_scan_report?: Json | null
+          static_scan_started_at?: string | null
+          static_scan_status?: string
           id?: string
           language?: string | null
           owner_id?: string
@@ -257,6 +354,7 @@ export type Database = {
       }
       projects: {
         Row: {
+          analysis_mode: string
           created_at: string
           description: string | null
           id: string
@@ -265,6 +363,7 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          analysis_mode?: string
           created_at?: string
           description?: string | null
           id?: string
@@ -273,6 +372,7 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          analysis_mode?: string
           created_at?: string
           description?: string | null
           id?: string

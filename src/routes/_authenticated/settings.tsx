@@ -10,6 +10,7 @@ import {
   FileCheck2,
   AlertTriangle,
   HelpCircle,
+  KeyRound,
 } from "lucide-react";
 
 import { useOnboarding } from "@/components/onboarding/OnboardingProvider";
@@ -49,6 +50,7 @@ export const Route = createFileRoute("/_authenticated/settings")({
 function SettingsPage() {
   const { t, i18n } = useTranslation();
   const qc = useQueryClient();
+  const navigate = useNavigate();
   const getProfile = useServerFn(getMyProfile);
   const updateProfile = useServerFn(updateMyProfile);
   const list = useServerFn(listProviders);
@@ -63,6 +65,8 @@ function SettingsPage() {
 
   const [displayName, setDisplayName] = useState("");
   const [language, setLanguage] = useState<"en" | "it" | "zh">("en");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
 
   useEffect(() => {
     if (profile.data?.profile) {
@@ -82,6 +86,27 @@ function SettingsPage() {
     onError: (e: any) => toast.error(e?.message ?? t("errors.generic")),
   });
 
+  const passwordMut = useMutation({
+    mutationFn: async () => {
+      if (newPassword.length < 8) {
+        throw new Error(t("settings.passwordTooShort"));
+      }
+      if (newPassword !== confirmPassword) {
+        throw new Error(t("settings.passwordMismatch"));
+      }
+      const { error } = await supabase.auth.updateUser({ password: newPassword });
+      if (error) throw error;
+      await supabase.auth.signOut();
+    },
+    onSuccess: () => {
+      toast.success(t("settings.passwordChanged"));
+      setNewPassword("");
+      setConfirmPassword("");
+      navigate({ to: "/auth", replace: true });
+    },
+    onError: (e: any) => toast.error(e?.message ?? t("errors.generic")),
+  });
+
   return (
     <AppShell>
       <div className="mx-auto max-w-3xl px-6 py-10 space-y-10">
@@ -91,6 +116,7 @@ function SettingsPage() {
           <nav className="flex flex-wrap gap-2 text-xs">
             {[
               { id: "profile", label: t("settings.profileSection") },
+              { id: "password", label: t("settings.passwordSection") },
               { id: "byok", label: t("settings.byokSection") },
               { id: "local", label: t("settings.localSection") },
               { id: "account", label: t("settings.accountSection") },
@@ -135,6 +161,42 @@ function SettingsPage() {
           </div>
           <Button onClick={() => profileMut.mutate()} disabled={profileMut.isPending}>
             {t("settings.save")}
+          </Button>
+        </section>
+
+        <section id="password" className="space-y-4 rounded-lg border border-border bg-card p-5 scroll-mt-20">
+          <h2 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
+            {t("settings.passwordSection")}
+          </h2>
+          <div className="flex items-start gap-2 rounded-md border border-amber-500/30 bg-amber-500/5 p-3 text-xs text-amber-900 dark:text-amber-200">
+            <KeyRound className="mt-0.5 h-3.5 w-3.5 shrink-0" />
+            <span>{t("settings.passwordIntro")}</span>
+          </div>
+          <div className="space-y-1">
+            <Label htmlFor="new-password">{t("settings.newPassword")}</Label>
+            <Input
+              id="new-password"
+              type="password"
+              value={newPassword}
+              onChange={(e) => setNewPassword(e.target.value)}
+              autoComplete="new-password"
+            />
+          </div>
+          <div className="space-y-1">
+            <Label htmlFor="confirm-password">{t("settings.confirmNewPassword")}</Label>
+            <Input
+              id="confirm-password"
+              type="password"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              autoComplete="new-password"
+            />
+          </div>
+          <Button
+            onClick={() => passwordMut.mutate()}
+            disabled={passwordMut.isPending || !newPassword || !confirmPassword}
+          >
+            {passwordMut.isPending ? t("settings.changingPassword") : t("settings.changePassword")}
           </Button>
         </section>
 

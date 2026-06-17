@@ -3,7 +3,15 @@ import { ChevronRight, ChevronDown, File, Folder, ScanSearch } from "lucide-reac
 
 import { cn } from "@/lib/utils";
 
-type FileItem = { id: string; path: string; language: string | null };
+type FileItem = {
+  id: string;
+  path: string;
+  language: string | null;
+  static_scan_status?: string | null;
+  static_entropy_global?: number | null;
+  static_decision?: string | null;
+  static_last_error?: string | null;
+};
 
 type Node = {
   name: string;
@@ -110,6 +118,9 @@ function NodeView({
 
   if (node.file && node.children.size === 0) {
     const f = node.file;
+    const status = f.static_scan_status ?? null;
+    const entropy =
+      typeof f.static_entropy_global === "number" ? f.static_entropy_global.toFixed(2) : null;
     return (
       <button
         onClick={() => onSelect(f)}
@@ -121,6 +132,34 @@ function NodeView({
       >
         <File className="h-3.5 w-3.5 text-muted-foreground" />
         <span className="truncate">{node.name}</span>
+        {(status || entropy) && (
+          <span className="ml-auto flex items-center gap-1.5 text-[10px] font-medium">
+            {status && (
+              <span
+                className={cn(
+                  "rounded border px-1.5 py-0.5 uppercase tracking-wide",
+                  status === "block"
+                    ? "border-red-500/40 bg-red-500/10 text-red-700 dark:text-red-300"
+                    : status === "warn"
+                      ? "border-amber-500/40 bg-amber-500/10 text-amber-700 dark:text-amber-300"
+                      : status === "scanning"
+                        ? "border-sky-500/40 bg-sky-500/10 text-sky-700 dark:text-sky-300"
+                        : status === "pending"
+                          ? "border-border bg-muted/40 text-muted-foreground"
+                          : "border-emerald-500/40 bg-emerald-500/10 text-emerald-700 dark:text-emerald-300",
+                )}
+                title={f.static_last_error ?? f.static_decision ?? status}
+              >
+                {status}
+              </span>
+            )}
+            {entropy && (
+              <span className="rounded border border-border bg-muted/30 px-1.5 py-0.5 font-mono text-muted-foreground">
+                H{entropy}
+              </span>
+            )}
+          </span>
+        )}
       </button>
     );
   }

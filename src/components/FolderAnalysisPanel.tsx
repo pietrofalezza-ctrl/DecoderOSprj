@@ -111,6 +111,7 @@ export function FolderAnalysisPanel({
       if (!provider || oks.length === 0) return "";
       const r = await aggregate({
         data: {
+          repo_id: repoId,
           folder_path: folderPath,
           kind,
           language,
