@@ -67,9 +67,9 @@ async function moveToDlq(
 ): Promise<void> {
   const payload = msg.message;
   await supabase.from("email_send_log").insert({
-    message_id: payload.message_id,
+    message_id: (payload.message_id ?? "") as string,
     template_name: (payload.label || queue) as string,
-    recipient_email: payload.to,
+    recipient_email: (payload.to ?? "") as string,
     status: "dlq",
     error_message: reason,
   });
@@ -77,7 +77,7 @@ async function moveToDlq(
     source_queue: queue,
     dlq_name: `${queue}_dlq`,
     message_id: msg.msg_id,
-    payload,
+    payload: payload as unknown as Record<string, never>,
   });
   if (error) {
     console.error("Failed to move message to DLQ", { queue, msg_id: msg.msg_id, reason, error });
@@ -277,15 +277,15 @@ export const Route = createFileRoute("/lovable/email/queue/process")({
                   idempotency_key: payload.idempotency_key,
                   unsubscribe_token: payload.unsubscribe_token,
                   message_id: payload.message_id,
-                },
+                } as Parameters<typeof sendLovableEmail>[0],
                 { apiKey, sendUrl: process.env.LOVABLE_SEND_URL },
               );
 
               // Log success
               await supabase.from("email_send_log").insert({
-                message_id: payload.message_id,
+                message_id: (payload.message_id ?? "") as string,
                 template_name: payload.label || queue,
-                recipient_email: payload.to,
+                recipient_email: (payload.to ?? "") as string,
                 status: "sent",
               });
 
@@ -314,9 +314,9 @@ export const Route = createFileRoute("/lovable/email/queue/process")({
 
               if (isRateLimited(error)) {
                 await supabase.from("email_send_log").insert({
-                  message_id: payload.message_id,
+                  message_id: (payload.message_id ?? "") as string,
                   template_name: payload.label || queue,
-                  recipient_email: payload.to,
+                  recipient_email: (payload.to ?? "") as string,
                   status: "failed",
                   error_message: errorMsg.slice(0, 1000),
                 });
@@ -343,9 +343,9 @@ export const Route = createFileRoute("/lovable/email/queue/process")({
 
               // Log non-429 failures to track real retry attempts.
               await supabase.from("email_send_log").insert({
-                message_id: payload.message_id,
+                message_id: (payload.message_id ?? "") as string,
                 template_name: payload.label || queue,
-                recipient_email: payload.to,
+                recipient_email: (payload.to ?? "") as string,
                 status: "failed",
                 error_message: errorMsg.slice(0, 1000),
               });
