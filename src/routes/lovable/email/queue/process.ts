@@ -314,9 +314,9 @@ export const Route = createFileRoute("/lovable/email/queue/process")({
 
               if (isRateLimited(error)) {
                 await supabase.from("email_send_log").insert({
-                  message_id: payload.message_id,
+                  message_id: (payload.message_id ?? "") as string,
                   template_name: payload.label || queue,
-                  recipient_email: payload.to,
+                  recipient_email: (payload.to ?? "") as string,
                   status: "failed",
                   error_message: errorMsg.slice(0, 1000),
                 });
