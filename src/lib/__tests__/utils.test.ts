@@ -18,11 +18,13 @@ describe("cn", () => {
   });
 
   it("handles conditional classes (falsy values)", () => {
-    expect(cn("base", false && "hidden", undefined, null)).toBe("base");
+    const hidden = Boolean(0);
+    expect(cn("base", hidden && "hidden", undefined, null)).toBe("base");
   });
 
   it("handles conditional classes (truthy values)", () => {
-    expect(cn("base", true && "active")).toBe("base active");
+    const active = Boolean(1);
+    expect(cn("base", active && "active")).toBe("base active");
   });
 
   it("deduplicates conflicting Tailwind classes via twMerge", () => {

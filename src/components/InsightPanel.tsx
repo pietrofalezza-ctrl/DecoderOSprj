@@ -1,13 +1,6 @@
 import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
-import {
-  ChevronDown,
-  ChevronUp,
-  MapPin,
-  MessageSquarePlus,
-  Sparkles,
-  Wrench,
-} from "lucide-react";
+import { ChevronDown, ChevronUp, MapPin, MessageSquarePlus, Sparkles, Wrench } from "lucide-react";
 
 import {
   categoryBadgeClass,
@@ -82,10 +75,7 @@ export function InsightPanel({
   }, [enriched, enrichedUnmapped]);
 
   const visibleFindings = useMemo(() => {
-    const list =
-      filter === "all"
-        ? enriched
-        : enriched.filter((f) => f.category === filter);
+    const list = filter === "all" ? enriched : enriched.filter((f) => f.category === filter);
     return [...list].sort(compareFindings);
   }, [enriched, filter]);
 
@@ -98,9 +88,7 @@ export function InsightPanel({
   const total = findings.length + unmapped.length;
 
   if (total === 0) {
-    return emptyLabel ? (
-      <p className="text-xs text-muted-foreground">{emptyLabel}</p>
-    ) : null;
+    return emptyLabel ? <p className="text-xs text-muted-foreground">{emptyLabel}</p> : null;
   }
 
   return (
@@ -249,9 +237,7 @@ function InsightCard({
           {t("insights.lineRange", { range })}
         </span>
       </div>
-      <h5 className="mt-1.5 text-xs font-semibold text-foreground">
-        {finding.title}
-      </h5>
+      <h5 className="mt-1.5 text-xs font-semibold text-foreground">{finding.title}</h5>
       {finding.message && (
         <p className="mt-1 whitespace-pre-wrap text-[11px] leading-snug text-muted-foreground">
           {showFull ? finding.message : finding.message.slice(0, 220) + "…"}
@@ -346,9 +332,7 @@ function UnmappedCard({ insight }: { insight: UnmappedInsight }) {
           {t("insights.fileLevel")}
         </span>
       </div>
-      <h5 className="mt-1.5 text-xs font-semibold text-foreground">
-        {insight.title}
-      </h5>
+      <h5 className="mt-1.5 text-xs font-semibold text-foreground">{insight.title}</h5>
       {insight.message && (
         <p className="mt-1 whitespace-pre-wrap text-[11px] leading-snug text-muted-foreground">
           {insight.message}

@@ -1,14 +1,7 @@
 import { Link, useNavigate } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
-import {
-  LogOut,
-  Settings,
-  LayoutDashboard,
-  BookOpen,
-  ChevronDown,
-  Github,
-} from "lucide-react";
+import { LogOut, Settings, LayoutDashboard, BookOpen, ChevronDown, Github } from "lucide-react";
 import type { ReactNode } from "react";
 
 import { Button } from "@/components/ui/button";
@@ -20,12 +13,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { LangSwitcher } from "./LangSwitcher";
 import { ThemeToggle } from "./ThemeToggle";
 import { Logo } from "./Logo";
@@ -58,13 +46,23 @@ export function AppShell({ children }: { children: ReactNode }) {
           <Logo />
         </Link>
         <div className="flex items-center gap-1 sm:gap-2">
-          <Button asChild variant="ghost" size="default" className="hidden text-sm font-medium sm:inline-flex">
+          <Button
+            asChild
+            variant="ghost"
+            size="default"
+            className="hidden text-sm font-medium sm:inline-flex"
+          >
             <Link to="/docs">
               <BookOpen className="mr-2 h-5 w-5" />
               {t("nav.docs")}
             </Link>
           </Button>
-          <Button asChild variant="ghost" size="default" className="hidden text-sm font-medium sm:inline-flex">
+          <Button
+            asChild
+            variant="ghost"
+            size="default"
+            className="hidden text-sm font-medium sm:inline-flex"
+          >
             <a href={t("common.repoUrl")} target="_blank" rel="noreferrer">
               <Github className="mr-2 h-5 w-5" />
               GitHub
@@ -100,9 +98,7 @@ export function AppShell({ children }: { children: ReactNode }) {
                   <span className="text-[10px] font-normal uppercase tracking-wide text-muted-foreground">
                     {t("nav.signedInAs")}
                   </span>
-                  <span className="truncate text-sm font-medium">
-                    {email || "—"}
-                  </span>
+                  <span className="truncate text-sm font-medium">{email || "—"}</span>
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem asChild>
@@ -136,11 +132,21 @@ export function AppShell({ children }: { children: ReactNode }) {
         <div className="mx-auto flex max-w-6xl flex-col items-start justify-between gap-3 px-6 py-5 text-[11px] text-muted-foreground md:flex-row md:items-center">
           <p className="max-w-3xl leading-relaxed">{t("footer.disclaimer")}</p>
           <nav className="flex shrink-0 flex-wrap gap-3">
-            <Link to="/terms" className="hover:text-foreground">{t("landing.nav.terms")}</Link>
-            <Link to="/privacy" className="hover:text-foreground">{t("footer.privacy")}</Link>
-            <Link to="/cookies" className="hover:text-foreground">{t("footer.cookies")}</Link>
-            <Link to="/data-flow" className="hover:text-foreground">{t("footer.dataFlow")}</Link>
-            <Link to="/manifesto" className="hover:text-foreground">{t("landing.nav.manifesto")}</Link>
+            <Link to="/terms" className="hover:text-foreground">
+              {t("landing.nav.terms")}
+            </Link>
+            <Link to="/privacy" className="hover:text-foreground">
+              {t("footer.privacy")}
+            </Link>
+            <Link to="/cookies" className="hover:text-foreground">
+              {t("footer.cookies")}
+            </Link>
+            <Link to="/data-flow" className="hover:text-foreground">
+              {t("footer.dataFlow")}
+            </Link>
+            <Link to="/manifesto" className="hover:text-foreground">
+              {t("landing.nav.manifesto")}
+            </Link>
           </nav>
         </div>
       </footer>

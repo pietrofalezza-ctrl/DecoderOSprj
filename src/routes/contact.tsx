@@ -20,7 +20,8 @@ export const Route = createFileRoute("/contact")({
       { property: "og:title", content: "Decoder — Contacts" },
       {
         property: "og:description",
-        content: "Privacy, GDPR, security and feedback contacts for the Decoder open source project.",
+        content:
+          "Privacy, GDPR, security and feedback contacts for the Decoder open source project.",
       },
       { property: "og:url", content: "https://decoderdev.lovable.app/contact" },
     ],
@@ -31,7 +32,6 @@ export const Route = createFileRoute("/contact")({
 
 function ContactPage() {
   const { t } = useTranslation();
-  
 
   return (
     <div className="min-h-screen bg-background text-foreground">

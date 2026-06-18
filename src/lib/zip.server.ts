@@ -19,25 +19,119 @@ const SKIP_DIRS = new Set([
 ]);
 
 const TEXT_EXT = new Set([
-  "ts", "tsx", "js", "jsx", "mjs", "cjs", "json", "md", "mdx", "yaml", "yml",
-  "toml", "ini", "env", "sh", "bash", "zsh", "py", "rb", "go", "rs", "java",
-  "kt", "kts", "swift", "c", "h", "cpp", "hpp", "cc", "cs", "php", "html",
-  "htm", "css", "scss", "less", "vue", "svelte", "astro", "sql", "graphql",
-  "gql", "lua", "pl", "ex", "exs", "erl", "clj", "cljs", "dart", "elm", "fs",
-  "fsx", "scala", "groovy", "tf", "dockerfile", "makefile", "txt", "xml",
-  "proto", "r", "jl", "nim", "zig",
+  "ts",
+  "tsx",
+  "js",
+  "jsx",
+  "mjs",
+  "cjs",
+  "json",
+  "md",
+  "mdx",
+  "yaml",
+  "yml",
+  "toml",
+  "ini",
+  "env",
+  "sh",
+  "bash",
+  "zsh",
+  "py",
+  "rb",
+  "go",
+  "rs",
+  "java",
+  "kt",
+  "kts",
+  "swift",
+  "c",
+  "h",
+  "cpp",
+  "hpp",
+  "cc",
+  "cs",
+  "php",
+  "html",
+  "htm",
+  "css",
+  "scss",
+  "less",
+  "vue",
+  "svelte",
+  "astro",
+  "sql",
+  "graphql",
+  "gql",
+  "lua",
+  "pl",
+  "ex",
+  "exs",
+  "erl",
+  "clj",
+  "cljs",
+  "dart",
+  "elm",
+  "fs",
+  "fsx",
+  "scala",
+  "groovy",
+  "tf",
+  "dockerfile",
+  "makefile",
+  "txt",
+  "xml",
+  "proto",
+  "r",
+  "jl",
+  "nim",
+  "zig",
 ]);
 
 const LANG_BY_EXT: Record<string, string> = {
-  ts: "typescript", tsx: "typescript", js: "javascript", jsx: "javascript",
-  mjs: "javascript", cjs: "javascript", json: "json", md: "markdown",
-  mdx: "markdown", yml: "yaml", yaml: "yaml", toml: "ini", ini: "ini",
-  sh: "shell", bash: "shell", zsh: "shell", py: "python", rb: "ruby",
-  go: "go", rs: "rust", java: "java", kt: "kotlin", swift: "swift",
-  c: "c", h: "c", cpp: "cpp", hpp: "cpp", cc: "cpp", cs: "csharp",
-  php: "php", html: "html", htm: "html", css: "css", scss: "scss",
-  less: "less", vue: "html", svelte: "html", sql: "sql", graphql: "graphql",
-  gql: "graphql", lua: "lua", dart: "dart", scala: "scala", xml: "xml",
+  ts: "typescript",
+  tsx: "typescript",
+  js: "javascript",
+  jsx: "javascript",
+  mjs: "javascript",
+  cjs: "javascript",
+  json: "json",
+  md: "markdown",
+  mdx: "markdown",
+  yml: "yaml",
+  yaml: "yaml",
+  toml: "ini",
+  ini: "ini",
+  sh: "shell",
+  bash: "shell",
+  zsh: "shell",
+  py: "python",
+  rb: "ruby",
+  go: "go",
+  rs: "rust",
+  java: "java",
+  kt: "kotlin",
+  swift: "swift",
+  c: "c",
+  h: "c",
+  cpp: "cpp",
+  hpp: "cpp",
+  cc: "cpp",
+  cs: "csharp",
+  php: "php",
+  html: "html",
+  htm: "html",
+  css: "css",
+  scss: "scss",
+  less: "less",
+  vue: "html",
+  svelte: "html",
+  sql: "sql",
+  graphql: "graphql",
+  gql: "graphql",
+  lua: "lua",
+  dart: "dart",
+  scala: "scala",
+  xml: "xml",
 };
 
 const MAX_FILE_BYTES = 4 * 1024 * 1024; // 4 MB
@@ -117,7 +211,8 @@ export function extractZipWithReport(zipBytes: Uint8Array): ExtractionReport {
     const lower = path.toLowerCase();
     const ext = lower.includes(".") ? lower.split(".").pop()! : "";
     const baseName = segments[segments.length - 1].toLowerCase();
-    const isTextByName = baseName === "dockerfile" || baseName === "makefile" || baseName === "readme";
+    const isTextByName =
+      baseName === "dockerfile" || baseName === "makefile" || baseName === "readme";
 
     const risks = assessStaticRisk(path, ext, bytes).findings;
     for (const finding of risks) {
@@ -144,10 +239,11 @@ export function extractZipWithReport(zipBytes: Uint8Array): ExtractionReport {
     // quick binary sniff: presence of null byte in first 4KB
     const sniff = bytes.slice(0, Math.min(4096, bytes.length));
     let hasNull = false;
-    for (let i = 0; i < sniff.length; i++) if (sniff[i] === 0) {
-      hasNull = true;
-      break;
-    }
+    for (let i = 0; i < sniff.length; i++)
+      if (sniff[i] === 0) {
+        hasNull = true;
+        break;
+      }
     if (hasNull) {
       warned.push({
         path,

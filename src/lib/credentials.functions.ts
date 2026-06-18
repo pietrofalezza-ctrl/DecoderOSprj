@@ -28,9 +28,7 @@ export const listProviders = createServerFn({ method: "GET" })
 
 export const saveProviderKey = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator(
-    z.object({ provider: Provider, api_key: z.string().trim().min(8).max(500) }),
-  )
+  .inputValidator(z.object({ provider: Provider, api_key: z.string().trim().min(8).max(500) }))
   .handler(async ({ context, data }) => {
     const { assertByokAckAccepted } = await import("./byok-acknowledgement.server");
     await assertByokAckAccepted(context.supabase, context.userId);

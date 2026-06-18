@@ -317,6 +317,7 @@
   "dashboard": {
     "title": "I tuoi progetti",
     "newProject": "Nuovo progetto",
+    "newProjectDescription": "Crea uno spazio in cui Decoder conserva repository, risultati delle scansioni statiche e cronologia delle analisi.",
     "empty": "Non hai ancora progetti.",
     "projectNamePlaceholder": "Nome progetto",
     "projectDescPlaceholder": "Descrizione (opzionale)",
@@ -401,6 +402,7 @@
     "noRepos": "Nessuna repository. Carica uno ZIP o importa da GitHub per iniziare.",
     "openRepo": "Apri",
     "importGithub": "Importa da GitHub",
+    "importGithubDescription": "Importa una repository pubblica in questo progetto, poi esegui analisi statica, analisi LLM o entrambe secondo la modalità scelta.",
     "importing": "Importazione…",
     "githubUrl": "URL GitHub",
     "githubUrlPlaceholder": "https://github.com/owner/repo",
@@ -444,6 +446,10 @@
     "download": "Scarica .md",
     "exportAll": "Esporta tutto (.zip)",
     "exporting": "Esportazione…",
+    "searchFiles": "Cerca file",
+    "clearSearch": "Cancella ricerca",
+    "searchResultCount": "{{shown}}/{{total}} file",
+    "noSearchResults": "Nessun file corrisponde a questa ricerca.",
     "noProvider": "Aggiungi una chiave API in Impostazioni per attivare le spiegazioni AI.",
     "staticOnlyMode": "Modalità solo statica",
     "staticOnlyBody": "Non serve alcuna API key. Le schede LLM e i controlli cloud sono nascosti per questo progetto.",
@@ -469,9 +475,21 @@
       "technical": "Riassunto tecnico",
       "quality": "Qualità",
       "security": "Sicurezza",
+      "staticCode": "Codice statico",
       "malware": "Malware",
       "aiOrigin": "Origine AI",
+      "chat": "Chat",
       "fix": "Fix"
+    },
+    "chat": {
+      "empty": "Nessun messaggio.",
+      "loading": "Caricamento cronologia chat…",
+      "placeholder": "Fai una domanda sul file selezionato…",
+      "send": "Invia",
+      "sending": "Invio…",
+      "needsProvider": "Seleziona un provider cloud o locale per chattare.",
+      "user": "Tu",
+      "assistant": "Assistente"
     },
     "findings": {
       "title": "Punti evidenziati",
@@ -737,7 +755,11 @@
           "b1": "Utilizza Ollama, LM Studio o un altro modello locale.",
           "b2": "Pensata perché il codice venga elaborato localmente.",
           "b3": "Consigliata per codice sensibile o privato.",
-          "flow": { "code": "Il tuo codice", "model": "Modello locale", "ui": "Interfaccia Decoder" }
+          "flow": {
+            "code": "Il tuo codice",
+            "model": "Modello locale",
+            "ui": "Interfaccia Decoder"
+          }
         },
         "cloud": {
           "title": "Modalità Cloud BYOK",
@@ -745,7 +767,12 @@
           "b2": "Supporta OpenAI, Anthropic, Gemini e OpenRouter.",
           "b3": "Il codice o i prompt selezionati possono essere inviati al provider scelto.",
           "b4": "Sei responsabile dei costi e dei termini del provider.",
-          "flow": { "code": "Il tuo codice", "backend": "Backend Decoder", "provider": "Provider AI", "ui": "Interfaccia Decoder" }
+          "flow": {
+            "code": "Il tuo codice",
+            "backend": "Backend Decoder",
+            "provider": "Provider AI",
+            "ui": "Interfaccia Decoder"
+          }
         }
       },
       "s3": {
@@ -983,13 +1010,43 @@
     },
     "whatWeUseTitle": "Cosa salviamo realmente",
     "whatWeUseBody": "Elenco completo di cookie e archiviazione del browser usati da Decoder:",
-    "col": { "name": "Nome", "purpose": "Finalità", "storage": "Archiviazione", "retention": "Durata" },
+    "col": {
+      "name": "Nome",
+      "purpose": "Finalità",
+      "storage": "Archiviazione",
+      "retention": "Durata"
+    },
     "rows": {
-      "auth": { "name": "sb-* (Supabase auth)", "purpose": "Ti mantiene autenticato in modo sicuro", "storage": "Cookie / localStorage", "retention": "Fino al logout o alla scadenza del token" },
-      "lang": { "name": "i18nextLng", "purpose": "Ricorda la lingua dell'interfaccia", "storage": "localStorage", "retention": "Fino alla pulizia dei dati del browser" },
-      "theme": { "name": "theme", "purpose": "Ricorda la preferenza tema chiaro/scuro", "storage": "localStorage", "retention": "Fino alla pulizia dei dati del browser" },
-      "disclaimer": { "name": "decoder.disclaimer.acceptedAt", "purpose": "Registra che hai visto il disclaimer di accesso", "storage": "localStorage", "retention": "Fino alla pulizia dei dati del browser" },
-      "ack": { "name": "user_acknowledgements", "purpose": "Salva la tua accettazione BYOK e l'onboarding", "storage": "Database server (tuo account)", "retention": "Fino all'eliminazione dell'account o dell'accettazione" }
+      "auth": {
+        "name": "sb-* (Supabase auth)",
+        "purpose": "Ti mantiene autenticato in modo sicuro",
+        "storage": "Cookie / localStorage",
+        "retention": "Fino al logout o alla scadenza del token"
+      },
+      "lang": {
+        "name": "i18nextLng",
+        "purpose": "Ricorda la lingua dell'interfaccia",
+        "storage": "localStorage",
+        "retention": "Fino alla pulizia dei dati del browser"
+      },
+      "theme": {
+        "name": "theme",
+        "purpose": "Ricorda la preferenza tema chiaro/scuro",
+        "storage": "localStorage",
+        "retention": "Fino alla pulizia dei dati del browser"
+      },
+      "disclaimer": {
+        "name": "decoder.disclaimer.acceptedAt",
+        "purpose": "Registra che hai visto il disclaimer di accesso",
+        "storage": "localStorage",
+        "retention": "Fino alla pulizia dei dati del browser"
+      },
+      "ack": {
+        "name": "user_acknowledgements",
+        "purpose": "Salva la tua accettazione BYOK e l'onboarding",
+        "storage": "Database server (tuo account)",
+        "retention": "Fino all'eliminazione dell'account o dell'accettazione"
+      }
     },
     "noTrackingTitle": "Cosa NON usiamo",
     "noTrackingBody": "Decoder non carica nessuno dei seguenti elementi:",

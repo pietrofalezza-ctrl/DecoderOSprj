@@ -1,20 +1,14 @@
 // Shared analysis prompt builder — pure, browser-safe.
 import type { ExplanationLanguage } from "./prompt";
 
-export type AnalysisKind =
-  | "smells"
-  | "deadcode"
-  | "bugs"
-  | "security"
-  | "ai_origin";
+export type AnalysisKind = "smells" | "deadcode" | "bugs" | "security" | "ai_origin";
 
 const FOCUS: Record<AnalysisKind, string> = {
   smells:
     "Identify code smells: long functions, unclear naming, duplication, deep nesting, tight coupling, leaky abstractions. For each issue provide: location, why it is a smell, and a refactoring suggestion.",
   deadcode:
     "Identify likely dead code: unused variables, unreachable branches, unused exports, unused imports. Be conservative — only report items you can justify from the file alone. Note false-positive risk when context could prove usage elsewhere.",
-  bugs:
-    "Identify likely bugs: off-by-one errors, missing await, race conditions, null/undefined access, exhaustiveness mistakes, incorrect error handling. Rank by likelihood and impact.",
+  bugs: "Identify likely bugs: off-by-one errors, missing await, race conditions, null/undefined access, exhaustiveness mistakes, incorrect error handling. Rank by likelihood and impact.",
   security:
     "Identify potential security issues: injection, XSS, SSRF, insecure deserialization, secret leakage, weak crypto, insufficient authorization checks, unsafe input handling. For each finding: severity (low/medium/high), location, exploitation scenario, mitigation.",
   ai_origin:
@@ -28,11 +22,7 @@ export function buildAnalysisPrompt(args: {
   fileContent: string;
 }): { system: string; user: string } {
   const langName =
-    args.language === "it"
-      ? "Italian"
-      : args.language === "zh"
-        ? "Simplified Chinese"
-        : "English";
+    args.language === "it" ? "Italian" : args.language === "zh" ? "Simplified Chinese" : "English";
 
   const isAiOrigin = args.kind === "ai_origin";
 
@@ -104,11 +94,7 @@ export function buildFixPrompt(args: {
   kindLabel: string;
 }): { system: string; user: string } {
   const langName =
-    args.language === "it"
-      ? "Italian"
-      : args.language === "zh"
-        ? "Simplified Chinese"
-        : "English";
+    args.language === "it" ? "Italian" : args.language === "zh" ? "Simplified Chinese" : "English";
 
   const system = `You are Decoder, producing a minimal, safe code patch.
 Reply in ${langName} for any prose. The patch itself uses standard unified-diff syntax.
@@ -152,11 +138,7 @@ export function buildFolderAggregatePrompt(args: {
   perFile: Array<{ path: string; excerpt: string }>;
 }): { system: string; user: string } {
   const langName =
-    args.language === "it"
-      ? "Italian"
-      : args.language === "zh"
-        ? "Simplified Chinese"
-        : "English";
+    args.language === "it" ? "Italian" : args.language === "zh" ? "Simplified Chinese" : "English";
   const system = `You are Decoder, producing a folder-level synthesis of per-file code reviews.
 Reply in ${langName}, using Markdown.
 Sections (in order):
@@ -166,9 +148,7 @@ Sections (in order):
 4) "## Per file" — short bullet per file with the headline issue (omit files with no findings).
 Do not invent findings. Base everything on the per-file inputs provided.`;
 
-  const items = args.perFile
-    .map((p) => `### ${p.path}\n${p.excerpt.slice(0, 4_000)}`)
-    .join("\n\n");
+  const items = args.perFile.map((p) => `### ${p.path}\n${p.excerpt.slice(0, 4_000)}`).join("\n\n");
 
   const user = `Folder: ${args.folderPath}
 Analysis focus: ${args.kindLabel}

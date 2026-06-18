@@ -3,6 +3,8 @@ import { z } from "zod";
 
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { appendAnalysisActivity } from "@/lib/analysis-activities";
+import { getErrorMessage } from "@/lib/errors";
+import { formatFolderFixActivityContent } from "@/lib/fix-history";
 
 const Provider = z.enum(["openai", "anthropic", "gemini", "openrouter"]);
 const Language = z.enum(["en", "it", "zh"]);
@@ -92,6 +94,7 @@ export const proposeFileFix = createServerFn({ method: "POST" })
       language: data.language,
       query_text: file.path,
       result_summary: "file patch generated",
+      result_content: text,
       result_metadata: {
         kind: data.kind,
       },
@@ -163,13 +166,27 @@ export const proposeFolderFix = createServerFn({ method: "POST" })
         const notesIdx = text.search(/```diff/i);
         const notes =
           notesIdx >= 0
-            ? text.slice(notesIdx).replace(/```diff[\s\S]*?```/i, "").trim()
+            ? text
+                .slice(notesIdx)
+                .replace(/```diff[\s\S]*?```/i, "")
+                .trim()
             : text.trim();
         parts.push({ path: file.path, diff, notes });
-      } catch (e: any) {
-        parts.push({ path: file.path, diff: "", notes: `[error] ${e?.message ?? "unknown"}` });
+      } catch (e) {
+        parts.push({
+          path: file.path,
+          diff: "",
+          notes: `[error] ${getErrorMessage(e, "unknown")}`,
+        });
       }
     }
+
+    const resultContent = formatFolderFixActivityContent(parts);
+    const combined = parts
+      .filter((p) => p.diff)
+      .map((p) => (p.diff.endsWith("\n") ? p.diff : p.diff + "\n"))
+      .join("\n");
+    const notesAll = parts.map((p) => `### ${p.path}\n${p.notes || "(no notes)"}`).join("\n\n");
 
     if (firstRepositoryId) {
       const { data: repository } = await context.supabase
@@ -189,20 +206,13 @@ export const proposeFolderFix = createServerFn({ method: "POST" })
         language: data.language,
         query_text: data.items[0]?.file_id ?? "folder",
         result_summary: "folder patch generated",
+        result_content: resultContent,
         result_metadata: {
           kind: data.kind,
           file_count: parts.length,
         },
       });
     }
-
-    const combined = parts
-      .filter((p) => p.diff)
-      .map((p) => p.diff.endsWith("\n") ? p.diff : p.diff + "\n")
-      .join("\n");
-    const notesAll = parts
-      .map((p) => `### ${p.path}\n${p.notes || "(no notes)"}`)
-      .join("\n\n");
 
     return { combined_diff: combined, notes: notesAll, file_count: parts.length };
   });

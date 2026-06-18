@@ -61,8 +61,20 @@ describe("extractInsightBundle", () => {
 
   it("parses legacy array-of-findings format", () => {
     const json = JSON.stringify([
-      { severity: "high", title: "Security hole", explanation: "SQL injection", start_line: 42, end_line: 42 },
-      { severity: "low", title: "Unused var", explanation: "Never read", start_line: 15, end_line: 15 },
+      {
+        severity: "high",
+        title: "Security hole",
+        explanation: "SQL injection",
+        start_line: 42,
+        end_line: 42,
+      },
+      {
+        severity: "low",
+        title: "Unused var",
+        explanation: "Never read",
+        start_line: 15,
+        end_line: 15,
+      },
     ]);
     const b = extractInsightBundle("```findings-json\n" + json + "\n```\n");
     expect(b.findings).toHaveLength(2);
@@ -153,8 +165,12 @@ describe("extractInsightBundle", () => {
   });
 
   it("tries insights-json first, then findings-json as fallback", () => {
-    const json1 = JSON.stringify([{ severity: "high", title: "From insights", explanation: "...", start_line: 1, end_line: 1 }]);
-    const json2 = JSON.stringify([{ severity: "low", title: "From findings", explanation: "...", start_line: 1, end_line: 1 }]);
+    const json1 = JSON.stringify([
+      { severity: "high", title: "From insights", explanation: "...", start_line: 1, end_line: 1 },
+    ]);
+    const json2 = JSON.stringify([
+      { severity: "low", title: "From findings", explanation: "...", start_line: 1, end_line: 1 },
+    ]);
     const b = extractInsightBundle(
       "```insights-json\n" + json1 + "\n```\n```findings-json\n" + json2 + "\n```\n",
     );
@@ -167,7 +183,9 @@ describe("extractInsightBundle", () => {
 describe("extractFindings", () => {
   it("returns only mapped findings", () => {
     const json = JSON.stringify({
-      insights: [{ severity: "info", title: "Mapped", explanation: "...", start_line: 1, end_line: 1 }],
+      insights: [
+        { severity: "info", title: "Mapped", explanation: "...", start_line: 1, end_line: 1 },
+      ],
       unmapped_insights: [{ title: "Unmapped", explanation: "..." }],
     });
     const findings = extractFindings("```insights-json\n" + json + "\n```\n");
@@ -199,7 +217,9 @@ describe("stripFindingsBlock", () => {
     const input = "Just some markdown.\nNo blocks here.";
     expect(stripFindingsBlock(input)).toBe(input);
     // stripFindingsBlock calls trimEnd()
-    expect(stripFindingsBlock("Just some markdown.\nNo blocks here.\n")).toBe("Just some markdown.\nNo blocks here.");
+    expect(stripFindingsBlock("Just some markdown.\nNo blocks here.\n")).toBe(
+      "Just some markdown.\nNo blocks here.",
+    );
   });
 });
 
@@ -216,13 +236,7 @@ describe("compareFindings", () => {
   });
 
   it("orders by severity (critical > high > medium > low > info)", () => {
-    const items = [
-      f("low", 1),
-      f("critical", 2),
-      f("medium", 3),
-      f("high", 4),
-      f("info", 5),
-    ];
+    const items = [f("low", 1), f("critical", 2), f("medium", 3), f("high", 4), f("info", 5)];
     items.sort(compareFindings);
     expect(items[0].severity).toBe("critical");
     expect(items[1].severity).toBe("high");

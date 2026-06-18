@@ -2,11 +2,7 @@ import { useEffect, useImperativeHandle, useRef, forwardRef } from "react";
 import Editor, { type OnMount } from "@monaco-editor/react";
 import type * as Monaco from "monaco-editor";
 
-import {
-  categoryDecorationClass,
-  categoryGlyphClass,
-  type Finding,
-} from "@/lib/findings";
+import { categoryDecorationClass, categoryGlyphClass, type Finding } from "@/lib/findings";
 
 export type CodeSelection = {
   content: string;
@@ -103,9 +99,7 @@ export const CodeViewer = forwardRef<CodeViewerHandle, Props>(function CodeViewe
       if (type !== 2 && type !== 4) return;
       const line = e.target.position?.lineNumber;
       if (!line) return;
-      const hit = findingsRef.current.find(
-        (f) => line >= f.start_line && line <= f.end_line,
-      );
+      const hit = findingsRef.current.find((f) => line >= f.start_line && line <= f.end_line);
       if (hit) onMarkerClickRef.current?.(hit);
     });
   };
@@ -154,9 +148,7 @@ export const CodeViewer = forwardRef<CodeViewerHandle, Props>(function CodeViewe
     hoverDisposeRef.current = monaco.languages.registerHoverProvider(lang, {
       provideHover(_m, position) {
         const line = position.lineNumber;
-        const hits = findingsRef.current.filter(
-          (f) => line >= f.start_line && line <= f.end_line,
-        );
+        const hits = findingsRef.current.filter((f) => line >= f.start_line && line <= f.end_line);
         if (!hits.length) return null;
         return {
           contents: hits.map((f) => ({

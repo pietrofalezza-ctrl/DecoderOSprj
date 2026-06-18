@@ -1,8 +1,9 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 
-const { mockUnzipSync, mockStrFromU8 } = vi.hoisted(() => ({
+const { mockUnzipSync, mockStrFromU8, mockAssessStaticRisk } = vi.hoisted(() => ({
   mockUnzipSync: vi.fn(),
   mockStrFromU8: vi.fn((bytes: Uint8Array) => new TextDecoder().decode(bytes)),
+  mockAssessStaticRisk: vi.fn(() => ({ findings: [] })),
 }));
 
 vi.mock("fflate", () => ({
@@ -11,7 +12,7 @@ vi.mock("fflate", () => ({
 }));
 
 vi.mock("../static-risk.server", () => ({
-  assessStaticRisk: vi.fn(() => ({ findings: [] })),
+  assessStaticRisk: mockAssessStaticRisk,
   shannonEntropy: vi.fn(() => 4.5),
   shannonEntropySliding: vi.fn(() => 4.5),
 }));
@@ -43,6 +44,7 @@ describe("decodeText", () => {
 describe("extractZipWithReport", () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    mockAssessStaticRisk.mockReturnValue({ findings: [] });
   });
 
   it("extracts text files from a mock ZIP", () => {
@@ -82,7 +84,7 @@ describe("extractZipWithReport", () => {
   });
 
   it("maps Dockerfile and Makefile language to shell", () => {
-    mockZip({ "Dockerfile": textBytes("FROM node:20\n"), "Makefile": textBytes("all: build\n") });
+    mockZip({ Dockerfile: textBytes("FROM node:20\n"), Makefile: textBytes("all: build\n") });
     const report = extractZipWithReport(new Uint8Array(0));
     expect(report.files.find((f) => f.path === "Dockerfile")?.language).toBe("shell");
     expect(report.files.find((f) => f.path === "Makefile")?.language).toBe("shell");
@@ -109,6 +111,34 @@ describe("extractZipWithReport", () => {
     mockZip({ "data.xyzzy": textBytes("???") });
     const report = extractZipWithReport(new Uint8Array(0));
     expect(report.files[0].language).toBeNull();
+  });
+
+  it("retains files that static risk flags as block so offline analysis can inspect them", () => {
+    mockAssessStaticRisk.mockReturnValue({
+      findings: [
+        {
+          path: "src/suspicious.ts",
+          severity: "block",
+          reasons: ["PE executable magic bytes embedded in a source-looking file"],
+          entropy: {
+            global: 7.9,
+            maxWindow: 7.95,
+          },
+          magicSignature: "4d5a",
+        },
+      ],
+    });
+    mockZip({ "src/suspicious.ts": new Uint8Array([0x4d, 0x5a, 0x00, 0x00]) });
+
+    const report = extractZipWithReport(new Uint8Array(0));
+
+    expect(report.files).toHaveLength(1);
+    expect(report.files[0]).toMatchObject({
+      path: "suspicious.ts",
+      language: "typescript",
+    });
+    expect(report.findings.blocked).toHaveLength(1);
+    expect(report.droppedPaths).toEqual([]);
   });
 
   it("keeps only files, drops nested directories", () => {

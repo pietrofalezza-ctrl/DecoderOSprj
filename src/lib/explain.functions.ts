@@ -5,14 +5,7 @@ import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { appendAnalysisActivity } from "@/lib/analysis-activities";
 
 const Provider = z.enum(["openai", "anthropic", "gemini", "openrouter"]);
-const Proficiency = z.enum([
-  "nontech",
-  "junior",
-  "intermediate",
-  "senior",
-  "architect",
-  "cto",
-]);
+const Proficiency = z.enum(["nontech", "junior", "intermediate", "senior", "architect", "cto"]);
 const ExplanationType = z.enum(["human", "technical"]);
 const Language = z.enum(["en", "it", "zh"]);
 
@@ -85,13 +78,19 @@ export const explainFile = createServerFn({ method: "POST" })
           language: data.language,
           query_text: queryText,
           result_summary: "cached explanation hit",
+          result_content: cached.content,
           result_metadata: {
             cached: true,
             explanation_type: data.explanation_type,
             proficiency: data.proficiency,
           },
         });
-        return { content: cached.content, provider: cached.provider, model: cached.model, cached: true };
+        return {
+          content: cached.content,
+          provider: cached.provider,
+          model: cached.model,
+          cached: true,
+        };
       }
     }
 
@@ -124,7 +123,8 @@ export const explainFile = createServerFn({ method: "POST" })
         .download(file.storage_path);
       if (dlErr || !blob) throw dlErr ?? new Error("download_failed");
       contentForPrompt = await blob.text();
-      if (contentForPrompt.length > 60_000) contentForPrompt = contentForPrompt.slice(0, 60_000) + "\n…[truncated]";
+      if (contentForPrompt.length > 60_000)
+        contentForPrompt = contentForPrompt.slice(0, 60_000) + "\n…[truncated]";
     }
 
     const { system, user } = buildPrompt({
@@ -171,6 +171,7 @@ export const explainFile = createServerFn({ method: "POST" })
       language: data.language,
       query_text: queryText,
       result_summary: hasSnippet ? "fresh snippet explanation" : "fresh file explanation",
+      result_content: text,
       result_metadata: {
         cached: false,
         explanation_type: data.explanation_type,
@@ -235,6 +236,7 @@ export const saveLocalExplanation = createServerFn({ method: "POST" })
       language: data.language,
       query_text: file.path,
       result_summary: "saved local explanation",
+      result_content: data.content,
       result_metadata: {
         cached: false,
         explanation_type: data.explanation_type,
@@ -251,10 +253,7 @@ export const deleteExplanation = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator(z.object({ id: z.string().uuid() }))
   .handler(async ({ context, data }) => {
-    const { error } = await context.supabase
-      .from("explanations")
-      .delete()
-      .eq("id", data.id);
+    const { error } = await context.supabase.from("explanations").delete().eq("id", data.id);
     if (error) throw error;
     return { ok: true };
   });

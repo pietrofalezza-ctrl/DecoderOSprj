@@ -13,11 +13,13 @@ import { Textarea } from "@/components/ui/textarea";
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { createProject, deleteProject, listProjects } from "@/lib/projects.functions";
+import { getErrorMessage } from "@/lib/errors";
 
 export const Route = createFileRoute("/_authenticated/dashboard")({
   component: DashboardPage,
@@ -37,7 +39,8 @@ function DashboardPage() {
   const projects = useQuery({ queryKey: ["projects"], queryFn: () => list() });
 
   const mut = useMutation({
-    mutationFn: async () => create({ data: { name: name.trim(), description: desc.trim() || undefined } }),
+    mutationFn: async () =>
+      create({ data: { name: name.trim(), description: desc.trim() || undefined } }),
     onSuccess: (r) => {
       qc.invalidateQueries({ queryKey: ["projects"] });
       setOpen(false);
@@ -45,7 +48,7 @@ function DashboardPage() {
       setDesc("");
       navigate({ to: "/projects/$projectId", params: { projectId: r.id } });
     },
-    onError: (e: any) => toast.error(e?.message ?? t("errors.generic")),
+    onError: (e) => toast.error(getErrorMessage(e, t("errors.generic"))),
   });
 
   return (
@@ -63,6 +66,7 @@ function DashboardPage() {
             <DialogContent>
               <DialogHeader>
                 <DialogTitle>{t("dashboard.newProject")}</DialogTitle>
+                <DialogDescription>{t("dashboard.newProjectDescription")}</DialogDescription>
               </DialogHeader>
               <div className="space-y-3">
                 <Input
@@ -133,28 +137,20 @@ function DashboardPage() {
 
         <div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {projects.data?.projects.length === 0 && (
-            <p className="col-span-full text-sm text-muted-foreground">
-              {t("dashboard.empty")}
-            </p>
+            <p className="col-span-full text-sm text-muted-foreground">{t("dashboard.empty")}</p>
           )}
           {projects.data?.projects.map((p) => (
             <div
               key={p.id}
               className="group relative rounded-lg border border-border bg-card p-4 transition-colors hover:border-primary/60"
             >
-              <Link
-                to="/projects/$projectId"
-                params={{ projectId: p.id }}
-                className="block"
-              >
+              <Link to="/projects/$projectId" params={{ projectId: p.id }} className="block">
                 <div className="flex items-center gap-2 pr-8 text-sm font-medium">
                   <FolderGit2 className="h-4 w-4 text-primary" />
                   <span className="truncate">{p.name}</span>
                 </div>
                 {p.description && (
-                  <p className="mt-2 line-clamp-2 text-xs text-muted-foreground">
-                    {p.description}
-                  </p>
+                  <p className="mt-2 line-clamp-2 text-xs text-muted-foreground">{p.description}</p>
                 )}
               </Link>
               <button
@@ -164,13 +160,14 @@ function DashboardPage() {
                 onClick={async (e) => {
                   e.preventDefault();
                   e.stopPropagation();
-                  if (!window.confirm(t("dashboard.deleteProjectConfirm", { name: p.name }))) return;
+                  if (!window.confirm(t("dashboard.deleteProjectConfirm", { name: p.name })))
+                    return;
                   try {
                     await remove({ data: { id: p.id } });
                     qc.invalidateQueries({ queryKey: ["projects"] });
                     toast.success(t("settings.deleteDone"));
-                  } catch (err: any) {
-                    toast.error(err?.message ?? t("errors.generic"));
+                  } catch (err) {
+                    toast.error(getErrorMessage(err, t("errors.generic")));
                   }
                 }}
                 className="absolute right-3 top-3 rounded-md p-1.5 text-muted-foreground opacity-0 transition-opacity hover:bg-destructive/10 hover:text-destructive group-hover:opacity-100 focus:opacity-100"

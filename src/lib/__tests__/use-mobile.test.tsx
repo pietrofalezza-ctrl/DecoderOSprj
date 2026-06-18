@@ -57,7 +57,9 @@ describe("useIsMobile", () => {
     const mqlMock = {
       matches: true,
       media: "(max-width: 767px)",
-      addEventListener: vi.fn((_evt: string, cb: EventListener) => { listener = cb; }),
+      addEventListener: vi.fn((_evt: string, cb: EventListener) => {
+        listener = cb;
+      }),
       removeEventListener: vi.fn(),
       addListener: vi.fn(),
       removeListener: vi.fn(),

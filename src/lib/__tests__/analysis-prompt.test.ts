@@ -86,10 +86,12 @@ describe("buildAnalysisPrompt", () => {
 
   it("includes focus for each kind", () => {
     expect(
-      buildAnalysisPrompt({ kind: "deadcode", language: "en", filePath: "x.ts", fileContent: "x" }).system,
+      buildAnalysisPrompt({ kind: "deadcode", language: "en", filePath: "x.ts", fileContent: "x" })
+        .system,
     ).toContain("dead code");
     expect(
-      buildAnalysisPrompt({ kind: "security", language: "en", filePath: "x.ts", fileContent: "x" }).system,
+      buildAnalysisPrompt({ kind: "security", language: "en", filePath: "x.ts", fileContent: "x" })
+        .system,
     ).toContain("security");
   });
 });

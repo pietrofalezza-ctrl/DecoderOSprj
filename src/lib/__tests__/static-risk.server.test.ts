@@ -1,5 +1,10 @@
 import { describe, it, expect } from "vitest";
-import { shannonEntropy, shannonEntropySliding, assessStaticRisk, type StaticRiskSeverity } from "../static-risk.server";
+import {
+  shannonEntropy,
+  shannonEntropySliding,
+  assessStaticRisk,
+  type StaticRiskSeverity,
+} from "../static-risk.server";
 
 function bytesFromHex(hex: string): Uint8Array {
   const len = hex.length / 2;
@@ -106,7 +111,9 @@ describe("assessStaticRisk", () => {
     const arr = new Uint8Array(100);
     for (let i = 0; i < 100; i++) arr[i] = i === 50 ? 0 : 0x41;
     const result = assessStaticRisk("src/file.ts", "ts", arr);
-    const hasNull = result.findings.some((f) => f.reasons.some((r) => r.toLowerCase().includes("null")));
+    const hasNull = result.findings.some((f) =>
+      f.reasons.some((r) => r.toLowerCase().includes("null")),
+    );
     expect(hasNull).toBe(true);
   });
 
@@ -132,19 +139,18 @@ describe("assessStaticRisk", () => {
   it("warns about .env files", () => {
     const content = textBytes("SECRET_KEY=abc123\nPASSWORD=secret\n");
     const result = assessStaticRisk(".env", "env", content);
-    const hasEnv = result.findings.some((f) =>
-      f.reasons.some((r) => r.toLowerCase().includes("env") || r.toLowerCase().includes("secret")),
-    );
-    // .env files get flagged by the path pattern check
-    const flagged = result.findings.some((f) => f.path === ".env");
-    expect(flagged || hasEnv || result.findings.length >= 0).toBe(true);
+    expect(result.findings).toHaveLength(1);
+    expect(result.findings[0].severity).toBe("warn");
+    expect(result.findings[0].reasons).toContain("Potential secrets/credentials path");
   });
 
   it("flags path traversal attempts", () => {
     const content = textBytes("nothing");
     const result = assessStaticRisk("../../../etc/passwd", "txt", content);
     const hasTraversal = result.findings.some((f) =>
-      f.reasons.some((r) => r.toLowerCase().includes("traversal") || r.toLowerCase().includes("..")),
+      f.reasons.some(
+        (r) => r.toLowerCase().includes("traversal") || r.toLowerCase().includes(".."),
+      ),
     );
     expect(hasTraversal).toBe(true);
   });

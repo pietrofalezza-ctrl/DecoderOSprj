@@ -1,8 +1,67 @@
-export async function ensureRepositoryStorageBucket(supabaseAdmin: any): Promise<void> {
+type RepositoryDeleteBuilder = {
+  delete: () => RepositoryDeleteBuilder;
+  eq: (column: string, value: string) => RepositoryDeleteBuilder;
+};
+
+type RepositoryStorageAdmin = {
+  storage: {
+    listBuckets: () => Promise<{
+      data: Array<{ name: string }> | null;
+      error: unknown;
+    }>;
+    from: (bucket: "repositories") => {
+      remove: (paths: string[]) => Promise<unknown>;
+    };
+  };
+  from: (table: "files" | "repositories") => RepositoryDeleteBuilder;
+};
+
+export async function ensureRepositoryStorageBucket(
+  supabaseAdmin: RepositoryStorageAdmin,
+): Promise<void> {
   const { data, error } = await supabaseAdmin.storage.listBuckets();
   if (error) throw error;
 
   if (!data?.some((bucket: { name: string }) => bucket.name === "repositories")) {
     throw new Error("repository_storage_bucket_missing");
+  }
+}
+
+export async function cleanupFailedRepositoryIngest(
+  supabaseAdmin: RepositoryStorageAdmin,
+  input: {
+    ownerId: string;
+    repositoryId: string;
+    uploadedStoragePaths: string[];
+  },
+): Promise<void> {
+  const storagePaths = Array.from(new Set(input.uploadedStoragePaths.filter(Boolean)));
+
+  try {
+    if (storagePaths.length > 0) {
+      await supabaseAdmin.storage.from("repositories").remove(storagePaths);
+    }
+  } catch {
+    // Best-effort cleanup: preserve the original ingest error.
+  }
+
+  try {
+    await supabaseAdmin
+      .from("files")
+      .delete()
+      .eq("owner_id", input.ownerId)
+      .eq("repository_id", input.repositoryId);
+  } catch {
+    // Best-effort cleanup: preserve the original ingest error.
+  }
+
+  try {
+    await supabaseAdmin
+      .from("repositories")
+      .delete()
+      .eq("owner_id", input.ownerId)
+      .eq("id", input.repositoryId);
+  } catch {
+    // Best-effort cleanup: preserve the original ingest error.
   }
 }

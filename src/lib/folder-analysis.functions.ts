@@ -102,6 +102,7 @@ export const aggregateFolderAnalysis = createServerFn({ method: "POST" })
       language: data.language,
       query_text: data.folder_path,
       result_summary: "folder analysis summary",
+      result_content: text,
       result_metadata: {
         kind: data.kind,
         item_count: data.items.length,

@@ -14,6 +14,7 @@ import { LangSwitcher } from "@/components/LangSwitcher";
 import { Logo } from "@/components/Logo";
 import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable/index";
+import { getErrorMessage } from "@/lib/errors";
 
 const SearchSchema = z.object({
   redirect: z.string().optional(),
@@ -34,8 +35,7 @@ export const Route = createFileRoute("/auth")({
       { property: "og:title", content: "Sign in — Decoder" },
       {
         property: "og:description",
-        content:
-          "Access your Decoder workspace — BYOK cloud or fully local code understanding.",
+        content: "Access your Decoder workspace — BYOK cloud or fully local code understanding.",
       },
       { property: "og:url", content: "https://decoderdev.lovable.app/auth" },
     ],
@@ -122,8 +122,8 @@ function AuthPage() {
         if (error) throw error;
         navigate({ to: target, replace: true });
       }
-    } catch (err: any) {
-      toast.error(err?.message ?? t("errors.generic"));
+    } catch (err) {
+      toast.error(getErrorMessage(err, t("errors.generic")));
     } finally {
       setLoading(false);
     }
@@ -164,19 +164,15 @@ function AuthPage() {
     } catch {
       /* swallow — neutral response */
     } finally {
-      toast.success(
-        "If an account exists for that email, we've sent a reset link.",
-      );
+      toast.success("If an account exists for that email, we've sent a reset link.");
       setForgotOpen(false);
       setForgotEmail("");
       setLoading(false);
     }
   };
 
-  const headline =
-    mode === "signup" ? t("auth.signUpHeadline") : t("auth.signInHeadline");
-  const subline =
-    mode === "signup" ? t("auth.signUpSubline") : t("auth.signInSubline");
+  const headline = mode === "signup" ? t("auth.signUpHeadline") : t("auth.signInHeadline");
+  const subline = mode === "signup" ? t("auth.signUpSubline") : t("auth.signInSubline");
 
   return (
     <div className="flex min-h-screen flex-col bg-background text-foreground">
@@ -247,7 +243,8 @@ function AuthPage() {
                 >
                   {t("auth.disclaimerAcceptLink")}
                 </Link>
-                {t("auth.disclaimerAcceptSuffix")}{" · "}
+                {t("auth.disclaimerAcceptSuffix")}
+                {" · "}
                 <Link
                   to="/privacy"
                   target="_blank"
@@ -350,8 +347,7 @@ function AuthPage() {
                 onChange={(e) => setForgotEmail(e.target.value)}
               />
               <p className="text-[11px] text-muted-foreground">
-                We'll email a one-time reset link to that address only. Link
-                expires in 15 minutes.
+                We'll email a one-time reset link to that address only. Link expires in 15 minutes.
               </p>
               <Button
                 type="submit"

@@ -1,8 +1,4 @@
-export type CloudProvider =
-  | "openai"
-  | "anthropic"
-  | "gemini"
-  | "openrouter";
+export type CloudProvider = "openai" | "anthropic" | "gemini" | "openrouter";
 
 const DEFAULT_MODELS: Record<CloudProvider, string> = {
   openai: "gpt-4o-mini",
@@ -29,7 +25,9 @@ async function failSafe(label: string, r: Response): Promise<never> {
   }
   console.error(`[ai-providers] ${label} ${r.status}:`, body.slice(0, 2000));
   if (r.status === 401 || r.status === 403) {
-    throw new Error(`${label} rejected the request (${r.status}). Check that your API key is valid and has access to this model.`);
+    throw new Error(
+      `${label} rejected the request (${r.status}). Check that your API key is valid and has access to this model.`,
+    );
   }
   if (r.status === 429) {
     throw new Error(`${label} rate limit reached (429). Wait a moment and retry.`);
@@ -105,7 +103,13 @@ export async function callCloudProvider(args: {
     });
     if (!r.ok) await failSafe("Gemini", r);
     const j = await r.json();
-    return j.candidates?.[0]?.content?.parts?.map((p: any) => p.text).join("") ?? "";
+    return (
+      (
+        j as { candidates?: Array<{ content?: { parts?: Array<{ text?: string }> } }> }
+      ).candidates?.[0]?.content?.parts
+        ?.map((p) => p.text ?? "")
+        .join("") ?? ""
+    );
   }
 
   if (provider === "openrouter") {

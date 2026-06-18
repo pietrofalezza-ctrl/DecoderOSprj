@@ -27,8 +27,7 @@ export const importFromGitHub = createServerFn({ method: "POST" })
   .handler(async ({ context, data }) => {
     const { extractZipWithReport } = await import("./zip.server");
     const { sha256Hex } = await import("./crypto.server");
-    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    const { ensureRepositoryStorageBucket } = await import("./repository-storage.server");
+    const { cleanupFailedRepositoryIngest } = await import("./repository-storage.server");
 
     const m = data.url.match(/github\.com\/([^/]+)\/([^/]+?)(?:\.git)?\/?$/);
     if (!m) throw new Error("invalid_github_url");
@@ -68,7 +67,6 @@ export const importFromGitHub = createServerFn({ method: "POST" })
     const extraction = extractZipWithReport(bytes);
     const files = extraction.files;
     if (files.length === 0) throw new Error("no_files");
-    await ensureRepositoryStorageBucket(supabaseAdmin);
 
     const repoName = `${owner}/${repo}${data.ref ? `@${data.ref}` : ""}`;
     const { data: repoRow, error: rErr } = await context.supabase
@@ -101,43 +99,53 @@ export const importFromGitHub = createServerFn({ method: "POST" })
       static_decision: null;
       static_last_error: null;
     }> = [];
-    for (const f of files) {
-      const sha = sha256Hex(f.bytes);
-      const storagePath = `${context.userId}/${repoRow.id}/${f.path}`;
-      const { error: upErr } = await supabaseAdmin.storage
-        .from("repositories")
-        .upload(storagePath, f.bytes, {
-          contentType: "text/plain; charset=utf-8",
-          upsert: true,
+    const uploadedStoragePaths: string[] = [];
+    try {
+      for (const f of files) {
+        const sha = sha256Hex(f.bytes);
+        const storagePath = `${context.userId}/${repoRow.id}/${f.path}`;
+        const { error: upErr } = await context.supabase.storage
+          .from("repositories")
+          .upload(storagePath, f.bytes, {
+            contentType: "text/plain; charset=utf-8",
+            upsert: true,
+          });
+        if (upErr) throw upErr;
+        uploadedStoragePaths.push(storagePath);
+        rows.push({
+          repository_id: repoRow.id,
+          owner_id: context.userId,
+          path: f.path,
+          language: f.language,
+          size_bytes: f.bytes.length,
+          sha256: sha,
+          storage_path: storagePath,
+          static_scan_status: "pending",
+          static_scan_started_at: null,
+          static_scan_finished_at: null,
+          static_scan_report: null,
+          static_entropy_global: null,
+          static_entropy_window: null,
+          static_decision: null,
+          static_last_error: null,
         });
-      if (upErr) throw upErr;
-      rows.push({
-        repository_id: repoRow.id,
-        owner_id: context.userId,
-        path: f.path,
-        language: f.language,
-        size_bytes: f.bytes.length,
-        sha256: sha,
-        storage_path: storagePath,
-        static_scan_status: "pending",
-        static_scan_started_at: null,
-        static_scan_finished_at: null,
-        static_scan_report: null,
-        static_entropy_global: null,
-        static_entropy_window: null,
-        static_decision: null,
-        static_last_error: null,
+      }
+      for (let i = 0; i < rows.length; i += 500) {
+        const chunk = rows.slice(i, i + 500);
+        const { error: fErr } = await context.supabase.from("files").insert(chunk);
+        if (fErr) throw fErr;
+      }
+    } catch (err) {
+      await cleanupFailedRepositoryIngest(context.supabase, {
+        ownerId: context.userId,
+        repositoryId: repoRow.id,
+        uploadedStoragePaths,
       });
-    }
-    for (let i = 0; i < rows.length; i += 500) {
-      const chunk = rows.slice(i, i + 500);
-      const { error: fErr } = await context.supabase.from("files").insert(chunk);
-      if (fErr) throw fErr;
+      throw err;
     }
     const { triggerStaticScanForRepository } = await import("./static-scan-queue.server");
     triggerStaticScanForRepository({
       supabase: context.supabase,
-      supabaseAdmin,
       repositoryId: repoRow.id,
     });
 

@@ -4,6 +4,9 @@ import {
   type StaticScanStatus,
 } from "@/lib/static-scan.server";
 import { appendAnalysisActivity } from "@/lib/analysis-activities";
+import type { Database } from "@/integrations/supabase/types";
+import type { SupabaseClient } from "@supabase/supabase-js";
+import { getErrorMessage } from "@/lib/errors";
 
 type FileRecord = {
   id: string;
@@ -13,6 +16,8 @@ type FileRecord = {
   storage_path: string;
 };
 
+type StaticScanStorageClient = Pick<SupabaseClient<Database>, "storage">;
+
 const ACTIVE_SCANS = new Map<string, Promise<void>>();
 
 function nowIso(): string {
@@ -21,11 +26,11 @@ function nowIso(): string {
 
 async function scanSingleFile(input: {
   file: FileRecord;
-  supabase: any;
-  supabaseAdmin: any;
+  supabase: SupabaseClient<Database>;
+  storageClient: StaticScanStorageClient;
   projectId: string | null;
 }) {
-  const { file, supabase, supabaseAdmin, projectId } = input;
+  const { file, supabase, storageClient, projectId } = input;
   const startedAt = nowIso();
   await supabase
     .from("files")
@@ -39,7 +44,7 @@ async function scanSingleFile(input: {
     .eq("static_scan_status", "pending");
 
   try {
-    const { data: blob, error: dlErr } = await supabaseAdmin.storage
+    const { data: blob, error: dlErr } = await storageClient.storage
       .from("repositories")
       .download(file.storage_path);
     if (dlErr || !blob) {
@@ -77,8 +82,8 @@ async function scanSingleFile(input: {
         entropyWindow: payload.report.entropy.maxWindow,
       },
     });
-  } catch (err: any) {
-    const message = err?.message ?? "scan_failed";
+  } catch (err) {
+    const message = getErrorMessage(err, "scan_failed");
     const failedAt = nowIso();
     await supabase
       .from("files")
@@ -108,7 +113,7 @@ async function scanSingleFile(input: {
 }
 
 async function getProjectForRepository(
-  supabase: any,
+  supabase: SupabaseClient<Database>,
   repositoryId: string,
 ): Promise<string | null> {
   const { data } = await supabase
@@ -120,8 +125,9 @@ async function getProjectForRepository(
 }
 
 export function triggerStaticScanForRepository(input: {
-  supabase: any;
-  supabaseAdmin: any;
+  supabase: SupabaseClient<Database>;
+  storageClient?: StaticScanStorageClient;
+  supabaseAdmin?: StaticScanStorageClient;
   repositoryId: string;
 }) {
   const { repositoryId } = input;
@@ -140,11 +146,13 @@ export function triggerStaticScanForRepository(input: {
 }
 
 export async function runStaticScanForRepository(input: {
-  supabase: any;
-  supabaseAdmin: any;
+  supabase: SupabaseClient<Database>;
+  storageClient?: StaticScanStorageClient;
+  supabaseAdmin?: StaticScanStorageClient;
   repositoryId: string;
 }) {
   const { supabase, repositoryId } = input;
+  const storageClient = input.storageClient ?? input.supabaseAdmin ?? supabase;
 
   const projectId = await getProjectForRepository(supabase, repositoryId);
   const { data: files, error } = await supabase
@@ -162,7 +170,7 @@ export async function runStaticScanForRepository(input: {
     await scanSingleFile({
       file,
       supabase,
-      supabaseAdmin: input.supabaseAdmin,
+      storageClient,
       projectId,
     });
   }

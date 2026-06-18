@@ -3,10 +3,7 @@ import { getRequestHeader } from "@tanstack/react-start/server";
 import { z } from "zod";
 
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
-import {
-  BYOK_ACK_TYPE,
-  BYOK_TERMS_VERSION,
-} from "./byok-acknowledgement";
+import { BYOK_ACK_TYPE, BYOK_TERMS_VERSION } from "./byok-acknowledgement";
 
 const Lang = z.enum(["en", "it", "zh"]).catch("en");
 

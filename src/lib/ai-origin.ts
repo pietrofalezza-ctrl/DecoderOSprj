@@ -27,9 +27,7 @@ export function bucketColorClass(b: AiOriginBucket): string {
   return "text-primary border-primary/40 bg-primary/10";
 }
 
-export function weightedRepoScore(
-  items: Array<{ score: number; weight: number }>,
-): number {
+export function weightedRepoScore(items: Array<{ score: number; weight: number }>): number {
   const total = items.reduce((s, x) => s + x.weight, 0);
   if (total <= 0) return 0;
   const sum = items.reduce((s, x) => s + x.score * x.weight, 0);

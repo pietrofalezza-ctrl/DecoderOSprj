@@ -155,7 +155,9 @@ export const getProject = createServerFn({ method: "POST" })
 
     const recentActivities = recentActivitiesQuery.data ?? [];
     const llmCount = recentActivities.filter((row) => row.activity_kind.startsWith("llm_")).length;
-    const staticCount = recentActivities.filter((row) => row.activity_kind === "static_scan").length;
+    const staticCount = recentActivities.filter(
+      (row) => row.activity_kind === "static_scan",
+    ).length;
 
     return {
       project,
@@ -257,19 +259,39 @@ export const deleteProject = createServerFn({ method: "POST" })
       }
     }
 
-    await supabaseAdmin.from("explanations").delete().eq("owner_id", uid).in(
-      "file_id",
-      ((await supabaseAdmin.from("files").select("id").eq("owner_id", uid).in(
+    await supabaseAdmin
+      .from("explanations")
+      .delete()
+      .eq("owner_id", uid)
+      .in(
+        "file_id",
+        (
+          (
+            await supabaseAdmin
+              .from("files")
+              .select("id")
+              .eq("owner_id", uid)
+              .in(
+                "repository_id",
+                (repos ?? []).map((r) => r.id),
+              )
+          ).data ?? []
+        ).map((f) => f.id),
+      );
+    await supabaseAdmin
+      .from("files")
+      .delete()
+      .eq("owner_id", uid)
+      .in(
         "repository_id",
         (repos ?? []).map((r) => r.id),
-      )).data ?? []).map((f) => f.id),
-    );
-    await supabaseAdmin.from("files").delete().eq("owner_id", uid).in(
-      "repository_id",
-      (repos ?? []).map((r) => r.id),
-    );
+      );
     await supabaseAdmin.from("repositories").delete().eq("owner_id", uid).eq("project_id", data.id);
-    const { error } = await supabaseAdmin.from("projects").delete().eq("id", data.id).eq("owner_id", uid);
+    const { error } = await supabaseAdmin
+      .from("projects")
+      .delete()
+      .eq("id", data.id)
+      .eq("owner_id", uid);
     if (error) throw error;
     return { ok: true };
   });

@@ -12,9 +12,7 @@ export function I18nBootstrap({ children }: { children: ReactNode }) {
   useEffect(() => {
     let target: SupportedLanguage = "en";
     try {
-      const stored = window.localStorage.getItem(LANG_STORAGE_KEY) as
-        | SupportedLanguage
-        | null;
+      const stored = window.localStorage.getItem(LANG_STORAGE_KEY) as SupportedLanguage | null;
       const nav = (navigator.language ?? "en").slice(0, 2) as SupportedLanguage;
       target =
         stored && (SUPPORTED_LANGUAGES as readonly string[]).includes(stored)

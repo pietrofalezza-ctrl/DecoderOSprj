@@ -1,4 +1,6 @@
 import { type Json } from "@/integrations/supabase/types";
+import type { Database } from "@/integrations/supabase/types";
+import type { SupabaseClient } from "@supabase/supabase-js";
 
 const ANALYSIS_STATUS = new Set(["ok", "warn", "error"] as const);
 
@@ -13,7 +15,7 @@ export type AnalysisActivityKind =
   | "search_query";
 
 export type AnalysisActivityInput = {
-  supabase: any;
+  supabase: SupabaseClient<Database>;
   ownerId: string;
   fileId?: string | null;
   repositoryId?: string | null;
@@ -25,6 +27,7 @@ export type AnalysisActivityInput = {
   language?: string | null;
   query_text?: string | null;
   result_summary?: string | null;
+  result_content?: string | null;
   result_metadata?: Record<string, unknown>;
 };
 
@@ -56,6 +59,7 @@ export async function appendAnalysisActivity(input: AnalysisActivityInput): Prom
     language,
     query_text,
     result_summary,
+    result_content,
     result_metadata,
   } = input;
 
@@ -72,6 +76,7 @@ export async function appendAnalysisActivity(input: AnalysisActivityInput): Prom
       language: language ?? null,
       query_text: query_text ?? null,
       result_summary: result_summary ?? null,
+      result_content: result_content ?? null,
       result_metadata: sanitizeMetadata(result_metadata),
     });
   } catch {

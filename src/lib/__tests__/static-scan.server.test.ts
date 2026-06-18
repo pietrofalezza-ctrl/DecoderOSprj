@@ -6,7 +6,11 @@ vi.mock("../static-malware.server", () => ({
   assessStaticMalwareFile: mockAssess,
 }));
 
-import { runStaticScanFromBytes, staticScanDbValues, type StaticScanPayload } from "../static-scan.server";
+import {
+  runStaticScanFromBytes,
+  staticScanDbValues,
+  type StaticScanPayload,
+} from "../static-scan.server";
 
 const mockAssessment = {
   filePath: "test.exe",
@@ -14,11 +18,33 @@ const mockAssessment = {
   fileExt: "exe",
   decision: "block" as const,
   riskScore: 85,
-  entropy: { global: 7.5, maxWindow: 7.8, maxWindowOffset: 100, suspiciousWindowCount: 3, windowSize: 256, windowStep: 128 },
-  findings: [{ code: "magic.mismatch", title: "Bad magic", description: "...", severity: "high" as const, decision: "block" as const, confidence: "high" as const }],
+  entropy: {
+    global: 7.5,
+    maxWindow: 7.8,
+    maxWindowOffset: 100,
+    suspiciousWindowCount: 3,
+    windowSize: 256,
+    windowStep: 128,
+  },
+  findings: [
+    {
+      code: "magic.mismatch",
+      title: "Bad magic",
+      description: "...",
+      severity: "high" as const,
+      decision: "block" as const,
+      confidence: "high" as const,
+    },
+  ],
   magicSignature: "4d5a",
   magicDetected: "pe-mz",
-  metrics: { hasNullBytes: false, controlCharRatio: 0.1, printableRatio: 0.9, isTextLikeExt: false, pathLooksSafe: true },
+  metrics: {
+    hasNullBytes: false,
+    controlCharRatio: 0.1,
+    printableRatio: 0.9,
+    isTextLikeExt: false,
+    pathLooksSafe: true,
+  },
 };
 
 // ─── staticScanDbValues (pure) ─────────────────────────────────────
@@ -29,10 +55,29 @@ describe("staticScanDbValues", () => {
     startedAt: "2025-01-15T10:00:00.000Z",
     finishedAt: "2025-01-15T10:00:01.000Z",
     report: {
-      filePath: "test.exe", fileSize: 512, fileExt: "exe", decision: "block", riskScore: 85,
-      entropy: { global: 7.5, maxWindow: 7.8, maxWindowOffset: 100, suspiciousWindowCount: 3, windowSize: 256, windowStep: 128 },
-      findings: [], magicSignature: "4d5a", magicDetected: "pe-mz",
-      metrics: { hasNullBytes: false, controlCharRatio: 0.1, printableRatio: 0.9, isTextLikeExt: false, pathLooksSafe: true },
+      filePath: "test.exe",
+      fileSize: 512,
+      fileExt: "exe",
+      decision: "block",
+      riskScore: 85,
+      entropy: {
+        global: 7.5,
+        maxWindow: 7.8,
+        maxWindowOffset: 100,
+        suspiciousWindowCount: 3,
+        windowSize: 256,
+        windowStep: 128,
+      },
+      findings: [],
+      magicSignature: "4d5a",
+      magicDetected: "pe-mz",
+      metrics: {
+        hasNullBytes: false,
+        controlCharRatio: 0.1,
+        printableRatio: 0.9,
+        isTextLikeExt: false,
+        pathLooksSafe: true,
+      },
     },
   };
 
@@ -45,7 +90,9 @@ describe("staticScanDbValues", () => {
   });
 
   it("maps finishedAt", () => {
-    expect(staticScanDbValues(basePayload).static_scan_finished_at).toBe("2025-01-15T10:00:01.000Z");
+    expect(staticScanDbValues(basePayload).static_scan_finished_at).toBe(
+      "2025-01-15T10:00:01.000Z",
+    );
   });
 
   it("maps entropy values", () => {

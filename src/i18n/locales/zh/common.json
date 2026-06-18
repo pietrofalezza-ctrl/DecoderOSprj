@@ -317,6 +317,7 @@
   "dashboard": {
     "title": "你的项目",
     "newProject": "新建项目",
+    "newProjectDescription": "创建一个工作区，用于保存仓库、静态扫描结果和分析历史。",
     "empty": "你还没有任何项目。",
     "projectNamePlaceholder": "项目名称",
     "projectDescPlaceholder": "描述(可选)",
@@ -401,6 +402,7 @@
     "noRepos": "暂无仓库。上传 ZIP 或从 GitHub 导入以开始。",
     "openRepo": "打开",
     "importGithub": "从 GitHub 导入",
+    "importGithubDescription": "将公开仓库导入此项目，然后按项目模式运行静态分析、LLM 分析或二者同时运行。",
     "importing": "导入中…",
     "githubUrl": "GitHub 链接",
     "githubUrlPlaceholder": "https://github.com/owner/repo",
@@ -444,6 +446,10 @@
     "download": "下载 .md",
     "exportAll": "全部导出 (.zip)",
     "exporting": "导出中…",
+    "searchFiles": "搜索文件",
+    "clearSearch": "清除搜索",
+    "searchResultCount": "{{shown}}/{{total}} 个文件",
+    "noSearchResults": "没有文件匹配此搜索。",
     "noProvider": "请在设置中添加 API 密钥以启用 AI 解释。",
     "staticOnlyMode": "仅静态模式",
     "staticOnlyBody": "无需 API 密钥。此项目的 LLM 选项卡和云端分析控件已隐藏。",
@@ -469,9 +475,21 @@
       "technical": "技术摘要",
       "quality": "质量",
       "security": "安全",
+      "staticCode": "静态代码",
       "malware": "恶意软件",
       "aiOrigin": "AI 来源",
+      "chat": "聊天",
       "fix": "修复"
+    },
+    "chat": {
+      "empty": "还没有消息。",
+      "loading": "正在加载聊天历史…",
+      "placeholder": "询问所选文件…",
+      "send": "发送",
+      "sending": "发送中…",
+      "needsProvider": "请选择云端或本地提供商以开始聊天。",
+      "user": "你",
+      "assistant": "助手"
     },
     "findings": {
       "title": "重点位置",
@@ -745,7 +763,12 @@
           "b2": "支持 OpenAI、Anthropic、Gemini 和 OpenRouter。",
           "b3": "所选代码或提示词可能会被发送给所选服务提供商。",
           "b4": "你需自行承担服务商的费用并遵守其条款。",
-          "flow": { "code": "你的代码", "backend": "Decoder 后端", "provider": "AI 服务商", "ui": "Decoder 界面" }
+          "flow": {
+            "code": "你的代码",
+            "backend": "Decoder 后端",
+            "provider": "AI 服务商",
+            "ui": "Decoder 界面"
+          }
         }
       },
       "s3": {
@@ -985,11 +1008,36 @@
     "whatWeUseBody": "Decoder 使用的 Cookie 和浏览器存储完整列表：",
     "col": { "name": "名称", "purpose": "用途", "storage": "存储位置", "retention": "保留期" },
     "rows": {
-      "auth": { "name": "sb-* (Supabase 认证)", "purpose": "安全地保持登录状态", "storage": "Cookie / localStorage", "retention": "直到退出或令牌过期" },
-      "lang": { "name": "i18nextLng", "purpose": "记住界面语言", "storage": "localStorage", "retention": "直到清除浏览器数据" },
-      "theme": { "name": "theme", "purpose": "记住深色/浅色主题偏好", "storage": "localStorage", "retention": "直到清除浏览器数据" },
-      "disclaimer": { "name": "decoder.disclaimer.acceptedAt", "purpose": "记录你已查看登录免责声明", "storage": "localStorage", "retention": "直到清除浏览器数据" },
-      "ack": { "name": "user_acknowledgements", "purpose": "存储你的 BYOK 与入门确认", "storage": "服务器数据库（你的账户）", "retention": "直到删除账户或确认记录" }
+      "auth": {
+        "name": "sb-* (Supabase 认证)",
+        "purpose": "安全地保持登录状态",
+        "storage": "Cookie / localStorage",
+        "retention": "直到退出或令牌过期"
+      },
+      "lang": {
+        "name": "i18nextLng",
+        "purpose": "记住界面语言",
+        "storage": "localStorage",
+        "retention": "直到清除浏览器数据"
+      },
+      "theme": {
+        "name": "theme",
+        "purpose": "记住深色/浅色主题偏好",
+        "storage": "localStorage",
+        "retention": "直到清除浏览器数据"
+      },
+      "disclaimer": {
+        "name": "decoder.disclaimer.acceptedAt",
+        "purpose": "记录你已查看登录免责声明",
+        "storage": "localStorage",
+        "retention": "直到清除浏览器数据"
+      },
+      "ack": {
+        "name": "user_acknowledgements",
+        "purpose": "存储你的 BYOK 与入门确认",
+        "storage": "服务器数据库（你的账户）",
+        "retention": "直到删除账户或确认记录"
+      }
     },
     "noTrackingTitle": "我们不使用的内容",
     "noTrackingBody": "Decoder 不加载以下任何内容：",

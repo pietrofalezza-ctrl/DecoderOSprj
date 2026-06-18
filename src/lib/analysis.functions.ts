@@ -3,6 +3,7 @@ import { z } from "zod";
 
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { appendAnalysisActivity } from "@/lib/analysis-activities";
+import { getErrorMessage } from "@/lib/errors";
 
 const Provider = z.enum(["openai", "anthropic", "gemini", "openrouter"]);
 const Language = z.enum(["en", "it", "zh"]);
@@ -69,6 +70,7 @@ export const runAnalysis = createServerFn({ method: "POST" })
         language: data.language,
         query_text: file.path,
         result_summary: `cached analysis:${data.kind}`,
+        result_content: cached.content,
         result_metadata: {
           cached: true,
           kind: data.kind,
@@ -144,6 +146,7 @@ export const runAnalysis = createServerFn({ method: "POST" })
       language: data.language,
       query_text: file.path,
       result_summary: `fresh analysis:${data.kind}`,
+      result_content: text,
       result_metadata: {
         cached: false,
         kind: data.kind,
@@ -207,6 +210,7 @@ export const saveLocalAnalysis = createServerFn({ method: "POST" })
       language: data.language,
       query_text: file.path,
       result_summary: `saved local analysis:${data.kind}`,
+      result_content: data.content,
       result_metadata: {
         cached: false,
         kind: data.kind,
@@ -218,10 +222,32 @@ export const saveLocalAnalysis = createServerFn({ method: "POST" })
 // File extensions considered "real source code" for whole-repo AI-origin scan.
 // Markdown/JSON/config aren't useful signals.
 const CODE_EXTS = new Set([
-  "ts", "tsx", "js", "jsx", "mjs", "cjs",
-  "py", "rb", "go", "rs", "java", "kt", "swift",
-  "c", "h", "cpp", "hpp", "cc", "cs", "php",
-  "vue", "svelte", "astro", "lua", "dart", "scala",
+  "ts",
+  "tsx",
+  "js",
+  "jsx",
+  "mjs",
+  "cjs",
+  "py",
+  "rb",
+  "go",
+  "rs",
+  "java",
+  "kt",
+  "swift",
+  "c",
+  "h",
+  "cpp",
+  "hpp",
+  "cc",
+  "cs",
+  "php",
+  "vue",
+  "svelte",
+  "astro",
+  "lua",
+  "dart",
+  "scala",
 ]);
 
 const MAX_FILES_PER_SCAN = 30;
@@ -365,8 +391,8 @@ export const analyzeRepoAiOrigin = createServerFn({ method: "POST" })
           summary: summary.slice(0, 240),
           cached: wasCached,
         });
-      } catch (e: any) {
-        errors.push({ path: file.path, message: e?.message ?? "error" });
+      } catch (e) {
+        errors.push({ path: file.path, message: getErrorMessage(e) });
       }
     }
 
@@ -392,6 +418,20 @@ export const analyzeRepoAiOrigin = createServerFn({ method: "POST" })
       language: data.language,
       query_text: data.repo_id,
       result_summary: `repo_score:${repoScore.toFixed(2)} bucket:${bucket}`,
+      result_content: JSON.stringify(
+        {
+          repo_score: repoScore,
+          bucket,
+          distribution,
+          per_file: results.sort((a, b) => b.score - a.score),
+          total_code_files: totalCodeFiles,
+          sampled_count: results.length,
+          unsampled_count: unsampled,
+          errors,
+        },
+        null,
+        2,
+      ),
       result_metadata: {
         repo_score: repoScore,
         bucket,

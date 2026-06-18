@@ -25,8 +25,7 @@ export function HeroIllustration() {
       className="relative w-full overflow-hidden rounded-2xl border border-border bg-card p-6 shadow-2xl"
       style={{
         boxShadow: "var(--shadow-elegant)",
-        backgroundImage:
-          "linear-gradient(135deg, #0F172A 0%, #111C36 60%, #0F172A 100%)",
+        backgroundImage: "linear-gradient(135deg, #0F172A 0%, #111C36 60%, #0F172A 100%)",
       }}
     >
       <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-4 md:gap-6">
@@ -60,8 +59,7 @@ export function HeroIllustration() {
           <div
             className="flex h-12 w-12 items-center justify-center rounded-xl border border-[#22D3EE]/30 bg-[#0F172A] md:h-14 md:w-14"
             style={{
-              boxShadow:
-                "0 0 0 1px rgba(34,211,238,0.15), 0 8px 32px -8px rgba(34,211,238,0.35)",
+              boxShadow: "0 0 0 1px rgba(34,211,238,0.15), 0 8px 32px -8px rgba(34,211,238,0.35)",
             }}
           >
             <div className="flex flex-col gap-1.5">
@@ -88,7 +86,7 @@ export function HeroIllustration() {
                     className="block h-1.5 rounded-full bg-[#F8FAFC]/70"
                     style={{
                       width: `${14 + ((i * 7 + j * 11) % 22)}px`,
-                      opacity: 0.55 + ((j % 3) * 0.15),
+                      opacity: 0.55 + (j % 3) * 0.15,
                     }}
                   />
                 ))}

@@ -32,7 +32,15 @@ export const Route = createFileRoute("/privacy")({
 
 function PrivacyPage() {
   const { t } = useTranslation();
-  const dataKeys = ["account", "files", "explanations", "keys", "endpoints", "acks", "logs"] as const;
+  const dataKeys = [
+    "account",
+    "files",
+    "explanations",
+    "keys",
+    "endpoints",
+    "acks",
+    "logs",
+  ] as const;
   const sections = [
     "controllerTitle",
     "purposesTitle",
@@ -49,7 +57,9 @@ function PrivacyPage() {
     <div className="min-h-screen bg-background text-foreground">
       <header className="sticky top-0 z-30 border-b border-border/60 bg-background/80 backdrop-blur">
         <div className="mx-auto flex h-16 max-w-5xl items-center justify-between px-6">
-          <Link to="/"><Logo /></Link>
+          <Link to="/">
+            <Logo />
+          </Link>
           <div className="flex items-center gap-1">
             <Button asChild variant="ghost" size="sm">
               <Link to="/">
@@ -75,7 +85,9 @@ function PrivacyPage() {
           <h2 className="text-2xl font-semibold">{t("privacy.dataTitle")}</h2>
           <p className="mt-3 text-sm text-muted-foreground">{t("privacy.dataIntro")}</p>
           <ul className="mt-3 list-disc space-y-1 pl-5 text-sm text-muted-foreground">
-            {dataKeys.map((k) => <li key={k}>{t(`privacy.data.${k}`)}</li>)}
+            {dataKeys.map((k) => (
+              <li key={k}>{t(`privacy.data.${k}`)}</li>
+            ))}
           </ul>
         </section>
 
@@ -103,11 +115,21 @@ function PrivacyPage() {
         <div className="mx-auto flex max-w-5xl flex-col items-center justify-between gap-3 px-6 py-8 text-xs text-muted-foreground md:flex-row">
           <Logo />
           <nav className="flex flex-wrap gap-5">
-            <Link to="/terms" className="hover:text-foreground">{t("landing.nav.terms")}</Link>
-            <Link to="/privacy" className="hover:text-foreground">{t("footer.privacy")}</Link>
-            <Link to="/cookies" className="hover:text-foreground">{t("footer.cookies")}</Link>
-            <Link to="/data-flow" className="hover:text-foreground">{t("footer.dataFlow")}</Link>
-            <Link to="/manifesto" className="hover:text-foreground">{t("landing.nav.manifesto")}</Link>
+            <Link to="/terms" className="hover:text-foreground">
+              {t("landing.nav.terms")}
+            </Link>
+            <Link to="/privacy" className="hover:text-foreground">
+              {t("footer.privacy")}
+            </Link>
+            <Link to="/cookies" className="hover:text-foreground">
+              {t("footer.cookies")}
+            </Link>
+            <Link to="/data-flow" className="hover:text-foreground">
+              {t("footer.dataFlow")}
+            </Link>
+            <Link to="/manifesto" className="hover:text-foreground">
+              {t("landing.nav.manifesto")}
+            </Link>
           </nav>
           <span className="max-w-md text-right">{t("footer.disclaimer")}</span>
         </div>

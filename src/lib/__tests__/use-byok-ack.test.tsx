@@ -6,22 +6,23 @@ const mockOpenAck = vi.fn();
 
 const mockUseQuery = vi.fn();
 const mockUseServerFn = vi.fn();
+type ByokAckContextValue = { open: () => void };
 
 // eslint-disable-next-line no-var
-var ByokAckContext: React.Context<{ open: Function } | null>;
+var ByokAckContext: React.Context<ByokAckContextValue | null>;
 
-vi.mock("@/components/ByokAckProvider", () => {
+vi.mock("@/components/ByokAckContext", () => {
   // Create the context from scratch inside the mock factory since it runs at import time
-  ByokAckContext = React.createContext<{ open: Function } | null>(null);
+  ByokAckContext = React.createContext<ByokAckContextValue | null>(null);
   return { ByokAckContext };
 });
 
 vi.mock("@tanstack/react-query", () => ({
-  useQuery: (...args: any[]) => mockUseQuery(...args),
+  useQuery: (...args: unknown[]) => mockUseQuery(...args),
 }));
 
 vi.mock("@tanstack/react-start", () => ({
-  useServerFn: (fn: any) => mockUseServerFn(fn),
+  useServerFn: (fn: unknown) => mockUseServerFn(fn),
   createServerFn: () => vi.fn(),
 }));
 
@@ -45,7 +46,11 @@ describe("useByokAck", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     mockUseQuery.mockReturnValue({
-      data: { accepted: true, currentVersion: "1.0.0", record: { acceptedAt: "2025-01-01", version: "1.0.0", language: "en" } },
+      data: {
+        accepted: true,
+        currentVersion: "1.0.0",
+        record: { acceptedAt: "2025-01-01", version: "1.0.0", language: "en" },
+      },
       isLoading: false,
     });
   });
@@ -56,7 +61,10 @@ describe("useByokAck", () => {
   });
 
   it("returns accepted=false when query returns not accepted", () => {
-    mockUseQuery.mockReturnValue({ data: { accepted: false, currentVersion: "1.0.0", record: null }, isLoading: false });
+    mockUseQuery.mockReturnValue({
+      data: { accepted: false, currentVersion: "1.0.0", record: null },
+      isLoading: false,
+    });
     const { result } = renderHook(() => useByokAck(), { wrapper: Wrapper });
     expect(result.current.accepted).toBe(false);
   });
@@ -77,16 +85,23 @@ describe("useByokAck", () => {
   it("requireAck calls onAccepted immediately when already accepted", async () => {
     const onAccepted = vi.fn();
     const { result } = renderHook(() => useByokAck(), { wrapper: Wrapper });
-    await act(async () => { await result.current.requireAck(onAccepted); });
+    await act(async () => {
+      await result.current.requireAck(onAccepted);
+    });
     expect(onAccepted).toHaveBeenCalledTimes(1);
     expect(mockOpenAck).not.toHaveBeenCalled();
   });
 
   it("requireAck opens ack dialog when not yet accepted", async () => {
-    mockUseQuery.mockReturnValue({ data: { accepted: false, currentVersion: "1.0.0", record: null }, isLoading: false });
+    mockUseQuery.mockReturnValue({
+      data: { accepted: false, currentVersion: "1.0.0", record: null },
+      isLoading: false,
+    });
     const onAccepted = vi.fn();
     const { result } = renderHook(() => useByokAck(), { wrapper: Wrapper });
-    await act(async () => { await result.current.requireAck(onAccepted); });
+    await act(async () => {
+      await result.current.requireAck(onAccepted);
+    });
     expect(onAccepted).not.toHaveBeenCalled();
     expect(mockOpenAck).toHaveBeenCalled();
   });
@@ -94,7 +109,9 @@ describe("useByokAck", () => {
   it("openAck opens the ack dialog with optional callback", () => {
     const onAccepted = vi.fn();
     const { result } = renderHook(() => useByokAck(), { wrapper: Wrapper });
-    act(() => { result.current.openAck(onAccepted); });
+    act(() => {
+      result.current.openAck(onAccepted);
+    });
     expect(mockOpenAck).toHaveBeenCalledWith(onAccepted);
   });
 });

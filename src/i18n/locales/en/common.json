@@ -317,6 +317,7 @@
   "dashboard": {
     "title": "Your projects",
     "newProject": "New project",
+    "newProjectDescription": "Create a workspace where Decoder can store repositories, static scan results and analysis history.",
     "empty": "You don't have any projects yet.",
     "projectNamePlaceholder": "Project name",
     "projectDescPlaceholder": "Optional description",
@@ -401,6 +402,7 @@
     "noRepos": "No repositories yet. Upload a ZIP or import from GitHub to get started.",
     "openRepo": "Open",
     "importGithub": "Import from GitHub",
+    "importGithubDescription": "Import a public repository into this project, then run static analysis, LLM analysis or both according to the project mode.",
     "importing": "Importing…",
     "githubUrl": "GitHub URL",
     "githubUrlPlaceholder": "https://github.com/owner/repo",
@@ -444,6 +446,10 @@
     "download": "Download .md",
     "exportAll": "Export all (.zip)",
     "exporting": "Exporting…",
+    "searchFiles": "Search files",
+    "clearSearch": "Clear search",
+    "searchResultCount": "{{shown}}/{{total}} files",
+    "noSearchResults": "No files match this search.",
     "noProvider": "Add an API key in Settings to enable AI explanations.",
     "staticOnlyMode": "Static-only mode",
     "staticOnlyBody": "No API key is required. LLM tabs and cloud analysis controls are hidden for this project.",
@@ -469,9 +475,21 @@
       "technical": "Technical summary",
       "quality": "Quality",
       "security": "Security",
+      "staticCode": "Static code",
       "malware": "Malware",
       "aiOrigin": "AI origin",
+      "chat": "Chat",
       "fix": "Fix"
+    },
+    "chat": {
+      "empty": "No messages yet.",
+      "loading": "Loading chat history…",
+      "placeholder": "Ask about the selected file…",
+      "send": "Send",
+      "sending": "Sending…",
+      "needsProvider": "Select a cloud or local provider to chat.",
+      "user": "You",
+      "assistant": "Assistant"
     },
     "findings": {
       "title": "Highlighted spots",
@@ -745,7 +763,12 @@
           "b2": "Supports OpenAI, Anthropic, Gemini and OpenRouter.",
           "b3": "Selected code or prompts may be sent to the chosen provider.",
           "b4": "You are responsible for provider costs and provider terms.",
-          "flow": { "code": "Your code", "backend": "Decoder backend", "provider": "AI provider", "ui": "Decoder UI" }
+          "flow": {
+            "code": "Your code",
+            "backend": "Decoder backend",
+            "provider": "AI provider",
+            "ui": "Decoder UI"
+          }
         }
       },
       "s3": {
@@ -985,11 +1008,36 @@
     "whatWeUseBody": "The full list of cookies and browser storage used by Decoder:",
     "col": { "name": "Name", "purpose": "Purpose", "storage": "Storage", "retention": "Retention" },
     "rows": {
-      "auth": { "name": "sb-* (Supabase auth)", "purpose": "Keeps you signed in securely", "storage": "Cookie / localStorage", "retention": "Until sign-out or token expiry" },
-      "lang": { "name": "i18nextLng", "purpose": "Remembers your interface language", "storage": "localStorage", "retention": "Until you clear browser data" },
-      "theme": { "name": "theme", "purpose": "Remembers dark / light preference", "storage": "localStorage", "retention": "Until you clear browser data" },
-      "disclaimer": { "name": "decoder.disclaimer.acceptedAt", "purpose": "Records that you saw the sign-in disclaimer", "storage": "localStorage", "retention": "Until you clear browser data" },
-      "ack": { "name": "user_acknowledgements", "purpose": "Stores your BYOK and onboarding acknowledgement", "storage": "Server database (your account)", "retention": "Until you delete your account or the acknowledgement" }
+      "auth": {
+        "name": "sb-* (Supabase auth)",
+        "purpose": "Keeps you signed in securely",
+        "storage": "Cookie / localStorage",
+        "retention": "Until sign-out or token expiry"
+      },
+      "lang": {
+        "name": "i18nextLng",
+        "purpose": "Remembers your interface language",
+        "storage": "localStorage",
+        "retention": "Until you clear browser data"
+      },
+      "theme": {
+        "name": "theme",
+        "purpose": "Remembers dark / light preference",
+        "storage": "localStorage",
+        "retention": "Until you clear browser data"
+      },
+      "disclaimer": {
+        "name": "decoder.disclaimer.acceptedAt",
+        "purpose": "Records that you saw the sign-in disclaimer",
+        "storage": "localStorage",
+        "retention": "Until you clear browser data"
+      },
+      "ack": {
+        "name": "user_acknowledgements",
+        "purpose": "Stores your BYOK and onboarding acknowledgement",
+        "storage": "Server database (your account)",
+        "retention": "Until you delete your account or the acknowledgement"
+      }
     },
     "noTrackingTitle": "What we do NOT use",
     "noTrackingBody": "Decoder does not load any of the following:",

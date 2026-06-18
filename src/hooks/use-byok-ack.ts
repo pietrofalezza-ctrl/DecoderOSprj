@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 
 import { getCurrentByokAck } from "@/lib/byok-acknowledgement.functions";
-import { ByokAckContext } from "@/components/ByokAckProvider";
+import { ByokAckContext } from "@/components/ByokAckContext";
 
 export function useByokAck() {
   const fetchAck = useServerFn(getCurrentByokAck);

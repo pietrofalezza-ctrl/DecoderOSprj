@@ -131,7 +131,9 @@ export const issueResetChallenge = createServerFn({ method: "POST" })
 
 export const verifyResetChallenge = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((d) => z.object({ code: z.string().regex(/^\d{6}$/, "Enter the 6-digit code.") }).parse(d))
+  .inputValidator((d) =>
+    z.object({ code: z.string().regex(/^\d{6}$/, "Enter the 6-digit code.") }).parse(d),
+  )
   .handler(async ({ data, context }) => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const userId = context.userId as string;

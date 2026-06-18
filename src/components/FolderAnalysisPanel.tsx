@@ -26,17 +26,16 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { DiffViewer, extractDiffBlock, extractNotes } from "./DiffViewer";
+import { DiffViewer } from "./DiffViewer";
 import { FindingsList } from "./FindingsList";
 
 import { runAnalysis } from "@/lib/analysis.functions";
-import {
-  aggregateFolderAnalysis,
-  listFolderFiles,
-} from "@/lib/folder-analysis.functions";
+import { aggregateFolderAnalysis, listFolderFiles } from "@/lib/folder-analysis.functions";
 import { proposeFolderFix } from "@/lib/fix.functions";
+import { extractDiffBlock, extractNotes } from "@/lib/diff";
 import { extractFindings, stripFindingsBlock, type Finding } from "@/lib/findings";
 import type { AnalysisKind } from "@/lib/analysis-prompt";
+import { getErrorMessage } from "@/lib/errors";
 
 type CloudProvider = "openai" | "anthropic" | "gemini" | "openrouter";
 type FolderKind = Exclude<AnalysisKind, "ai_origin">;
@@ -125,15 +124,13 @@ export function FolderAnalysisPanel({
       return r.content;
     },
     onSuccess: (text) => setAggText(text),
-    onError: (e: any) => toast.error(e?.message ?? t("errors.generic")),
+    onError: (e) => toast.error(getErrorMessage(e, t("errors.generic"))),
   });
 
   const fixMut = useMutation({
     mutationFn: async () => {
       if (!provider) throw new Error("needs_cloud");
-      const oks = entries.filter(
-        (e) => e.status === "ok" && (e.findings?.length ?? 0) > 0,
-      );
+      const oks = entries.filter((e) => e.status === "ok" && (e.findings?.length ?? 0) > 0);
       if (oks.length === 0) throw new Error(t("workspace.fix.noFindings"));
       const r = await fix({
         data: {
@@ -153,7 +150,7 @@ export function FolderAnalysisPanel({
       setDiffNotes(r.notes);
       setTab("fix");
     },
-    onError: (e: any) => toast.error(e?.message ?? t("errors.generic")),
+    onError: (e) => toast.error(getErrorMessage(e, t("errors.generic"))),
   });
 
   async function runBatch() {
@@ -175,9 +172,7 @@ export function FolderAnalysisPanel({
     const collected: PerFileEntry[] = [];
     for (let i = 0; i < planned.length; i++) {
       const f = planned[i];
-      setEntries((prev) =>
-        prev.map((e) => (e.file_id === f.id ? { ...e, status: "running" } : e)),
-      );
+      setEntries((prev) => prev.map((e) => (e.file_id === f.id ? { ...e, status: "running" } : e)));
       try {
         const r = await analyze({
           data: { file_id: f.id, provider, kind, language },
@@ -192,12 +187,12 @@ export function FolderAnalysisPanel({
         };
         collected.push(entry);
         setEntries((prev) => prev.map((e) => (e.file_id === f.id ? entry : e)));
-      } catch (e: any) {
+      } catch (e) {
         const entry: PerFileEntry = {
           file_id: f.id,
           path: f.path,
           status: "error",
-          error: e?.message ?? "error",
+          error: getErrorMessage(e),
         };
         setEntries((prev) => prev.map((x) => (x.file_id === f.id ? entry : x)));
       }
@@ -211,15 +206,10 @@ export function FolderAnalysisPanel({
     }
   }
 
-  const totalFindings = entries.reduce(
-    (acc, e) => acc + (e.findings?.length ?? 0),
-    0,
-  );
+  const totalFindings = entries.reduce((acc, e) => acc + (e.findings?.length ?? 0), 0);
   const okEntries = entries.filter((e) => e.status === "ok");
   const truncated =
-    (filesQ.data?.files.length ?? 0) > MAX_FILES
-      ? (filesQ.data!.files.length - MAX_FILES)
-      : 0;
+    (filesQ.data?.files.length ?? 0) > MAX_FILES ? filesQ.data!.files.length - MAX_FILES : 0;
 
   return (
     <div className="flex h-full flex-col">
@@ -295,7 +285,9 @@ export function FolderAnalysisPanel({
               })
             : t("workspace.folder.runAll")}
         </Button>
-        {running && <Progress value={(progress.done / Math.max(1, progress.total)) * 100} className="h-1.5" />}
+        {running && (
+          <Progress value={(progress.done / Math.max(1, progress.total)) * 100} className="h-1.5" />
+        )}
       </div>
 
       <Tabs
@@ -305,9 +297,7 @@ export function FolderAnalysisPanel({
       >
         <div className="border-b border-border px-2 pt-2">
           <TabsList>
-            <TabsTrigger value="summary">
-              {t("workspace.folder.tabSummary")}
-            </TabsTrigger>
+            <TabsTrigger value="summary">{t("workspace.folder.tabSummary")}</TabsTrigger>
             <TabsTrigger value="files" className="gap-1.5">
               {t("workspace.folder.tabFiles")}
               {totalFindings > 0 && (
@@ -323,7 +313,11 @@ export function FolderAnalysisPanel({
           </TabsList>
         </div>
 
-        <TabsContent forceMount value="summary" className="m-0 flex-1 overflow-auto p-4 data-[state=inactive]:hidden">
+        <TabsContent
+          forceMount
+          value="summary"
+          className="m-0 flex-1 overflow-auto p-4 data-[state=inactive]:hidden"
+        >
           {aggregateMut.isPending ? (
             <div className="flex items-center gap-2 text-sm text-muted-foreground">
               <Sparkles className="h-4 w-4 animate-pulse" />
@@ -340,7 +334,11 @@ export function FolderAnalysisPanel({
           )}
         </TabsContent>
 
-        <TabsContent forceMount value="files" className="m-0 flex-1 overflow-hidden data-[state=inactive]:hidden">
+        <TabsContent
+          forceMount
+          value="files"
+          className="m-0 flex-1 overflow-hidden data-[state=inactive]:hidden"
+        >
           <ScrollArea className="h-full">
             <ul className="divide-y divide-border">
               {entries.length === 0 && (
@@ -359,27 +357,18 @@ export function FolderAnalysisPanel({
                       <span className="truncate font-mono text-xs">{e.path}</span>
                     </button>
                     <span className="shrink-0">
-                      {e.status === "ok" && (
-                        <CheckCircle2 className="h-4 w-4 text-emerald-500" />
-                      )}
+                      {e.status === "ok" && <CheckCircle2 className="h-4 w-4 text-emerald-500" />}
                       {e.status === "running" && (
                         <Sparkles className="h-4 w-4 animate-pulse text-primary" />
                       )}
-                      {e.status === "error" && (
-                        <BugPlay className="h-4 w-4 text-red-500" />
-                      )}
+                      {e.status === "error" && <BugPlay className="h-4 w-4 text-red-500" />}
                     </span>
                   </div>
                   {e.status === "error" && (
-                    <p className="text-[11px] text-red-600 dark:text-red-400">
-                      {e.error}
-                    </p>
+                    <p className="text-[11px] text-red-600 dark:text-red-400">{e.error}</p>
                   )}
                   {e.findings && e.findings.length > 0 && (
-                    <FindingsList
-                      findings={e.findings}
-                      onJump={() => onOpenFile(e.file_id)}
-                    />
+                    <FindingsList findings={e.findings} onJump={() => onOpenFile(e.file_id)} />
                   )}
                   {e.status === "ok" && (e.findings?.length ?? 0) === 0 && (
                     <p className="text-[11px] text-muted-foreground">
@@ -392,7 +381,11 @@ export function FolderAnalysisPanel({
           </ScrollArea>
         </TabsContent>
 
-        <TabsContent forceMount value="fix" className="m-0 flex-1 overflow-hidden p-3 data-[state=inactive]:hidden">
+        <TabsContent
+          forceMount
+          value="fix"
+          className="m-0 flex-1 overflow-hidden p-3 data-[state=inactive]:hidden"
+        >
           <div className="flex h-full flex-col gap-2">
             <Button
               size="sm"
@@ -409,9 +402,7 @@ export function FolderAnalysisPanel({
               ) : (
                 <ArrowRight className="mr-2 h-4 w-4" />
               )}
-              {fixMut.isPending
-                ? t("workspace.fix.generating")
-                : t("workspace.fix.generateFolder")}
+              {fixMut.isPending ? t("workspace.fix.generating") : t("workspace.fix.generateFolder")}
             </Button>
             <div className="min-h-0 flex-1">
               <DiffViewer

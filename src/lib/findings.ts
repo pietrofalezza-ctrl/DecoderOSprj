@@ -84,7 +84,11 @@ function clampLine(v: unknown, max: number): number {
 }
 
 function makeId(prefix: string, i: number, title: string): string {
-  const slug = title.toLowerCase().replace(/[^a-z0-9]+/g, "-").slice(0, 32) || "item";
+  const slug =
+    title
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, "-")
+      .slice(0, 32) || "item";
   return `${prefix}-${i}-${slug}`;
 }
 
@@ -140,8 +144,7 @@ export function extractInsightBundle(
     const item = itemsRaw[i];
     if (!item || typeof item !== "object") continue;
     const o = item as Record<string, unknown>;
-    const hasLines =
-      o.start_line != null || o.startLine != null || o.line != null;
+    const hasLines = o.start_line != null || o.startLine != null || o.line != null;
     if (!hasLines) {
       // Treat as unmapped.
       unmappedRaw.push(item);
@@ -151,9 +154,7 @@ export function extractInsightBundle(
     const endRaw = o.end_line ?? o.endLine ?? o.line ?? start;
     const end = Math.max(start, clampLine(endRaw, totalLines));
     const title =
-      typeof o.title === "string" && o.title.trim()
-        ? o.title.trim().slice(0, 160)
-        : "Finding";
+      typeof o.title === "string" && o.title.trim() ? o.title.trim().slice(0, 160) : "Finding";
     const message =
       typeof o.explanation === "string"
         ? o.explanation.trim().slice(0, 2000)
@@ -163,10 +164,7 @@ export function extractInsightBundle(
             ? (o.detail as string).trim().slice(0, 2000)
             : "";
     findings.push({
-      id:
-        typeof o.id === "string" && o.id
-          ? o.id
-          : makeId("f", i, title),
+      id: typeof o.id === "string" && o.id ? o.id : makeId("f", i, title),
       start_line: start,
       end_line: end,
       severity: normalizeSeverity(o.severity),
@@ -187,9 +185,7 @@ export function extractInsightBundle(
     if (!item || typeof item !== "object") continue;
     const o = item as Record<string, unknown>;
     const title =
-      typeof o.title === "string" && o.title.trim()
-        ? o.title.trim().slice(0, 160)
-        : "Insight";
+      typeof o.title === "string" && o.title.trim() ? o.title.trim().slice(0, 160) : "Insight";
     const message =
       typeof o.explanation === "string"
         ? o.explanation.trim().slice(0, 2000)

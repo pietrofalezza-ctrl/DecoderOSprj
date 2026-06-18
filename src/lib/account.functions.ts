@@ -11,16 +11,21 @@ export const exportMyData = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
     const sb = context.supabase;
-    const [profile, projects, repos, files, explanations, creds, endpoints] =
-      await Promise.all([
-        sb.from("profiles").select("*").eq("id", context.userId).maybeSingle(),
-        sb.from("projects").select("*"),
-        sb.from("repositories").select("*"),
-        sb.from("files").select("id, repository_id, path, language, size_bytes, sha256, created_at"),
-        sb.from("explanations").select("id, file_id, provider, model, language, explanation_type, proficiency, created_at, content"),
-        sb.from("user_ai_credentials_safe").select("provider, key_hint, created_at, updated_at"),
-        sb.from("user_local_endpoints").select("kind, base_url, default_model, created_at, updated_at"),
-      ]);
+    const [profile, projects, repos, files, explanations, creds, endpoints] = await Promise.all([
+      sb.from("profiles").select("*").eq("id", context.userId).maybeSingle(),
+      sb.from("projects").select("*"),
+      sb.from("repositories").select("*"),
+      sb.from("files").select("id, repository_id, path, language, size_bytes, sha256, created_at"),
+      sb
+        .from("explanations")
+        .select(
+          "id, file_id, provider, model, language, explanation_type, proficiency, created_at, content",
+        ),
+      sb.from("user_ai_credentials_safe").select("provider, key_hint, created_at, updated_at"),
+      sb
+        .from("user_local_endpoints")
+        .select("kind, base_url, default_model, created_at, updated_at"),
+    ]);
 
     return {
       generated_at: new Date().toISOString(),
@@ -60,7 +65,9 @@ export const deleteMyAccount = createServerFn({ method: "POST" })
 
     // Remove storage objects owned by the user (best-effort).
     try {
-      const { data: list } = await supabaseAdmin.storage.from("repositories").list(uid, { limit: 1000 });
+      const { data: list } = await supabaseAdmin.storage
+        .from("repositories")
+        .list(uid, { limit: 1000 });
       if (list && list.length) {
         const paths = list.map((o) => `${uid}/${o.name}`);
         await supabaseAdmin.storage.from("repositories").remove(paths);

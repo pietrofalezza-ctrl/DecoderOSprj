@@ -22,10 +22,7 @@ export function decryptSecret(payload: string): string {
   const key = getKey();
   const decipher = createDecipheriv("aes-256-gcm", key, Buffer.from(ivB64, "base64"));
   decipher.setAuthTag(Buffer.from(tagB64, "base64"));
-  const dec = Buffer.concat([
-    decipher.update(Buffer.from(encB64, "base64")),
-    decipher.final(),
-  ]);
+  const dec = Buffer.concat([decipher.update(Buffer.from(encB64, "base64")), decipher.final()]);
   return dec.toString("utf8");
 }
 

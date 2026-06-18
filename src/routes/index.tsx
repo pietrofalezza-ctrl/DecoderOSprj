@@ -20,13 +20,7 @@ import {
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
-import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet";
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { LangSwitcher } from "@/components/LangSwitcher";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { Logo } from "@/components/Logo";
@@ -342,9 +336,7 @@ function Landing() {
               <h2 className="mt-3 font-display text-3xl font-medium leading-tight tracking-tight sm:text-4xl md:text-5xl">
                 {t("landing.guardrail.title")}
               </h2>
-              <p className="mt-5 text-muted-foreground">
-                {t("landing.guardrail.intro")}
-              </p>
+              <p className="mt-5 text-muted-foreground">{t("landing.guardrail.intro")}</p>
               <div className="mt-8">
                 <GuardrailDiagram t={t} />
               </div>
@@ -424,7 +416,9 @@ function Landing() {
       {/* How it works */}
       <section id="how-it-works" className="border-t border-border/60 bg-card/40">
         <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 md:py-16">
-          <h2 className="font-display text-3xl font-medium tracking-tight sm:text-4xl">{t("landing.howTitle")}</h2>
+          <h2 className="font-display text-3xl font-medium tracking-tight sm:text-4xl">
+            {t("landing.howTitle")}
+          </h2>
           <p className="mt-2 max-w-2xl text-muted-foreground">{t("landing.howIntro")}</p>
           <ol className="mt-10 grid gap-6 md:grid-cols-3">
             <Step n={1} title={t("landing.step1Title")} body={t("landing.step1Body")} />
@@ -436,19 +430,27 @@ function Landing() {
 
       {/* Integrations */}
       <section id="integrations" className="mx-auto max-w-7xl px-4 py-12 sm:px-6 md:py-16">
-        <h2 className="font-display text-3xl font-medium tracking-tight sm:text-4xl">{t("landing.integrationsTitle")}</h2>
+        <h2 className="font-display text-3xl font-medium tracking-tight sm:text-4xl">
+          {t("landing.integrationsTitle")}
+        </h2>
         <p className="mt-2 max-w-2xl text-muted-foreground">{t("landing.integrationsBody")}</p>
         <div className="mt-8 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
-          {["OpenAI", "Anthropic", "Google Gemini", "OpenRouter", "Ollama", "LM Studio", "GitHub"].map(
-            (p) => (
-              <div
-                key={p}
-                className="rounded-lg border border-border bg-card px-4 py-6 text-center text-sm text-card-foreground"
-              >
-                {p}
-              </div>
-            ),
-          )}
+          {[
+            "OpenAI",
+            "Anthropic",
+            "Google Gemini",
+            "OpenRouter",
+            "Ollama",
+            "LM Studio",
+            "GitHub",
+          ].map((p) => (
+            <div
+              key={p}
+              className="rounded-lg border border-border bg-card px-4 py-6 text-center text-sm text-card-foreground"
+            >
+              {p}
+            </div>
+          ))}
         </div>
       </section>
 

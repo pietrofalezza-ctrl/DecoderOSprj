@@ -24,11 +24,18 @@ import { AppShell } from "@/components/AppShell";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
@@ -37,6 +44,7 @@ import {
 import { getProject, updateProjectAnalysisMode } from "@/lib/projects.functions";
 import { createRepositoryFromZip, deleteRepository } from "@/lib/repos.functions";
 import { importFromGitHub } from "@/lib/github.functions";
+import { getErrorMessage } from "@/lib/errors";
 
 export const Route = createFileRoute("/_authenticated/projects/$projectId/")({
   component: ProjectPage,
@@ -83,13 +91,14 @@ function ProjectPage() {
   const onPick = () => fileRef.current?.click();
 
   const modeMut = useMutation({
-    mutationFn: (mode: AnalysisMode) => updateModeFn({ data: { id: projectId, analysis_mode: mode } }),
+    mutationFn: (mode: AnalysisMode) =>
+      updateModeFn({ data: { id: projectId, analysis_mode: mode } }),
     onSuccess: (_, mode) => {
       setAnalysisMode(mode);
       qc.invalidateQueries({ queryKey: ["project", projectId] });
       toast.success(t("settings.saved"));
     },
-    onError: (e: any) => toast.error(e?.message ?? t("errors.generic")),
+    onError: (e) => toast.error(getErrorMessage(e, t("errors.generic"))),
   });
 
   const upMut = useMutation({
@@ -116,7 +125,7 @@ function ProjectPage() {
         params: { projectId, repoId: r.repository_id },
       });
     },
-    onError: (e: any) => toast.error(e?.message ?? t("errors.generic")),
+    onError: (e) => toast.error(getErrorMessage(e, t("errors.generic"))),
     onSettled: () => setUploading(false),
   });
 
@@ -139,7 +148,7 @@ function ProjectPage() {
         params: { projectId, repoId: r.repository_id },
       });
     },
-    onError: (e: any) => toast.error(e?.message ?? t("errors.generic")),
+    onError: (e) => toast.error(getErrorMessage(e, t("errors.generic"))),
   });
 
   const onFile = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -190,7 +199,10 @@ function ProjectPage() {
   const activityChartData = useMemo(() => {
     const counts = new Map<ActivityKind, number>();
     for (const item of data.data?.recent_activities ?? []) {
-      counts.set(item.activity_kind as ActivityKind, (counts.get(item.activity_kind as ActivityKind) ?? 0) + 1);
+      counts.set(
+        item.activity_kind as ActivityKind,
+        (counts.get(item.activity_kind as ActivityKind) ?? 0) + 1,
+      );
     }
     return Array.from(counts.entries()).map(([kind, count]) => ({
       kind,
@@ -228,7 +240,9 @@ function ProjectPage() {
             <div className="flex flex-wrap gap-2 text-[11px]">
               <span className="rounded-full border border-border bg-card px-3 py-1 text-muted-foreground">
                 {t("project.modeLabel")}:{" "}
-                <span className="font-medium text-foreground">{t(`project.modeOptions.${analysisMode}`)}</span>
+                <span className="font-medium text-foreground">
+                  {t(`project.modeOptions.${analysisMode}`)}
+                </span>
               </span>
               <span className="rounded-full border border-primary/30 bg-primary/5 px-3 py-1 text-primary">
                 {modeDescription}
@@ -274,6 +288,7 @@ function ProjectPage() {
                 <DialogContent>
                   <DialogHeader>
                     <DialogTitle>{t("project.importGithub")}</DialogTitle>
+                    <DialogDescription>{t("project.importGithubDescription")}</DialogDescription>
                   </DialogHeader>
                   <div className="space-y-3">
                     <div>
@@ -294,12 +309,8 @@ function ProjectPage() {
                         placeholder={t("project.githubRefPlaceholder")}
                       />
                     </div>
-                    <p className="text-xs text-muted-foreground">
-                      {t("project.githubOnlyPublic")}
-                    </p>
-                    <p className="text-xs text-muted-foreground">
-                      {t("project.retentionNotice")}
-                    </p>
+                    <p className="text-xs text-muted-foreground">{t("project.githubOnlyPublic")}</p>
+                    <p className="text-xs text-muted-foreground">{t("project.retentionNotice")}</p>
                   </div>
                   <DialogFooter>
                     <Button
@@ -331,14 +342,26 @@ function ProjectPage() {
           <MetricCard
             icon={<ShieldAlert className="h-4 w-4" />}
             label={t("project.metricStatic")}
-            value={String((metrics?.safe_files ?? 0) + (metrics?.warn_files ?? 0) + (metrics?.block_files ?? 0))}
+            value={String(
+              (metrics?.safe_files ?? 0) + (metrics?.warn_files ?? 0) + (metrics?.block_files ?? 0),
+            )}
             detail={t("project.metricStaticBody")}
           />
           <MetricCard
             icon={<Bot className="h-4 w-4" />}
-            label={analysisMode === "static" ? t("project.metricNoLlm") : t("project.metricRecentRuns")}
-            value={analysisMode === "static" ? t("project.metricStaticOnly") : String(data.data?.recent_activities?.length ?? 0)}
-            detail={analysisMode === "static" ? t("project.metricNoLlmBody") : t("project.metricRecentRunsBody")}
+            label={
+              analysisMode === "static" ? t("project.metricNoLlm") : t("project.metricRecentRuns")
+            }
+            value={
+              analysisMode === "static"
+                ? t("project.metricStaticOnly")
+                : String(data.data?.recent_activities?.length ?? 0)
+            }
+            detail={
+              analysisMode === "static"
+                ? t("project.metricNoLlmBody")
+                : t("project.metricRecentRunsBody")
+            }
           />
         </section>
 
@@ -348,16 +371,18 @@ function ProjectPage() {
               <BarChart3 className="h-4 w-4 text-primary" />
               <h2 className="text-sm font-semibold">{t("project.staticChart.title")}</h2>
             </div>
-            <p className="mt-1 text-xs text-muted-foreground">
-              {t("project.staticChart.body")}
-            </p>
+            <p className="mt-1 text-xs text-muted-foreground">{t("project.staticChart.body")}</p>
             {analysisMode === "llm" ? (
               <div className="mt-4 rounded-md border border-dashed border-border p-6 text-sm text-muted-foreground">
                 {t("project.staticChart.llmOnly")}
               </div>
             ) : repositoryChartData.length > 0 ? (
               <ChartContainer config={staticChartConfig} className="mt-4 h-[320px] w-full">
-                <BarChart data={repositoryChartData} layout="vertical" margin={{ left: 12, right: 12 }}>
+                <BarChart
+                  data={repositoryChartData}
+                  layout="vertical"
+                  margin={{ left: 12, right: 12 }}
+                >
                   <CartesianGrid horizontal={false} strokeDasharray="3 3" />
                   <XAxis type="number" hide />
                   <YAxis
@@ -386,16 +411,18 @@ function ProjectPage() {
               <Activity className="h-4 w-4 text-primary" />
               <h2 className="text-sm font-semibold">{t("project.activityChart.title")}</h2>
             </div>
-            <p className="mt-1 text-xs text-muted-foreground">
-              {t("project.activityChart.body")}
-            </p>
+            <p className="mt-1 text-xs text-muted-foreground">{t("project.activityChart.body")}</p>
             {analysisMode === "static" ? (
               <div className="mt-4 rounded-md border border-dashed border-border p-6 text-sm text-muted-foreground">
                 {t("project.activityChart.staticOnly")}
               </div>
             ) : activityChartData.length > 0 ? (
               <ChartContainer config={activityChartConfig} className="mt-4 h-[320px] w-full">
-                <BarChart data={activityChartData} layout="vertical" margin={{ left: 12, right: 12 }}>
+                <BarChart
+                  data={activityChartData}
+                  layout="vertical"
+                  margin={{ left: 12, right: 12 }}
+                >
                   <CartesianGrid horizontal={false} strokeDasharray="3 3" />
                   <XAxis type="number" hide />
                   <YAxis
@@ -423,9 +450,7 @@ function ProjectPage() {
               <KeyRound className="h-4 w-4 text-primary" />
               <h2 className="text-sm font-semibold">{t("project.activitiesTitle")}</h2>
             </div>
-            <p className="mt-1 text-xs text-muted-foreground">
-              {t("project.activitiesBody")}
-            </p>
+            <p className="mt-1 text-xs text-muted-foreground">{t("project.activitiesBody")}</p>
             <div className="mt-4 space-y-2">
               {(data.data?.recent_activities ?? []).length === 0 ? (
                 <div className="rounded-md border border-dashed border-border p-6 text-sm text-muted-foreground">
@@ -444,9 +469,7 @@ function ProjectPage() {
               <FileText className="h-4 w-4 text-primary" />
               <h2 className="text-sm font-semibold">{t("project.repos")}</h2>
             </div>
-            <p className="mt-1 text-xs text-muted-foreground">
-              {t("project.repoSectionBody")}
-            </p>
+            <p className="mt-1 text-xs text-muted-foreground">{t("project.repoSectionBody")}</p>
             <div className="mt-4 space-y-2">
               {data.data?.repositories.length === 0 && (
                 <p className="text-sm text-muted-foreground">{t("project.noRepos")}</p>
@@ -479,9 +502,21 @@ function ProjectPage() {
                         </div>
                       </div>
                       <div className="flex shrink-0 flex-wrap gap-1">
-                        <StatusChip label={`${summary.safe}`} tone="green" title={t("project.staticChart.safe")} />
-                        <StatusChip label={`${summary.warn}`} tone="amber" title={t("project.staticChart.warn")} />
-                        <StatusChip label={`${summary.block}`} tone="red" title={t("project.staticChart.block")} />
+                        <StatusChip
+                          label={`${summary.safe}`}
+                          tone="green"
+                          title={t("project.staticChart.safe")}
+                        />
+                        <StatusChip
+                          label={`${summary.warn}`}
+                          tone="amber"
+                          title={t("project.staticChart.warn")}
+                        />
+                        <StatusChip
+                          label={`${summary.block}`}
+                          tone="red"
+                          title={t("project.staticChart.block")}
+                        />
                       </div>
                     </div>
                     <div className="mt-3 flex items-center gap-2">
@@ -512,13 +547,14 @@ function ProjectPage() {
                         aria-label={t("project.deleteRepo")}
                         title={t("project.deleteRepo")}
                         onClick={async () => {
-                          if (!window.confirm(t("project.deleteRepoConfirm", { name: r.name }))) return;
+                          if (!window.confirm(t("project.deleteRepoConfirm", { name: r.name })))
+                            return;
                           try {
                             await removeRepo({ data: { id: r.id } });
                             qc.invalidateQueries({ queryKey: ["project", projectId] });
                             toast.success(t("project.deleteRepoDone"));
-                          } catch (err: any) {
-                            toast.error(err?.message ?? t("errors.generic"));
+                          } catch (err) {
+                            toast.error(getErrorMessage(err, t("errors.generic")));
                           }
                         }}
                         className="ml-auto text-muted-foreground hover:bg-destructive/10 hover:text-destructive"
@@ -646,7 +682,10 @@ function ActivityRow({
   );
 }
 
-function activityLabel(kind: ActivityKind, t: (key: string, options?: any) => string) {
+function activityLabel(
+  kind: ActivityKind,
+  t: (key: string, options?: Record<string, unknown>) => string,
+) {
   if (kind === "static_scan") return t("project.activityLabels.static_scan");
   if (kind === "search_query") return t("project.activityLabels.search_query");
   if (kind === "llm_folder_analysis") return t("project.activityLabels.llm_folder_analysis");

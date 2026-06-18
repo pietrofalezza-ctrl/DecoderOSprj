@@ -1,13 +1,7 @@
 // Shared client/server prompt builder for Decoder explanations.
 // Pure function — no runtime imports — safe to import from browser code.
 
-export type Proficiency =
-  | "nontech"
-  | "junior"
-  | "intermediate"
-  | "senior"
-  | "architect"
-  | "cto";
+export type Proficiency = "nontech" | "junior" | "intermediate" | "senior" | "architect" | "cto";
 
 export type ExplanationType = "human" | "technical";
 export type ExplanationLanguage = "en" | "it" | "zh";
@@ -20,11 +14,7 @@ export function buildPrompt(args: {
   fileContent: string;
 }): { system: string; user: string } {
   const langName =
-    args.language === "it"
-      ? "Italian"
-      : args.language === "zh"
-        ? "Simplified Chinese"
-        : "English";
+    args.language === "it" ? "Italian" : args.language === "zh" ? "Simplified Chinese" : "English";
   const audience: Record<Proficiency, string> = {
     nontech: "a non-technical reader (manager, student, curious user)",
     junior: "a junior developer (1–2 years experience)",
