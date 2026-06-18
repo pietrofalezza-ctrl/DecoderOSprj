@@ -277,15 +277,15 @@ export const Route = createFileRoute("/lovable/email/queue/process")({
                   idempotency_key: payload.idempotency_key,
                   unsubscribe_token: payload.unsubscribe_token,
                   message_id: payload.message_id,
-                },
+                } as Parameters<typeof sendLovableEmail>[0],
                 { apiKey, sendUrl: process.env.LOVABLE_SEND_URL },
               );
 
               // Log success
               await supabase.from("email_send_log").insert({
-                message_id: payload.message_id,
+                message_id: (payload.message_id ?? "") as string,
                 template_name: payload.label || queue,
-                recipient_email: payload.to,
+                recipient_email: (payload.to ?? "") as string,
                 status: "sent",
               });
 
