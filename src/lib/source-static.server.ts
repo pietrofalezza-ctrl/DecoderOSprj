@@ -324,11 +324,93 @@ export const DEFAULT_SOURCE_STATIC_RULES: SourceStaticRule[] = [
 function normalizeLanguage(input: SourceStaticInput): SourceLanguage | string {
   if (input.language) return input.language;
   const ext = input.path.split(".").pop()?.toLowerCase();
-  if (ext === "ts" || ext === "tsx") return "typescript";
-  if (ext === "js" || ext === "jsx" || ext === "mjs" || ext === "cjs") return "javascript";
-  if (ext === "php") return "php";
-  if (ext === "py") return "python";
-  return "unknown";
+  switch (ext) {
+    case "ts":
+    case "tsx":
+    case "mts":
+    case "cts":
+      return "typescript";
+    case "js":
+    case "jsx":
+    case "mjs":
+    case "cjs":
+      return "javascript";
+    case "php":
+    case "phtml":
+    case "php5":
+    case "php7":
+    case "php8":
+      return "php";
+    case "py":
+    case "pyw":
+    case "pyi":
+      return "python";
+    case "java":
+      return "java";
+    case "kt":
+    case "kts":
+      return "kotlin";
+    case "go":
+      return "go";
+    case "rb":
+    case "erb":
+    case "rake":
+      return "ruby";
+    case "rs":
+      return "rust";
+    case "cs":
+    case "csx":
+      return "csharp";
+    case "cpp":
+    case "cc":
+    case "cxx":
+    case "hpp":
+    case "hh":
+    case "hxx":
+      return "cpp";
+    case "c":
+    case "h":
+      return "c";
+    case "swift":
+      return "swift";
+    case "scala":
+    case "sc":
+      return "scala";
+    case "sh":
+    case "bash":
+    case "zsh":
+    case "ksh":
+      return "shell";
+    case "ps1":
+    case "psm1":
+    case "psd1":
+      return "powershell";
+    case "pl":
+    case "pm":
+      return "perl";
+    case "lua":
+      return "lua";
+    case "dart":
+      return "dart";
+    case "html":
+    case "htm":
+      return "html";
+    case "css":
+    case "scss":
+    case "sass":
+    case "less":
+      return "css";
+    case "sql":
+      return "sql";
+    case "yaml":
+    case "yml":
+      return "yaml";
+    case "json":
+    case "jsonc":
+      return "json";
+    default:
+      return "unknown";
+  }
 }
 
 function lineNumberAt(content: string, index: number): number {
