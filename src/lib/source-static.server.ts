@@ -1,4 +1,29 @@
-export type SourceLanguage = "typescript" | "javascript" | "php" | "python" | "unknown";
+export type SourceLanguage =
+  | "typescript"
+  | "javascript"
+  | "php"
+  | "python"
+  | "java"
+  | "kotlin"
+  | "go"
+  | "ruby"
+  | "rust"
+  | "csharp"
+  | "cpp"
+  | "c"
+  | "swift"
+  | "scala"
+  | "shell"
+  | "powershell"
+  | "perl"
+  | "lua"
+  | "dart"
+  | "html"
+  | "css"
+  | "sql"
+  | "yaml"
+  | "json"
+  | "unknown";
 
 export type SourceStaticSeverity = "info" | "low" | "medium" | "high" | "critical";
 
@@ -299,11 +324,93 @@ export const DEFAULT_SOURCE_STATIC_RULES: SourceStaticRule[] = [
 function normalizeLanguage(input: SourceStaticInput): SourceLanguage | string {
   if (input.language) return input.language;
   const ext = input.path.split(".").pop()?.toLowerCase();
-  if (ext === "ts" || ext === "tsx") return "typescript";
-  if (ext === "js" || ext === "jsx" || ext === "mjs" || ext === "cjs") return "javascript";
-  if (ext === "php") return "php";
-  if (ext === "py") return "python";
-  return "unknown";
+  switch (ext) {
+    case "ts":
+    case "tsx":
+    case "mts":
+    case "cts":
+      return "typescript";
+    case "js":
+    case "jsx":
+    case "mjs":
+    case "cjs":
+      return "javascript";
+    case "php":
+    case "phtml":
+    case "php5":
+    case "php7":
+    case "php8":
+      return "php";
+    case "py":
+    case "pyw":
+    case "pyi":
+      return "python";
+    case "java":
+      return "java";
+    case "kt":
+    case "kts":
+      return "kotlin";
+    case "go":
+      return "go";
+    case "rb":
+    case "erb":
+    case "rake":
+      return "ruby";
+    case "rs":
+      return "rust";
+    case "cs":
+    case "csx":
+      return "csharp";
+    case "cpp":
+    case "cc":
+    case "cxx":
+    case "hpp":
+    case "hh":
+    case "hxx":
+      return "cpp";
+    case "c":
+    case "h":
+      return "c";
+    case "swift":
+      return "swift";
+    case "scala":
+    case "sc":
+      return "scala";
+    case "sh":
+    case "bash":
+    case "zsh":
+    case "ksh":
+      return "shell";
+    case "ps1":
+    case "psm1":
+    case "psd1":
+      return "powershell";
+    case "pl":
+    case "pm":
+      return "perl";
+    case "lua":
+      return "lua";
+    case "dart":
+      return "dart";
+    case "html":
+    case "htm":
+      return "html";
+    case "css":
+    case "scss":
+    case "sass":
+    case "less":
+      return "css";
+    case "sql":
+      return "sql";
+    case "yaml":
+    case "yml":
+      return "yaml";
+    case "json":
+    case "jsonc":
+      return "json";
+    default:
+      return "unknown";
+  }
 }
 
 function lineNumberAt(content: string, index: number): number {
@@ -325,35 +432,84 @@ function uniqueSorted(values: Iterable<string>): string[] {
 
 function extractImports(content: string, language: string): SourceSymbol[] {
   const imports: SourceSymbol[] = [];
-  if (language === "php") {
-    const phpRe = /^\s*(?:use|include|require|include_once|require_once)\s+([^;]+);?/gm;
-    let match: RegExpExecArray | null;
-    while ((match = phpRe.exec(content))) {
-      imports.push({
-        name: match[1].trim().replace(/^['"]|['"]$/g, ""),
-        kind: "import",
-        line: lineNumberAt(content, match.index),
-      });
-    }
-    return imports;
+  const push = (name: string, index: number) => {
+    const clean = name.trim().replace(/^['"<]|['">]$/g, "");
+    if (clean) imports.push({ name: clean, kind: "import", line: lineNumberAt(content, index) });
+  };
+
+  const patterns: RegExp[] = [];
+  switch (language) {
+    case "php":
+      patterns.push(/^\s*(?:use|include|require|include_once|require_once)\s+([^;]+);?/gm);
+      break;
+    case "python":
+      patterns.push(/^\s*(?:from\s+([\w.]+)\s+import\s+[\w*,\s]+|import\s+([\w.,\s]+))/gm);
+      break;
+    case "java":
+    case "kotlin":
+    case "scala":
+      patterns.push(/^\s*import\s+([\w.*]+);?/gm);
+      break;
+    case "go":
+      patterns.push(/^\s*import\s+["]([^"]+)["]/gm);
+      patterns.push(/"([^"\s]+)"/gm);
+      break;
+    case "rust":
+      patterns.push(/^\s*use\s+([\w:{}*,\s]+);/gm);
+      break;
+    case "csharp":
+      patterns.push(/^\s*using\s+([\w.]+);/gm);
+      break;
+    case "c":
+    case "cpp":
+      patterns.push(/^\s*#\s*include\s*[<"]([^>"]+)[>"]/gm);
+      break;
+    case "ruby":
+      patterns.push(/^\s*require(?:_relative)?\s+["']([^"']+)["']/gm);
+      break;
+    case "swift":
+      patterns.push(/^\s*import\s+([\w.]+)/gm);
+      break;
+    case "shell":
+    case "bash":
+      patterns.push(/^\s*(?:source|\.)\s+([^\s;]+)/gm);
+      break;
+    case "perl":
+      patterns.push(/^\s*use\s+([\w:]+)/gm);
+      break;
+    case "lua":
+      patterns.push(/require\s*\(?\s*["']([^"']+)["']/gm);
+      break;
+    case "dart":
+      patterns.push(/^\s*import\s+["']([^"']+)["']/gm);
+      break;
+    default:
+      patterns.push(
+        /^\s*import\s+(?:type\s+)?(?:(?:[\w$]+|\{[^}]+\}|\*\s+as\s+[\w$]+)\s+from\s+)?["']([^"']+)["'];?/gm,
+      );
+      patterns.push(/^\s*(?:const|let|var)\s+[\w${}\s,]+=\s*require\(\s*["']([^"']+)["']\s*\)/gm);
   }
 
-  const importRe =
-    /^\s*import\s+(?:type\s+)?(?:(?:[\w$]+|\{[^}]+\}|\*\s+as\s+[\w$]+)\s+from\s+)?["']([^"']+)["'];?/gm;
-  let match: RegExpExecArray | null;
-  while ((match = importRe.exec(content))) {
-    imports.push({ name: match[1], kind: "import", line: lineNumberAt(content, match.index) });
-    const named = match[0].match(/\{([^}]+)\}/);
-    if (named) {
-      for (const part of named[1].split(",")) {
-        const name = part
-          .trim()
-          .split(/\s+as\s+/i)[0]
-          ?.trim();
-        if (name) imports.push({ name, kind: "import", line: lineNumberAt(content, match.index) });
+  for (const re of patterns) {
+    let match: RegExpExecArray | null;
+    while ((match = re.exec(content))) {
+      const captured = match[1] ?? match[2];
+      if (captured) push(captured, match.index);
+    }
+  }
+
+  // also collect named JS/TS imports (legacy behaviour)
+  if (language === "javascript" || language === "typescript" || language === "unknown") {
+    const named = /import\s+\{([^}]+)\}\s+from\s+["'][^"']+["']/gm;
+    let m: RegExpExecArray | null;
+    while ((m = named.exec(content))) {
+      for (const part of m[1].split(",")) {
+        const name = part.trim().split(/\s+as\s+/i)[0]?.trim();
+        if (name) push(name, m.index);
       }
     }
   }
+
   return imports;
 }
 
@@ -410,10 +566,40 @@ function extractFunctions(content: string, language: string): SourceFunction[] {
   const lines = content.split(/\r?\n/);
   const functions: SourceFunction[] = [];
   const seen = new Set<string>();
-  const functionRe =
-    language === "php"
-      ? /\bfunction\s+([A-Za-z_][\w]*)\s*\([^)]*\)/
-      : /\b(?:export\s+)?(?:async\s+)?function\s+([A-Za-z_$][\w$]*)\s*\([^)]*\)|^\s*(?:public|private|protected|async|static|\s)*\s*([A-Za-z_$][\w$]*)\s*\([^)]*\)\s*\{/;
+  const functionRe = (() => {
+    switch (language) {
+      case "php":
+        return /\bfunction\s+([A-Za-z_][\w]*)\s*\([^)]*\)/;
+      case "python":
+        return /^\s*(?:async\s+)?def\s+([A-Za-z_][\w]*)\s*\(/;
+      case "ruby":
+        return /^\s*def\s+([A-Za-z_][\w?!]*)/;
+      case "go":
+        return /^\s*func\s+(?:\([^)]*\)\s*)?([A-Za-z_][\w]*)\s*\(/;
+      case "rust":
+        return /^\s*(?:pub\s+)?fn\s+([A-Za-z_][\w]*)\s*\(/;
+      case "swift":
+      case "kotlin":
+      case "scala":
+        return /^\s*(?:public|private|internal|protected|open|override|static|final|fun|func|def)\s+([A-Za-z_][\w]*)\s*\(/;
+      case "csharp":
+      case "java":
+        return /^\s*(?:public|private|protected|internal|static|final|abstract|override|virtual|\s)+[\w<>\[\],?\s]+\s+([A-Za-z_][\w]*)\s*\([^)]*\)\s*(?:throws[^{]*)?\{/;
+      case "c":
+      case "cpp":
+        return /^\s*(?:[\w*&:<>,\s]+?)\s+([A-Za-z_][\w]*)\s*\([^)]*\)\s*(?:const)?\s*\{/;
+      case "shell":
+        return /^\s*(?:function\s+)?([A-Za-z_][\w]*)\s*\(\)\s*\{/;
+      case "lua":
+        return /^\s*(?:local\s+)?function\s+([A-Za-z_][\w.:]*)\s*\(/;
+      case "perl":
+        return /^\s*sub\s+([A-Za-z_][\w]*)/;
+      case "dart":
+        return /^\s*(?:[\w<>?,\s]+\s+)?([A-Za-z_][\w]*)\s*\([^)]*\)\s*(?:async\s*)?\{/;
+      default:
+        return /\b(?:export\s+)?(?:async\s+)?function\s+([A-Za-z_$][\w$]*)\s*\([^)]*\)|^\s*(?:public|private|protected|async|static|\s)*\s*([A-Za-z_$][\w$]*)\s*\([^)]*\)\s*\{/;
+    }
+  })();
 
   lines.forEach((line, index) => {
     const match = line.match(functionRe);
