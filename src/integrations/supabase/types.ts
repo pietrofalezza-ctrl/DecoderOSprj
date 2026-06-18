@@ -14,6 +14,178 @@ export type Database = {
   }
   public: {
     Tables: {
+      analysis_activities: {
+        Row: {
+          activity_kind: string
+          created_at: string
+          file_id: string | null
+          id: string
+          language: string | null
+          model: string | null
+          owner_id: string
+          project_id: string | null
+          provider: string | null
+          query_text: string | null
+          repository_id: string | null
+          result_content: string | null
+          result_metadata: Json
+          result_summary: string | null
+          status: string
+        }
+        Insert: {
+          activity_kind: string
+          created_at?: string
+          file_id?: string | null
+          id?: string
+          language?: string | null
+          model?: string | null
+          owner_id: string
+          project_id?: string | null
+          provider?: string | null
+          query_text?: string | null
+          repository_id?: string | null
+          result_content?: string | null
+          result_metadata?: Json
+          result_summary?: string | null
+          status?: string
+        }
+        Update: {
+          activity_kind?: string
+          created_at?: string
+          file_id?: string | null
+          id?: string
+          language?: string | null
+          model?: string | null
+          owner_id?: string
+          project_id?: string | null
+          provider?: string | null
+          query_text?: string | null
+          repository_id?: string | null
+          result_content?: string | null
+          result_metadata?: Json
+          result_summary?: string | null
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "analysis_activities_file_id_fkey"
+            columns: ["file_id"]
+            isOneToOne: false
+            referencedRelation: "files"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "analysis_activities_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "analysis_activities_repository_id_fkey"
+            columns: ["repository_id"]
+            isOneToOne: false
+            referencedRelation: "repositories"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      analysis_chat_messages: {
+        Row: {
+          content: string
+          created_at: string
+          id: string
+          owner_id: string
+          role: string
+          session_id: string
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          id?: string
+          owner_id: string
+          role: string
+          session_id: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          id?: string
+          owner_id?: string
+          role?: string
+          session_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "analysis_chat_messages_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "analysis_chat_sessions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      analysis_chat_sessions: {
+        Row: {
+          created_at: string
+          file_id: string | null
+          id: string
+          model: string | null
+          owner_id: string
+          project_id: string | null
+          provider: string | null
+          repository_id: string | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          file_id?: string | null
+          id?: string
+          model?: string | null
+          owner_id: string
+          project_id?: string | null
+          provider?: string | null
+          repository_id?: string | null
+          title?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          file_id?: string | null
+          id?: string
+          model?: string | null
+          owner_id?: string
+          project_id?: string | null
+          provider?: string | null
+          repository_id?: string | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "analysis_chat_sessions_file_id_fkey"
+            columns: ["file_id"]
+            isOneToOne: false
+            referencedRelation: "files"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "analysis_chat_sessions_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "analysis_chat_sessions_repository_id_fkey"
+            columns: ["repository_id"]
+            isOneToOne: false
+            referencedRelation: "repositories"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       email_send_log: {
         Row: {
           created_at: string
@@ -161,6 +333,14 @@ export type Database = {
           repository_id: string
           sha256: string
           size_bytes: number
+          static_decision: string | null
+          static_entropy_global: number | null
+          static_entropy_window: number | null
+          static_last_error: string | null
+          static_scan_finished_at: string | null
+          static_scan_report: Json | null
+          static_scan_started_at: string | null
+          static_scan_status: string
           storage_path: string
         }
         Insert: {
@@ -172,6 +352,14 @@ export type Database = {
           repository_id: string
           sha256: string
           size_bytes?: number
+          static_decision?: string | null
+          static_entropy_global?: number | null
+          static_entropy_window?: number | null
+          static_last_error?: string | null
+          static_scan_finished_at?: string | null
+          static_scan_report?: Json | null
+          static_scan_started_at?: string | null
+          static_scan_status?: string
           storage_path: string
         }
         Update: {
@@ -183,6 +371,14 @@ export type Database = {
           repository_id?: string
           sha256?: string
           size_bytes?: number
+          static_decision?: string | null
+          static_entropy_global?: number | null
+          static_entropy_window?: number | null
+          static_last_error?: string | null
+          static_scan_finished_at?: string | null
+          static_scan_report?: Json | null
+          static_scan_started_at?: string | null
+          static_scan_status?: string
           storage_path?: string
         }
         Relationships: [
@@ -257,6 +453,7 @@ export type Database = {
       }
       projects: {
         Row: {
+          analysis_mode: string
           created_at: string
           description: string | null
           id: string
@@ -265,6 +462,7 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          analysis_mode?: string
           created_at?: string
           description?: string | null
           id?: string
@@ -273,6 +471,7 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          analysis_mode?: string
           created_at?: string
           description?: string | null
           id?: string
