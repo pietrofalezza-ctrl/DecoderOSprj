@@ -132,6 +132,8 @@ function WorkspacePage() {
   const proposeFix = useServerFn(proposeFileFix);
   const runMalware = useServerFn(runStaticMalwareScan);
   const runSourceStatic = useServerFn(runSourceStaticAnalysis);
+  const verbalizeStatic = useServerFn(verbalizeStaticReport);
+  const saveLocalVerbalize = useServerFn(saveLocalStaticVerbalization);
   const recordSearch = useServerFn(recordRepositorySearch);
   const listHistory = useServerFn(listFileAnalysisHistory);
   const listChat = useServerFn(listFileChatSession);
