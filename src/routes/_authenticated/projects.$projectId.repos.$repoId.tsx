@@ -548,6 +548,7 @@ function WorkspacePage() {
     onError: (e) => toast.error(getErrorMessage(e, t("errors.generic"))),
   });
 
+  const aiOriginMut = useMutation({
     mutationFn: () => runAnalysisKind("ai_origin"),
     onSuccess: (text) => setAiOriginText(text),
     onError: (e) => toast.error(getErrorMessage(e, t("errors.generic"))),
