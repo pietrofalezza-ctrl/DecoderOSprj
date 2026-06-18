@@ -1146,7 +1146,7 @@ function WorkspacePage() {
                       </div>
                     )}
                   </div>
-                  {llmEnabled && !hasAny && (
+                  {llmEnabled && !hasAny && mainTab !== "source_static" && mainTab !== "malware" && (
                     <div className="flex items-center justify-between gap-2 rounded-md border border-amber-500/40 bg-amber-500/5 p-2">
                       <span className="text-[11px] text-amber-700 dark:text-amber-300">
                         {t("workspace.noProvider")}
