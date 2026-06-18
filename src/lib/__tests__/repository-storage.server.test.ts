@@ -26,7 +26,7 @@ describe("cleanupFailedRepositoryIngest", () => {
       }),
     };
 
-    await cleanupFailedRepositoryIngest(supabaseAdmin, {
+    await cleanupFailedRepositoryIngest(supabaseAdmin as never, {
       ownerId: "user-1",
       repositoryId: "repo-1",
       uploadedStoragePaths: [
