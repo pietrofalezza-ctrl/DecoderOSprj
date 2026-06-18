@@ -457,6 +457,11 @@
     "analyzeWholeRepo": "Scansiona repo",
     "runFile": "Esegui analisi su questo file",
     "selectionToggle": "Usa solo la selezione nell'editor (righe {{from}}–{{to}})",
+    "staticVerbalize": {
+      "cta": "Spiega con AI",
+      "generating": "Sto verbalizzando il report…",
+      "hint": "Trasforma il report della scansione offline in una sintesi in linguaggio naturale usando il tuo provider AI."
+    },
 
     "howTo": {
       "title": "Come avviare un'analisi",
