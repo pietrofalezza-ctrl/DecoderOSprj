@@ -1,19 +1,23 @@
-type RepositoryDeleteBuilder = {
-  delete: () => RepositoryDeleteBuilder;
-  eq: (column: string, value: string) => RepositoryDeleteBuilder;
-};
-
+// Use a permissive structural type: the real SupabaseClient has deeply-nested
+// generics that don't structurally satisfy a hand-written narrow interface.
 type RepositoryStorageAdmin = {
   storage: {
     listBuckets: () => Promise<{
       data: Array<{ name: string }> | null;
       error: unknown;
     }>;
-    from: (bucket: "repositories") => {
+    from: (bucket: string) => {
       remove: (paths: string[]) => Promise<unknown>;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      [key: string]: any;
     };
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    [key: string]: any;
   };
-  from: (table: "files" | "repositories") => RepositoryDeleteBuilder;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  from: (table: string) => any;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  [key: string]: any;
 };
 
 export async function ensureRepositoryStorageBucket(
