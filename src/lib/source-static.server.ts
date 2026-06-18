@@ -1,4 +1,29 @@
-export type SourceLanguage = "typescript" | "javascript" | "php" | "python" | "unknown";
+export type SourceLanguage =
+  | "typescript"
+  | "javascript"
+  | "php"
+  | "python"
+  | "java"
+  | "kotlin"
+  | "go"
+  | "ruby"
+  | "rust"
+  | "csharp"
+  | "cpp"
+  | "c"
+  | "swift"
+  | "scala"
+  | "shell"
+  | "powershell"
+  | "perl"
+  | "lua"
+  | "dart"
+  | "html"
+  | "css"
+  | "sql"
+  | "yaml"
+  | "json"
+  | "unknown";
 
 export type SourceStaticSeverity = "info" | "low" | "medium" | "high" | "critical";
 
