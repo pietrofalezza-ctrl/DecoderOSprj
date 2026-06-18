@@ -270,6 +270,21 @@ function WorkspacePage() {
     }
   }, [llmEnabled, mainTab]);
 
+  // If LLM is enabled but no provider is configured, land the user on a tab
+  // they can actually run without an API key.
+  const [autoSwitchedToStatic, setAutoSwitchedToStatic] = useState(false);
+  useEffect(() => {
+    if (
+      llmEnabled &&
+      !hasAny &&
+      !autoSwitchedToStatic &&
+      mainTab === "summary"
+    ) {
+      setMainTab("source_static");
+      setAutoSwitchedToStatic(true);
+    }
+  }, [llmEnabled, hasAny, autoSwitchedToStatic, mainTab]);
+
   useEffect(() => {
     if (!llmEnabled) {
       setSelectedFolderPath(null);
@@ -1131,7 +1146,7 @@ function WorkspacePage() {
                       </div>
                     )}
                   </div>
-                  {llmEnabled && !hasAny && (
+                  {llmEnabled && !hasAny && mainTab !== "source_static" && mainTab !== "malware" && (
                     <div className="flex items-center justify-between gap-2 rounded-md border border-amber-500/40 bg-amber-500/5 p-2">
                       <span className="text-[11px] text-amber-700 dark:text-amber-300">
                         {t("workspace.noProvider")}
