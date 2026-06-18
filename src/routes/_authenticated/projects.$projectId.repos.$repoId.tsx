@@ -87,6 +87,11 @@ import {
 } from "@/lib/findings";
 import { runStaticMalwareScan, type StaticMalwareAssessment } from "@/lib/static-malware.functions";
 import { runSourceStaticAnalysis, type SourceStaticReport } from "@/lib/source-static.functions";
+import {
+  verbalizeStaticReport,
+  saveLocalStaticVerbalization,
+} from "@/lib/static-verbalize.functions";
+import { buildStaticVerbalizePrompt } from "@/lib/static-verbalize-prompt";
 
 type CloudProvider = "openai" | "anthropic" | "gemini" | "openrouter";
 type ProviderValue = `cloud:${CloudProvider}` | `local:${LocalKind}`;
