@@ -457,6 +457,11 @@
     "analyzeWholeRepo": "扫描整个仓库",
     "runFile": "对此文件运行分析",
     "selectionToggle": "仅使用编辑器中的选区(第 {{from}}–{{to}} 行)",
+    "staticVerbalize": {
+      "cta": "使用 AI 解释",
+      "generating": "正在生成解释…",
+      "hint": "使用已配置的 AI 提供商将离线扫描报告转换为通俗易懂的总结。"
+    },
 
     "howTo": {
       "title": "如何开始分析",
