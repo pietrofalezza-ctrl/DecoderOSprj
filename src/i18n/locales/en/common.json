@@ -457,6 +457,11 @@
     "analyzeWholeRepo": "Scan whole repo",
     "runFile": "Run analysis on this file",
     "selectionToggle": "Use only the editor selection (lines {{from}}–{{to}})",
+    "staticVerbalize": {
+      "cta": "Explain with AI",
+      "generating": "Generating explanation…",
+      "hint": "Turn the offline scan report into a plain-language summary using your configured AI provider."
+    },
 
     "howTo": {
       "title": "How to start an analysis",

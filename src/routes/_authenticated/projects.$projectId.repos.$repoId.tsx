@@ -87,6 +87,11 @@ import {
 } from "@/lib/findings";
 import { runStaticMalwareScan, type StaticMalwareAssessment } from "@/lib/static-malware.functions";
 import { runSourceStaticAnalysis, type SourceStaticReport } from "@/lib/source-static.functions";
+import {
+  verbalizeStaticReport,
+  saveLocalStaticVerbalization,
+} from "@/lib/static-verbalize.functions";
+import { buildStaticVerbalizePrompt } from "@/lib/static-verbalize-prompt";
 
 type CloudProvider = "openai" | "anthropic" | "gemini" | "openrouter";
 type ProviderValue = `cloud:${CloudProvider}` | `local:${LocalKind}`;
@@ -127,6 +132,8 @@ function WorkspacePage() {
   const proposeFix = useServerFn(proposeFileFix);
   const runMalware = useServerFn(runStaticMalwareScan);
   const runSourceStatic = useServerFn(runSourceStaticAnalysis);
+  const verbalizeStatic = useServerFn(verbalizeStaticReport);
+  const saveLocalVerbalize = useServerFn(saveLocalStaticVerbalization);
   const recordSearch = useServerFn(recordRepositorySearch);
   const listHistory = useServerFn(listFileAnalysisHistory);
   const listChat = useServerFn(listFileChatSession);
@@ -161,6 +168,8 @@ function WorkspacePage() {
   const [sourceStaticReport, setSourceStaticReport] = useState<SourceStaticReport | null>(null);
   const [malwareText, setMalwareText] = useState<string>("");
   const [malwareReport, setMalwareReport] = useState<StaticMalwareAssessment | null>(null);
+  const [sourceStaticAiText, setSourceStaticAiText] = useState<string>("");
+  const [malwareAiText, setMalwareAiText] = useState<string>("");
   const [chatDraft, setChatDraft] = useState("");
   const [fileSearch, setFileSearch] = useState("");
   const [lastRecordedSearch, setLastRecordedSearch] = useState<string | null>(null);
@@ -235,6 +244,8 @@ function WorkspacePage() {
     setSourceStaticReport(null);
     setMalwareText("");
     setMalwareReport(null);
+    setSourceStaticAiText("");
+    setMalwareAiText("");
     setChatDraft("");
     setSelection(null);
   }, [selectedFileId]);
@@ -470,6 +481,72 @@ function WorkspacePage() {
       setMalwareText(formatMalwareReport(report));
     },
     onSuccess: () => {},
+    onError: (e) => toast.error(getErrorMessage(e, t("errors.generic"))),
+  });
+
+  async function runVerbalize(scanner: "source" | "malware"): Promise<string> {
+    if (!selectedFileId || !providerValue) throw new Error("missing");
+    const reportMarkdown =
+      scanner === "source"
+        ? (sourceStaticReport ? formatSourceStaticReport(sourceStaticReport) : sourceStaticText)
+        : (malwareReport ? formatMalwareReport(malwareReport) : malwareText);
+    if (!reportMarkdown || reportMarkdown.length < 10) {
+      throw new Error("missing_report");
+    }
+    if (providerValue.startsWith("cloud:")) {
+      const provider = providerValue.slice(6) as CloudProvider;
+      const r = await verbalizeStatic({
+        data: {
+          file_id: selectedFileId,
+          scanner,
+          provider,
+          language: lang,
+          report_markdown: reportMarkdown,
+        },
+      });
+      return r.content;
+    }
+    const localKind = providerValue.slice(6) as LocalKind;
+    const endpoint = localEndpoints.find((e) => e.kind === localKind);
+    if (!endpoint || !fileQ.data) throw new Error("not_ready");
+    const { system, user } = buildStaticVerbalizePrompt({
+      scanner,
+      language: lang,
+      filePath: fileQ.data.path,
+      reportMarkdown,
+    });
+    const text = await callLocalProvider({
+      kind: localKind,
+      baseUrl: endpoint.base_url,
+      model: endpoint.default_model || (localKind === "ollama" ? "llama3.2" : "local-model"),
+      system,
+      user,
+    });
+    try {
+      await saveLocalVerbalize({
+        data: {
+          file_id: selectedFileId,
+          scanner,
+          language: lang,
+          content: text,
+          provider_kind: localKind,
+          model: endpoint.default_model ?? undefined,
+        },
+      });
+    } catch {
+      // best-effort cache
+    }
+    return text;
+  }
+
+  const verbalizeSourceStaticMut = useMutation({
+    mutationFn: () => runVerbalize("source"),
+    onSuccess: (text) => setSourceStaticAiText(text),
+    onError: (e) => toast.error(getErrorMessage(e, t("errors.generic"))),
+  });
+  const verbalizeMalwareMut = useMutation({
+    mutationFn: () => runVerbalize("malware"),
+    onSuccess: (text) => setMalwareAiText(text),
     onError: (e) => toast.error(getErrorMessage(e, t("errors.generic"))),
   });
 
@@ -1411,6 +1488,33 @@ function WorkspacePage() {
                     value="source_static"
                     className="m-0 flex-1 space-y-3 overflow-auto px-4 pb-4 data-[state=inactive]:hidden"
                   >
+                    {llmEnabled && sourceStaticReport && providerValue && (
+                      <div className="flex items-center justify-between gap-2 rounded-md border border-primary/20 bg-primary/5 p-2">
+                        <span className="text-[11px] text-muted-foreground">
+                          {t("workspace.staticVerbalize.hint")}
+                        </span>
+                        <Button
+                          size="sm"
+                          variant="secondary"
+                          className="h-7 shrink-0 px-2 text-[11px]"
+                          onClick={() => verbalizeSourceStaticMut.mutate()}
+                          disabled={verbalizeSourceStaticMut.isPending}
+                        >
+                          <Sparkles
+                            className={
+                              "mr-1 h-3 w-3" +
+                              (verbalizeSourceStaticMut.isPending ? " animate-pulse" : "")
+                            }
+                          />
+                          {verbalizeSourceStaticMut.isPending
+                            ? t("workspace.staticVerbalize.generating")
+                            : t("workspace.staticVerbalize.cta")}
+                        </Button>
+                      </div>
+                    )}
+                    {sourceStaticAiText && (
+                      <ExplanationView text={sourceStaticAiText} aiBadge={true} />
+                    )}
                     <ExplanationView
                       text={sourceStaticText || t("analysis.empty")}
                       aiBadge={false}
@@ -1434,6 +1538,31 @@ function WorkspacePage() {
                     value="malware"
                     className="m-0 flex-1 space-y-3 overflow-auto px-4 pb-4 data-[state=inactive]:hidden"
                   >
+                    {llmEnabled && malwareReport && providerValue && (
+                      <div className="flex items-center justify-between gap-2 rounded-md border border-primary/20 bg-primary/5 p-2">
+                        <span className="text-[11px] text-muted-foreground">
+                          {t("workspace.staticVerbalize.hint")}
+                        </span>
+                        <Button
+                          size="sm"
+                          variant="secondary"
+                          className="h-7 shrink-0 px-2 text-[11px]"
+                          onClick={() => verbalizeMalwareMut.mutate()}
+                          disabled={verbalizeMalwareMut.isPending}
+                        >
+                          <Sparkles
+                            className={
+                              "mr-1 h-3 w-3" +
+                              (verbalizeMalwareMut.isPending ? " animate-pulse" : "")
+                            }
+                          />
+                          {verbalizeMalwareMut.isPending
+                            ? t("workspace.staticVerbalize.generating")
+                            : t("workspace.staticVerbalize.cta")}
+                        </Button>
+                      </div>
+                    )}
+                    {malwareAiText && <ExplanationView text={malwareAiText} aiBadge={true} />}
                     <ExplanationView text={malwareText || t("analysis.empty")} aiBadge={false} />
                     {malwareReport && <MalwareReportPanel report={malwareReport} />}
                   </TabsContent>
