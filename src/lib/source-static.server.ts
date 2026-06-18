@@ -432,35 +432,84 @@ function uniqueSorted(values: Iterable<string>): string[] {
 
 function extractImports(content: string, language: string): SourceSymbol[] {
   const imports: SourceSymbol[] = [];
-  if (language === "php") {
-    const phpRe = /^\s*(?:use|include|require|include_once|require_once)\s+([^;]+);?/gm;
-    let match: RegExpExecArray | null;
-    while ((match = phpRe.exec(content))) {
-      imports.push({
-        name: match[1].trim().replace(/^['"]|['"]$/g, ""),
-        kind: "import",
-        line: lineNumberAt(content, match.index),
-      });
-    }
-    return imports;
+  const push = (name: string, index: number) => {
+    const clean = name.trim().replace(/^['"<]|['">]$/g, "");
+    if (clean) imports.push({ name: clean, kind: "import", line: lineNumberAt(content, index) });
+  };
+
+  const patterns: RegExp[] = [];
+  switch (language) {
+    case "php":
+      patterns.push(/^\s*(?:use|include|require|include_once|require_once)\s+([^;]+);?/gm);
+      break;
+    case "python":
+      patterns.push(/^\s*(?:from\s+([\w.]+)\s+import\s+[\w*,\s]+|import\s+([\w.,\s]+))/gm);
+      break;
+    case "java":
+    case "kotlin":
+    case "scala":
+      patterns.push(/^\s*import\s+([\w.*]+);?/gm);
+      break;
+    case "go":
+      patterns.push(/^\s*import\s+["]([^"]+)["]/gm);
+      patterns.push(/"([^"\s]+)"/gm);
+      break;
+    case "rust":
+      patterns.push(/^\s*use\s+([\w:{}*,\s]+);/gm);
+      break;
+    case "csharp":
+      patterns.push(/^\s*using\s+([\w.]+);/gm);
+      break;
+    case "c":
+    case "cpp":
+      patterns.push(/^\s*#\s*include\s*[<"]([^>"]+)[>"]/gm);
+      break;
+    case "ruby":
+      patterns.push(/^\s*require(?:_relative)?\s+["']([^"']+)["']/gm);
+      break;
+    case "swift":
+      patterns.push(/^\s*import\s+([\w.]+)/gm);
+      break;
+    case "shell":
+    case "bash":
+      patterns.push(/^\s*(?:source|\.)\s+([^\s;]+)/gm);
+      break;
+    case "perl":
+      patterns.push(/^\s*use\s+([\w:]+)/gm);
+      break;
+    case "lua":
+      patterns.push(/require\s*\(?\s*["']([^"']+)["']/gm);
+      break;
+    case "dart":
+      patterns.push(/^\s*import\s+["']([^"']+)["']/gm);
+      break;
+    default:
+      patterns.push(
+        /^\s*import\s+(?:type\s+)?(?:(?:[\w$]+|\{[^}]+\}|\*\s+as\s+[\w$]+)\s+from\s+)?["']([^"']+)["'];?/gm,
+      );
+      patterns.push(/^\s*(?:const|let|var)\s+[\w${}\s,]+=\s*require\(\s*["']([^"']+)["']\s*\)/gm);
   }
 
-  const importRe =
-    /^\s*import\s+(?:type\s+)?(?:(?:[\w$]+|\{[^}]+\}|\*\s+as\s+[\w$]+)\s+from\s+)?["']([^"']+)["'];?/gm;
-  let match: RegExpExecArray | null;
-  while ((match = importRe.exec(content))) {
-    imports.push({ name: match[1], kind: "import", line: lineNumberAt(content, match.index) });
-    const named = match[0].match(/\{([^}]+)\}/);
-    if (named) {
-      for (const part of named[1].split(",")) {
-        const name = part
-          .trim()
-          .split(/\s+as\s+/i)[0]
-          ?.trim();
-        if (name) imports.push({ name, kind: "import", line: lineNumberAt(content, match.index) });
+  for (const re of patterns) {
+    let match: RegExpExecArray | null;
+    while ((match = re.exec(content))) {
+      const captured = match[1] ?? match[2];
+      if (captured) push(captured, match.index);
+    }
+  }
+
+  // also collect named JS/TS imports (legacy behaviour)
+  if (language === "javascript" || language === "typescript" || language === "unknown") {
+    const named = /import\s+\{([^}]+)\}\s+from\s+["'][^"']+["']/gm;
+    let m: RegExpExecArray | null;
+    while ((m = named.exec(content))) {
+      for (const part of m[1].split(",")) {
+        const name = part.trim().split(/\s+as\s+/i)[0]?.trim();
+        if (name) push(name, m.index);
       }
     }
   }
+
   return imports;
 }
 
