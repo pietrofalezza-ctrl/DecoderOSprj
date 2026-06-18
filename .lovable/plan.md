@@ -1,22 +1,45 @@
-Creo un piccolo set di grafiche per il post #2, embeddando lo screenshot del triage LockBit 3.0 che hai allegato. Stile coerente con le slide `launch/ig_slide_*.png` già presenti (sfondo scuro, accent, type tight). Output salvato in `/mnt/documents/launch/` così appare subito nella vista file, accanto a quelle che stai già guardando.
+Creo un nuovo **carosello Instagram di 5 slide** nello stesso stile editoriale del set `ig_slide_*_v2.png` (sfondo crema, kicker rosso mono, brackets `[ … ]`, headline serif grande, sub gray, "swipe →" in basso a destra), dedicato al rilascio odierno: **static malware analysis senza chiave AI + benchmark LockBit 3.0**.
 
-### File prodotti
+Output in `/mnt/documents/launch/static-carousel/`, ogni slide 1080×1080, scaricabile dalla vista file.
 
-1. `launch/li_post02_lockbit_1200x627.png` — formato **LinkedIn share** (1.91:1). Screenshot LockBit in cornice macOS al centro, headline corta "Static malware analysis. Zero AI key.", piccolo footer "DECISION: BLOCK · RISK 75/100 · decoderead.dev".
-2. `launch/ig_post02_lockbit_1080x1350.png` — formato **Instagram portrait 4:5**. Stessa scena, layout verticale con headline sopra e tag "LockBit 3.0 · static triage" sotto.
-3. `launch/ig_post02_lockbit_story_1080x1920.png` — formato **Story 9:16** per IG/LinkedIn stories, focus sullo screenshot + CTA "decoderead.dev".
+### Le 5 slide
 
-### Come vengono fatti
+1. **01 / 05 — Hook**
+   `[ STATIC ] → [ ANALYSIS ]`  ·  `× cloud`
+   Headline: *Leggi un malware. Senza accenderlo. Senza un LLM.*
+   Sub: Modalità static-only di Decoder.
 
-- Sorgente screenshot: l'immagine che hai caricato (`WhatsApp_Image_2026-06-18_at_20.26.26.jpeg`), copiata in `/tmp/`.
-- Skill `product-shot`: la screenshot viene incorniciata in una finestra macOS con ombra; preset gradient `midnight` per restare sul dark coerente col brand Decoder.
-- Sopra/sotto la cornice vengo composti headline e footer con PIL (font Inter dal sistema, fallback DejaVu). Niente layout cartoon, solo type sottile e palette ridotta (bianco / accent rosso del badge BLOCK / grigio).
-- Disclaimer "Sample LockBit 3.0 — leak pubblico 2022 — uso didattico/difensivo" piccolo in basso sulle versioni LI e IG.
+2. **02 / 05 — Cosa fa**
+   `[ ENTROPIA ] · [ MAGIC ] · [ PAYLOAD ]`
+   Headline: *Cinque euristiche. Zero esecuzione.*
+   Sub: Entropia, control-byte ratio, magic mismatch, payload embedded, path policy.
+
+3. **03 / 05 — Benchmark LockBit (include lo screenshot)**
+   `[ BENCHMARK ] → [ LOCKBIT 3.0 ]`
+   Headline grande sopra, sotto inserisco lo screenshot del builder in cornice macOS (versione ridotta).
+   Pills in basso: `DECISION: BLOCK · RISK 75/100 · ENTROPY 6.877`.
+
+4. **04 / 05 — Linguaggi**
+   `[ +20 LINGUAGGI ]`  ·  `× solo JS/TS`
+   Headline: *Java, Go, Rust, Ruby, C/C++, Swift, Kotlin, Shell, SQL…*
+   Sub: La static code analysis ora copre 20+ ecosistemi.
+
+5. **05 / 05 — CTA**
+   `[ DECODER ] → [ TU ]`
+   Headline: *Open-source. MIT. Nessuna telemetria.*
+   Sub: decoderead.dev — grazie a Gabriele Tita per la PR.
+
+### Implementazione
+
+- Script Python con PIL, riusa Inter (display serif → uso **EB Garamond** o **Playfair Display** scaricato da Google Fonts via CDN per la headline serif del template, JetBrains Mono per kicker/brackets, Inter Regular per la sub).
+- Palette: bg `#F5F1E8` crema, ink `#0A0A0A`, accent red `#D9302A`, muted `#6B6B6B` — replicata dallo screenshot di riferimento.
+- Layout: top 100px kicker rosso `DECODER · NN / 05`, blocco brackets sotto, hairline separator, headline grande, sub piccola, footer `swipe →` (tranne ultima che mostra `→ decoderead.dev`).
+- Slide 03 ospita lo screenshot LockBit già preparato (`/tmp/lockbit_framed.png`), scalato e con cornice scura per stare nel layout chiaro.
 
 ### QA
 
-Dopo il render apro ogni PNG, verifico: nessun testo tagliato dai bordi, screenshot leggibile, contrasto sufficiente, badge "BLOCK 75/100" visibile, hashtag/CTA non sovrapposti alla cornice. Se serve aggiusto padding/posizioni e ri-renderizzo.
+Per ciascuna delle 5 PNG: nessun testo tagliato dai bordi, headline che non va a capo male, paginazione `NN / 05` corretta, screenshot dentro i margini, contrasto sufficiente. Se serve aggiusto e ri-renderizzo.
 
-### Cosa NON tocco
+### Fuori scope
 
-Nessuna modifica al codice dell'app, nessun nuovo file in `marketing/social/` della repo (solo artifact scaricabili in `/mnt/documents/launch/`). Se poi vuoi anche versioni committate in repo me lo dici e le sposto.
+Nessuna modifica al codice dell'app. Niente di committato in repo: solo artifact scaricabili in `/mnt/documents/launch/static-carousel/`.
