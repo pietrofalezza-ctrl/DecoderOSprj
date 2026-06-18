@@ -1,10 +1,8 @@
 import { setResponseStatus } from "@tanstack/react-start/server";
+import type { SupabaseClient } from "@supabase/supabase-js";
 
-import {
-  BYOK_ACK_TYPE,
-  BYOK_TERMS_VERSION,
-  BYOK_ACK_ERROR,
-} from "./byok-acknowledgement";
+import { BYOK_ACK_TYPE, BYOK_TERMS_VERSION, BYOK_ACK_ERROR } from "./byok-acknowledgement";
+import type { Database } from "@/integrations/supabase/types";
 
 /**
  * Server-side guard used inside other server functions. Throws with a
@@ -14,7 +12,7 @@ import {
  * the client bundle.
  */
 export async function assertByokAckAccepted(
-  supabase: { from: (t: string) => any },
+  supabase: SupabaseClient<Database>,
   userId: string,
 ): Promise<void> {
   const { data, error } = await supabase

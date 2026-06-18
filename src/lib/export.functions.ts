@@ -26,8 +26,13 @@ export const exportRepoMarkdown = createServerFn({ method: "POST" })
 
     const { data: rows, error: eErr } = await context.supabase
       .from("explanations")
-      .select("id, file_id, explanation_type, proficiency, language, content, provider, model, created_at")
-      .in("file_id", (files ?? []).map((f) => f.id));
+      .select(
+        "id, file_id, explanation_type, proficiency, language, content, provider, model, created_at",
+      )
+      .in(
+        "file_id",
+        (files ?? []).map((f) => f.id),
+      );
     if (eErr) throw eErr;
 
     const out: Record<string, Uint8Array> = {};
@@ -56,10 +61,10 @@ export const exportRepoMarkdown = createServerFn({ method: "POST" })
     let bin = "";
     const chunk = 0x8000;
     for (let i = 0; i < zipped.length; i += chunk) {
-      bin += String.fromCharCode.apply(
-        null,
-        Array.from(zipped.subarray(i, i + chunk)),
-      );
+      bin += String.fromCharCode.apply(null, Array.from(zipped.subarray(i, i + chunk)));
     }
-    return { zip_base64: btoa(bin), filename: `${repo.name.replace(/[^A-Za-z0-9_.-]/g, "_")}.docs.zip` };
+    return {
+      zip_base64: btoa(bin),
+      filename: `${repo.name.replace(/[^A-Za-z0-9_.-]/g, "_")}.docs.zip`,
+    };
   });

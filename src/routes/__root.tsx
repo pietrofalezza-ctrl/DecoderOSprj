@@ -98,8 +98,16 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         name: "twitter:description",
         content: "Open-source code understanding for the AI era. BYOK cloud or fully local.",
       },
-      { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/J2iSR4buhjcF07fTWbXQWbd48o03/social-images/social-1780850242502-Social_decoder_2.webp" },
-      { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/J2iSR4buhjcF07fTWbXQWbd48o03/social-images/social-1780850242502-Social_decoder_2.webp" },
+      {
+        property: "og:image",
+        content:
+          "https://storage.googleapis.com/gpt-engineer-file-uploads/J2iSR4buhjcF07fTWbXQWbd48o03/social-images/social-1780850242502-Social_decoder_2.webp",
+      },
+      {
+        name: "twitter:image",
+        content:
+          "https://storage.googleapis.com/gpt-engineer-file-uploads/J2iSR4buhjcF07fTWbXQWbd48o03/social-images/social-1780850242502-Social_decoder_2.webp",
+      },
     ],
     links: [
       { rel: "stylesheet", href: appCss },

@@ -33,6 +33,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Progress } from "@/components/ui/progress";
 import { recordOnboardingCompletion } from "@/lib/onboarding.functions";
 import { ONBOARDING_TERMS_VERSION } from "@/lib/onboarding";
+import { getErrorMessage } from "@/lib/errors";
 
 const TOTAL_STEPS = 9;
 const ACK_KEYS = ["cost", "providers", "authorized", "review", "terms"] as const;
@@ -59,6 +60,7 @@ export function OnboardingDialog({
   });
 
   const allChecked = useMemo(() => ACK_KEYS.every((k) => checks[k]), [checks]);
+  const subtitle = t(`onboarding.steps.s${step}.subtitle`, { defaultValue: "" });
 
   const completeMut = useMutation({
     mutationFn: () => record({ data: { language: i18n.language } }),
@@ -66,7 +68,7 @@ export function OnboardingDialog({
       await qc.invalidateQueries({ queryKey: ["onboarding-status"] });
       setStep(9);
     },
-    onError: (e: any) => toast.error(e?.message ?? t("errors.generic")),
+    onError: (e) => toast.error(getErrorMessage(e, t("errors.generic"))),
   });
 
   const close = () => {
@@ -102,14 +104,10 @@ export function OnboardingDialog({
             {t("onboarding.stepLabel", { current: step, total: TOTAL_STEPS })}
           </div>
           <Progress value={(step / TOTAL_STEPS) * 100} className="mt-2 h-1.5" />
-          <DialogTitle className="mt-4 text-xl">
-            {t(`onboarding.steps.s${step}.title`)}
-          </DialogTitle>
-          {t(`onboarding.steps.s${step}.subtitle`, { defaultValue: "" }) ? (
-            <DialogDescription className="text-sm">
-              {t(`onboarding.steps.s${step}.subtitle`)}
-            </DialogDescription>
-          ) : null}
+          <DialogTitle className="mt-4 text-xl">{t(`onboarding.steps.s${step}.title`)}</DialogTitle>
+          <DialogDescription className={subtitle ? "text-sm" : "sr-only"}>
+            {subtitle || t("onboarding.versionLabel", { version: ONBOARDING_TERMS_VERSION })}
+          </DialogDescription>
         </DialogHeader>
 
         <div className="mt-4 min-h-[260px]">
@@ -120,9 +118,7 @@ export function OnboardingDialog({
           {step === 5 && <StepAnalysis />}
           {step === 6 && <StepReader />}
           {step === 7 && <StepReview />}
-          {step === 8 && (
-            <StepAck checks={checks} setChecks={setChecks} />
-          )}
+          {step === 8 && <StepAck checks={checks} setChecks={setChecks} />}
           {step === 9 && <StepStart onGo={goto} />}
         </div>
 
@@ -136,9 +132,7 @@ export function OnboardingDialog({
                 {t("onboarding.back")}
               </Button>
             )}
-            {step < 8 && (
-              <Button onClick={next}>{t("onboarding.continue")}</Button>
-            )}
+            {step < 8 && <Button onClick={next}>{t("onboarding.continue")}</Button>}
             {step === 8 && (
               <Button
                 onClick={() => completeMut.mutate()}
@@ -147,9 +141,7 @@ export function OnboardingDialog({
                 {completeMut.isPending ? t("onboarding.saving") : t("onboarding.finish")}
               </Button>
             )}
-            {step === 9 && (
-              <Button onClick={close}>{t("onboarding.close")}</Button>
-            )}
+            {step === 9 && <Button onClick={close}>{t("onboarding.close")}</Button>}
           </div>
         </div>
       </DialogContent>
@@ -165,9 +157,7 @@ function StepWelcome() {
     <div className="space-y-4">
       <div className="flex items-start gap-3 rounded-lg border border-border bg-card p-4">
         <Sparkles className="mt-0.5 h-5 w-5 shrink-0 text-primary" />
-        <p className="text-sm leading-relaxed text-foreground">
-          {t("onboarding.steps.s1.body")}
-        </p>
+        <p className="text-sm leading-relaxed text-foreground">{t("onboarding.steps.s1.body")}</p>
       </div>
     </div>
   );
@@ -185,7 +175,11 @@ function StepModes() {
           t("onboarding.steps.s2.local.b2"),
           t("onboarding.steps.s2.local.b3"),
         ]}
-        flow={[t("onboarding.steps.s2.local.flow.code"), t("onboarding.steps.s2.local.flow.model"), t("onboarding.steps.s2.local.flow.ui")]}
+        flow={[
+          t("onboarding.steps.s2.local.flow.code"),
+          t("onboarding.steps.s2.local.flow.model"),
+          t("onboarding.steps.s2.local.flow.ui"),
+        ]}
       />
       <ModeCard
         icon={<Cloud className="h-4 w-4" />}
@@ -295,7 +289,10 @@ function StepImport() {
     <div className="space-y-4">
       <div className="grid gap-2 sm:grid-cols-2">
         {opts.map((o) => (
-          <div key={o} className="flex items-center gap-3 rounded-md border border-border bg-card p-3 text-sm">
+          <div
+            key={o}
+            className="flex items-center gap-3 rounded-md border border-border bg-card p-3 text-sm"
+          >
             <Upload className="h-4 w-4 text-primary" />
             <span>{t(`onboarding.steps.s4.opts.${o}`)}</span>
           </div>
@@ -310,12 +307,22 @@ function StepImport() {
 
 function StepAnalysis() {
   const { t } = useTranslation();
-  const items = ["repoSummary", "fileExplain", "selectionExplain", "maintainability", "security", "inlineComments"] as const;
+  const items = [
+    "repoSummary",
+    "fileExplain",
+    "selectionExplain",
+    "maintainability",
+    "security",
+    "inlineComments",
+  ] as const;
   return (
     <div className="space-y-4">
       <ul className="grid gap-2 sm:grid-cols-2">
         {items.map((k) => (
-          <li key={k} className="flex items-start gap-2 rounded-md border border-border bg-card p-3 text-sm">
+          <li
+            key={k}
+            className="flex items-start gap-2 rounded-md border border-border bg-card p-3 text-sm"
+          >
             <ListChecks className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
             <span>{t(`onboarding.steps.s5.opts.${k}`)}</span>
           </li>
@@ -336,7 +343,10 @@ function StepReader() {
     <div className="space-y-4">
       <ul className="grid gap-2 sm:grid-cols-2">
         {levels.map((k) => (
-          <li key={k} className="flex items-center gap-2 rounded-md border border-border bg-card p-3 text-sm">
+          <li
+            key={k}
+            className="flex items-center gap-2 rounded-md border border-border bg-card p-3 text-sm"
+          >
             <Users className="h-4 w-4 text-primary" />
             <span>{t(`onboarding.steps.s6.levels.${k}`)}</span>
           </li>
@@ -353,7 +363,10 @@ function StepReview() {
   return (
     <div className="space-y-3">
       {points.map((k) => (
-        <div key={k} className="flex items-start gap-3 rounded-md border border-border bg-card p-3 text-sm">
+        <div
+          key={k}
+          className="flex items-start gap-3 rounded-md border border-border bg-card p-3 text-sm"
+        >
           <Eye className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
           <span>{t(`onboarding.steps.s7.points.${k}`)}</span>
         </div>
@@ -384,7 +397,9 @@ function StepAck({
               onCheckedChange={(v) => setChecks((s) => ({ ...s, [k]: v === true }))}
               aria-required
             />
-            <span className="leading-snug text-foreground">{t(`onboarding.steps.s8.checks.${k}`)}</span>
+            <span className="leading-snug text-foreground">
+              {t(`onboarding.steps.s8.checks.${k}`)}
+            </span>
           </label>
         ))}
       </div>
@@ -392,10 +407,20 @@ function StepAck({
         <a href="/terms" target="_blank" rel="noreferrer" className="text-primary hover:underline">
           {t("byokAck.links.terms")}
         </a>
-        <a href="/privacy" target="_blank" rel="noreferrer" className="text-primary hover:underline">
+        <a
+          href="/privacy"
+          target="_blank"
+          rel="noreferrer"
+          className="text-primary hover:underline"
+        >
           {t("byokAck.links.privacy")}
         </a>
-        <a href="/data-flow" target="_blank" rel="noreferrer" className="text-primary hover:underline">
+        <a
+          href="/data-flow"
+          target="_blank"
+          rel="noreferrer"
+          className="text-primary hover:underline"
+        >
           {t("footer.dataFlow")}
         </a>
       </div>
@@ -423,9 +448,7 @@ function StepStart({ onGo }: { onGo: (to: "/dashboard" | "/settings") => void })
         </div>
       </div>
       <div className="flex flex-wrap gap-2">
-        <Button onClick={() => onGo("/dashboard")}>
-          {t("onboarding.steps.s9.cta.demo")}
-        </Button>
+        <Button onClick={() => onGo("/dashboard")}>{t("onboarding.steps.s9.cta.demo")}</Button>
         <Button variant="outline" onClick={() => onGo("/settings")}>
           {t("onboarding.steps.s9.cta.provider")}
         </Button>

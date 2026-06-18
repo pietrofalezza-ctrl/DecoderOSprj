@@ -1,6 +1,14 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
-import { ArrowLeft, ArrowRight, CheckCircle2, GitPullRequest, ShieldCheck, Sparkles, XCircle } from "lucide-react";
+import {
+  ArrowLeft,
+  ArrowRight,
+  CheckCircle2,
+  GitPullRequest,
+  ShieldCheck,
+  Sparkles,
+  XCircle,
+} from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { LangSwitcher } from "@/components/LangSwitcher";
@@ -49,7 +57,15 @@ export const Route = createFileRoute("/manifesto")({
 function ManifestoPage() {
   const { t } = useTranslation();
 
-  const principles = ["guardrail", "open", "privacy", "byok", "localFirst", "multilang", "accessible"] as const;
+  const principles = [
+    "guardrail",
+    "open",
+    "privacy",
+    "byok",
+    "localFirst",
+    "multilang",
+    "accessible",
+  ] as const;
   const wonts = ["w1", "w2", "w3", "w4", "w5", "w6"] as const;
   const contributing = ["rules", "translations", "providers", "docs"] as const;
 
@@ -79,9 +95,7 @@ function ManifestoPage() {
         <h1 className="mt-2 text-balance text-4xl font-semibold tracking-tight md:text-5xl">
           {t("manifesto.title")}
         </h1>
-        <p className="mt-4 text-balance text-lg text-muted-foreground">
-          {t("manifesto.intro")}
-        </p>
+        <p className="mt-4 text-balance text-lg text-muted-foreground">{t("manifesto.intro")}</p>
 
         <section className="mt-12 rounded-lg border-l-4 border-primary bg-primary/5 p-6">
           <div className="flex items-start gap-3">
@@ -175,7 +189,6 @@ function ManifestoPage() {
           <h2 className="text-2xl font-semibold">{t("manifesto.roadmapTitle")}</h2>
           <p className="mt-3 text-sm text-muted-foreground">{t("manifesto.roadmapBody")}</p>
         </section>
-
 
         <div className="mt-14 flex flex-wrap gap-3">
           <Button asChild>

@@ -2,6 +2,8 @@ import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+import { appendAnalysisActivity } from "@/lib/analysis-activities";
+import { getErrorMessage } from "@/lib/errors";
 
 const Provider = z.enum(["openai", "anthropic", "gemini", "openrouter"]);
 const Language = z.enum(["en", "it", "zh"]);
@@ -26,10 +28,16 @@ export const runAnalysis = createServerFn({ method: "POST" })
 
     const { data: file, error: fErr } = await context.supabase
       .from("files")
-      .select("id, path, storage_path, sha256")
+      .select("id, path, storage_path, sha256, repository_id")
       .eq("id", data.file_id)
       .maybeSingle();
     if (fErr || !file) throw fErr ?? new Error("file_not_found");
+    const { data: repository, error: repoErr } = await context.supabase
+      .from("repositories")
+      .select("project_id")
+      .eq("id", file.repository_id)
+      .maybeSingle();
+    if (repoErr) throw repoErr;
 
     const explanationType = `analysis:${data.kind}`;
     const proficiency = "intermediate";
@@ -43,7 +51,33 @@ export const runAnalysis = createServerFn({ method: "POST" })
       .eq("language", data.language)
       .eq("file_sha256", file.sha256)
       .maybeSingle();
-    if (cached) return { content: cached.content, cached: true };
+    if (cached) {
+      await appendAnalysisActivity({
+        supabase: context.supabase,
+        ownerId: context.userId,
+        projectId: repository?.project_id ?? null,
+        fileId: file.id,
+        repositoryId: file.repository_id,
+        activity_kind:
+          data.kind === "security"
+            ? "llm_security_analysis"
+            : data.kind === "ai_origin"
+              ? "llm_ai_origin_analysis"
+              : "llm_quality_analysis",
+        status: "ok",
+        provider: cached.provider,
+        model: cached.model,
+        language: data.language,
+        query_text: file.path,
+        result_summary: `cached analysis:${data.kind}`,
+        result_content: cached.content,
+        result_metadata: {
+          cached: true,
+          kind: data.kind,
+        },
+      });
+      return { content: cached.content, cached: true };
+    }
 
     const { assertByokAckAccepted } = await import("./byok-acknowledgement.server");
     await assertByokAckAccepted(context.supabase, context.userId);
@@ -94,6 +128,30 @@ export const runAnalysis = createServerFn({ method: "POST" })
       content: text,
       file_sha256: file.sha256,
     });
+    await appendAnalysisActivity({
+      supabase: context.supabase,
+      ownerId: context.userId,
+      projectId: repository?.project_id ?? null,
+      fileId: file.id,
+      repositoryId: file.repository_id,
+      activity_kind:
+        data.kind === "security"
+          ? "llm_security_analysis"
+          : data.kind === "ai_origin"
+            ? "llm_ai_origin_analysis"
+            : "llm_quality_analysis",
+      status: "ok",
+      provider: data.provider,
+      model: data.model ?? null,
+      language: data.language,
+      query_text: file.path,
+      result_summary: `fresh analysis:${data.kind}`,
+      result_content: text,
+      result_metadata: {
+        cached: false,
+        kind: data.kind,
+      },
+    });
     return { content: text, cached: false };
   });
 
@@ -112,10 +170,16 @@ export const saveLocalAnalysis = createServerFn({ method: "POST" })
   .handler(async ({ context, data }) => {
     const { data: file, error: fErr } = await context.supabase
       .from("files")
-      .select("id, sha256")
+      .select("id, sha256, path, repository_id")
       .eq("id", data.file_id)
       .maybeSingle();
     if (fErr || !file) throw fErr ?? new Error("file_not_found");
+    const { data: repository, error: repoErr } = await context.supabase
+      .from("repositories")
+      .select("project_id")
+      .eq("id", file.repository_id)
+      .maybeSingle();
+    if (repoErr) throw repoErr;
 
     await context.supabase.from("explanations").insert({
       owner_id: context.userId,
@@ -128,16 +192,62 @@ export const saveLocalAnalysis = createServerFn({ method: "POST" })
       content: data.content,
       file_sha256: file.sha256,
     });
+    await appendAnalysisActivity({
+      supabase: context.supabase,
+      ownerId: context.userId,
+      projectId: repository?.project_id ?? null,
+      fileId: file.id,
+      repositoryId: file.repository_id,
+      activity_kind:
+        data.kind === "security"
+          ? "llm_security_analysis"
+          : data.kind === "ai_origin"
+            ? "llm_ai_origin_analysis"
+            : "llm_quality_analysis",
+      status: "ok",
+      provider: data.provider_kind,
+      model: data.model ?? null,
+      language: data.language,
+      query_text: file.path,
+      result_summary: `saved local analysis:${data.kind}`,
+      result_content: data.content,
+      result_metadata: {
+        cached: false,
+        kind: data.kind,
+      },
+    });
     return { ok: true };
   });
 
 // File extensions considered "real source code" for whole-repo AI-origin scan.
 // Markdown/JSON/config aren't useful signals.
 const CODE_EXTS = new Set([
-  "ts", "tsx", "js", "jsx", "mjs", "cjs",
-  "py", "rb", "go", "rs", "java", "kt", "swift",
-  "c", "h", "cpp", "hpp", "cc", "cs", "php",
-  "vue", "svelte", "astro", "lua", "dart", "scala",
+  "ts",
+  "tsx",
+  "js",
+  "jsx",
+  "mjs",
+  "cjs",
+  "py",
+  "rb",
+  "go",
+  "rs",
+  "java",
+  "kt",
+  "swift",
+  "c",
+  "h",
+  "cpp",
+  "hpp",
+  "cc",
+  "cs",
+  "php",
+  "vue",
+  "svelte",
+  "astro",
+  "lua",
+  "dart",
+  "scala",
 ]);
 
 const MAX_FILES_PER_SCAN = 30;
@@ -160,10 +270,16 @@ export const analyzeRepoAiOrigin = createServerFn({ method: "POST" })
     const { callCloudProvider } = await import("./ai-providers.server");
     const { buildAnalysisPrompt } = await import("./analysis-prompt");
     const { parseAiOriginScore, weightedRepoScore, bucketize } = await import("./ai-origin");
+    const { data: repository, error: repoErr } = await context.supabase
+      .from("repositories")
+      .select("project_id")
+      .eq("id", data.repo_id)
+      .maybeSingle();
+    if (repoErr) throw repoErr;
 
     const { data: files, error: fErr } = await context.supabase
       .from("files")
-      .select("id, path, storage_path, sha256, size_bytes, language")
+      .select("id, path, storage_path, sha256, size_bytes, language, repository_id")
       .eq("repository_id", data.repo_id)
       .order("size_bytes", { ascending: false });
     if (fErr) throw fErr;
@@ -275,8 +391,8 @@ export const analyzeRepoAiOrigin = createServerFn({ method: "POST" })
           summary: summary.slice(0, 240),
           cached: wasCached,
         });
-      } catch (e: any) {
-        errors.push({ path: file.path, message: e?.message ?? "error" });
+      } catch (e) {
+        errors.push({ path: file.path, message: getErrorMessage(e) });
       }
     }
 
@@ -289,6 +405,40 @@ export const analyzeRepoAiOrigin = createServerFn({ method: "POST" })
       mixed: results.filter((r) => r.score >= 30 && r.score < 70).length,
       ai: results.filter((r) => r.score >= 70).length,
     };
+
+    await appendAnalysisActivity({
+      supabase: context.supabase,
+      ownerId: context.userId,
+      projectId: repository?.project_id ?? null,
+      repositoryId: data.repo_id,
+      activity_kind: "llm_ai_origin_analysis",
+      status: "ok",
+      provider: data.provider,
+      model: data.model ?? null,
+      language: data.language,
+      query_text: data.repo_id,
+      result_summary: `repo_score:${repoScore.toFixed(2)} bucket:${bucket}`,
+      result_content: JSON.stringify(
+        {
+          repo_score: repoScore,
+          bucket,
+          distribution,
+          per_file: results.sort((a, b) => b.score - a.score),
+          total_code_files: totalCodeFiles,
+          sampled_count: results.length,
+          unsampled_count: unsampled,
+          errors,
+        },
+        null,
+        2,
+      ),
+      result_metadata: {
+        repo_score: repoScore,
+        bucket,
+        sampled_count: results.length,
+        total_code_files: totalCodeFiles,
+      },
+    });
 
     return {
       repo_score: repoScore,

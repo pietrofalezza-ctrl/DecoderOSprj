@@ -1,14 +1,11 @@
-import { createContext, useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 
 import { getCurrentByokAck } from "@/lib/byok-acknowledgement.functions";
 import { BYOK_ACK_ERROR } from "@/lib/byok-acknowledgement";
 import { ByokAcknowledgementDialog } from "./ByokAcknowledgementDialog";
-
-type Ctx = { open: (onAccepted?: () => void | Promise<void>) => void };
-
-export const ByokAckContext = createContext<Ctx | null>(null);
+import { ByokAckContext } from "./ByokAckContext";
 
 export function ByokAckProvider({ children }: { children: React.ReactNode }) {
   const fetchAck = useServerFn(getCurrentByokAck);
@@ -37,8 +34,7 @@ export function ByokAckProvider({ children }: { children: React.ReactNode }) {
   // dialog. Covers server-side enforcement when a callsite forgot to gate.
   useEffect(() => {
     const handler = (event: PromiseRejectionEvent) => {
-      const msg =
-        (event.reason && (event.reason.message || String(event.reason))) || "";
+      const msg = (event.reason && (event.reason.message || String(event.reason))) || "";
       if (typeof msg === "string" && msg.includes(BYOK_ACK_ERROR)) {
         qc.invalidateQueries({ queryKey: ["byok-ack"] });
         setOpen(true);

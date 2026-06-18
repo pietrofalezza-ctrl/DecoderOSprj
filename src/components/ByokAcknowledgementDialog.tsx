@@ -24,13 +24,10 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "@/components/ui/collapsible";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { recordByokAck } from "@/lib/byok-acknowledgement.functions";
 import { BYOK_TERMS_VERSION } from "@/lib/byok-acknowledgement";
+import { getErrorMessage } from "@/lib/errors";
 
 const CHECK_KEYS = ["cost", "providers", "authorized", "review", "terms"] as const;
 type CheckKey = (typeof CHECK_KEYS)[number];
@@ -67,7 +64,7 @@ export function ByokAcknowledgementDialog({
       setFlowOpen(false);
       if (onAccepted) await onAccepted();
     },
-    onError: (e: any) => toast.error(e?.message ?? t("errors.generic")),
+    onError: (e) => toast.error(getErrorMessage(e, t("errors.generic"))),
   });
 
   return (
@@ -107,36 +104,69 @@ export function ByokAcknowledgementDialog({
             <div>
               <p className="font-medium text-foreground">{t("byokAck.dataFlow.localTitle")}</p>
               <div className="mt-2 flex flex-wrap items-center gap-2 text-muted-foreground">
-                <FlowNode icon={<Laptop className="h-3.5 w-3.5" />} label={t("byokAck.dataFlow.userMachine")} />
+                <FlowNode
+                  icon={<Laptop className="h-3.5 w-3.5" />}
+                  label={t("byokAck.dataFlow.userMachine")}
+                />
                 <ArrowRight className="h-3.5 w-3.5" />
-                <FlowNode icon={<Server className="h-3.5 w-3.5" />} label={t("byokAck.dataFlow.localModel")} />
+                <FlowNode
+                  icon={<Server className="h-3.5 w-3.5" />}
+                  label={t("byokAck.dataFlow.localModel")}
+                />
                 <ArrowRight className="h-3.5 w-3.5" />
-                <FlowNode icon={<Laptop className="h-3.5 w-3.5" />} label={t("byokAck.dataFlow.decoderUi")} />
+                <FlowNode
+                  icon={<Laptop className="h-3.5 w-3.5" />}
+                  label={t("byokAck.dataFlow.decoderUi")}
+                />
               </div>
             </div>
             <div>
               <p className="font-medium text-foreground">{t("byokAck.dataFlow.cloudTitle")}</p>
               <div className="mt-2 flex flex-wrap items-center gap-2 text-muted-foreground">
-                <FlowNode icon={<Laptop className="h-3.5 w-3.5" />} label={t("byokAck.dataFlow.codeSelection")} />
+                <FlowNode
+                  icon={<Laptop className="h-3.5 w-3.5" />}
+                  label={t("byokAck.dataFlow.codeSelection")}
+                />
                 <ArrowRight className="h-3.5 w-3.5" />
-                <FlowNode icon={<Server className="h-3.5 w-3.5" />} label={t("byokAck.dataFlow.decoderBackend")} />
+                <FlowNode
+                  icon={<Server className="h-3.5 w-3.5" />}
+                  label={t("byokAck.dataFlow.decoderBackend")}
+                />
                 <ArrowRight className="h-3.5 w-3.5" />
-                <FlowNode icon={<Cloud className="h-3.5 w-3.5" />} label={t("byokAck.dataFlow.aiProvider")} />
+                <FlowNode
+                  icon={<Cloud className="h-3.5 w-3.5" />}
+                  label={t("byokAck.dataFlow.aiProvider")}
+                />
                 <ArrowRight className="h-3.5 w-3.5" />
-                <FlowNode icon={<Laptop className="h-3.5 w-3.5" />} label={t("byokAck.dataFlow.decoderUi")} />
+                <FlowNode
+                  icon={<Laptop className="h-3.5 w-3.5" />}
+                  label={t("byokAck.dataFlow.decoderUi")}
+                />
               </div>
             </div>
           </CollapsibleContent>
         </Collapsible>
 
         <div className="mt-4 flex flex-wrap gap-x-4 gap-y-1 text-xs">
-          <Link to="/terms" target="_blank" className="inline-flex items-center gap-1 text-primary hover:underline">
+          <Link
+            to="/terms"
+            target="_blank"
+            className="inline-flex items-center gap-1 text-primary hover:underline"
+          >
             {t("byokAck.links.terms")} <ExternalLink className="h-3 w-3" />
           </Link>
-          <Link to="/privacy" target="_blank" className="inline-flex items-center gap-1 text-primary hover:underline">
+          <Link
+            to="/privacy"
+            target="_blank"
+            className="inline-flex items-center gap-1 text-primary hover:underline"
+          >
             {t("byokAck.links.privacy")} <ExternalLink className="h-3 w-3" />
           </Link>
-          <Link to="/docs" target="_blank" className="inline-flex items-center gap-1 text-primary hover:underline">
+          <Link
+            to="/docs"
+            target="_blank"
+            className="inline-flex items-center gap-1 text-primary hover:underline"
+          >
             {t("byokAck.links.docs")} <ExternalLink className="h-3 w-3" />
           </Link>
         </div>
@@ -155,17 +185,10 @@ export function ByokAcknowledgementDialog({
         </div>
 
         <DialogFooter className="mt-4 gap-2 sm:gap-2">
-          <Button
-            variant="ghost"
-            disabled={mut.isPending}
-            onClick={() => onOpenChange(false)}
-          >
+          <Button variant="ghost" disabled={mut.isPending} onClick={() => onOpenChange(false)}>
             {t("byokAck.cancel")}
           </Button>
-          <Button
-            disabled={!allChecked || mut.isPending}
-            onClick={() => mut.mutate()}
-          >
+          <Button disabled={!allChecked || mut.isPending} onClick={() => mut.mutate()}>
             {mut.isPending ? t("byokAck.saving") : t("byokAck.cta")}
           </Button>
         </DialogFooter>

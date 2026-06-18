@@ -87,9 +87,7 @@ export function PublicHeaderAuthSlot({
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
-          {email && (
-            <div className="px-2 py-1.5 text-xs text-muted-foreground">{email}</div>
-          )}
+          {email && <div className="px-2 py-1.5 text-xs text-muted-foreground">{email}</div>}
           <DropdownMenuItem asChild>
             <Link to="/dashboard">
               <LayoutDashboard className="mr-2 h-4 w-4" />

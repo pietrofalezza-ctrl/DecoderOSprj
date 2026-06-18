@@ -317,6 +317,7 @@
   "dashboard": {
     "title": "I tuoi progetti",
     "newProject": "Nuovo progetto",
+    "newProjectDescription": "Crea uno spazio in cui Decoder conserva repository, risultati delle scansioni statiche e cronologia delle analisi.",
     "empty": "Non hai ancora progetti.",
     "projectNamePlaceholder": "Nome progetto",
     "projectDescPlaceholder": "Descrizione (opzionale)",
@@ -340,11 +341,68 @@
   },
   "project": {
     "repos": "Repository",
+    "modeLabel": "Modalità di analisi",
+    "modeOptions": {
+      "static": "Solo statica",
+      "llm": "Solo LLM",
+      "both": "Statica + LLM"
+    },
+    "modeDescriptions": {
+      "static": "Solo analisi statica offline. Nessuna API key richiesta.",
+      "llm": "Solo lettura assistita da LLM. Configura un provider per continuare.",
+      "both": "Usa insieme analisi statica offline e lettura assistita da LLM."
+    },
+    "metricProjects": "Ambito progetto",
+    "metricProjectsBody": "Repository incluse in questo progetto.",
+    "metricFiles": "File tracciati",
+    "metricFilesBody": "Tutti i file importati con stato statico.",
+    "metricStatic": "Copertura statica",
+    "metricStaticBody": "File già analizzati dalla pipeline offline.",
+    "metricNoLlm": "Modalità LLM",
+    "metricStaticOnly": "Disattivata",
+    "metricNoLlmBody": "Questo progetto è solo statico. Non serve configurare un provider.",
+    "metricRecentRuns": "Esecuzioni recenti",
+    "metricRecentRunsBody": "Ultime azioni di analisi e ricerca registrate.",
+    "staticChart": {
+      "title": "Distribuzione scansione statica",
+      "body": "Stato per repository con l'entropia visibile nell'inventario dei file.",
+      "llmOnly": "I grafici statici sono nascosti in modalità solo LLM.",
+      "empty": "Non è stata ancora importata alcuna repository.",
+      "safe": "Sicuro",
+      "warn": "Attenzione",
+      "block": "Blocco",
+      "pending": "In attesa"
+    },
+    "activityChart": {
+      "title": "Mix attività di analisi",
+      "body": "Azioni persistite di ricerca e analisi registrate per questo progetto.",
+      "staticOnly": "I grafici delle attività LLM sono nascosti in modalità solo statica.",
+      "empty": "Non è stata ancora registrata alcuna attività.",
+      "count": "Esecuzioni"
+    },
+    "activitiesTitle": "Cronologia attività",
+    "activitiesBody": "Cronologia persistente di scansioni statiche, spiegazioni e azioni di ricerca.",
+    "activitiesEmpty": "Nessuna attività registrata.",
+    "repoSectionBody": "Le righe dei repository includono stato statico ed entropia, così puoi leggere lo stato senza aprire il workspace.",
+    "filesLabel": "file",
+    "staticOnlyRepoHint": "I progetti solo statici consentono comunque la navigazione dei file. I pulsanti LLM restano nascosti finché non cambi modalità.",
+    "entropyLabel": "Entropia",
+    "activityLabels": {
+      "llm_explanation": "Spiegazione",
+      "llm_quality_analysis": "Analisi qualità",
+      "llm_security_analysis": "Analisi sicurezza",
+      "llm_ai_origin_analysis": "Analisi origine AI",
+      "llm_folder_analysis": "Analisi cartella",
+      "llm_fix_generation": "Generazione patch",
+      "static_scan": "Scansione statica",
+      "search_query": "Ricerca"
+    },
     "uploadZip": "Carica ZIP",
     "uploading": "Caricamento…",
     "noRepos": "Nessuna repository. Carica uno ZIP o importa da GitHub per iniziare.",
     "openRepo": "Apri",
     "importGithub": "Importa da GitHub",
+    "importGithubDescription": "Importa una repository pubblica in questo progetto, poi esegui analisi statica, analisi LLM o entrambe secondo la modalità scelta.",
     "importing": "Importazione…",
     "githubUrl": "URL GitHub",
     "githubUrlPlaceholder": "https://github.com/owner/repo",
@@ -360,10 +418,13 @@
     "capabilityQualityBody": "Code smell, codice morto, possibili bug e revisione di sicurezza.",
     "capabilityAiOrigin": "Probabilità AI",
     "capabilityAiOriginBody": "Stima la probabilità che la codebase — o parti di essa — sia stata generata da una AI.",
+    "capabilityMalware": "Analisi malware offline",
+    "capabilityMalwareBody": "Controlli su entropia, magic-bytes, path e segnali di offuscamento per intercettare file sospetti prima dell'uso di LLM.",
     "openFiles": "Apri file e commenti",
-    "howToHint": "Apri un repository, seleziona un file e leggi i commenti generati nelle tab Riassunto / Qualità / Sicurezza / Origine AI.",
+    "howToHint": "Apri un repository, seleziona un file e controlla le tab Riassunto / Qualità / Sicurezza / Malware / Origine AI prima di proporre fix.",
     "deleteRepo": "Elimina repository",
-    "deleteRepoConfirm": "Eliminare il repository \"{{name}}\" con tutti i suoi file e spiegazioni? L'operazione è irreversibile."
+    "deleteRepoConfirm": "Eliminare il repository \"{{name}}\" con tutti i suoi file e spiegazioni? L'operazione è irreversibile.",
+    "deleteRepoDone": "Repository eliminato."
   },
   "workspace": {
     "files": "File",
@@ -385,7 +446,14 @@
     "download": "Scarica .md",
     "exportAll": "Esporta tutto (.zip)",
     "exporting": "Esportazione…",
+    "searchFiles": "Cerca file",
+    "clearSearch": "Cancella ricerca",
+    "searchResultCount": "{{shown}}/{{total}} file",
+    "noSearchResults": "Nessun file corrisponde a questa ricerca.",
     "noProvider": "Aggiungi una chiave API in Impostazioni per attivare le spiegazioni AI.",
+    "staticOnlyMode": "Modalità solo statica",
+    "staticOnlyBody": "Non serve alcuna API key. Le schede LLM e i controlli cloud sono nascosti per questo progetto.",
+    "runStatic": "Esegui scansione statica",
     "analyzeWholeRepo": "Scansiona repo",
     "runFile": "Esegui analisi su questo file",
     "selectionToggle": "Usa solo la selezione nell'editor (righe {{from}}–{{to}})",
@@ -407,8 +475,21 @@
       "technical": "Riassunto tecnico",
       "quality": "Qualità",
       "security": "Sicurezza",
+      "staticCode": "Codice statico",
+      "malware": "Malware",
       "aiOrigin": "Origine AI",
+      "chat": "Chat",
       "fix": "Fix"
+    },
+    "chat": {
+      "empty": "Nessun messaggio.",
+      "loading": "Caricamento cronologia chat…",
+      "placeholder": "Fai una domanda sul file selezionato…",
+      "send": "Invia",
+      "sending": "Invio…",
+      "needsProvider": "Seleziona un provider cloud o locale per chattare.",
+      "user": "Tu",
+      "assistant": "Assistente"
     },
     "findings": {
       "title": "Punti evidenziati",
@@ -548,6 +629,15 @@
     "save": "Salva",
     "saved": "Salvato.",
     "pageIntro": "Profilo, chiavi API (BYOK), endpoint locali e account: tutto in questa pagina. Usa i collegamenti qui sotto per saltare a una sezione.",
+    "passwordSection": "Password",
+    "passwordIntro": "Cambia la password del tuo account da questa pagina. Dopo l'aggiornamento verrai disconnesso.",
+    "newPassword": "Nuova password",
+    "confirmNewPassword": "Conferma nuova password",
+    "changePassword": "Cambia password",
+    "changingPassword": "Modifica in corso…",
+    "passwordChanged": "Password aggiornata. Accedi di nuovo.",
+    "passwordMismatch": "Le password non coincidono.",
+    "passwordTooShort": "La password deve contenere almeno 8 caratteri.",
     "byokSection": "Provider AI (BYOK)",
 
     "byokIntro": "Decoder non salva mai le tue chiavi in chiaro. Il tuo codice non viene usato per addestrare modelli.",
@@ -665,7 +755,11 @@
           "b1": "Utilizza Ollama, LM Studio o un altro modello locale.",
           "b2": "Pensata perché il codice venga elaborato localmente.",
           "b3": "Consigliata per codice sensibile o privato.",
-          "flow": { "code": "Il tuo codice", "model": "Modello locale", "ui": "Interfaccia Decoder" }
+          "flow": {
+            "code": "Il tuo codice",
+            "model": "Modello locale",
+            "ui": "Interfaccia Decoder"
+          }
         },
         "cloud": {
           "title": "Modalità Cloud BYOK",
@@ -673,7 +767,12 @@
           "b2": "Supporta OpenAI, Anthropic, Gemini e OpenRouter.",
           "b3": "Il codice o i prompt selezionati possono essere inviati al provider scelto.",
           "b4": "Sei responsabile dei costi e dei termini del provider.",
-          "flow": { "code": "Il tuo codice", "backend": "Backend Decoder", "provider": "Provider AI", "ui": "Interfaccia Decoder" }
+          "flow": {
+            "code": "Il tuo codice",
+            "backend": "Backend Decoder",
+            "provider": "Provider AI",
+            "ui": "Interfaccia Decoder"
+          }
         }
       },
       "s3": {
@@ -911,13 +1010,43 @@
     },
     "whatWeUseTitle": "Cosa salviamo realmente",
     "whatWeUseBody": "Elenco completo di cookie e archiviazione del browser usati da Decoder:",
-    "col": { "name": "Nome", "purpose": "Finalità", "storage": "Archiviazione", "retention": "Durata" },
+    "col": {
+      "name": "Nome",
+      "purpose": "Finalità",
+      "storage": "Archiviazione",
+      "retention": "Durata"
+    },
     "rows": {
-      "auth": { "name": "sb-* (Supabase auth)", "purpose": "Ti mantiene autenticato in modo sicuro", "storage": "Cookie / localStorage", "retention": "Fino al logout o alla scadenza del token" },
-      "lang": { "name": "i18nextLng", "purpose": "Ricorda la lingua dell'interfaccia", "storage": "localStorage", "retention": "Fino alla pulizia dei dati del browser" },
-      "theme": { "name": "theme", "purpose": "Ricorda la preferenza tema chiaro/scuro", "storage": "localStorage", "retention": "Fino alla pulizia dei dati del browser" },
-      "disclaimer": { "name": "decoder.disclaimer.acceptedAt", "purpose": "Registra che hai visto il disclaimer di accesso", "storage": "localStorage", "retention": "Fino alla pulizia dei dati del browser" },
-      "ack": { "name": "user_acknowledgements", "purpose": "Salva la tua accettazione BYOK e l'onboarding", "storage": "Database server (tuo account)", "retention": "Fino all'eliminazione dell'account o dell'accettazione" }
+      "auth": {
+        "name": "sb-* (Supabase auth)",
+        "purpose": "Ti mantiene autenticato in modo sicuro",
+        "storage": "Cookie / localStorage",
+        "retention": "Fino al logout o alla scadenza del token"
+      },
+      "lang": {
+        "name": "i18nextLng",
+        "purpose": "Ricorda la lingua dell'interfaccia",
+        "storage": "localStorage",
+        "retention": "Fino alla pulizia dei dati del browser"
+      },
+      "theme": {
+        "name": "theme",
+        "purpose": "Ricorda la preferenza tema chiaro/scuro",
+        "storage": "localStorage",
+        "retention": "Fino alla pulizia dei dati del browser"
+      },
+      "disclaimer": {
+        "name": "decoder.disclaimer.acceptedAt",
+        "purpose": "Registra che hai visto il disclaimer di accesso",
+        "storage": "localStorage",
+        "retention": "Fino alla pulizia dei dati del browser"
+      },
+      "ack": {
+        "name": "user_acknowledgements",
+        "purpose": "Salva la tua accettazione BYOK e l'onboarding",
+        "storage": "Database server (tuo account)",
+        "retention": "Fino all'eliminazione dell'account o dell'accettazione"
+      }
     },
     "noTrackingTitle": "Cosa NON usiamo",
     "noTrackingBody": "Decoder non carica nessuno dei seguenti elementi:",

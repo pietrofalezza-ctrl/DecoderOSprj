@@ -2,6 +2,7 @@ import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+import { appendAnalysisActivity } from "@/lib/analysis-activities";
 
 const Provider = z.enum(["openai", "anthropic", "gemini", "openrouter"]);
 const Language = z.enum(["en", "it", "zh"]);
@@ -33,6 +34,7 @@ export const aggregateFolderAnalysis = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator(
     z.object({
+      repo_id: z.string().uuid(),
       folder_path: z.string().min(1).max(1000),
       kind: Kind,
       language: Language,
@@ -54,6 +56,12 @@ export const aggregateFolderAnalysis = createServerFn({ method: "POST" })
     await assertByokAckAccepted(context.supabase, context.userId);
     const { callCloudProvider } = await import("./ai-providers.server");
     const { buildFolderAggregatePrompt } = await import("./analysis-prompt");
+    const { data: repository, error: repoErr } = await context.supabase
+      .from("repositories")
+      .select("project_id")
+      .eq("id", data.repo_id)
+      .maybeSingle();
+    if (repoErr) throw repoErr;
 
     let apiKey: string;
     {
@@ -81,6 +89,24 @@ export const aggregateFolderAnalysis = createServerFn({ method: "POST" })
       model: data.model,
       system,
       user,
+    });
+    await appendAnalysisActivity({
+      supabase: context.supabase,
+      ownerId: context.userId,
+      projectId: repository?.project_id ?? null,
+      repositoryId: data.repo_id,
+      activity_kind: "llm_folder_analysis",
+      status: "ok",
+      provider: data.provider,
+      model: data.model ?? null,
+      language: data.language,
+      query_text: data.folder_path,
+      result_summary: "folder analysis summary",
+      result_content: text,
+      result_metadata: {
+        kind: data.kind,
+        item_count: data.items.length,
+      },
     });
     return { content: text };
   });

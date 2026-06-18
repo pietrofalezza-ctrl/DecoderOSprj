@@ -39,7 +39,9 @@ function CookiesPage() {
     <div className="min-h-screen bg-background text-foreground">
       <header className="sticky top-0 z-30 border-b border-border/60 bg-background/80 backdrop-blur">
         <div className="mx-auto flex h-16 max-w-5xl items-center justify-between px-6">
-          <Link to="/"><Logo /></Link>
+          <Link to="/">
+            <Logo />
+          </Link>
           <div className="flex items-center gap-1">
             <Button asChild variant="ghost" size="sm">
               <Link to="/">
@@ -88,9 +90,15 @@ function CookiesPage() {
                 {ROWS.map((k) => (
                   <tr key={k} className="border-t border-border/60 align-top">
                     <td className="px-4 py-3 font-mono text-xs">{t(`cookies.rows.${k}.name`)}</td>
-                    <td className="px-4 py-3 text-muted-foreground">{t(`cookies.rows.${k}.purpose`)}</td>
-                    <td className="px-4 py-3 text-muted-foreground">{t(`cookies.rows.${k}.storage`)}</td>
-                    <td className="px-4 py-3 text-muted-foreground">{t(`cookies.rows.${k}.retention`)}</td>
+                    <td className="px-4 py-3 text-muted-foreground">
+                      {t(`cookies.rows.${k}.purpose`)}
+                    </td>
+                    <td className="px-4 py-3 text-muted-foreground">
+                      {t(`cookies.rows.${k}.storage`)}
+                    </td>
+                    <td className="px-4 py-3 text-muted-foreground">
+                      {t(`cookies.rows.${k}.retention`)}
+                    </td>
                   </tr>
                 ))}
               </tbody>
@@ -141,10 +149,18 @@ function CookiesPage() {
         <div className="mx-auto flex max-w-5xl flex-col items-center justify-between gap-3 px-6 py-8 text-xs text-muted-foreground md:flex-row">
           <Logo />
           <nav className="flex flex-wrap gap-5">
-            <Link to="/terms" className="hover:text-foreground">{t("landing.nav.terms")}</Link>
-            <Link to="/privacy" className="hover:text-foreground">{t("footer.privacy")}</Link>
-            <Link to="/cookies" className="hover:text-foreground">{t("footer.cookies")}</Link>
-            <Link to="/data-flow" className="hover:text-foreground">{t("footer.dataFlow")}</Link>
+            <Link to="/terms" className="hover:text-foreground">
+              {t("landing.nav.terms")}
+            </Link>
+            <Link to="/privacy" className="hover:text-foreground">
+              {t("footer.privacy")}
+            </Link>
+            <Link to="/cookies" className="hover:text-foreground">
+              {t("footer.cookies")}
+            </Link>
+            <Link to="/data-flow" className="hover:text-foreground">
+              {t("footer.dataFlow")}
+            </Link>
           </nav>
           <span className="max-w-md text-right">{t("footer.disclaimer")}</span>
         </div>

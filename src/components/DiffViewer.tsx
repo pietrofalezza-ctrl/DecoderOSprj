@@ -5,29 +5,7 @@ import { toast } from "sonner";
 import Editor from "@monaco-editor/react";
 
 import { Button } from "@/components/ui/button";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-
-/** Extract the first ```diff fenced block from a model response; falls back to the full text. */
-export function extractDiffBlock(text: string): string {
-  if (!text) return "";
-  const m = text.match(/```diff\s*([\s\S]*?)```/i);
-  return (m?.[1] ?? text).trim();
-}
-
-export function extractNotes(text: string): string {
-  if (!text) return "";
-  // Anything after the first ```diff ... ``` block.
-  const idx = text.search(/```diff/i);
-  if (idx < 0) return "";
-  const after = text.slice(idx);
-  const closing = after.indexOf("```", 5);
-  if (closing < 0) return "";
-  return after.slice(closing + 3).trim();
-}
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 
 export function DiffViewer({
   diff,
@@ -107,11 +85,7 @@ export function DiffViewer({
             </PopoverContent>
           </Popover>
         </div>
-        <Button
-          size="sm"
-          variant="ghost"
-          onClick={() => setShowRaw((v) => !v)}
-        >
+        <Button size="sm" variant="ghost" onClick={() => setShowRaw((v) => !v)}>
           {showRaw ? t("workspace.fix.showEditor") : t("workspace.fix.showRaw")}
         </Button>
       </div>
@@ -138,9 +112,7 @@ export function DiffViewer({
       )}
       {notes && (
         <details className="rounded-md border border-border bg-muted/20 p-2 text-xs">
-          <summary className="cursor-pointer font-medium">
-            {t("workspace.fix.notes")}
-          </summary>
+          <summary className="cursor-pointer font-medium">{t("workspace.fix.notes")}</summary>
           <pre className="mt-2 whitespace-pre-wrap leading-relaxed">{notes}</pre>
         </details>
       )}

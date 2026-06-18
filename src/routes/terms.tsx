@@ -33,16 +33,8 @@ export const Route = createFileRoute("/terms")({
 function TermsPage() {
   const { t } = useTranslation();
 
-  const allowed = [
-    "usePersonal",
-    "modify",
-    "distribute",
-    "develop",
-  ] as const;
-  const forbidden = [
-    "claimCreator",
-    "attribution",
-  ] as const;
+  const allowed = ["usePersonal", "modify", "distribute", "develop"] as const;
+  const forbidden = ["claimCreator", "attribution"] as const;
 
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -66,15 +58,11 @@ function TermsPage() {
       </header>
 
       <main className="mx-auto max-w-3xl px-4 py-12 sm:px-6 md:py-16">
-        <p className="text-xs uppercase tracking-wide text-primary">
-          {t("terms.kicker")}
-        </p>
+        <p className="text-xs uppercase tracking-wide text-primary">{t("terms.kicker")}</p>
         <h1 className="mt-2 text-balance text-4xl font-semibold tracking-tight md:text-5xl">
           {t("terms.title")}
         </h1>
-        <p className="mt-4 text-balance text-lg text-muted-foreground">
-          {t("terms.intro")}
-        </p>
+        <p className="mt-4 text-balance text-lg text-muted-foreground">{t("terms.intro")}</p>
 
         <section className="mt-12 rounded-lg border-l-4 border-primary bg-primary/5 p-6">
           <h2 className="text-xl font-semibold">{t("terms.natureTitle")}</h2>
@@ -85,9 +73,7 @@ function TermsPage() {
 
         <section className="mt-10">
           <h2 className="text-2xl font-semibold">{t("terms.licenseTitle")}</h2>
-          <p className="mt-3 text-sm text-muted-foreground">
-            {t("terms.licenseBody")}
-          </p>
+          <p className="mt-3 text-sm text-muted-foreground">{t("terms.licenseBody")}</p>
         </section>
 
         <section className="mt-10">
@@ -122,23 +108,17 @@ function TermsPage() {
 
         <section className="mt-10">
           <h2 className="text-2xl font-semibold">{t("terms.ownershipTitle")}</h2>
-          <p className="mt-3 text-sm text-muted-foreground">
-            {t("terms.ownershipBody")}
-          </p>
+          <p className="mt-3 text-sm text-muted-foreground">{t("terms.ownershipBody")}</p>
         </section>
 
         <section className="mt-10">
           <h2 className="text-2xl font-semibold">{t("terms.analyzedCodeTitle")}</h2>
-          <p className="mt-3 text-sm text-muted-foreground">
-            {t("terms.analyzedCodeBody")}
-          </p>
+          <p className="mt-3 text-sm text-muted-foreground">{t("terms.analyzedCodeBody")}</p>
         </section>
 
         <section className="mt-10">
           <h2 className="text-2xl font-semibold">{t("terms.contributionsTitle")}</h2>
-          <p className="mt-3 text-sm text-muted-foreground">
-            {t("terms.contributionsBody")}
-          </p>
+          <p className="mt-3 text-sm text-muted-foreground">{t("terms.contributionsBody")}</p>
         </section>
 
         <section className="mt-10 rounded-lg border-l-4 border-primary bg-primary/5 p-6">
@@ -152,9 +132,11 @@ function TermsPage() {
           <h3 className="mt-6 text-base font-semibold">{t("intendedUse.notTitle")}</h3>
           <p className="mt-2 text-sm text-muted-foreground">{t("intendedUse.notIntro")}</p>
           <ul className="mt-2 list-disc space-y-1 pl-5 text-sm text-muted-foreground">
-            {(["audit", "legal", "production", "highRisk", "regulated", "replace"] as const).map((k) => (
-              <li key={k}>{t(`intendedUse.notItems.${k}`)}</li>
-            ))}
+            {(["audit", "legal", "production", "highRisk", "regulated", "replace"] as const).map(
+              (k) => (
+                <li key={k}>{t(`intendedUse.notItems.${k}`)}</li>
+              ),
+            )}
           </ul>
         </section>
 
@@ -162,14 +144,6 @@ function TermsPage() {
           <h2 className="text-2xl font-semibold">{t("privacy.minorsTitle")}</h2>
           <p className="mt-3 text-sm text-muted-foreground">{t("privacy.minorsBody")}</p>
         </section>
-
-
-
-
-
-
-
-
 
         <section className="mt-10">
           <h2 className="text-2xl font-semibold">{t("terms.dataCollectedTitle")}</h2>
@@ -182,7 +156,6 @@ function TermsPage() {
             <li>{t("terms.dataCollected.notracking")}</li>
           </ul>
         </section>
-
 
         <section className="mt-10">
           <h2 className="text-2xl font-semibold">{t("terms.gdprTitle")}</h2>
@@ -209,12 +182,13 @@ function TermsPage() {
 
         <section className="mt-10 rounded-lg border border-border bg-card p-6">
           <h2 className="text-xl font-semibold">{t("terms.disclaimerTitle")}</h2>
-          <p className="mt-3 text-sm text-muted-foreground">
-            {t("terms.disclaimerBody")}
-          </p>
+          <p className="mt-3 text-sm text-muted-foreground">{t("terms.disclaimerBody")}</p>
         </section>
 
-        <section id="liability" className="mt-10 rounded-lg border border-destructive/40 bg-destructive/5 p-6">
+        <section
+          id="liability"
+          className="mt-10 rounded-lg border border-destructive/40 bg-destructive/5 p-6"
+        >
           <h2 className="text-xl font-semibold">{t("terms.liabilityTitle")}</h2>
           <p className="mt-3 text-sm text-muted-foreground">{t("terms.liabilityIntro")}</p>
           <ul className="mt-4 space-y-3">
@@ -229,7 +203,6 @@ function TermsPage() {
             ))}
           </ul>
         </section>
-
 
         <div className="mt-14 flex flex-wrap gap-3">
           <Button asChild>

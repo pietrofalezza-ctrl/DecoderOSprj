@@ -4,15 +4,9 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
-import {
-  Download,
-  Trash2,
-  FileCheck2,
-  AlertTriangle,
-  HelpCircle,
-} from "lucide-react";
+import { Download, Trash2, FileCheck2, AlertTriangle, HelpCircle, KeyRound } from "lucide-react";
 
-import { useOnboarding } from "@/components/onboarding/OnboardingProvider";
+import { useOnboarding } from "@/components/onboarding/OnboardingContext";
 
 import { AppShell } from "@/components/AppShell";
 import { Button } from "@/components/ui/button";
@@ -36,11 +30,18 @@ import {
 import { exportMyData, deleteMyAccount } from "@/lib/account.functions";
 import { listByokAckHistory } from "@/lib/byok-acknowledgement.functions";
 import { useByokAck } from "@/hooks/use-byok-ack";
+import { getErrorMessage } from "@/lib/errors";
 
 import { supabase } from "@/integrations/supabase/client";
 
 type Provider = "openai" | "anthropic" | "gemini" | "openrouter";
 const PROVIDERS: Provider[] = ["openai", "anthropic", "gemini", "openrouter"];
+type Language = "en" | "it" | "zh";
+const LANGUAGES: Language[] = ["en", "it", "zh"];
+
+function isLanguage(value: unknown): value is Language {
+  return typeof value === "string" && LANGUAGES.includes(value as Language);
+}
 
 export const Route = createFileRoute("/_authenticated/settings")({
   component: SettingsPage,
@@ -49,6 +50,7 @@ export const Route = createFileRoute("/_authenticated/settings")({
 function SettingsPage() {
   const { t, i18n } = useTranslation();
   const qc = useQueryClient();
+  const navigate = useNavigate();
   const getProfile = useServerFn(getMyProfile);
   const updateProfile = useServerFn(updateMyProfile);
   const list = useServerFn(listProviders);
@@ -62,12 +64,18 @@ function SettingsPage() {
   const prov = useQuery({ queryKey: ["providers"], queryFn: () => list() });
 
   const [displayName, setDisplayName] = useState("");
-  const [language, setLanguage] = useState<"en" | "it" | "zh">("en");
+  const [language, setLanguage] = useState<Language>("en");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
 
   useEffect(() => {
     if (profile.data?.profile) {
       setDisplayName(profile.data.profile.display_name ?? "");
-      setLanguage((profile.data.profile.preferred_language as any) ?? "en");
+      setLanguage(
+        isLanguage(profile.data.profile.preferred_language)
+          ? profile.data.profile.preferred_language
+          : "en",
+      );
     }
   }, [profile.data]);
 
@@ -79,7 +87,28 @@ function SettingsPage() {
       i18n.changeLanguage(language);
       qc.invalidateQueries({ queryKey: ["profile"] });
     },
-    onError: (e: any) => toast.error(e?.message ?? t("errors.generic")),
+    onError: (e) => toast.error(getErrorMessage(e, t("errors.generic"))),
+  });
+
+  const passwordMut = useMutation({
+    mutationFn: async () => {
+      if (newPassword.length < 8) {
+        throw new Error(t("settings.passwordTooShort"));
+      }
+      if (newPassword !== confirmPassword) {
+        throw new Error(t("settings.passwordMismatch"));
+      }
+      const { error } = await supabase.auth.updateUser({ password: newPassword });
+      if (error) throw error;
+      await supabase.auth.signOut();
+    },
+    onSuccess: () => {
+      toast.success(t("settings.passwordChanged"));
+      setNewPassword("");
+      setConfirmPassword("");
+      navigate({ to: "/auth", replace: true });
+    },
+    onError: (e) => toast.error(getErrorMessage(e, t("errors.generic"))),
   });
 
   return (
@@ -91,6 +120,7 @@ function SettingsPage() {
           <nav className="flex flex-wrap gap-2 text-xs">
             {[
               { id: "profile", label: t("settings.profileSection") },
+              { id: "password", label: t("settings.passwordSection") },
               { id: "byok", label: t("settings.byokSection") },
               { id: "local", label: t("settings.localSection") },
               { id: "account", label: t("settings.accountSection") },
@@ -106,13 +136,10 @@ function SettingsPage() {
           </nav>
         </header>
 
-
-
-
-
-
-        <section id="profile" className="space-y-4 rounded-lg border border-border bg-card p-5 scroll-mt-20">
-
+        <section
+          id="profile"
+          className="space-y-4 rounded-lg border border-border bg-card p-5 scroll-mt-20"
+        >
           <h2 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
             {t("settings.profileSection")}
           </h2>
@@ -122,7 +149,7 @@ function SettingsPage() {
           </div>
           <div className="space-y-1">
             <Label>{t("settings.language")}</Label>
-            <Select value={language} onValueChange={(v) => setLanguage(v as any)}>
+            <Select value={language} onValueChange={(v) => setLanguage(isLanguage(v) ? v : "en")}>
               <SelectTrigger>
                 <SelectValue />
               </SelectTrigger>
@@ -138,10 +165,52 @@ function SettingsPage() {
           </Button>
         </section>
 
+        <section
+          id="password"
+          className="space-y-4 rounded-lg border border-border bg-card p-5 scroll-mt-20"
+        >
+          <h2 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
+            {t("settings.passwordSection")}
+          </h2>
+          <div className="flex items-start gap-2 rounded-md border border-amber-500/30 bg-amber-500/5 p-3 text-xs text-amber-900 dark:text-amber-200">
+            <KeyRound className="mt-0.5 h-3.5 w-3.5 shrink-0" />
+            <span>{t("settings.passwordIntro")}</span>
+          </div>
+          <div className="space-y-1">
+            <Label htmlFor="new-password">{t("settings.newPassword")}</Label>
+            <Input
+              id="new-password"
+              type="password"
+              value={newPassword}
+              onChange={(e) => setNewPassword(e.target.value)}
+              autoComplete="new-password"
+            />
+          </div>
+          <div className="space-y-1">
+            <Label htmlFor="confirm-password">{t("settings.confirmNewPassword")}</Label>
+            <Input
+              id="confirm-password"
+              type="password"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              autoComplete="new-password"
+            />
+          </div>
+          <Button
+            onClick={() => passwordMut.mutate()}
+            disabled={passwordMut.isPending || !newPassword || !confirmPassword}
+          >
+            {passwordMut.isPending ? t("settings.changingPassword") : t("settings.changePassword")}
+          </Button>
+        </section>
+
         <AcknowledgementSection />
         <OnboardingHelpSection />
 
-        <section id="byok" className="space-y-4 rounded-lg border border-border bg-card p-5 scroll-mt-20">
+        <section
+          id="byok"
+          className="space-y-4 rounded-lg border border-border bg-card p-5 scroll-mt-20"
+        >
           <h2 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
             {t("settings.byokSection")}
           </h2>
@@ -165,8 +234,8 @@ function SettingsPage() {
                           await saveKey({ data: { provider: p, api_key: key } });
                           qc.invalidateQueries({ queryKey: ["providers"] });
                           toast.success(t("settings.saved"));
-                        } catch (e: any) {
-                          toast.error(e?.message ?? t("errors.generic"));
+                        } catch (e) {
+                          toast.error(getErrorMessage(e, t("errors.generic")));
                         } finally {
                           resolve();
                         }
@@ -183,9 +252,10 @@ function SettingsPage() {
           </div>
         </section>
 
-
-        <section id="local" className="space-y-4 rounded-lg border border-border bg-card p-5 scroll-mt-20">
-
+        <section
+          id="local"
+          className="space-y-4 rounded-lg border border-border bg-card p-5 scroll-mt-20"
+        >
           <h2 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
             {t("settings.localSection")}
           </h2>
@@ -277,10 +347,15 @@ function AcknowledgementSection() {
             {t("byokAck.settings.history")}
           </p>
           <ul className="mt-2 space-y-1 text-xs text-muted-foreground">
-            {history.data.items.map((it: any, i: number) => (
-              <li key={i} className="flex items-center justify-between border-b border-border/40 py-1 last:border-0">
+            {history.data.items.map((it, i) => (
+              <li
+                key={i}
+                className="flex items-center justify-between border-b border-border/40 py-1 last:border-0"
+              >
                 <span>v{it.accepted_terms_version}</span>
-                <span>{fmt(it.accepted_at)} · {it.accepted_language}</span>
+                <span>
+                  {fmt(it.accepted_at)} · {it.accepted_language}
+                </span>
               </li>
             ))}
           </ul>
@@ -308,7 +383,7 @@ function AccountPrivacySection() {
       URL.revokeObjectURL(url);
       toast.success(t("settings.saved"));
     },
-    onError: (e: any) => toast.error(e?.message ?? t("errors.generic")),
+    onError: (e) => toast.error(getErrorMessage(e, t("errors.generic"))),
   });
 
   const deleteMut = useMutation({
@@ -320,11 +395,14 @@ function AccountPrivacySection() {
       toast.success(t("settings.deleteDone"));
       setTimeout(() => navigate({ to: "/" }), 500);
     },
-    onError: (e: any) => toast.error(e?.message ?? t("errors.generic")),
+    onError: (e) => toast.error(getErrorMessage(e, t("errors.generic"))),
   });
 
   return (
-    <section id="account" className="space-y-4 rounded-lg border border-border bg-card p-5 scroll-mt-20">
+    <section
+      id="account"
+      className="space-y-4 rounded-lg border border-border bg-card p-5 scroll-mt-20"
+    >
       <h2 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
         {t("settings.accountSection")}
       </h2>
@@ -354,9 +432,6 @@ function AccountPrivacySection() {
     </section>
   );
 }
-
-
-
 
 function ProviderRow({
   provider,
@@ -392,7 +467,12 @@ function ProviderRow({
           disabled={!val.trim() || busy}
           onClick={async () => {
             setBusy(true);
-            try { await onSave(val.trim()); setVal(""); } finally { setBusy(false); }
+            try {
+              await onSave(val.trim());
+              setVal("");
+            } finally {
+              setBusy(false);
+            }
           }}
         >
           {t("settings.addKey")}
@@ -419,7 +499,9 @@ function EndpointRow({
   onRemove: () => Promise<void>;
 }) {
   const { t } = useTranslation();
-  const [url, setUrl] = useState(current?.base_url ?? (kind === "ollama" ? "http://localhost:11434" : "http://localhost:1234"));
+  const [url, setUrl] = useState(
+    current?.base_url ?? (kind === "ollama" ? "http://localhost:11434" : "http://localhost:1234"),
+  );
   const [model, setModel] = useState(current?.default_model ?? "");
   const [busy, setBusy] = useState(false);
   return (
@@ -431,14 +513,29 @@ function EndpointRow({
         </span>
       </div>
       <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
-        <Input placeholder={t("settings.endpointUrl")} value={url} onChange={(e) => setUrl(e.target.value)} />
-        <Input placeholder={t("settings.endpointModel")} value={model} onChange={(e) => setModel(e.target.value)} />
+        <Input
+          placeholder={t("settings.endpointUrl")}
+          value={url}
+          onChange={(e) => setUrl(e.target.value)}
+        />
+        <Input
+          placeholder={t("settings.endpointModel")}
+          value={model}
+          onChange={(e) => setModel(e.target.value)}
+        />
       </div>
       <div className="mt-2 flex gap-2">
         <Button
           size="sm"
           disabled={!url.trim() || busy}
-          onClick={async () => { setBusy(true); try { await onSave(url.trim(), model.trim()); } finally { setBusy(false); } }}
+          onClick={async () => {
+            setBusy(true);
+            try {
+              await onSave(url.trim(), model.trim());
+            } finally {
+              setBusy(false);
+            }
+          }}
         >
           {t("settings.addEndpoint")}
         </Button>
@@ -456,7 +553,11 @@ function OnboardingHelpSection() {
   const { t, i18n } = useTranslation();
   const { completed, record, currentVersion, openOnboarding } = useOnboarding();
   const fmt = (iso: string) =>
-    new Date(iso).toLocaleDateString(i18n.language, { year: "numeric", month: "short", day: "2-digit" });
+    new Date(iso).toLocaleDateString(i18n.language, {
+      year: "numeric",
+      month: "short",
+      day: "2-digit",
+    });
   return (
     <section
       id="help"
@@ -468,9 +569,7 @@ function OnboardingHelpSection() {
           <h2 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
             {t("onboarding.settings.sectionTitle")}
           </h2>
-          <p className="mt-1 text-xs text-muted-foreground">
-            {t("onboarding.settings.intro")}
-          </p>
+          <p className="mt-1 text-xs text-muted-foreground">{t("onboarding.settings.intro")}</p>
           <div className="mt-3 flex flex-wrap items-center gap-3">
             {completed && record ? (
               <span className="text-xs text-foreground">

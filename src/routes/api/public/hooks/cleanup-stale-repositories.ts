@@ -60,9 +60,7 @@ export const Route = createFileRoute("/api/public/hooks/cleanup-stale-repositori
           // Remove storage objects (ignore individual failures)
           const paths = (files ?? []).map((f) => f.storage_path).filter(Boolean);
           if (paths.length > 0) {
-            const { error: sErr } = await supabaseAdmin.storage
-              .from("repositories")
-              .remove(paths);
+            const { error: sErr } = await supabaseAdmin.storage.from("repositories").remove(paths);
             if (!sErr) stats.objects += paths.length;
           }
 

@@ -1,20 +1,45 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 import { z } from "zod";
-import { Sparkles, Copy, Download, ShieldCheck, FileDown, BugPlay, Bot, ScanSearch, ArrowLeft, ArrowRight, KeyRound, CheckCircle2, AlertCircle, Play, Wrench } from "lucide-react";
+import {
+  Sparkles,
+  Copy,
+  Download,
+  ShieldCheck,
+  FileDown,
+  BugPlay,
+  Bot,
+  ScanSearch,
+  ArrowLeft,
+  ArrowRight,
+  KeyRound,
+  CheckCircle2,
+  AlertCircle,
+  Play,
+  Wrench,
+  ShieldAlert,
+  FileBadge2,
+  AlertTriangle,
+  Search,
+  X,
+  MessageSquare,
+  SendHorizontal,
+} from "lucide-react";
 
 import { AppShell } from "@/components/AppShell";
 import { FileTree } from "@/components/FileTree";
 import { CodeViewer, type CodeSelection, type CodeViewerHandle } from "@/components/CodeViewer";
 import { InsightPanel, type InsightAction } from "@/components/InsightPanel";
-import { DiffViewer, extractDiffBlock, extractNotes } from "@/components/DiffViewer";
+import { DiffViewer } from "@/components/DiffViewer";
 import { FolderAnalysisPanel } from "@/components/FolderAnalysisPanel";
 
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import {
   Select,
   SelectContent,
@@ -25,18 +50,9 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import {
-  ResizableHandle,
-  ResizablePanel,
-  ResizablePanelGroup,
-} from "@/components/ui/resizable";
+import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-} from "@/components/ui/sheet";
+import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { AiOriginPanel, type RepoAiOriginResult } from "@/components/AiOriginPanel";
 import { getRepository, getFileContent } from "@/lib/repos.functions";
 import { listProviders } from "@/lib/credentials.functions";
@@ -47,11 +63,42 @@ import { exportRepoMarkdown } from "@/lib/export.functions";
 import { callLocalProvider, type LocalKind } from "@/lib/local-ai";
 import { buildPrompt, type Proficiency } from "@/lib/prompt";
 import { buildAnalysisPrompt, type AnalysisKind } from "@/lib/analysis-prompt";
-import { extractInsightBundle, stripFindingsBlock, type Finding } from "@/lib/findings";
+import { buildWorkspaceHistoryDrafts } from "@/lib/analysis-history";
+import { listFileAnalysisHistory } from "@/lib/analysis-history.functions";
+import { extractDiffBlock, extractNotes } from "@/lib/diff";
+import {
+  buildFileChatPrompt,
+  formatChatMessagesMarkdown,
+  type PersistedChatMessage,
+} from "@/lib/chat-history";
+import {
+  listFileChatSession,
+  saveLocalFileChatTurn,
+  sendFileChatMessage,
+} from "@/lib/chat.functions";
+import { getErrorMessage } from "@/lib/errors";
+import { filterFilesBySearch, normalizeSearchQuery, shouldPersistSearchQuery } from "@/lib/search";
+import { recordRepositorySearch } from "@/lib/search.functions";
+import {
+  extractInsightBundle,
+  stripFindingsBlock,
+  severityBadgeClass,
+  type Finding,
+} from "@/lib/findings";
+import { runStaticMalwareScan, type StaticMalwareAssessment } from "@/lib/static-malware.functions";
+import { runSourceStaticAnalysis, type SourceStaticReport } from "@/lib/source-static.functions";
 
 type CloudProvider = "openai" | "anthropic" | "gemini" | "openrouter";
 type ProviderValue = `cloud:${CloudProvider}` | `local:${LocalKind}`;
-type MainTab = "summary" | "quality" | "security" | "ai_origin" | "fix";
+type MainTab =
+  | "summary"
+  | "quality"
+  | "security"
+  | "source_static"
+  | "ai_origin"
+  | "chat"
+  | "malware"
+  | "fix";
 type SummarySub = "human" | "technical";
 
 const SearchSchema = z.object({
@@ -67,6 +114,7 @@ function WorkspacePage() {
   const { repoId } = Route.useParams();
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const getRepo = useServerFn(getRepository);
   const getContent = useServerFn(getFileContent);
   const providersFn = useServerFn(listProviders);
@@ -77,10 +125,22 @@ function WorkspacePage() {
   const exportFn = useServerFn(exportRepoMarkdown);
   const repoAiOriginFn = useServerFn(analyzeRepoAiOrigin);
   const proposeFix = useServerFn(proposeFileFix);
+  const runMalware = useServerFn(runStaticMalwareScan);
+  const runSourceStatic = useServerFn(runSourceStaticAnalysis);
+  const recordSearch = useServerFn(recordRepositorySearch);
+  const listHistory = useServerFn(listFileAnalysisHistory);
+  const listChat = useServerFn(listFileChatSession);
+  const sendChat = useServerFn(sendFileChatMessage);
+  const saveLocalChat = useServerFn(saveLocalFileChatTurn);
   const search = Route.useSearch();
 
-  const repo = useQuery({ queryKey: ["repo", repoId], queryFn: () => getRepo({ data: { id: repoId } }) });
+  const repo = useQuery({
+    queryKey: ["repo", repoId],
+    queryFn: () => getRepo({ data: { id: repoId } }),
+  });
   const provs = useQuery({ queryKey: ["providers"], queryFn: () => providersFn() });
+  const analysisMode = repo.data?.project_analysis_mode ?? "both";
+  const llmEnabled = analysisMode !== "static";
 
   const [selectedFileId, setSelectedFileId] = useState<string | null>(null);
   const [selectedFolderPath, setSelectedFolderPath] = useState<string | null>(null);
@@ -89,55 +149,140 @@ function WorkspacePage() {
   const [providerValue, setProviderValue] = useState<ProviderValue | "">("");
   const [mainTab, setMainTab] = useState<MainTab>("summary");
   const [summarySub, setSummarySub] = useState<SummarySub>("human");
-  const [qualityKind, setQualityKind] = useState<Exclude<AnalysisKind, "ai_origin" | "security">>("smells");
+  const [qualityKind, setQualityKind] =
+    useState<Exclude<AnalysisKind, "ai_origin" | "security">>("smells");
 
   const [summaryText, setSummaryText] = useState<string>("");
   const [qualityText, setQualityText] = useState<string>("");
   const [securityText, setSecurityText] = useState<string>("");
   const [aiOriginText, setAiOriginText] = useState<string>("");
   const [fixText, setFixText] = useState<string>("");
+  const [sourceStaticText, setSourceStaticText] = useState<string>("");
+  const [sourceStaticReport, setSourceStaticReport] = useState<SourceStaticReport | null>(null);
+  const [malwareText, setMalwareText] = useState<string>("");
+  const [malwareReport, setMalwareReport] = useState<StaticMalwareAssessment | null>(null);
+  const [chatDraft, setChatDraft] = useState("");
+  const [fileSearch, setFileSearch] = useState("");
+  const [lastRecordedSearch, setLastRecordedSearch] = useState<string | null>(null);
 
   const [repoSheetOpen, setRepoSheetOpen] = useState(false);
   const [repoAiResult, setRepoAiResult] = useState<RepoAiOriginResult | null>(null);
   const [selection, setSelection] = useState<CodeSelection | null>(null);
   const [useSelection, setUseSelection] = useState(true);
 
-
-
-
-  const cloudKeys = provs.data?.keys ?? [];
-  const localEndpoints = provs.data?.endpoints ?? [];
-  const hasAny = cloudKeys.length > 0 || localEndpoints.length > 0;
+  const cloudKeys = useMemo(() => provs.data?.keys ?? [], [provs.data?.keys]);
+  const localEndpoints = useMemo(() => provs.data?.endpoints ?? [], [provs.data?.endpoints]);
+  const hasAny = llmEnabled && (cloudKeys.length > 0 || localEndpoints.length > 0);
+  const visibleFiles = useMemo(
+    () => filterFilesBySearch(repo.data?.files ?? [], fileSearch),
+    [repo.data?.files, fileSearch],
+  );
+  const normalizedFileSearch = normalizeSearchQuery(fileSearch);
 
   useEffect(() => {
+    if (!llmEnabled) {
+      setProviderValue("");
+      return;
+    }
     if (providerValue) return;
     if (cloudKeys[0]) setProviderValue(`cloud:${cloudKeys[0].provider as CloudProvider}`);
-    else if (localEndpoints[0])
-      setProviderValue(`local:${localEndpoints[0].kind as LocalKind}`);
-  }, [provs.data, providerValue, cloudKeys, localEndpoints]);
+    else if (localEndpoints[0]) setProviderValue(`local:${localEndpoints[0].kind as LocalKind}`);
+  }, [llmEnabled, provs.data, providerValue, cloudKeys, localEndpoints]);
 
   const fileQ = useQuery({
     enabled: !!selectedFileId,
     queryKey: ["file", selectedFileId],
     queryFn: () => getContent({ data: { file_id: selectedFileId! } }),
   });
+  const historyQ = useQuery({
+    enabled: llmEnabled && !!selectedFileId,
+    queryKey: ["file-analysis-history", selectedFileId],
+    queryFn: () => listHistory({ data: { file_id: selectedFileId! } }),
+  });
+  const chatQ = useQuery({
+    enabled: llmEnabled && !!selectedFileId,
+    queryKey: ["file-chat-session", selectedFileId],
+    queryFn: () => listChat({ data: { file_id: selectedFileId! } }),
+  });
 
-  // Reset all outputs (and code selection) when context changes
+  useEffect(() => {
+    if (!shouldPersistSearchQuery(fileSearch, lastRecordedSearch)) return;
+    const query = normalizeSearchQuery(fileSearch);
+    const timer = window.setTimeout(() => {
+      setLastRecordedSearch(query);
+      void recordSearch({
+        data: {
+          repo_id: repoId,
+          query,
+          result_count: visibleFiles.length,
+        },
+      }).catch(() => {
+        // Search persistence is an audit/history trail; never interrupt local filtering.
+      });
+    }, 800);
+
+    return () => window.clearTimeout(timer);
+  }, [fileSearch, lastRecordedSearch, recordSearch, repoId, visibleFiles.length]);
+
+  // Reset all outputs (and code selection) when the selected source file changes.
   useEffect(() => {
     setSummaryText("");
     setQualityText("");
     setSecurityText("");
     setAiOriginText("");
     setFixText("");
+    setSourceStaticText("");
+    setSourceStaticReport(null);
+    setMalwareText("");
+    setMalwareReport(null);
+    setChatDraft("");
     setSelection(null);
-  }, [selectedFileId, providerValue]);
+  }, [selectedFileId]);
+
+  useEffect(() => {
+    const activities = historyQ.data?.activities ?? [];
+    if (activities.length === 0) return;
+
+    const drafts = buildWorkspaceHistoryDrafts(activities);
+    if (drafts.summaryText) {
+      setSummaryText((current) => current || drafts.summaryText);
+      setSummarySub(drafts.summarySub);
+      setProficiency(drafts.proficiency as Proficiency);
+    }
+    if (drafts.qualityText) {
+      setQualityText((current) => current || drafts.qualityText);
+      setQualityKind(drafts.qualityKind);
+    }
+    if (drafts.securityText) {
+      setSecurityText((current) => current || drafts.securityText);
+    }
+    if (drafts.aiOriginText) {
+      setAiOriginText((current) => current || drafts.aiOriginText);
+    }
+    if (drafts.fixText) {
+      setFixText((current) => current || drafts.fixText);
+    }
+  }, [historyQ.data?.activities]);
+
+  useEffect(() => {
+    if (!llmEnabled && mainTab !== "source_static" && mainTab !== "malware") {
+      setMainTab("source_static");
+    }
+  }, [llmEnabled, mainTab]);
+
+  useEffect(() => {
+    if (!llmEnabled) {
+      setSelectedFolderPath(null);
+      setRepoSheetOpen(false);
+      setRepoAiResult(null);
+    }
+  }, [llmEnabled]);
 
   const activeSnippet = useSelection && selection ? selection : null;
 
-
   // Open the repo-level AI-origin sheet when ?view=analyze. Use derived state
   // so it works synchronously on first render (no flash, no race with effects).
-  const repoSheetOpenDerived = search.view === "analyze" ? true : repoSheetOpen;
+  const repoSheetOpenDerived = llmEnabled && search.view === "analyze" ? true : repoSheetOpen;
   const onRepoSheetOpenChange = (open: boolean) => {
     setRepoSheetOpen(open);
     if (!open && search.view === "analyze") {
@@ -150,20 +295,21 @@ function WorkspacePage() {
   const [autoStarted, setAutoStarted] = useState(false);
   useEffect(() => {
     if (
+      llmEnabled &&
       search.view === "analyze" &&
       provs.isSuccess &&
       !autoStarted &&
       !repoAiResult &&
+      providerValue &&
       providerValue.startsWith("cloud:")
     ) {
       setAutoStarted(true);
       repoAiMut.mutate();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [search.view, provs.isSuccess, providerValue, autoStarted, repoAiResult]);
+  }, [llmEnabled, search.view, provs.isSuccess, providerValue, autoStarted, repoAiResult]);
 
-
-  const isLocal = providerValue.startsWith("local:");
+  const isLocal = llmEnabled && providerValue.startsWith("local:");
   const lang = (i18n.resolvedLanguage as "en" | "it" | "zh") || "en";
 
   const explainMut = useMutation({
@@ -224,14 +370,17 @@ function WorkspacePage() {
               model: endpoint.default_model ?? undefined,
             },
           });
-        } catch {}
+        } catch {
+          // Local cache writes are best-effort.
+        }
       }
       return text;
     },
-    onSuccess: (text) => { if (text) setSummaryText(text); },
-    onError: (e: any) => toast.error(e?.message ?? t("errors.generic")),
+    onSuccess: (text) => {
+      if (text) setSummaryText(text);
+    },
+    onError: (e) => toast.error(getErrorMessage(e, t("errors.generic"))),
   });
-
 
   async function runAnalysisKind(kind: AnalysisKind): Promise<string> {
     if (!selectedFileId || !providerValue) throw new Error("missing");
@@ -269,26 +418,50 @@ function WorkspacePage() {
           model: endpoint.default_model ?? undefined,
         },
       });
-    } catch {}
+    } catch {
+      // Local analysis cache writes are best-effort.
+    }
     return text;
   }
 
   const qualityMut = useMutation({
     mutationFn: () => runAnalysisKind(qualityKind),
     onSuccess: (text) => setQualityText(text),
-    onError: (e: any) => toast.error(e?.message ?? t("errors.generic")),
+    onError: (e) => toast.error(getErrorMessage(e, t("errors.generic"))),
   });
 
   const securityMut = useMutation({
     mutationFn: () => runAnalysisKind("security"),
     onSuccess: (text) => setSecurityText(text),
-    onError: (e: any) => toast.error(e?.message ?? t("errors.generic")),
+    onError: (e) => toast.error(getErrorMessage(e, t("errors.generic"))),
+  });
+
+  const sourceStaticMut = useMutation({
+    mutationFn: async () => {
+      if (!selectedFileId) throw new Error("missing_file");
+      const report = await runSourceStatic({ data: { file_id: selectedFileId } });
+      setSourceStaticReport(report);
+      setSourceStaticText(formatSourceStaticReport(report));
+    },
+    onSuccess: () => {},
+    onError: (e) => toast.error(getErrorMessage(e, t("errors.generic"))),
+  });
+
+  const malwareMut = useMutation({
+    mutationFn: async () => {
+      if (!selectedFileId) throw new Error("missing_file");
+      const report = await runMalware({ data: { file_id: selectedFileId } });
+      setMalwareReport(report);
+      setMalwareText(formatMalwareReport(report));
+    },
+    onSuccess: () => {},
+    onError: (e) => toast.error(getErrorMessage(e, t("errors.generic"))),
   });
 
   const aiOriginMut = useMutation({
     mutationFn: () => runAnalysisKind("ai_origin"),
     onSuccess: (text) => setAiOriginText(text),
-    onError: (e: any) => toast.error(e?.message ?? t("errors.generic")),
+    onError: (e) => toast.error(getErrorMessage(e, t("errors.generic"))),
   });
 
   const repoAiMut = useMutation({
@@ -299,8 +472,10 @@ function WorkspacePage() {
         data: { repo_id: repoId, provider, language: lang },
       });
     },
-    onSuccess: (r) => setRepoAiResult(r as RepoAiOriginResult),
-    onError: (e: any) => toast.error(e?.message ?? t("errors.generic")),
+    onSuccess: (r) => {
+      if (llmEnabled) setRepoAiResult(r as RepoAiOriginResult);
+    },
+    onError: (e) => toast.error(getErrorMessage(e, t("errors.generic"))),
   });
 
   const exportMut = useMutation({
@@ -317,7 +492,7 @@ function WorkspacePage() {
       a.click();
       URL.revokeObjectURL(url);
     },
-    onError: (e: any) => toast.error(e?.message ?? t("errors.generic")),
+    onError: (e) => toast.error(getErrorMessage(e, t("errors.generic"))),
   });
 
   const totalLines = fileQ.data?.content ? fileQ.data.content.split("\n").length : 100_000;
@@ -335,14 +510,29 @@ function WorkspacePage() {
     () => extractInsightBundle(securityText, totalLines, "security"),
     [securityText, totalLines],
   );
+  const sourceStaticFindings: Finding[] = useMemo(
+    () =>
+      sourceStaticReport?.findings.map((finding) => ({
+        id: finding.id,
+        start_line: finding.line,
+        end_line: finding.line,
+        severity: finding.severity === "critical" ? "critical" : finding.severity,
+        title: finding.title,
+        message: `${finding.source} -> ${finding.sink}. ${finding.remediation}`,
+        category: "security",
+        suggested_action: finding.remediation,
+      })) ?? [],
+    [sourceStaticReport],
+  );
 
   // Active tab's findings drive the code editor highlights.
   const findings: Finding[] = useMemo(() => {
     if (mainTab === "summary") return summaryBundle.findings;
     if (mainTab === "quality") return qualityBundle.findings;
     if (mainTab === "security") return securityBundle.findings;
+    if (mainTab === "source_static") return sourceStaticFindings;
     return [];
-  }, [mainTab, summaryBundle, qualityBundle, securityBundle]);
+  }, [mainTab, summaryBundle, qualityBundle, securityBundle, sourceStaticFindings]);
 
   const [activeFindingId, setActiveFindingId] = useState<string | null>(null);
   const [patchSourceInsight, setPatchSourceInsight] = useState<Finding | null>(null);
@@ -380,16 +570,89 @@ function WorkspacePage() {
       setFixText(text);
       setMainTab("fix");
     },
-    onError: (e: any) => toast.error(e?.message ?? t("errors.generic")),
+    onError: (e) => toast.error(getErrorMessage(e, t("errors.generic"))),
+  });
+
+  const chatMessages = useMemo<PersistedChatMessage[]>(
+    () => chatQ.data?.messages ?? [],
+    [chatQ.data?.messages],
+  );
+  const chatSession = chatQ.data?.session ?? null;
+  const chatText = useMemo(() => formatChatMessagesMarkdown(chatMessages), [chatMessages]);
+
+  const chatMut = useMutation({
+    mutationFn: async () => {
+      if (!selectedFileId) throw new Error("no_file");
+      if (!providerValue) throw new Error(t("workspace.chat.needsProvider"));
+      if (providerValue.startsWith("cloud:")) {
+        const provider = providerValue.slice(6) as CloudProvider;
+        return sendChat({
+          data: {
+            file_id: selectedFileId,
+            session_id: chatSession?.id ?? undefined,
+            provider,
+            message: chatDraft,
+          },
+        });
+      }
+
+      const localKind = providerValue.slice(6) as LocalKind;
+      const endpoint = localEndpoints.find((e) => e.kind === localKind);
+      if (!endpoint || !fileQ.data) throw new Error("not_ready");
+      const { system, user } = buildFileChatPrompt({
+        filePath: fileQ.data.path,
+        language: fileQ.data.language,
+        fileContent: fileQ.data.content,
+        previousMessages: chatMessages,
+        question: chatDraft,
+      });
+      const assistantText = await callLocalProvider({
+        kind: localKind,
+        baseUrl: endpoint.base_url,
+        model: endpoint.default_model || (localKind === "ollama" ? "llama3.2" : "local-model"),
+        system,
+        user,
+      });
+      return saveLocalChat({
+        data: {
+          file_id: selectedFileId,
+          session_id: chatSession?.id ?? undefined,
+          provider_kind: localKind,
+          model: endpoint.default_model ?? undefined,
+          user_message: chatDraft,
+          assistant_message: assistantText || "(empty response)",
+        },
+      });
+    },
+    onSuccess: (result) => {
+      if (selectedFileId) {
+        queryClient.setQueryData(["file-chat-session", selectedFileId], result);
+      }
+      setChatDraft("");
+    },
+    onError: (e) => toast.error(getErrorMessage(e, t("errors.generic"))),
   });
 
   const activeText = useMemo(() => {
     if (mainTab === "summary") return summaryText;
     if (mainTab === "quality") return qualityText;
     if (mainTab === "ai_origin") return aiOriginText;
+    if (mainTab === "source_static") return sourceStaticText;
+    if (mainTab === "malware") return malwareText;
+    if (mainTab === "chat") return chatText;
     if (mainTab === "fix") return fixText;
     return securityText;
-  }, [mainTab, summaryText, qualityText, securityText, aiOriginText, fixText]);
+  }, [
+    mainTab,
+    summaryText,
+    qualityText,
+    securityText,
+    aiOriginText,
+    sourceStaticText,
+    malwareText,
+    chatText,
+    fixText,
+  ]);
 
   const mdFilename = useMemo(() => {
     const base = fileQ.data?.path?.split("/").pop() ?? "explanation";
@@ -400,12 +663,17 @@ function WorkspacePage() {
           ? `quality.${qualityKind}`
           : mainTab === "ai_origin"
             ? `ai-origin`
-            : mainTab === "fix"
-              ? `fix`
-              : `security`;
+            : mainTab === "source_static"
+              ? `source-static`
+              : mainTab === "malware"
+                ? `malware`
+                : mainTab === "chat"
+                  ? `chat`
+                  : mainTab === "fix"
+                    ? `fix`
+                    : `security`;
     return `${base}.${suffix}.md`;
   }, [fileQ.data?.path, mainTab, summarySub, proficiency, qualityKind]);
-
 
   const onCopy = async () => {
     if (!activeText) return;
@@ -432,7 +700,10 @@ function WorkspacePage() {
     if (mainTab === "summary") explainMut.mutate();
     else if (mainTab === "quality") qualityMut.mutate();
     else if (mainTab === "ai_origin") aiOriginMut.mutate();
+    else if (mainTab === "source_static") sourceStaticMut.mutate();
+    else if (mainTab === "malware") malwareMut.mutate();
     else if (mainTab === "fix") fixMut.mutate();
+    else if (mainTab === "chat") return;
     else securityMut.mutate();
   };
   const isRunning =
@@ -440,6 +711,9 @@ function WorkspacePage() {
     (mainTab === "quality" && qualityMut.isPending) ||
     (mainTab === "ai_origin" && aiOriginMut.isPending) ||
     (mainTab === "security" && securityMut.isPending) ||
+    (mainTab === "source_static" && sourceStaticMut.isPending) ||
+    (mainTab === "malware" && malwareMut.isPending) ||
+    (mainTab === "chat" && chatMut.isPending) ||
     (mainTab === "fix" && fixMut.isPending);
 
   const jumpToFinding = (f: Finding) => {
@@ -458,9 +732,7 @@ function WorkspacePage() {
     }
     if (action.kind === "explain" || action.kind === "comment") {
       const lines = fileQ.data.content.split("\n");
-      const slice = lines
-        .slice(f.start_line - 1, f.end_line)
-        .join("\n");
+      const slice = lines.slice(f.start_line - 1, f.end_line).join("\n");
       setSelection({
         content: slice,
         startLine: f.start_line,
@@ -504,34 +776,44 @@ function WorkspacePage() {
     }
   };
 
+  const canRunRepoAi = llmEnabled && providerValue.startsWith("cloud:");
 
-  const canRunRepoAi = providerValue.startsWith("cloud:");
-
-  const statusKind: "ready" | "needFile" | "needProvider" =
-    !providerValue ? "needProvider" : !selectedFileId ? "needFile" : "ready";
+  const tabNeedsProvider =
+    llmEnabled &&
+    (mainTab === "summary" ||
+      mainTab === "quality" ||
+      mainTab === "security" ||
+      mainTab === "ai_origin" ||
+      mainTab === "chat" ||
+      mainTab === "fix");
+  const statusKind: "ready" | "needFile" | "needProvider" = !selectedFileId
+    ? "needFile"
+    : tabNeedsProvider && !providerValue
+      ? "needProvider"
+      : "ready";
 
   return (
     <AppShell>
-      {/* Repo-scan sheet hoisted to shell level so it can't be hidden by
-          a narrow resizable panel and opens deterministically from URL. */}
-      <Sheet open={repoSheetOpenDerived} onOpenChange={onRepoSheetOpenChange}>
-        <SheetContent side="right" className="w-full p-0 sm:max-w-xl">
-          <SheetHeader className="border-b border-border p-4">
-            <SheetTitle className="flex items-center gap-2">
-              <Bot className="h-5 w-5 text-primary" />
-              {t("aiOrigin.title")}
-            </SheetTitle>
-          </SheetHeader>
-          <div className="h-[calc(100vh-4rem)]">
-            <AiOriginPanel
-              result={repoAiResult}
-              isRunning={repoAiMut.isPending}
-              onRun={() => repoAiMut.mutate()}
-              canRun={canRunRepoAi}
-            />
-          </div>
-        </SheetContent>
-      </Sheet>
+      {llmEnabled && (
+        <Sheet open={repoSheetOpenDerived} onOpenChange={onRepoSheetOpenChange}>
+          <SheetContent side="right" className="w-full p-0 sm:max-w-xl">
+            <SheetHeader className="border-b border-border p-4">
+              <SheetTitle className="flex items-center gap-2">
+                <Bot className="h-5 w-5 text-primary" />
+                {t("aiOrigin.title")}
+              </SheetTitle>
+            </SheetHeader>
+            <div className="h-[calc(100vh-4rem)]">
+              <AiOriginPanel
+                result={repoAiResult}
+                isRunning={repoAiMut.isPending}
+                onRun={() => repoAiMut.mutate()}
+                canRun={canRunRepoAi}
+              />
+            </div>
+          </SheetContent>
+        </Sheet>
+      )}
 
       <div className="h-[calc(100vh-3.5rem)]">
         <ResizablePanelGroup orientation="horizontal">
@@ -542,16 +824,22 @@ function WorkspacePage() {
                   {repo.data?.repository?.name ?? t("workspace.files")}
                 </span>
                 <div className="flex shrink-0 items-center gap-1">
-                  <Button
-                    size="sm"
-                    variant="secondary"
-                    className="h-7 px-2 text-[11px]"
-                    title={t("workspace.analyzeWholeRepo")}
-                    onClick={() => setRepoSheetOpen(true)}
-                  >
-                    <ScanSearch className="mr-1 h-3.5 w-3.5" />
-                    {t("workspace.analyzeWholeRepo")}
-                  </Button>
+                  {llmEnabled ? (
+                    <Button
+                      size="sm"
+                      variant="secondary"
+                      className="h-7 px-2 text-[11px]"
+                      title={t("workspace.analyzeWholeRepo")}
+                      onClick={() => setRepoSheetOpen(true)}
+                    >
+                      <ScanSearch className="mr-1 h-3.5 w-3.5" />
+                      {t("workspace.analyzeWholeRepo")}
+                    </Button>
+                  ) : (
+                    <span className="rounded-full border border-primary/30 bg-primary/5 px-2 py-1 text-[11px] text-primary">
+                      {t("workspace.staticOnlyMode")}
+                    </span>
+                  )}
                   <Button
                     size="sm"
                     variant="ghost"
@@ -564,22 +852,64 @@ function WorkspacePage() {
                   </Button>
                 </div>
               </div>
+              <div className="border-b border-border p-2">
+                <div className="relative">
+                  <Search className="pointer-events-none absolute left-2 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
+                  <Input
+                    value={fileSearch}
+                    onChange={(event) => setFileSearch(event.target.value)}
+                    placeholder={t("workspace.searchFiles")}
+                    className="h-8 pl-7 pr-7 text-xs"
+                    aria-label={t("workspace.searchFiles")}
+                  />
+                  {fileSearch && (
+                    <button
+                      type="button"
+                      onClick={() => setFileSearch("")}
+                      className="absolute right-2 top-1/2 -translate-y-1/2 rounded text-muted-foreground hover:text-foreground"
+                      aria-label={t("workspace.clearSearch")}
+                      title={t("workspace.clearSearch")}
+                    >
+                      <X className="h-3.5 w-3.5" />
+                    </button>
+                  )}
+                </div>
+                {normalizedFileSearch ? (
+                  <div className="mt-1 px-1 text-[10px] text-muted-foreground">
+                    {t("workspace.searchResultCount", {
+                      shown: visibleFiles.length,
+                      total: repo.data?.files.length ?? 0,
+                    })}
+                  </div>
+                ) : null}
+              </div>
               <ScrollArea className="flex-1">
                 <div className="p-2">
                   {repo.data && (
-                    <FileTree
-                      files={repo.data.files}
-                      selectedId={selectedFileId}
-                      selectedFolderPath={selectedFolderPath}
-                      onSelect={(f) => {
-                        setSelectedFileId(f.id);
-                        setSelectedFolderPath(null);
-                      }}
-                      onSelectFolder={(p) => {
-                        setSelectedFolderPath(p);
-                        setSelectedFileId(null);
-                      }}
-                    />
+                    <>
+                      <FileTree
+                        files={visibleFiles}
+                        selectedId={selectedFileId}
+                        selectedFolderPath={selectedFolderPath}
+                        onSelect={(f) => {
+                          setSelectedFileId(f.id);
+                          setSelectedFolderPath(null);
+                        }}
+                        onSelectFolder={
+                          llmEnabled
+                            ? (p) => {
+                                setSelectedFolderPath(p);
+                                setSelectedFileId(null);
+                              }
+                            : undefined
+                        }
+                      />
+                      {visibleFiles.length === 0 && normalizedFileSearch && (
+                        <div className="rounded-md border border-dashed border-border p-3 text-center text-xs text-muted-foreground">
+                          {t("workspace.noSearchResults")}
+                        </div>
+                      )}
+                    </>
                   )}
                 </div>
               </ScrollArea>
@@ -592,12 +922,8 @@ function WorkspacePage() {
                 <div className="flex h-full items-center justify-center p-6">
                   <div className="max-w-md space-y-3 rounded-lg border border-primary/30 bg-primary/5 p-6 text-center">
                     <ScanSearch className="mx-auto h-8 w-8 text-primary" />
-                    <h3 className="text-base font-semibold">
-                      {t("workspace.folder.title")}
-                    </h3>
-                    <p className="font-mono text-sm text-foreground">
-                      {selectedFolderPath}/
-                    </p>
+                    <h3 className="text-base font-semibold">{t("workspace.folder.title")}</h3>
+                    <p className="font-mono text-sm text-foreground">{selectedFolderPath}/</p>
                     <p className="text-xs text-muted-foreground">
                       {t("workspace.folder.emptyHint")}
                     </p>
@@ -615,7 +941,8 @@ function WorkspacePage() {
                     onMarkerClick={(f) => {
                       setActiveFindingId(f.id ?? null);
                       // surface its tab if the active one doesn't contain it
-                      if (f.category === "summary" || f.category === "comment") setMainTab("summary");
+                      if (f.category === "summary" || f.category === "comment")
+                        setMainTab("summary");
                       else if (f.category === "security") setMainTab("security");
                       else if (f.category === "quality") setMainTab("quality");
                     }}
@@ -630,19 +957,44 @@ function WorkspacePage() {
                               : `${selection.startLine}–${selection.endLine}`,
                         })}
                       </span>
-                      <Button size="sm" variant="ghost" className="h-6 px-2 text-[10px]" onClick={() => runFromSelection("explain")}>
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        className="h-6 px-2 text-[10px]"
+                        onClick={() => runFromSelection("explain")}
+                      >
                         {t("insights.selection.explain")}
                       </Button>
-                      <Button size="sm" variant="ghost" className="h-6 px-2 text-[10px]" onClick={() => runFromSelection("summarize")}>
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        className="h-6 px-2 text-[10px]"
+                        onClick={() => runFromSelection("summarize")}
+                      >
                         {t("insights.selection.summarize")}
                       </Button>
-                      <Button size="sm" variant="ghost" className="h-6 px-2 text-[10px]" onClick={() => runFromSelection("comment")}>
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        className="h-6 px-2 text-[10px]"
+                        onClick={() => runFromSelection("comment")}
+                      >
                         {t("insights.selection.comment")}
                       </Button>
-                      <Button size="sm" variant="ghost" className="h-6 px-2 text-[10px]" onClick={() => runFromSelection("quality")}>
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        className="h-6 px-2 text-[10px]"
+                        onClick={() => runFromSelection("quality")}
+                      >
                         {t("insights.selection.quality")}
                       </Button>
-                      <Button size="sm" variant="ghost" className="h-6 px-2 text-[10px]" onClick={() => runFromSelection("security")}>
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        className="h-6 px-2 text-[10px]"
+                        onClick={() => runFromSelection("security")}
+                      >
                         {t("insights.selection.security")}
                       </Button>
                     </div>
@@ -654,16 +1006,31 @@ function WorkspacePage() {
                     <h3 className="text-base font-semibold">{t("workspace.howTo.title")}</h3>
                     <ol className="space-y-3 text-sm">
                       <li className="flex items-start gap-3">
-                        <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary/15 text-xs font-semibold text-primary">1</span>
-                        <span className="flex items-center gap-1.5"><ArrowLeft className="h-3.5 w-3.5 text-muted-foreground" />{t("workspace.howTo.step1")}</span>
+                        <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary/15 text-xs font-semibold text-primary">
+                          1
+                        </span>
+                        <span className="flex items-center gap-1.5">
+                          <ArrowLeft className="h-3.5 w-3.5 text-muted-foreground" />
+                          {t("workspace.howTo.step1")}
+                        </span>
                       </li>
                       <li className="flex items-start gap-3">
-                        <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary/15 text-xs font-semibold text-primary">2</span>
-                        <span className="flex items-center gap-1.5">{t("workspace.howTo.step2")}<ArrowRight className="h-3.5 w-3.5 text-muted-foreground" /></span>
+                        <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary/15 text-xs font-semibold text-primary">
+                          2
+                        </span>
+                        <span className="flex items-center gap-1.5">
+                          {t("workspace.howTo.step2")}
+                          <ArrowRight className="h-3.5 w-3.5 text-muted-foreground" />
+                        </span>
                       </li>
                       <li className="flex items-start gap-3">
-                        <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary/15 text-xs font-semibold text-primary">3</span>
-                        <span className="flex items-center gap-1.5"><Play className="h-3.5 w-3.5 text-primary" />{t("workspace.howTo.step3")}</span>
+                        <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary/15 text-xs font-semibold text-primary">
+                          3
+                        </span>
+                        <span className="flex items-center gap-1.5">
+                          <Play className="h-3.5 w-3.5 text-primary" />
+                          {t("workspace.howTo.step3")}
+                        </span>
                       </li>
                     </ol>
                   </div>
@@ -686,338 +1053,609 @@ function WorkspacePage() {
                 }}
               />
             ) : (
-            <div className="flex h-full flex-col border-l border-border bg-sidebar">
-              <div className="sticky top-0 z-10 space-y-2 border-b border-border bg-sidebar p-3">
-                <div className="space-y-2">
-                  <div>
-                    <label className="text-[10px] uppercase text-muted-foreground">
-                      {t("workspace.proficiency")}
-                    </label>
-                    <Select value={proficiency} onValueChange={(v) => setProficiency(v as Proficiency)}>
+              <div className="flex h-full flex-col border-l border-border bg-sidebar">
+                <div className="sticky top-0 z-10 space-y-2 border-b border-border bg-sidebar p-3">
+                  <div className="space-y-2">
+                    <div>
+                      <label className="text-[10px] uppercase text-muted-foreground">
+                        {t("workspace.proficiency")}
+                      </label>
+                      <Select
+                        value={proficiency}
+                        onValueChange={(v) => setProficiency(v as Proficiency)}
+                      >
+                        <SelectTrigger className="h-8">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {(
+                            [
+                              "nontech",
+                              "junior",
+                              "intermediate",
+                              "senior",
+                              "architect",
+                              "cto",
+                            ] as const
+                          ).map((p) => (
+                            <SelectItem key={p} value={p}>
+                              {t(`proficiency.${p}`)}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    {llmEnabled ? (
+                      <div>
+                        <label className="text-[10px] uppercase text-muted-foreground">
+                          {t("workspace.provider")}
+                        </label>
+                        <Select
+                          value={providerValue}
+                          onValueChange={(v) => setProviderValue(v as ProviderValue)}
+                          disabled={!hasAny}
+                        >
+                          <SelectTrigger className="h-8">
+                            <SelectValue placeholder="—" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {cloudKeys.length > 0 && (
+                              <SelectGroup>
+                                <SelectLabel>{t("workspace.cloud")}</SelectLabel>
+                                {cloudKeys.map((k) => (
+                                  <SelectItem key={k.provider} value={`cloud:${k.provider}`}>
+                                    {t(`settings.providers.${k.provider}`)}
+                                  </SelectItem>
+                                ))}
+                              </SelectGroup>
+                            )}
+                            {localEndpoints.length > 0 && (
+                              <SelectGroup>
+                                <SelectLabel>{t("workspace.local")}</SelectLabel>
+                                {localEndpoints.map((e) => (
+                                  <SelectItem key={e.kind} value={`local:${e.kind}`}>
+                                    {t(`settings.endpoints.${e.kind}`)}
+                                  </SelectItem>
+                                ))}
+                              </SelectGroup>
+                            )}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    ) : (
+                      <div className="rounded-md border border-primary/30 bg-primary/5 p-3 text-[11px] text-primary">
+                        <div className="font-medium">{t("workspace.staticOnlyMode")}</div>
+                        <p className="mt-1 text-muted-foreground">
+                          {t("workspace.staticOnlyBody")}
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                  {llmEnabled && !hasAny && (
+                    <div className="flex items-center justify-between gap-2 rounded-md border border-amber-500/40 bg-amber-500/5 p-2">
+                      <span className="text-[11px] text-amber-700 dark:text-amber-300">
+                        {t("workspace.noProvider")}
+                      </span>
+                      <Button
+                        asChild
+                        size="sm"
+                        variant="secondary"
+                        className="h-7 shrink-0 px-2 text-[11px]"
+                      >
+                        <Link to="/settings" hash="byok">
+                          <KeyRound className="mr-1 h-3 w-3" />
+                          {t("aiOrigin.configureKey")}
+                        </Link>
+                      </Button>
+                    </div>
+                  )}
+                  {llmEnabled && isLocal && (
+                    <p className="flex items-center gap-1 text-[11px] text-primary">
+                      <ShieldCheck className="h-3 w-3" />
+                      {t("workspace.localPledge")}
+                    </p>
+                  )}
+                  {llmEnabled && mainTab === "quality" && (
+                    <Select
+                      value={qualityKind}
+                      onValueChange={(v) => setQualityKind(v as typeof qualityKind)}
+                    >
                       <SelectTrigger className="h-8">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
-                        {(["nontech", "junior", "intermediate", "senior", "architect", "cto"] as const).map((p) => (
-                          <SelectItem key={p} value={p}>
-                            {t(`proficiency.${p}`)}
+                        {(["smells", "deadcode", "bugs"] as const).map((k) => (
+                          <SelectItem key={k} value={k}>
+                            {t(`analysis.kind.${k}`)}
                           </SelectItem>
                         ))}
                       </SelectContent>
                     </Select>
-                  </div>
-                  <div>
-                    <label className="text-[10px] uppercase text-muted-foreground">
-                      {t("workspace.provider")}
-                    </label>
-                    <Select
-                      value={providerValue}
-                      onValueChange={(v) => setProviderValue(v as ProviderValue)}
-                      disabled={!hasAny}
-                    >
-                      <SelectTrigger className="h-8">
-                        <SelectValue placeholder="—" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {cloudKeys.length > 0 && (
-                          <SelectGroup>
-                            <SelectLabel>{t("workspace.cloud")}</SelectLabel>
-                            {cloudKeys.map((k) => (
-                              <SelectItem key={k.provider} value={`cloud:${k.provider}`}>
-                                {t(`settings.providers.${k.provider}`)}
-                              </SelectItem>
-                            ))}
-                          </SelectGroup>
-                        )}
-                        {localEndpoints.length > 0 && (
-                          <SelectGroup>
-                            <SelectLabel>{t("workspace.local")}</SelectLabel>
-                            {localEndpoints.map((e) => (
-                              <SelectItem key={e.kind} value={`local:${e.kind}`}>
-                                {t(`settings.endpoints.${e.kind}`)}
-                              </SelectItem>
-                            ))}
-                          </SelectGroup>
-                        )}
-                      </SelectContent>
-                    </Select>
-                  </div>
-                </div>
-                {!hasAny && (
-                  <div className="flex items-center justify-between gap-2 rounded-md border border-amber-500/40 bg-amber-500/5 p-2">
-                    <span className="text-[11px] text-amber-700 dark:text-amber-300">
-                      {t("workspace.noProvider")}
-                    </span>
-                    <Button asChild size="sm" variant="secondary" className="h-7 shrink-0 px-2 text-[11px]">
-                      <Link to="/settings" hash="byok">
-                        <KeyRound className="mr-1 h-3 w-3" />
-                        {t("aiOrigin.configureKey")}
-                      </Link>
-                    </Button>
-                  </div>
-                )}
-                {isLocal && (
-                  <p className="flex items-center gap-1 text-[11px] text-primary">
-                    <ShieldCheck className="h-3 w-3" />
-                    {t("workspace.localPledge")}
-                  </p>
-                )}
-                {mainTab === "quality" && (
-                  <Select value={qualityKind} onValueChange={(v) => setQualityKind(v as typeof qualityKind)}>
-                    <SelectTrigger className="h-8">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {(["smells", "deadcode", "bugs"] as const).map((k) => (
-                        <SelectItem key={k} value={k}>
-                          {t(`analysis.kind.${k}`)}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                )}
-                {mainTab === "summary" && selection && (
-                  <label className="flex cursor-pointer items-start gap-2 rounded-md border border-primary/40 bg-primary/5 p-2 text-[11px] text-primary">
-                    <input
-                      type="checkbox"
-                      className="mt-0.5 h-3.5 w-3.5 accent-primary"
-                      checked={useSelection}
-                      onChange={(e) => setUseSelection(e.target.checked)}
-                    />
-                    <span>
-                      {t("workspace.selectionToggle", {
-                        from: selection.startLine,
-                        to: selection.endLine,
-                      })}
-                    </span>
-                  </label>
-                )}
-                {/* Status pill */}
-
-                <div
-                  className={
-                    "flex items-center gap-1.5 rounded-md border px-2 py-1 text-[11px] font-medium " +
-                    (statusKind === "ready"
-                      ? "border-emerald-500/40 bg-emerald-500/5 text-emerald-700 dark:text-emerald-300"
-                      : "border-amber-500/40 bg-amber-500/5 text-amber-700 dark:text-amber-300")
-                  }
-                >
-                  {statusKind === "ready" ? (
-                    <CheckCircle2 className="h-3.5 w-3.5" />
-                  ) : (
-                    <AlertCircle className="h-3.5 w-3.5" />
                   )}
-                  {statusKind === "ready" && t("workspace.status.ready")}
-                  {statusKind === "needFile" && t("workspace.status.needFile")}
-                  {statusKind === "needProvider" && t("workspace.status.needProvider")}
-                </div>
-                <Button
-                  size="default"
-                  className="h-10 w-full text-sm font-semibold"
-                  onClick={runMain}
-                  disabled={!selectedFileId || !providerValue || isRunning}
-                >
-                  {isRunning ? (
-                    <Sparkles className="mr-2 h-4 w-4 animate-pulse" />
-                  ) : mainTab === "summary" ? (
-                    <Sparkles className="mr-2 h-4 w-4" />
-                  ) : (
-                    <BugPlay className="mr-2 h-4 w-4" />
-                  )}
-                  {isRunning
-                    ? mainTab === "summary"
-                      ? t("workspace.explaining")
-                      : t("workspace.analyzing")
-                    : t("workspace.runFile")}
-                </Button>
-              </div>
-              <Tabs
-                value={mainTab}
-                onValueChange={(v) => setMainTab(v as MainTab)}
-                className="flex flex-1 flex-col overflow-hidden"
-              >
-                <div className="flex items-center justify-between px-2 pt-2">
-                  <TabsList>
-                    <TabsTrigger value="summary">{t("workspace.tabs.summary")}</TabsTrigger>
-                    <TabsTrigger value="quality" className="gap-1">
-                      {t("workspace.tabs.quality")}
-                      {mainTab !== "quality" && findings.length > 0 && qualityText && (
-                        <span className="rounded-full bg-primary/15 px-1.5 text-[10px] tabular-nums text-primary">
-                          {findings.length}
-                        </span>
-                      )}
-                    </TabsTrigger>
-                    <TabsTrigger value="security">{t("workspace.tabs.security")}</TabsTrigger>
-                    <TabsTrigger value="ai_origin" className="gap-1">
-                      <Bot className="h-3 w-3" />
-                      {t("workspace.tabs.aiOrigin")}
-                    </TabsTrigger>
-                    <TabsTrigger value="fix" className="gap-1">
-                      <Wrench className="h-3 w-3" />
-                      {t("workspace.tabs.fix")}
-                    </TabsTrigger>
-                  </TabsList>
-                  <div className="flex items-center gap-1">
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={onCopy}
-                      disabled={!activeText}
-                      aria-label={t("workspace.copy")}
-                    >
-                      <Copy className="h-3.5 w-3.5" />
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={onDownload}
-                      disabled={!activeText}
-                      aria-label={t("workspace.download")}
-                    >
-                      <Download className="h-3.5 w-3.5" />
-                    </Button>
-                  </div>
-                </div>
-                <TabsContent forceMount value="summary" className="m-0 flex-1 space-y-3 overflow-auto px-4 pb-4 data-[state=inactive]:hidden">
-                  <Tabs value={summarySub} onValueChange={(v) => setSummarySub(v as SummarySub)}>
-                    <TabsList className="mt-2">
-                      <TabsTrigger value="human">{t("workspace.tabs.human")}</TabsTrigger>
-                      <TabsTrigger value="technical">{t("workspace.tabs.technical")}</TabsTrigger>
-                    </TabsList>
-                    <TabsContent forceMount value="human" className="m-0 pt-2 data-[state=inactive]:hidden">
-                      <ExplanationView text={stripFindingsBlock(summaryText)} />
-                    </TabsContent>
-                    <TabsContent forceMount value="technical" className="m-0 pt-2 data-[state=inactive]:hidden">
-                      <ExplanationView text={stripFindingsBlock(summaryText)} />
-                    </TabsContent>
-                  </Tabs>
-                  {summaryText && (
-                    <InsightPanel
-                      findings={summaryBundle.findings}
-                      unmapped={summaryBundle.unmapped}
-                      activeId={activeFindingId}
-                      onAction={handleInsightAction}
-                      defaultCategory="summary"
-                      emptyLabel={t("workspace.findings.empty")}
-                    />
-                  )}
-                </TabsContent>
-                <TabsContent forceMount value="quality" className="m-0 flex-1 space-y-3 overflow-auto px-4 pb-4 data-[state=inactive]:hidden">
-                  <ExplanationView text={stripFindingsBlock(qualityText)} placeholder={t("analysis.empty")} />
-                  {qualityText && (
-                    <InsightPanel
-                      findings={qualityBundle.findings}
-                      unmapped={qualityBundle.unmapped}
-                      activeId={activeFindingId}
-                      onAction={handleInsightAction}
-                      canPatch={providerValue.startsWith("cloud:")}
-                      defaultCategory="quality"
-                      emptyLabel={t("workspace.findings.empty")}
-                    />
-                  )}
-                </TabsContent>
-                <TabsContent forceMount value="security" className="m-0 flex-1 space-y-3 overflow-auto px-4 pb-4 data-[state=inactive]:hidden">
-                  <ExplanationView text={stripFindingsBlock(securityText)} placeholder={t("analysis.empty")} />
-                  {securityText && (
-                    <InsightPanel
-                      findings={securityBundle.findings}
-                      unmapped={securityBundle.unmapped}
-                      activeId={activeFindingId}
-                      onAction={handleInsightAction}
-                      canPatch={providerValue.startsWith("cloud:")}
-                      defaultCategory="security"
-                      emptyLabel={t("workspace.findings.empty")}
-                    />
-                  )}
-                </TabsContent>
-                <TabsContent forceMount value="ai_origin" className="m-0 flex-1 overflow-auto px-4 pb-4 data-[state=inactive]:hidden">
-                  {aiOriginText ? (
-                    <ExplanationView text={aiOriginText} />
-                  ) : (
-                    <div className="space-y-2 pt-3">
-                      <p className="text-sm text-muted-foreground">{t("aiOrigin.fileEmpty")}</p>
-                      <p className="text-xs text-amber-600 dark:text-amber-400">
-                        {t("aiOrigin.disclaimer")}
-                      </p>
-                    </div>
-                  )}
-                </TabsContent>
-                <TabsContent forceMount value="fix" className="m-0 flex-1 overflow-hidden p-3 data-[state=inactive]:hidden">
-                  <div className="flex h-full min-h-0 flex-col gap-2">
-                    <div className="flex items-center gap-2">
-                      <Button
-                        size="sm"
-                        onClick={() => fixMut.mutate()}
-                        disabled={!selectedFileId || !providerValue.startsWith("cloud:") || !fixSourceAnalysis || fixMut.isPending}
-                      >
-                        {fixMut.isPending ? (
-                          <Sparkles className="mr-2 h-3.5 w-3.5 animate-pulse" />
-                        ) : (
-                          <Wrench className="mr-2 h-3.5 w-3.5" />
-                        )}
-                        {fixMut.isPending ? t("workspace.fix.generating") : t("workspace.fix.generate")}
-                      </Button>
-                      {!fixSourceAnalysis && (
-                        <span className="text-[11px] text-muted-foreground">
-                          {t("workspace.fix.needsAnalysis")}
-                        </span>
-                      )}
-                    </div>
-                    {patchSourceInsight && fixText && (
-                      <div className="flex items-center justify-between gap-2 rounded-md border border-primary/30 bg-primary/5 px-2 py-1.5 text-[11px]">
-                        <span className="truncate">
-                          <span className="font-semibold text-primary">{t("insights.patchFrom")}: </span>
-                          {patchSourceInsight.title}
-                          <span className="ml-2 font-mono text-muted-foreground">
-                            {t("insights.lineRange", {
-                              range:
-                                patchSourceInsight.start_line === patchSourceInsight.end_line
-                                  ? `${patchSourceInsight.start_line}`
-                                  : `${patchSourceInsight.start_line}–${patchSourceInsight.end_line}`,
-                            })}
-                          </span>
-                        </span>
-                        <Button
-                          size="sm"
-                          variant="ghost"
-                          className="h-6 px-2 text-[10px]"
-                          onClick={() => jumpToFinding(patchSourceInsight)}
-                        >
-                          {t("insights.backToInsight")}
-                        </Button>
-                      </div>
-                    )}
-                    <div className="min-h-0 flex-1">
-                      <DiffViewer
-                        diff={extractDiffBlock(fixText)}
-                        notes={extractNotes(fixText)}
-                        filename={`${fileQ.data?.path?.split("/").pop() ?? "decoder-fix"}.patch`}
+                  {llmEnabled && mainTab === "summary" && selection && (
+                    <label className="flex cursor-pointer items-start gap-2 rounded-md border border-primary/40 bg-primary/5 p-2 text-[11px] text-primary">
+                      <input
+                        type="checkbox"
+                        className="mt-0.5 h-3.5 w-3.5 accent-primary"
+                        checked={useSelection}
+                        onChange={(e) => setUseSelection(e.target.checked)}
                       />
+                      <span>
+                        {t("workspace.selectionToggle", {
+                          from: selection.startLine,
+                          to: selection.endLine,
+                        })}
+                      </span>
+                    </label>
+                  )}
+                  {/* Status pill */}
+
+                  <div
+                    className={
+                      "flex items-center gap-1.5 rounded-md border px-2 py-1 text-[11px] font-medium " +
+                      (statusKind === "ready"
+                        ? "border-emerald-500/40 bg-emerald-500/5 text-emerald-700 dark:text-emerald-300"
+                        : "border-amber-500/40 bg-amber-500/5 text-amber-700 dark:text-amber-300")
+                    }
+                  >
+                    {statusKind === "ready" ? (
+                      <CheckCircle2 className="h-3.5 w-3.5" />
+                    ) : (
+                      <AlertCircle className="h-3.5 w-3.5" />
+                    )}
+                    {statusKind === "ready" && t("workspace.status.ready")}
+                    {statusKind === "needFile" && t("workspace.status.needFile")}
+                    {statusKind === "needProvider" && t("workspace.status.needProvider")}
+                  </div>
+                  {mainTab !== "chat" && (
+                    <Button
+                      size="default"
+                      className="h-10 w-full text-sm font-semibold"
+                      onClick={runMain}
+                      disabled={
+                        !selectedFileId || (tabNeedsProvider && !providerValue) || isRunning
+                      }
+                    >
+                      {isRunning ? (
+                        <Sparkles className="mr-2 h-4 w-4 animate-pulse" />
+                      ) : mainTab === "summary" ? (
+                        <Sparkles className="mr-2 h-4 w-4" />
+                      ) : (
+                        <BugPlay className="mr-2 h-4 w-4" />
+                      )}
+                      {isRunning
+                        ? mainTab === "summary"
+                          ? t("workspace.explaining")
+                          : t("workspace.analyzing")
+                        : llmEnabled
+                          ? t("workspace.runFile")
+                          : t("workspace.runStatic")}
+                    </Button>
+                  )}
+                </div>
+                <Tabs
+                  value={mainTab}
+                  onValueChange={(v) => setMainTab(v as MainTab)}
+                  className="flex flex-1 flex-col overflow-hidden"
+                >
+                  <div className="flex items-center justify-between px-2 pt-2">
+                    <TabsList>
+                      {llmEnabled && (
+                        <TabsTrigger value="summary">{t("workspace.tabs.summary")}</TabsTrigger>
+                      )}
+                      {llmEnabled && (
+                        <TabsTrigger value="quality" className="gap-1">
+                          {t("workspace.tabs.quality")}
+                          {mainTab !== "quality" && findings.length > 0 && qualityText && (
+                            <span className="rounded-full bg-primary/15 px-1.5 text-[10px] tabular-nums text-primary">
+                              {findings.length}
+                            </span>
+                          )}
+                        </TabsTrigger>
+                      )}
+                      {llmEnabled && (
+                        <TabsTrigger value="security">{t("workspace.tabs.security")}</TabsTrigger>
+                      )}
+                      <TabsTrigger value="source_static" className="gap-1">
+                        <ScanSearch className="h-3 w-3" />
+                        {t("workspace.tabs.staticCode")}
+                      </TabsTrigger>
+                      <TabsTrigger value="malware" className="gap-1">
+                        <ShieldAlert className="h-3 w-3" />
+                        {t("workspace.tabs.malware")}
+                      </TabsTrigger>
+                      {llmEnabled && (
+                        <>
+                          <TabsTrigger value="ai_origin" className="gap-1">
+                            <Bot className="h-3 w-3" />
+                            {t("workspace.tabs.aiOrigin")}
+                          </TabsTrigger>
+                          <TabsTrigger value="chat" className="gap-1">
+                            <MessageSquare className="h-3 w-3" />
+                            {t("workspace.tabs.chat")}
+                          </TabsTrigger>
+                          <TabsTrigger value="fix" className="gap-1">
+                            <Wrench className="h-3 w-3" />
+                            {t("workspace.tabs.fix")}
+                          </TabsTrigger>
+                        </>
+                      )}
+                    </TabsList>
+                    <div className="flex items-center gap-1">
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={onCopy}
+                        disabled={!activeText}
+                        aria-label={t("workspace.copy")}
+                      >
+                        <Copy className="h-3.5 w-3.5" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={onDownload}
+                        disabled={!activeText}
+                        aria-label={t("workspace.download")}
+                      >
+                        <Download className="h-3.5 w-3.5" />
+                      </Button>
                     </div>
                   </div>
-                </TabsContent>
-
-              </Tabs>
-              <div className="border-t border-border px-3 py-2 text-[10px] text-muted-foreground">
-                {t("footer.ownership")}
+                  {llmEnabled && (
+                    <TabsContent
+                      forceMount
+                      value="summary"
+                      className="m-0 flex-1 space-y-3 overflow-auto px-4 pb-4 data-[state=inactive]:hidden"
+                    >
+                      <Tabs
+                        value={summarySub}
+                        onValueChange={(v) => setSummarySub(v as SummarySub)}
+                      >
+                        <TabsList className="mt-2">
+                          <TabsTrigger value="human">{t("workspace.tabs.human")}</TabsTrigger>
+                          <TabsTrigger value="technical">
+                            {t("workspace.tabs.technical")}
+                          </TabsTrigger>
+                        </TabsList>
+                        <TabsContent
+                          forceMount
+                          value="human"
+                          className="m-0 pt-2 data-[state=inactive]:hidden"
+                        >
+                          <ExplanationView text={stripFindingsBlock(summaryText)} />
+                        </TabsContent>
+                        <TabsContent
+                          forceMount
+                          value="technical"
+                          className="m-0 pt-2 data-[state=inactive]:hidden"
+                        >
+                          <ExplanationView text={stripFindingsBlock(summaryText)} />
+                        </TabsContent>
+                      </Tabs>
+                      {summaryText && (
+                        <InsightPanel
+                          findings={summaryBundle.findings}
+                          unmapped={summaryBundle.unmapped}
+                          activeId={activeFindingId}
+                          onAction={handleInsightAction}
+                          defaultCategory="summary"
+                          emptyLabel={t("workspace.findings.empty")}
+                        />
+                      )}
+                    </TabsContent>
+                  )}
+                  {llmEnabled && (
+                    <TabsContent
+                      forceMount
+                      value="quality"
+                      className="m-0 flex-1 space-y-3 overflow-auto px-4 pb-4 data-[state=inactive]:hidden"
+                    >
+                      <ExplanationView
+                        text={stripFindingsBlock(qualityText)}
+                        placeholder={t("analysis.empty")}
+                      />
+                      {qualityText && (
+                        <InsightPanel
+                          findings={qualityBundle.findings}
+                          unmapped={qualityBundle.unmapped}
+                          activeId={activeFindingId}
+                          onAction={handleInsightAction}
+                          canPatch={providerValue.startsWith("cloud:")}
+                          defaultCategory="quality"
+                          emptyLabel={t("workspace.findings.empty")}
+                        />
+                      )}
+                    </TabsContent>
+                  )}
+                  {llmEnabled && (
+                    <TabsContent
+                      forceMount
+                      value="security"
+                      className="m-0 flex-1 space-y-3 overflow-auto px-4 pb-4 data-[state=inactive]:hidden"
+                    >
+                      <ExplanationView
+                        text={stripFindingsBlock(securityText)}
+                        placeholder={t("analysis.empty")}
+                      />
+                      {securityText && (
+                        <InsightPanel
+                          findings={securityBundle.findings}
+                          unmapped={securityBundle.unmapped}
+                          activeId={activeFindingId}
+                          onAction={handleInsightAction}
+                          canPatch={providerValue.startsWith("cloud:")}
+                          defaultCategory="security"
+                          emptyLabel={t("workspace.findings.empty")}
+                        />
+                      )}
+                    </TabsContent>
+                  )}
+                  <TabsContent
+                    forceMount
+                    value="source_static"
+                    className="m-0 flex-1 space-y-3 overflow-auto px-4 pb-4 data-[state=inactive]:hidden"
+                  >
+                    <ExplanationView
+                      text={sourceStaticText || t("analysis.empty")}
+                      aiBadge={false}
+                    />
+                    {sourceStaticReport && (
+                      <>
+                        <SourceStaticReportPanel report={sourceStaticReport} />
+                        <InsightPanel
+                          findings={sourceStaticFindings}
+                          unmapped={[]}
+                          activeId={activeFindingId}
+                          onAction={handleInsightAction}
+                          defaultCategory="security"
+                          emptyLabel={t("workspace.findings.empty")}
+                        />
+                      </>
+                    )}
+                  </TabsContent>
+                  <TabsContent
+                    forceMount
+                    value="malware"
+                    className="m-0 flex-1 space-y-3 overflow-auto px-4 pb-4 data-[state=inactive]:hidden"
+                  >
+                    <ExplanationView text={malwareText || t("analysis.empty")} aiBadge={false} />
+                    {malwareReport && <MalwareReportPanel report={malwareReport} />}
+                  </TabsContent>
+                  {llmEnabled && (
+                    <TabsContent
+                      forceMount
+                      value="ai_origin"
+                      className="m-0 flex-1 overflow-auto px-4 pb-4 data-[state=inactive]:hidden"
+                    >
+                      {aiOriginText ? (
+                        <ExplanationView text={aiOriginText} />
+                      ) : (
+                        <div className="space-y-2 pt-3">
+                          <p className="text-sm text-muted-foreground">{t("aiOrigin.fileEmpty")}</p>
+                          <p className="text-xs text-amber-600 dark:text-amber-400">
+                            {t("aiOrigin.disclaimer")}
+                          </p>
+                        </div>
+                      )}
+                    </TabsContent>
+                  )}
+                  {llmEnabled && (
+                    <TabsContent
+                      forceMount
+                      value="chat"
+                      className="m-0 flex-1 overflow-hidden p-3 data-[state=inactive]:hidden"
+                    >
+                      <ChatPanel
+                        messages={chatMessages}
+                        draft={chatDraft}
+                        onDraftChange={setChatDraft}
+                        onSend={() => chatMut.mutate()}
+                        isSending={chatMut.isPending}
+                        isLoading={chatQ.isLoading}
+                        disabled={
+                          !selectedFileId ||
+                          !providerValue ||
+                          chatDraft.trim().length === 0 ||
+                          chatMut.isPending
+                        }
+                        needsProvider={!providerValue}
+                      />
+                    </TabsContent>
+                  )}
+                  {llmEnabled && (
+                    <TabsContent
+                      forceMount
+                      value="fix"
+                      className="m-0 flex-1 overflow-hidden p-3 data-[state=inactive]:hidden"
+                    >
+                      <div className="flex h-full min-h-0 flex-col gap-2">
+                        <div className="flex items-center gap-2">
+                          <Button
+                            size="sm"
+                            onClick={() => fixMut.mutate()}
+                            disabled={
+                              !selectedFileId ||
+                              !providerValue.startsWith("cloud:") ||
+                              !fixSourceAnalysis ||
+                              fixMut.isPending
+                            }
+                          >
+                            {fixMut.isPending ? (
+                              <Sparkles className="mr-2 h-3.5 w-3.5 animate-pulse" />
+                            ) : (
+                              <Wrench className="mr-2 h-3.5 w-3.5" />
+                            )}
+                            {fixMut.isPending
+                              ? t("workspace.fix.generating")
+                              : t("workspace.fix.generate")}
+                          </Button>
+                          {!fixSourceAnalysis && (
+                            <span className="text-[11px] text-muted-foreground">
+                              {t("workspace.fix.needsAnalysis")}
+                            </span>
+                          )}
+                        </div>
+                        {patchSourceInsight && fixText && (
+                          <div className="flex items-center justify-between gap-2 rounded-md border border-primary/30 bg-primary/5 px-2 py-1.5 text-[11px]">
+                            <span className="truncate">
+                              <span className="font-semibold text-primary">
+                                {t("insights.patchFrom")}:{" "}
+                              </span>
+                              {patchSourceInsight.title}
+                              <span className="ml-2 font-mono text-muted-foreground">
+                                {t("insights.lineRange", {
+                                  range:
+                                    patchSourceInsight.start_line === patchSourceInsight.end_line
+                                      ? `${patchSourceInsight.start_line}`
+                                      : `${patchSourceInsight.start_line}–${patchSourceInsight.end_line}`,
+                                })}
+                              </span>
+                            </span>
+                            <Button
+                              size="sm"
+                              variant="ghost"
+                              className="h-6 px-2 text-[10px]"
+                              onClick={() => jumpToFinding(patchSourceInsight)}
+                            >
+                              {t("insights.backToInsight")}
+                            </Button>
+                          </div>
+                        )}
+                        <div className="min-h-0 flex-1">
+                          <DiffViewer
+                            diff={extractDiffBlock(fixText)}
+                            notes={extractNotes(fixText)}
+                            filename={`${fileQ.data?.path?.split("/").pop() ?? "decoder-fix"}.patch`}
+                          />
+                        </div>
+                      </div>
+                    </TabsContent>
+                  )}
+                </Tabs>
+                <div className="border-t border-border px-3 py-2 text-[10px] text-muted-foreground">
+                  {t("footer.ownership")}
+                </div>
               </div>
-            </div>
             )}
           </ResizablePanel>
-
         </ResizablePanelGroup>
       </div>
     </AppShell>
   );
 }
 
-function ExplanationView({ text, placeholder }: { text: string; placeholder?: string }) {
+function ChatPanel({
+  messages,
+  draft,
+  onDraftChange,
+  onSend,
+  isSending,
+  isLoading,
+  disabled,
+  needsProvider,
+}: {
+  messages: PersistedChatMessage[];
+  draft: string;
+  onDraftChange: (value: string) => void;
+  onSend: () => void;
+  isSending: boolean;
+  isLoading: boolean;
+  disabled: boolean;
+  needsProvider: boolean;
+}) {
+  const { t } = useTranslation();
+
+  return (
+    <div className="flex h-full min-h-0 flex-col gap-3">
+      <ScrollArea className="min-h-0 flex-1 rounded-md border border-border bg-background/60">
+        <div className="space-y-3 p-3">
+          {isLoading ? (
+            <p className="text-sm text-muted-foreground">{t("workspace.chat.loading")}</p>
+          ) : messages.length === 0 ? (
+            <p className="text-sm text-muted-foreground">{t("workspace.chat.empty")}</p>
+          ) : (
+            messages.map((message) => (
+              <div
+                key={message.id}
+                className={
+                  "rounded-md border p-2.5 text-sm " +
+                  (message.role === "assistant"
+                    ? "border-primary/25 bg-primary/5"
+                    : "border-border bg-card/60")
+                }
+              >
+                <div className="mb-1 flex items-center justify-between gap-2 text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">
+                  <span>
+                    {message.role === "assistant"
+                      ? t("workspace.chat.assistant")
+                      : t("workspace.chat.user")}
+                  </span>
+                  <span>{new Date(message.created_at).toLocaleString()}</span>
+                </div>
+                <pre className="whitespace-pre-wrap break-words font-sans leading-relaxed text-foreground">
+                  {message.content}
+                </pre>
+              </div>
+            ))
+          )}
+        </div>
+      </ScrollArea>
+
+      {needsProvider && (
+        <div className="rounded-md border border-amber-500/40 bg-amber-500/5 px-2.5 py-2 text-xs text-amber-700 dark:text-amber-300">
+          {t("workspace.chat.needsProvider")}
+        </div>
+      )}
+
+      <div className="flex items-end gap-2">
+        <Textarea
+          value={draft}
+          onChange={(event) => onDraftChange(event.target.value)}
+          placeholder={t("workspace.chat.placeholder")}
+          className="min-h-20 resize-none text-sm"
+          disabled={isSending}
+          onKeyDown={(event) => {
+            if ((event.metaKey || event.ctrlKey) && event.key === "Enter" && !disabled) {
+              event.preventDefault();
+              onSend();
+            }
+          }}
+        />
+        <Button
+          type="button"
+          className="h-10 shrink-0"
+          onClick={onSend}
+          disabled={disabled}
+          aria-label={t("workspace.chat.send")}
+          title={t("workspace.chat.send")}
+        >
+          {isSending ? (
+            <Sparkles className="h-4 w-4 animate-pulse" />
+          ) : (
+            <SendHorizontal className="h-4 w-4" />
+          )}
+        </Button>
+      </div>
+    </div>
+  );
+}
+
+function ExplanationView({
+  text,
+  placeholder,
+  aiBadge = true,
+}: {
+  text: string;
+  placeholder?: string;
+  aiBadge?: boolean;
+}) {
   if (!text) {
     return <p className="text-sm text-muted-foreground">{placeholder ?? "—"}</p>;
   }
   return (
     <div className="space-y-2">
-      <AiBadge />
+      {aiBadge && <AiBadge />}
       <pre className="whitespace-pre-wrap text-sm leading-relaxed text-foreground">{text}</pre>
     </div>
   );
@@ -1029,6 +1667,236 @@ function AiBadge() {
     <div className="inline-flex items-center gap-1.5 rounded-full border border-primary/40 bg-primary/10 px-2.5 py-0.5 text-[11px] font-medium text-primary">
       <Sparkles className="h-3 w-3" />
       {t("workspace.aiGeneratedBadge")}
+    </div>
+  );
+}
+
+function formatSourceStaticReport(report: SourceStaticReport): string {
+  const lines = [
+    "# Offline source static analysis",
+    "",
+    `Security risk: ${report.metrics.security_risk_score}/100`,
+    `Maintainability: ${report.metrics.maintainability_score}/100`,
+    `File: ${report.file}`,
+    `Language: ${report.language}`,
+    "",
+    "## Structural metrics",
+    `- LOC: ${report.metrics.total_loc}`,
+    `- Functions: ${report.metrics.total_functions}`,
+    `- Classes: ${report.metrics.total_classes}`,
+    `- Cyclomatic complexity: ${report.metrics.cyclomatic_complexity}`,
+    `- Max nesting depth: ${report.metrics.max_nesting_depth}`,
+    "",
+    "## Security flow metrics",
+    `- Tainted sources: ${report.metrics.tainted_source_count}`,
+    `- Dangerous sinks: ${report.metrics.dangerous_sink_count}`,
+    `- Reachable source-to-sink paths: ${report.metrics.reachable_source_sink_paths}`,
+    `- Unsanitized sinks: ${report.metrics.unsanitized_sink_count}`,
+    `- Sanitizer coverage: ${(report.metrics.sanitizer_coverage * 100).toFixed(0)}%`,
+    "",
+    "## Findings",
+  ];
+
+  if (report.findings.length === 0) {
+    lines.push("- No deterministic source findings for this file.");
+  } else {
+    for (const finding of report.findings) {
+      lines.push(
+        `- [${finding.severity}] line ${finding.line}: ${finding.title}`,
+        `  - ${finding.source} -> ${finding.sink}`,
+        `  - ${finding.remediation}`,
+      );
+    }
+  }
+
+  return lines.join("\n");
+}
+
+function SourceStaticReportPanel({ report }: { report: SourceStaticReport }) {
+  const scoreTone =
+    report.metrics.security_risk_score >= 60
+      ? "border-red-500/40 bg-red-500/10 text-red-700 dark:text-red-300"
+      : report.metrics.security_risk_score >= 30
+        ? "border-amber-500/40 bg-amber-500/10 text-amber-700 dark:text-amber-300"
+        : "border-emerald-500/40 bg-emerald-500/10 text-emerald-700 dark:text-emerald-300";
+  return (
+    <div className="space-y-3">
+      <div className="rounded-md border border-border bg-card/40 p-2.5">
+        <div className="flex flex-wrap items-center gap-2">
+          <span
+            className={`rounded border px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide ${scoreTone}`}
+          >
+            Security: {report.metrics.security_risk_score}/100
+          </span>
+          <span className="rounded border border-border bg-muted/50 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide">
+            Maintainability: {report.metrics.maintainability_score}/100
+          </span>
+          <span className="rounded border border-border bg-muted/40 px-2 py-0.5 text-[10px] text-muted-foreground">
+            Cyclomatic: {report.metrics.cyclomatic_complexity}
+          </span>
+          <span className="rounded border border-border bg-muted/40 px-2 py-0.5 text-[10px] text-muted-foreground">
+            Sinks: {report.metrics.dangerous_sink_count}
+          </span>
+        </div>
+      </div>
+
+      <div className="grid gap-2 sm:grid-cols-2">
+        <div className="rounded-md border border-border bg-card/30 p-2.5">
+          <div className="flex items-center gap-1.5 text-xs font-semibold text-muted-foreground">
+            <ScanSearch className="h-4 w-4" />
+            Structural metrics
+          </div>
+          <dl className="mt-2 grid grid-cols-2 gap-2 text-sm">
+            <dt className="text-muted-foreground">LOC</dt>
+            <dd className="text-right tabular-nums">{report.metrics.total_loc}</dd>
+            <dt className="text-muted-foreground">Functions</dt>
+            <dd className="text-right tabular-nums">{report.metrics.total_functions}</dd>
+            <dt className="text-muted-foreground">Classes</dt>
+            <dd className="text-right tabular-nums">{report.metrics.total_classes}</dd>
+            <dt className="text-muted-foreground">Max nesting</dt>
+            <dd className="text-right tabular-nums">{report.metrics.max_nesting_depth}</dd>
+          </dl>
+        </div>
+
+        <div className="rounded-md border border-border bg-card/30 p-2.5">
+          <div className="flex items-center gap-1.5 text-xs font-semibold text-muted-foreground">
+            <ShieldCheck className="h-4 w-4" />
+            Taint metrics
+          </div>
+          <dl className="mt-2 grid grid-cols-2 gap-2 text-sm">
+            <dt className="text-muted-foreground">Sources</dt>
+            <dd className="text-right tabular-nums">{report.metrics.tainted_source_count}</dd>
+            <dt className="text-muted-foreground">Sinks</dt>
+            <dd className="text-right tabular-nums">{report.metrics.dangerous_sink_count}</dd>
+            <dt className="text-muted-foreground">Unsanitized</dt>
+            <dd className="text-right tabular-nums">{report.metrics.unsanitized_sink_count}</dd>
+            <dt className="text-muted-foreground">Sanitizers</dt>
+            <dd className="text-right tabular-nums">
+              {(report.metrics.sanitizer_coverage * 100).toFixed(0)}%
+            </dd>
+          </dl>
+        </div>
+      </div>
+
+      <div className="rounded-md border border-dashed border-border p-2.5 text-xs text-muted-foreground">
+        <div className="mb-1 flex items-center gap-1.5 text-sm font-semibold text-foreground">
+          <AlertTriangle className="h-3.5 w-3.5" />
+          Scope
+        </div>
+        <p>
+          Deterministic offline pass: symbols, structural metrics, local taint source-to-sink, and
+          SARIF-compatible finding data. Full AST/CFG/SSA/CPG coverage is still a separate hardening
+          phase.
+        </p>
+      </div>
+    </div>
+  );
+}
+
+function formatMalwareReport(report: StaticMalwareAssessment): string {
+  const lines = [
+    "# Offline static malware scan",
+    "",
+    `Decision: ${report.decision.toUpperCase()}`,
+    `Risk score: ${report.riskScore}/100`,
+    `File: ${report.filePath}`,
+    `Size: ${report.fileSize} bytes`,
+    `Magic signature: ${report.magicDetected} (${report.magicSignature})`,
+    `Extension: .${report.fileExt || "(unknown)"}`,
+    "",
+    `Entropy: global ${report.entropy.global.toFixed(4)}; max 256-byte window ${report.entropy.maxWindow.toFixed(4)} at ${report.entropy.maxWindowOffset}`,
+    `Printable ratio: ${(report.metrics.printableRatio * 100).toFixed(1)}%`,
+    `Control-char ratio: ${(report.metrics.controlCharRatio * 100).toFixed(1)}%`,
+    "",
+    "## Signals",
+    ...report.findings.map(
+      (finding) => `- [${finding.severity}] ${finding.title} (${finding.code})`,
+    ),
+  ];
+  return lines.join("\n");
+}
+
+function MalwareReportPanel({ report }: { report: StaticMalwareAssessment }) {
+  return (
+    <div className="space-y-3">
+      <div className="rounded-md border border-border bg-card/40 p-2.5">
+        <div className="flex flex-wrap items-center gap-2">
+          <span
+            className={`rounded border px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide ${
+              report.decision === "block"
+                ? "border-red-500/40 bg-red-500/10 text-red-700 dark:text-red-300"
+                : report.decision === "warn"
+                  ? "border-amber-500/40 bg-amber-500/10 text-amber-700 dark:text-amber-300"
+                  : "border-emerald-500/40 bg-emerald-500/10 text-emerald-700 dark:text-emerald-300"
+            }`}
+          >
+            Decision: {report.decision}
+          </span>
+          <span className="rounded border border-border bg-muted/50 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide">
+            Risk: {report.riskScore}/100
+          </span>
+          <span className="rounded border border-border bg-muted/40 px-2 py-0.5 text-[10px] text-muted-foreground">
+            {report.fileSize} bytes
+          </span>
+          <span className="rounded border border-border bg-muted/40 px-2 py-0.5 text-[10px] text-muted-foreground">
+            Entropy global {report.entropy.global.toFixed(3)}
+          </span>
+        </div>
+      </div>
+
+      <div className="rounded-md border border-border bg-card/30 p-2.5">
+        <div className="flex items-center gap-1.5 text-xs font-semibold text-muted-foreground">
+          <FileBadge2 className="h-4 w-4" />
+          Heuristic signals
+        </div>
+        {report.findings.length === 0 ? (
+          <p className="mt-2 text-sm text-muted-foreground">
+            No suspicious static signals found for this file.
+          </p>
+        ) : (
+          <ul className="mt-2 space-y-2">
+            {report.findings.map((finding) => (
+              <li key={finding.code} className="rounded border border-border bg-card/60 p-2.5">
+                <div className="flex flex-wrap items-center gap-2">
+                  <span
+                    className={`rounded border px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide ${severityBadgeClass(
+                      finding.severity === "low"
+                        ? "low"
+                        : finding.severity === "medium"
+                          ? "medium"
+                          : "high",
+                    )}`}
+                  >
+                    {finding.severity}
+                  </span>
+                  <span className="rounded border border-border bg-background px-1.5 py-0.5 text-[10px] text-muted-foreground">
+                    {finding.code}
+                  </span>
+                  <span className="rounded border border-border bg-background px-1.5 py-0.5 text-[10px] text-muted-foreground">
+                    {finding.decision === "block" ? "block" : "warn"}
+                  </span>
+                </div>
+                <p className="mt-1 text-sm text-foreground">{finding.title}</p>
+                <p className="mt-1 text-xs text-muted-foreground">{finding.description}</p>
+                <p className="mt-1 text-[10px] text-muted-foreground">
+                  Confidence: {finding.confidence}
+                </p>
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
+
+      <div className="rounded-md border border-dashed border-border p-2.5 text-xs text-muted-foreground">
+        <div className="mb-1 flex items-center gap-1.5 text-sm font-semibold text-foreground">
+          <AlertTriangle className="h-3.5 w-3.5" />
+          Interpretation
+        </div>
+        <p>
+          This is a purely offline static heuristic. Use it as a first-pass risk flag, not as a
+          proof of malware.
+        </p>
+      </div>
     </div>
   );
 }

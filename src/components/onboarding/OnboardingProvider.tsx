@@ -1,25 +1,10 @@
-import { createContext, useCallback, useContext, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 
 import { getOnboardingStatus } from "@/lib/onboarding.functions";
+import { OnboardingContext } from "./OnboardingContext";
 import { OnboardingDialog } from "./OnboardingDialog";
-
-type Ctx = {
-  open: boolean;
-  openOnboarding: () => void;
-  completed: boolean;
-  record: { acceptedAt: string; version: string; language: string } | null;
-  currentVersion?: string;
-};
-
-const OnboardingContext = createContext<Ctx | null>(null);
-
-export function useOnboarding() {
-  const ctx = useContext(OnboardingContext);
-  if (!ctx) throw new Error("useOnboarding must be inside OnboardingProvider");
-  return ctx;
-}
 
 export function OnboardingProvider({ children }: { children: React.ReactNode }) {
   const fetchStatus = useServerFn(getOnboardingStatus);

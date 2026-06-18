@@ -1,6 +1,8 @@
 // Browser-side calls to local LLM endpoints. Source code never leaves the
 // user's machine — the Decoder server is not involved on the request path.
 
+import { hasErrorName } from "./errors";
+
 export type LocalKind = "ollama" | "lmstudio";
 
 const DEFAULT_TIMEOUT_MS = 120_000;
@@ -14,8 +16,8 @@ async function fetchWithTimeout(
   const t = setTimeout(() => ctrl.abort(), timeoutMs);
   try {
     return await fetch(url, { ...init, signal: ctrl.signal });
-  } catch (e: any) {
-    if (e?.name === "AbortError") {
+  } catch (e) {
+    if (hasErrorName(e, "AbortError")) {
       throw new Error(`Local LLM timeout after ${Math.round(timeoutMs / 1000)}s`);
     }
     throw e;
@@ -76,4 +78,3 @@ export async function callLocalProvider(args: {
   const j = await r.json();
   return j.choices?.[0]?.message?.content ?? "";
 }
-

@@ -5,13 +5,7 @@ import { useTranslation } from "react-i18next";
  * Mark: rounded square containing the symbol "{=}" — curly braces stand for
  * code, the equals sign for translation / understanding.
  */
-export function LogoMark({
-  size = 32,
-  className,
-}: {
-  size?: number;
-  className?: string;
-}) {
+export function LogoMark({ size = 32, className }: { size?: number; className?: string }) {
   return (
     <svg
       width={size}
@@ -52,8 +46,24 @@ export function LogoMark({
         strokeLinejoin="round"
       />
       {/* = */}
-      <line x1="17" y1="17.5" x2="23" y2="17.5" stroke="#F8FAFC" strokeWidth="2" strokeLinecap="round" />
-      <line x1="17" y1="22.5" x2="23" y2="22.5" stroke="#F8FAFC" strokeWidth="2" strokeLinecap="round" />
+      <line
+        x1="17"
+        y1="17.5"
+        x2="23"
+        y2="17.5"
+        stroke="#F8FAFC"
+        strokeWidth="2"
+        strokeLinecap="round"
+      />
+      <line
+        x1="17"
+        y1="22.5"
+        x2="23"
+        y2="22.5"
+        stroke="#F8FAFC"
+        strokeWidth="2"
+        strokeLinecap="round"
+      />
       {/* } */}
       <path
         d="M26 11 C 28.5 11, 29 12.5, 29 14.5 L 29 18 C 29 19.2, 29.6 20, 31 20 C 29.6 20, 29 20.8, 29 22 L 29 25.5 C 29 27.5, 28.5 29, 26 29"

@@ -5,11 +5,7 @@ import { ShieldAlert, Bot, User2, AlertTriangle, KeyRound } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import {
-  bucketColorClass,
-  bucketize,
-  type AiOriginBucket,
-} from "@/lib/ai-origin";
+import { bucketColorClass, bucketize, type AiOriginBucket } from "@/lib/ai-origin";
 
 export type RepoAiOriginResult = {
   repo_score: number;
@@ -123,7 +119,9 @@ export function AiOriginPanel({
           <span className="inline-flex items-center gap-1">
             <User2 className="h-3 w-3" /> {t("aiOrigin.human")}: {result.distribution.human}
           </span>
-          <span>{t("aiOrigin.mixed")}: {result.distribution.mixed}</span>
+          <span>
+            {t("aiOrigin.mixed")}: {result.distribution.mixed}
+          </span>
           <span className="inline-flex items-center gap-1">
             <Bot className="h-3 w-3" /> {t("aiOrigin.ai")}: {result.distribution.ai}
           </span>
@@ -161,9 +159,7 @@ export function AiOriginPanel({
                     {f.score}
                   </span>
                 </div>
-                {f.summary && (
-                  <p className="mt-1 text-xs text-muted-foreground">{f.summary}</p>
-                )}
+                {f.summary && <p className="mt-1 text-xs text-muted-foreground">{f.summary}</p>}
               </li>
             );
           })}

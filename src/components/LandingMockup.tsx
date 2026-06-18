@@ -1,11 +1,5 @@
 import { useTranslation } from "react-i18next";
-import {
-  FolderGit2,
-  Files,
-  Activity,
-  Settings,
-  ChevronRight,
-} from "lucide-react";
+import { FolderGit2, Files, Activity, Settings, ChevronRight } from "lucide-react";
 
 /**
  * Purely decorative mockup of the Decoder workspace, used on the landing.
@@ -33,25 +27,43 @@ export function LandingMockup() {
   ];
 
   const codeLines: { n: number; html: string }[] = [
-    { n: 1, html: `<span class="text-primary">export async function</span> <span class="text-accent-foreground">authenticate</span>(` },
+    {
+      n: 1,
+      html: `<span class="text-primary">export async function</span> <span class="text-accent-foreground">authenticate</span>(`,
+    },
     { n: 2, html: `  email: <span class="text-primary">string</span>,` },
     { n: 3, html: `  password: <span class="text-primary">string</span>` },
-    { n: 4, html: `): <span class="text-primary">Promise</span>&lt;<span class="text-primary">User</span>&gt; {` },
-    { n: 5, html: `  <span class="text-primary">const</span> user = <span class="text-primary">await</span> db.user.findUnique({` },
+    {
+      n: 4,
+      html: `): <span class="text-primary">Promise</span>&lt;<span class="text-primary">User</span>&gt; {`,
+    },
+    {
+      n: 5,
+      html: `  <span class="text-primary">const</span> user = <span class="text-primary">await</span> db.user.findUnique({`,
+    },
     { n: 6, html: `    where: { email }` },
     { n: 7, html: `  });` },
     { n: 8, html: `` },
     { n: 9, html: `  <span class="text-primary">if</span> (!user) {` },
-    { n: 10, html: `    <span class="text-primary">throw new</span> Error(<span class="text-emerald-400">'User not found'</span>);` },
+    {
+      n: 10,
+      html: `    <span class="text-primary">throw new</span> Error(<span class="text-emerald-400">'User not found'</span>);`,
+    },
     { n: 11, html: `  }` },
     { n: 12, html: `` },
-    { n: 13, html: `  <span class="text-primary">const</span> isValid = <span class="text-primary">await</span> verifyPassword(` },
+    {
+      n: 13,
+      html: `  <span class="text-primary">const</span> isValid = <span class="text-primary">await</span> verifyPassword(`,
+    },
     { n: 14, html: `    password,` },
     { n: 15, html: `    user.passwordHash` },
     { n: 16, html: `  );` },
     { n: 17, html: `` },
     { n: 18, html: `  <span class="text-primary">if</span> (!isValid) {` },
-    { n: 19, html: `    <span class="text-primary">throw new</span> Error(<span class="text-emerald-400">'Invalid credentials'</span>);` },
+    {
+      n: 19,
+      html: `    <span class="text-primary">throw new</span> Error(<span class="text-emerald-400">'Invalid credentials'</span>);`,
+    },
     { n: 20, html: `  }` },
     { n: 21, html: `` },
     { n: 22, html: `  <span class="text-primary">return</span> user;` },
@@ -73,10 +85,19 @@ export function LandingMockup() {
             </span>
             <span className="text-foreground">{t("brand.name")}</span>
           </div>
-          <SideRow icon={<FolderGit2 className="h-3.5 w-3.5" />} label={t("landing.mockup.projects")} />
-          <SideRow icon={<FolderGit2 className="h-3.5 w-3.5" />} label={t("landing.mockup.repository")} />
+          <SideRow
+            icon={<FolderGit2 className="h-3.5 w-3.5" />}
+            label={t("landing.mockup.projects")}
+          />
+          <SideRow
+            icon={<FolderGit2 className="h-3.5 w-3.5" />}
+            label={t("landing.mockup.repository")}
+          />
           <SideRow icon={<Files className="h-3.5 w-3.5" />} label={t("landing.mockup.files")} />
-          <SideRow icon={<Activity className="h-3.5 w-3.5" />} label={t("landing.mockup.analysis")} />
+          <SideRow
+            icon={<Activity className="h-3.5 w-3.5" />}
+            label={t("landing.mockup.analysis")}
+          />
           <SideRow icon={<Settings className="h-3.5 w-3.5" />} label={t("nav.settings")} />
           <div className="mt-auto flex items-center gap-2 rounded-md border border-border p-2">
             <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-accent text-[10px] font-semibold text-accent-foreground">
@@ -113,9 +134,7 @@ export function LandingMockup() {
             <pre className="overflow-hidden p-2 font-mono text-[10px] leading-[14px]">
               {codeLines.map((l) => (
                 <div key={l.n} className="flex gap-3">
-                  <span className="w-4 select-none text-right text-muted-foreground">
-                    {l.n}
-                  </span>
+                  <span className="w-4 select-none text-right text-muted-foreground">{l.n}</span>
                   <span
                     className="text-foreground/90"
                     dangerouslySetInnerHTML={{ __html: l.html }}
@@ -142,14 +161,13 @@ export function LandingMockup() {
               {t("proficiency.intermediate")}
             </div>
           </div>
-          <Panel title={t("landing.mockup.summary")}>
-            {t("landing.mockup.summaryBody")}
-          </Panel>
+          <Panel title={t("landing.mockup.summary")}>{t("landing.mockup.summaryBody")}</Panel>
           <Panel title={t("landing.mockup.architecture")}>
             {t("landing.mockup.architectureBody")}
           </Panel>
           <Panel title={t("landing.mockup.dependencies")}>
-            <span className="font-mono">db.user</span> · <span className="font-mono">verifyPassword</span>
+            <span className="font-mono">db.user</span> ·{" "}
+            <span className="font-mono">verifyPassword</span>
           </Panel>
           <button
             type="button"

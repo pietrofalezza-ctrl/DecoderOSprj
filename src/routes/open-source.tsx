@@ -138,9 +138,7 @@ function OpenSourcePage() {
           <h1 className="mt-3 font-display text-4xl font-medium leading-[1.1] tracking-tight md:text-6xl">
             {t("openSource.title")}
           </h1>
-          <p className="mt-5 max-w-2xl text-lg text-muted-foreground">
-            {t("openSource.intro")}
-          </p>
+          <p className="mt-5 max-w-2xl text-lg text-muted-foreground">{t("openSource.intro")}</p>
           <div className="mt-8 flex flex-wrap gap-3">
             <Button asChild className="rounded-none">
               <a href={repo} target="_blank" rel="noreferrer">

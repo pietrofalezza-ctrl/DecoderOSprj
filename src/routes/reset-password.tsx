@@ -10,10 +10,8 @@ import { Label } from "@/components/ui/label";
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp";
 import { Logo } from "@/components/Logo";
 import { supabase } from "@/integrations/supabase/client";
-import {
-  issueResetChallenge,
-  verifyResetChallenge,
-} from "@/lib/reset-2fa.functions";
+import { issueResetChallenge, verifyResetChallenge } from "@/lib/reset-2fa.functions";
+import { getErrorMessage } from "@/lib/errors";
 
 export const Route = createFileRoute("/reset-password")({
   ssr: false,
@@ -85,8 +83,8 @@ function ResetPasswordPage() {
         if (res?.resent) {
           toast.success("Verification code sent to your inbox.");
         }
-      } catch (err: any) {
-        toast.error(err?.message ?? "Could not send verification code.");
+      } catch (err) {
+        toast.error(getErrorMessage(err, "Could not send verification code."));
       }
     })();
   }, [stage, issue]);
@@ -107,8 +105,8 @@ function ResetPasswordPage() {
       toast.success("A fresh verification code is on its way.");
       setCode("");
       setAttemptsRemaining(null);
-    } catch (err: any) {
-      toast.error(err?.message ?? "Could not resend code.");
+    } catch (err) {
+      toast.error(getErrorMessage(err, "Could not resend code."));
     }
   };
 
@@ -140,8 +138,8 @@ function ResetPasswordPage() {
       } else {
         toast.error("No active verification code. Request a new one.");
       }
-    } catch (err: any) {
-      toast.error(err?.message ?? "Could not verify code.");
+    } catch (err) {
+      toast.error(getErrorMessage(err, "Could not verify code."));
     } finally {
       setVerifying(false);
     }
@@ -164,8 +162,8 @@ function ResetPasswordPage() {
       await supabase.auth.signOut();
       toast.success("Password updated. Please sign in.");
       navigate({ to: "/auth", replace: true });
-    } catch (err: any) {
-      toast.error(err?.message ?? "Could not update password.");
+    } catch (err) {
+      toast.error(getErrorMessage(err, "Could not update password."));
     } finally {
       setUpdating(false);
     }
@@ -198,8 +196,8 @@ function ResetPasswordPage() {
           {stage === "invalid" && (
             <div className="space-y-3">
               <p className="text-sm text-muted-foreground">
-                This password reset link is invalid or has expired. Reset links
-                are single-use and expire after 15 minutes.
+                This password reset link is invalid or has expired. Reset links are single-use and
+                expire after 15 minutes.
               </p>
               <Button asChild className="w-full">
                 <Link to="/auth">Back to sign in</Link>
@@ -216,8 +214,8 @@ function ResetPasswordPage() {
                 </div>
                 <p className="mt-1">
                   We sent a 6-digit verification code to
-                  {emailHint ? ` ${emailHint}` : " the address on this account"}.
-                  Enter it below to confirm you own this account. The code expires in 10 minutes.
+                  {emailHint ? ` ${emailHint}` : " the address on this account"}. Enter it below to
+                  confirm you own this account. The code expires in 10 minutes.
                 </p>
               </div>
 
@@ -253,9 +251,7 @@ function ResetPasswordPage() {
                 disabled={cooldown > 0}
                 className="block w-full text-center text-xs text-muted-foreground underline-offset-2 hover:text-foreground hover:underline disabled:no-underline disabled:opacity-60"
               >
-                {cooldown > 0
-                  ? `Resend code in ${cooldown}s`
-                  : "Didn't get it? Resend code"}
+                {cooldown > 0 ? `Resend code in ${cooldown}s` : "Didn't get it? Resend code"}
               </button>
             </form>
           )}
