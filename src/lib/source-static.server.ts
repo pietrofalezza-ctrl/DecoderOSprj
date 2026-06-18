@@ -566,10 +566,40 @@ function extractFunctions(content: string, language: string): SourceFunction[] {
   const lines = content.split(/\r?\n/);
   const functions: SourceFunction[] = [];
   const seen = new Set<string>();
-  const functionRe =
-    language === "php"
-      ? /\bfunction\s+([A-Za-z_][\w]*)\s*\([^)]*\)/
-      : /\b(?:export\s+)?(?:async\s+)?function\s+([A-Za-z_$][\w$]*)\s*\([^)]*\)|^\s*(?:public|private|protected|async|static|\s)*\s*([A-Za-z_$][\w$]*)\s*\([^)]*\)\s*\{/;
+  const functionRe = (() => {
+    switch (language) {
+      case "php":
+        return /\bfunction\s+([A-Za-z_][\w]*)\s*\([^)]*\)/;
+      case "python":
+        return /^\s*(?:async\s+)?def\s+([A-Za-z_][\w]*)\s*\(/;
+      case "ruby":
+        return /^\s*def\s+([A-Za-z_][\w?!]*)/;
+      case "go":
+        return /^\s*func\s+(?:\([^)]*\)\s*)?([A-Za-z_][\w]*)\s*\(/;
+      case "rust":
+        return /^\s*(?:pub\s+)?fn\s+([A-Za-z_][\w]*)\s*\(/;
+      case "swift":
+      case "kotlin":
+      case "scala":
+        return /^\s*(?:public|private|internal|protected|open|override|static|final|fun|func|def)\s+([A-Za-z_][\w]*)\s*\(/;
+      case "csharp":
+      case "java":
+        return /^\s*(?:public|private|protected|internal|static|final|abstract|override|virtual|\s)+[\w<>\[\],?\s]+\s+([A-Za-z_][\w]*)\s*\([^)]*\)\s*(?:throws[^{]*)?\{/;
+      case "c":
+      case "cpp":
+        return /^\s*(?:[\w*&:<>,\s]+?)\s+([A-Za-z_][\w]*)\s*\([^)]*\)\s*(?:const)?\s*\{/;
+      case "shell":
+        return /^\s*(?:function\s+)?([A-Za-z_][\w]*)\s*\(\)\s*\{/;
+      case "lua":
+        return /^\s*(?:local\s+)?function\s+([A-Za-z_][\w.:]*)\s*\(/;
+      case "perl":
+        return /^\s*sub\s+([A-Za-z_][\w]*)/;
+      case "dart":
+        return /^\s*(?:[\w<>?,\s]+\s+)?([A-Za-z_][\w]*)\s*\([^)]*\)\s*(?:async\s*)?\{/;
+      default:
+        return /\b(?:export\s+)?(?:async\s+)?function\s+([A-Za-z_$][\w$]*)\s*\([^)]*\)|^\s*(?:public|private|protected|async|static|\s)*\s*([A-Za-z_$][\w$]*)\s*\([^)]*\)\s*\{/;
+    }
+  })();
 
   lines.forEach((line, index) => {
     const match = line.match(functionRe);
