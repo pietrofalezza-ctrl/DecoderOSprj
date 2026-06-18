@@ -270,6 +270,21 @@ function WorkspacePage() {
     }
   }, [llmEnabled, mainTab]);
 
+  // If LLM is enabled but no provider is configured, land the user on a tab
+  // they can actually run without an API key.
+  const [autoSwitchedToStatic, setAutoSwitchedToStatic] = useState(false);
+  useEffect(() => {
+    if (
+      llmEnabled &&
+      !hasAny &&
+      !autoSwitchedToStatic &&
+      mainTab === "summary"
+    ) {
+      setMainTab("source_static");
+      setAutoSwitchedToStatic(true);
+    }
+  }, [llmEnabled, hasAny, autoSwitchedToStatic, mainTab]);
+
   useEffect(() => {
     if (!llmEnabled) {
       setSelectedFolderPath(null);
