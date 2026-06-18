@@ -244,6 +244,8 @@ function WorkspacePage() {
     setSourceStaticReport(null);
     setMalwareText("");
     setMalwareReport(null);
+    setSourceStaticAiText("");
+    setMalwareAiText("");
     setChatDraft("");
     setSelection(null);
   }, [selectedFileId]);
