@@ -1,37 +1,57 @@
 ## Obiettivo
 
-Nella pagina `/projects/:projectId/repos/:repoId`, l'utente deve poter cliccare **"Run analysis on this file"** quando si trova sul tab **Static Code** o **Malware**, anche se non ha configurato nessuna API key / provider LLM. Le scansioni statiche non usano AI, quindi non hanno motivo di essere bloccate dalla mancanza di un provider.
+Nei tab **Static Code** e **Malware** della pagina report, quando l'utente ha una API key cloud (BYOK) o un endpoint locale configurato, mostrare un bottone aggiuntivo "Spiega con AI" che produce una narrazione in linguaggio naturale del report statico — come avviene già per gli altri tab (Summary, Quality, Security).
 
-## Diagnosi
+Le scansioni statiche restano eseguibili senza key; la verbalizzazione AI è un'aggiunta opzionale.
 
-In `src/routes/_authenticated/projects.$projectId.repos.$repoId.tsx`:
+## Diagnosi attuale
 
-- Il bottone "Run analysis on this file" (riga ~1211) è già tecnicamente abilitato sui tab `source_static` / `malware` senza provider (`tabNeedsProvider` li esclude).
-- Però l'esperienza fa pensare il contrario per due motivi:
-  1. **Tab di default = `summary`** (LLM). Quando `analysis_mode = "both"` ma l'utente non ha API key, atterra sul tab Summary, il bottone è disabilitato per "needProvider", e non capisce che basta passare a Static Code / Malware.
-  2. **Banner ambra "No provider configured"** (riga ~1134) viene mostrato anche quando il tab attivo è Static Code o Malware, dove non serve alcuna chiave. Suggerisce visivamente che senza key non si possa lanciare nulla.
-  3. **Badge di stato** in alto può comunque mostrare "needProvider" in transizioni di tab.
+- `runSourceStaticAnalysis` / `runStaticMalwareScan` restituiscono report strutturati (`SourceStaticReport`, `StaticMalwareAssessment`) e un markdown tecnico generato lato server (`formatSourceStaticMarkdown`, `formatMalwareMarkdown`).
+- Nessuno dei due passa il risultato attraverso un LLM; per questo l'output non è "verbalizzato" come gli altri tab che usano `runAnalysis` → modello cloud/locale.
 
 ## Modifiche
 
-File unico: `src/routes/_authenticated/projects.$projectId.repos.$repoId.tsx`.
+### 1. Nuove server functions (file: `src/lib/static-verbalize.functions.ts`)
 
-1. **Default tab intelligente**: se `llmEnabled === true` ma nessun provider è configurato (`!hasAny`), imposta il default di `mainTab` su `"source_static"` invece di `"summary"`, così l'utente atterra subito su un tab eseguibile senza key.
+Due funzioni `createServerFn` con `requireSupabaseAuth`, una per scanner:
 
-2. **Nascondi il banner "No provider"** quando il tab attivo è `source_static` o `malware` (il banner resta visibile sui tab LLM, dove è pertinente).
+- `verbalizeSourceStaticReport({ file_id, provider, model?, language })`
+- `verbalizeMalwareReport({ file_id, provider, model?, language })`
 
-3. **Forza lo `statusKind` a `"ready"`** quando il tab corrente non richiede provider e c'è un file selezionato, anche se altrove (es. sidebar) non c'è ancora una key, per evitare il chip "needProvider" fuorviante.
+Comportamento:
+1. Carica il file e l'ultimo report statico salvato in `analysis_activities` (kind=`static_scan`) o ri-esegue la scansione se manca.
+2. Costruisce un prompt che include: path, linguaggio, metriche chiave, lista findings (severity, ragioni, righe), e chiede una sintesi human-friendly secondo il livello proficiency dell'utente.
+3. Routing provider:
+   - `cloud:*` → `callCloudProvider` (riusa `src/lib/ai-providers.server.ts` come fa `runAnalysis`).
+   - `local:*` → segue lo stesso pattern dei tab locali (chiamata all'endpoint configurato).
+4. Salva il risultato in `explanations` con `explanation_type = "static_verbalize:source"` / `"static_verbalize:malware"` per cache (chiave: file_sha256 + provider + language + proficiency), così riapertura del report non ri-chiama l'LLM.
+5. Append in `analysis_activities` con `activity_kind = "static_verbalize"`.
 
-4. **Verifica finale**: assicurarsi che `disabled` del bottone runMain per `source_static` / `malware` resti solo `!selectedFileId || isRunning` (nessuna dipendenza da `providerValue`).
+### 2. UI (`src/routes/_authenticated/projects.$projectId.repos.$repoId.tsx`)
+
+Nei `TabsContent` di `source_static` e `malware`:
+- Aggiungere stato `sourceStaticAiText` / `malwareAiText` + mutation `verbalizeSourceStaticMut` / `verbalizeMalwareMut`.
+- Sopra il `<SourceStaticReportPanel>` / `<MalwareReportPanel>` aggiungere una barra:
+  - Bottone "Spiega con AI" (icona Sparkles), abilitato solo se: `llmEnabled && providerValue && (sourceStaticReport / malwareReport esistente) && !isPending`.
+  - Se la key non c'è, mostrare CTA inline (link a Settings#byok) come nel tab Summary.
+- Quando il testo AI è disponibile, renderlo in un `<ExplanationView aiBadge={true}>` sopra il report tecnico, con bottoni Copy/Download già presenti.
+- Caricare il testo cached all'apertura del tab tramite `historyQ` (estendere `listFileAnalysisHistory` per includere i due nuovi `explanation_type`, o usare query dedicata).
+
+### 3. i18n (`src/i18n/locales/{en,it,zh}/common.json`)
+
+Nuove chiavi:
+- `workspace.staticVerbalize.cta` — "Spiega con AI" / "Explain with AI"
+- `workspace.staticVerbalize.generating` — "Verbalizzo il report…"
+- `workspace.staticVerbalize.needsProvider` — riusa `workspace.noProvider` se esiste.
 
 ## Cosa NON tocchiamo
 
-- Logica server (`runSourceStaticAnalysis`, `runStaticMalwareScan`): non richiedono già alcuna API key.
-- Tab LLM (Summary, Quality, Security, AI Origin, Chat, Fix): continuano a richiedere un provider.
-- Schema / migrazioni / RLS: nessuna modifica DB.
+- Logica delle scansioni statiche `runSourceStaticAnalysis` / `runStaticMalwareScan`: invariate, restano gratis e senza key.
+- Schema DB: usiamo le tabelle esistenti `explanations` e `analysis_activities` (nuovi valori di `explanation_type` / `activity_kind`).
+- Altri tab LLM.
 
 ## Verifica
 
-- Con `analysis_mode = "both"` e nessuna API key: il tab Static Code è preselezionato (o comunque selezionabile) e il bottone "Run analysis on this file" è cliccabile; lancia la scansione statica e mostra il report.
-- Stesso flusso per il tab Malware.
-- Con almeno una API key configurata: il comportamento attuale sui tab LLM è invariato.
+- Senza provider configurato: tab Static Code/Malware funzionano come prima, nessun bottone AI visibile (solo CTA "configura key").
+- Con provider cloud o locale: dopo aver eseguito la scansione, compare "Spiega con AI"; cliccando si genera la narrazione e viene mostrata in cima al report tecnico.
+- Riaprendo lo stesso file senza modifiche: il testo AI viene caricato dalla cache senza nuova chiamata all'LLM.
