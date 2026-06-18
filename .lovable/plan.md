@@ -1,46 +1,44 @@
-# Password Reset — Owner-Only
+## Contesto
 
-Supabase's `resetPasswordForEmail` already sends the recovery link only to the email registered on the account, so the owner of that inbox is the only one who can complete the flow. Adding a second email-delivered code on top of an email-delivered link does not add security (same channel, same attacker model) — so I will **not** add email 2FA to the reset flow. Instead I'll harden the flow so the link itself is owner-only and tamper-resistant.
+Dopo il merge della PR su GitHub, il preview crasha con:
 
-If you want true 2FA, it has to be a _different_ channel (TOTP authenticator app or SMS) — say the word and I'll plan that separately.
+```
+TypeError: (0 , __vite_ssr_import_0__.createCsrfMiddleware) is not a function
+```
 
-## What I'll build
+Causa: `src/start.ts` importa `createCsrfMiddleware` da `@tanstack/react-start`, ma quella funzione non esiste nella versione installata. Finché l'errore resta, il sito pubblicato non può essere aggiornato (il build fallisce).
 
-### 1. "Forgot password" on `/auth`
+## Cosa farò
 
-- New "Forgot password?" link under the Sign In form.
-- Small form: email input → calls `supabase.auth.resetPasswordForEmail(email, { redirectTo: \`${window.location.origin}/reset-password\` })`.
-- Always shows the same neutral success message ("If an account exists for that email, we've sent a reset link") — never reveals whether the email is registered (prevents account enumeration).
+### 1. Sistemare `src/start.ts`
 
-### 2. New public route `/reset-password`
+Rimuovere l'import e l'uso di `createCsrfMiddleware` (non disponibile) e ripristinare la configurazione middleware funzionante:
 
-- Public route (not behind `_authenticated`) so the recovery link works.
-- On mount: parse URL hash, confirm `type=recovery`. Supabase auto-creates a short-lived recovery session from the link.
-- If no recovery session present → show "Invalid or expired link" + link back to Forgot Password.
-- If valid: show "Set new password" form (new password + confirm). On submit → `supabase.auth.updateUser({ password })`, then `signOut()` and redirect to `/auth` with a "Password updated, please sign in" toast. Signing out invalidates any other sessions opened with the old password.
+- Tolgo `createCsrfMiddleware` dall'import
+- Rimuovo il blocco `const csrfMiddleware = createCsrfMiddleware({...})`
+- In `createStart` lascio solo `requestMiddleware: [errorMiddleware]`
+- `functionMiddleware: [attachSupabaseAuth]` resta invariato (necessario per le server functions autenticate)
 
-### 3. Owner-only hardening
+Se in futuro serve davvero la protezione CSRF, andrà implementata con un middleware custom (verifica `Origin`/`Referer` o token sincronizzato) — fuori scope adesso.
 
-- **Single channel guarantee:** reset link goes only to the address on `auth.users` — handled by Supabase.
-- **Short link lifetime:** confirm Supabase recovery token TTL is set to a tight value (default 1 hour; I'll set it to 15 minutes via auth config).
-- **Leaked-password check on the new password:** enable HIBP check (`password_hibp_enabled: true`) so the new password can't be a known-breached one.
-- **No enumeration:** neutral success message regardless of whether the email exists.
-- **Force re-auth after change:** `signOut()` after `updateUser` so the attacker (if any session was open) is kicked.
+### 2. Verificare che il preview torni verde
 
-### 4. Branded recovery email (optional but recommended)
+Dopo il fix, controllo lo stato del preview (`preview_control--get_preview_health`) per confermare che non ci siano altri errori introdotti dalla PR.
 
-The default Supabase recovery email works. If you want it branded to DecoderRead, I'll scaffold auth email templates so the recovery email matches the app — this requires an email domain to be set up. Tell me if you want this; otherwise I'll skip it and use the default template.
+### 3. Aggiornare il sito pubblicato (produzione)
 
-## Files
+Una volta verde il preview, tu puoi pubblicare in 2 modi:
 
-- `src/routes/auth.tsx` — add "Forgot password?" link + inline forgot form (or a small tab).
-- `src/routes/reset-password.tsx` — new public route, recovery-session detection, set-new-password form.
-- Auth config update (HIBP on, recovery token TTL 15 min).
+- **Desktop**: pulsante **Publish** in alto a destra → **Update**
+- **Mobile**: in modalità Preview, `⋯` in basso a destra → **Publish** → **Update**
 
-## Out of scope
+Note importanti:
+- Solo le modifiche **frontend** richiedono il click su "Update"
+- Le modifiche **backend** (database, edge functions, auth) sono già live automaticamente dal momento del merge
+- Il dominio personalizzato `decoderead.dev` si aggiorna automaticamente dopo "Update"
 
-- Email-channel "2FA" on top of an email reset link (redundant, not added).
-- TOTP / SMS 2FA (separate feature — ask if you want it).
-- Branded recovery email template (ask if you want it).
+Se preferisci, posso lanciare io la pubblicazione dopo il fix (richiede una conferma da parte tua).
 
-Confirm and I'll build it.
+## File modificati
+
+- `src/start.ts` — rimozione `createCsrfMiddleware`
