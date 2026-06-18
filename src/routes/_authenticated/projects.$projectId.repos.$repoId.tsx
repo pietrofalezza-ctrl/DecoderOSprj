@@ -482,7 +482,72 @@ function WorkspacePage() {
     onError: (e) => toast.error(getErrorMessage(e, t("errors.generic"))),
   });
 
-  const aiOriginMut = useMutation({
+  async function runVerbalize(scanner: "source" | "malware"): Promise<string> {
+    if (!selectedFileId || !providerValue) throw new Error("missing");
+    const reportMarkdown =
+      scanner === "source"
+        ? (sourceStaticReport ? formatSourceStaticReport(sourceStaticReport) : sourceStaticText)
+        : (malwareReport ? formatMalwareReport(malwareReport) : malwareText);
+    if (!reportMarkdown || reportMarkdown.length < 10) {
+      throw new Error("missing_report");
+    }
+    if (providerValue.startsWith("cloud:")) {
+      const provider = providerValue.slice(6) as CloudProvider;
+      const r = await verbalizeStatic({
+        data: {
+          file_id: selectedFileId,
+          scanner,
+          provider,
+          language: lang,
+          report_markdown: reportMarkdown,
+        },
+      });
+      return r.content;
+    }
+    const localKind = providerValue.slice(6) as LocalKind;
+    const endpoint = localEndpoints.find((e) => e.kind === localKind);
+    if (!endpoint || !fileQ.data) throw new Error("not_ready");
+    const { system, user } = buildStaticVerbalizePrompt({
+      scanner,
+      language: lang,
+      filePath: fileQ.data.path,
+      reportMarkdown,
+    });
+    const text = await callLocalProvider({
+      kind: localKind,
+      baseUrl: endpoint.base_url,
+      model: endpoint.default_model || (localKind === "ollama" ? "llama3.2" : "local-model"),
+      system,
+      user,
+    });
+    try {
+      await saveLocalVerbalize({
+        data: {
+          file_id: selectedFileId,
+          scanner,
+          language: lang,
+          content: text,
+          provider_kind: localKind,
+          model: endpoint.default_model ?? undefined,
+        },
+      });
+    } catch {
+      // best-effort cache
+    }
+    return text;
+  }
+
+  const verbalizeSourceStaticMut = useMutation({
+    mutationFn: () => runVerbalize("source"),
+    onSuccess: (text) => setSourceStaticAiText(text),
+    onError: (e) => toast.error(getErrorMessage(e, t("errors.generic"))),
+  });
+  const verbalizeMalwareMut = useMutation({
+    mutationFn: () => runVerbalize("malware"),
+    onSuccess: (text) => setMalwareAiText(text),
+    onError: (e) => toast.error(getErrorMessage(e, t("errors.generic"))),
+  });
+
     mutationFn: () => runAnalysisKind("ai_origin"),
     onSuccess: (text) => setAiOriginText(text),
     onError: (e) => toast.error(getErrorMessage(e, t("errors.generic"))),
