@@ -168,6 +168,8 @@ function WorkspacePage() {
   const [sourceStaticReport, setSourceStaticReport] = useState<SourceStaticReport | null>(null);
   const [malwareText, setMalwareText] = useState<string>("");
   const [malwareReport, setMalwareReport] = useState<StaticMalwareAssessment | null>(null);
+  const [sourceStaticAiText, setSourceStaticAiText] = useState<string>("");
+  const [malwareAiText, setMalwareAiText] = useState<string>("");
   const [chatDraft, setChatDraft] = useState("");
   const [fileSearch, setFileSearch] = useState("");
   const [lastRecordedSearch, setLastRecordedSearch] = useState<string | null>(null);
