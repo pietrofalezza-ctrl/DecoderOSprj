@@ -12,6 +12,7 @@ export type AnalysisActivityKind =
   | "llm_folder_analysis"
   | "llm_fix_generation"
   | "static_scan"
+  | "static_verbalize"
   | "search_query";
 
 export type AnalysisActivityInput = {
