@@ -1486,6 +1486,33 @@ function WorkspacePage() {
                     value="source_static"
                     className="m-0 flex-1 space-y-3 overflow-auto px-4 pb-4 data-[state=inactive]:hidden"
                   >
+                    {llmEnabled && sourceStaticReport && providerValue && (
+                      <div className="flex items-center justify-between gap-2 rounded-md border border-primary/20 bg-primary/5 p-2">
+                        <span className="text-[11px] text-muted-foreground">
+                          {t("workspace.staticVerbalize.hint")}
+                        </span>
+                        <Button
+                          size="sm"
+                          variant="secondary"
+                          className="h-7 shrink-0 px-2 text-[11px]"
+                          onClick={() => verbalizeSourceStaticMut.mutate()}
+                          disabled={verbalizeSourceStaticMut.isPending}
+                        >
+                          <Sparkles
+                            className={
+                              "mr-1 h-3 w-3" +
+                              (verbalizeSourceStaticMut.isPending ? " animate-pulse" : "")
+                            }
+                          />
+                          {verbalizeSourceStaticMut.isPending
+                            ? t("workspace.staticVerbalize.generating")
+                            : t("workspace.staticVerbalize.cta")}
+                        </Button>
+                      </div>
+                    )}
+                    {sourceStaticAiText && (
+                      <ExplanationView text={sourceStaticAiText} aiBadge={true} />
+                    )}
                     <ExplanationView
                       text={sourceStaticText || t("analysis.empty")}
                       aiBadge={false}
@@ -1509,6 +1536,31 @@ function WorkspacePage() {
                     value="malware"
                     className="m-0 flex-1 space-y-3 overflow-auto px-4 pb-4 data-[state=inactive]:hidden"
                   >
+                    {llmEnabled && malwareReport && providerValue && (
+                      <div className="flex items-center justify-between gap-2 rounded-md border border-primary/20 bg-primary/5 p-2">
+                        <span className="text-[11px] text-muted-foreground">
+                          {t("workspace.staticVerbalize.hint")}
+                        </span>
+                        <Button
+                          size="sm"
+                          variant="secondary"
+                          className="h-7 shrink-0 px-2 text-[11px]"
+                          onClick={() => verbalizeMalwareMut.mutate()}
+                          disabled={verbalizeMalwareMut.isPending}
+                        >
+                          <Sparkles
+                            className={
+                              "mr-1 h-3 w-3" +
+                              (verbalizeMalwareMut.isPending ? " animate-pulse" : "")
+                            }
+                          />
+                          {verbalizeMalwareMut.isPending
+                            ? t("workspace.staticVerbalize.generating")
+                            : t("workspace.staticVerbalize.cta")}
+                        </Button>
+                      </div>
+                    )}
+                    {malwareAiText && <ExplanationView text={malwareAiText} aiBadge={true} />}
                     <ExplanationView text={malwareText || t("analysis.empty")} aiBadge={false} />
                     {malwareReport && <MalwareReportPanel report={malwareReport} />}
                   </TabsContent>
