@@ -285,12 +285,7 @@ function WorkspacePage() {
   // they can actually run without an API key.
   const [autoSwitchedToStatic, setAutoSwitchedToStatic] = useState(false);
   useEffect(() => {
-    if (
-      llmEnabled &&
-      !hasAny &&
-      !autoSwitchedToStatic &&
-      mainTab === "summary"
-    ) {
+    if (llmEnabled && !hasAny && !autoSwitchedToStatic && mainTab === "summary") {
       setMainTab("source_static");
       setAutoSwitchedToStatic(true);
     }
@@ -488,8 +483,12 @@ function WorkspacePage() {
     if (!selectedFileId || !providerValue) throw new Error("missing");
     const reportMarkdown =
       scanner === "source"
-        ? (sourceStaticReport ? formatSourceStaticReport(sourceStaticReport) : sourceStaticText)
-        : (malwareReport ? formatMalwareReport(malwareReport) : malwareText);
+        ? sourceStaticReport
+          ? formatSourceStaticReport(sourceStaticReport)
+          : sourceStaticText
+        : malwareReport
+          ? formatMalwareReport(malwareReport)
+          : malwareText;
     if (!reportMarkdown || reportMarkdown.length < 10) {
       throw new Error("missing_report");
     }
@@ -784,6 +783,19 @@ function WorkspacePage() {
     const a = document.createElement("a");
     a.href = url;
     a.download = mdFilename;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
+  const onDownloadMalwareJson = () => {
+    if (!malwareReport) return;
+    const blob = new Blob([JSON.stringify(malwareReport, null, 2)], {
+      type: "application/json;charset=utf-8",
+    });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `${fileQ.data?.path?.split("/").pop() ?? "pe-static-report"}.malware.json`;
     a.click();
     URL.revokeObjectURL(url);
   };
@@ -1223,24 +1235,27 @@ function WorkspacePage() {
                       </div>
                     )}
                   </div>
-                  {llmEnabled && !hasAny && mainTab !== "source_static" && mainTab !== "malware" && (
-                    <div className="flex items-center justify-between gap-2 rounded-md border border-amber-500/40 bg-amber-500/5 p-2">
-                      <span className="text-[11px] text-amber-700 dark:text-amber-300">
-                        {t("workspace.noProvider")}
-                      </span>
-                      <Button
-                        asChild
-                        size="sm"
-                        variant="secondary"
-                        className="h-7 shrink-0 px-2 text-[11px]"
-                      >
-                        <Link to="/settings" hash="byok">
-                          <KeyRound className="mr-1 h-3 w-3" />
-                          {t("aiOrigin.configureKey")}
-                        </Link>
-                      </Button>
-                    </div>
-                  )}
+                  {llmEnabled &&
+                    !hasAny &&
+                    mainTab !== "source_static" &&
+                    mainTab !== "malware" && (
+                      <div className="flex items-center justify-between gap-2 rounded-md border border-amber-500/40 bg-amber-500/5 p-2">
+                        <span className="text-[11px] text-amber-700 dark:text-amber-300">
+                          {t("workspace.noProvider")}
+                        </span>
+                        <Button
+                          asChild
+                          size="sm"
+                          variant="secondary"
+                          className="h-7 shrink-0 px-2 text-[11px]"
+                        >
+                          <Link to="/settings" hash="byok">
+                            <KeyRound className="mr-1 h-3 w-3" />
+                            {t("aiOrigin.configureKey")}
+                          </Link>
+                        </Button>
+                      </div>
+                    )}
                   {llmEnabled && isLocal && (
                     <p className="flex items-center gap-1 text-[11px] text-primary">
                       <ShieldCheck className="h-3 w-3" />
@@ -1392,6 +1407,17 @@ function WorkspacePage() {
                       >
                         <Download className="h-3.5 w-3.5" />
                       </Button>
+                      {mainTab === "malware" && malwareReport && (
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={onDownloadMalwareJson}
+                          aria-label="Download JSON report"
+                          title="Download JSON report"
+                        >
+                          <FileBadge2 className="h-3.5 w-3.5" />
+                        </Button>
+                      )}
                     </div>
                   </div>
                   {llmEnabled && (
@@ -1938,11 +1964,16 @@ function SourceStaticReportPanel({ report }: { report: SourceStaticReport }) {
 }
 
 function formatMalwareReport(report: StaticMalwareAssessment): string {
+  const techniqueLines = Object.values(report.techniqueScores ?? {})
+    .filter((score) => score.score > 0)
+    .map((score) => `- ${score.label}: ${score.score}/100`);
   const lines = [
     "# Offline static malware scan",
     "",
-    `Decision: ${report.decision.toUpperCase()}`,
-    `Risk score: ${report.riskScore}/100`,
+    "Static heuristic analysis, not a definitive verdict.",
+    "",
+    `Static risk score: ${report.globalScore ?? report.riskScore}/100`,
+    `Legacy action level: ${report.decision.toUpperCase()}`,
     `File: ${report.filePath}`,
     `Size: ${report.fileSize} bytes`,
     `Magic signature: ${report.magicDetected} (${report.magicSignature})`,
@@ -1952,6 +1983,29 @@ function formatMalwareReport(report: StaticMalwareAssessment): string {
     `Printable ratio: ${(report.metrics.printableRatio * 100).toFixed(1)}%`,
     `Control-char ratio: ${(report.metrics.controlCharRatio * 100).toFixed(1)}%`,
     "",
+    ...(report.pe
+      ? [
+          "## PE metadata",
+          `- Architecture: ${report.pe.architecture}`,
+          `- Sections: ${report.pe.numberOfSections}`,
+          `- Entry point RVA: 0x${report.pe.entryPointRva.toString(16)}`,
+          `- Entry point section: ${report.pe.entryPointSection ?? "unknown"}`,
+          `- Imports: ${report.imports.reduce((sum, library) => sum + library.symbols.length, 0)}`,
+          `- Overlay: ${report.overlay?.present ? `${report.overlay.size} bytes` : "none"}`,
+          "",
+          "## Technique likelihood",
+          ...(techniqueLines.length
+            ? techniqueLines
+            : ["- No technique-specific indicators found."]),
+          "",
+          "## Sections",
+          ...report.sections.map(
+            (section) =>
+              `- ${section.name}: entropy ${section.entropy.toFixed(3)}, perms ${section.permissions.read ? "R" : "-"}${section.permissions.write ? "W" : "-"}${section.permissions.execute ? "X" : "-"}, raw ${section.rawSize}, virtual ${section.virtualSize}`,
+          ),
+          "",
+        ]
+      : []),
     "## Signals",
     ...report.findings.map(
       (finding) => `- [${finding.severity}] ${finding.title} (${finding.code})`,
@@ -1960,7 +2014,269 @@ function formatMalwareReport(report: StaticMalwareAssessment): string {
   return lines.join("\n");
 }
 
+function scoreTone(score: number): string {
+  if (score >= 70) return "border-red-500/40 bg-red-500/10 text-red-700 dark:text-red-300";
+  if (score >= 35) return "border-amber-500/40 bg-amber-500/10 text-amber-700 dark:text-amber-300";
+  if (score > 0) return "border-sky-500/40 bg-sky-500/10 text-sky-700 dark:text-sky-300";
+  return "border-emerald-500/40 bg-emerald-500/10 text-emerald-700 dark:text-emerald-300";
+}
+
+function categoryLabel(category: string): string {
+  const labels: Record<string, string> = {
+    packing: "Packing",
+    processInjection: "Injection",
+    processHollowing: "Hollowing",
+    directSyscall: "Syscall",
+    unhooking: "Unhooking",
+    antiAnalysis: "Anti-analysis",
+    dynamicApi: "Dynamic API",
+    peStructure: "PE structure",
+  };
+  return labels[category] ?? category;
+}
+
+function permissionLabel(read: boolean, write: boolean, execute: boolean): string {
+  return `${read ? "R" : "-"}${write ? "W" : "-"}${execute ? "X" : "-"}`;
+}
+
 function MalwareReportPanel({ report }: { report: StaticMalwareAssessment }) {
+  if (report.pe) {
+    const importCount = report.imports.reduce((sum, library) => sum + library.symbols.length, 0);
+    const suspiciousImports = report.imports
+      .flatMap((library) =>
+        library.symbols.map((symbol) => ({
+          dll: library.dll,
+          name: symbol.name,
+        })),
+      )
+      .filter((item) =>
+        report.indicators.some((indicator) =>
+          indicator.evidence.some((evidence) =>
+            evidence.toLowerCase().includes(item.name.toLowerCase()),
+          ),
+        ),
+      )
+      .slice(0, 16);
+
+    return (
+      <div className="space-y-3">
+        <div className="rounded-md border border-dashed border-border p-2.5 text-xs text-muted-foreground">
+          <div className="mb-1 flex items-center gap-1.5 text-sm font-semibold text-foreground">
+            <AlertTriangle className="h-3.5 w-3.5" />
+            Methodology
+          </div>
+          <p>
+            Static PE heuristic analysis only. Scores show indicators compatible with techniques;
+            they are not a definitive malware verdict.
+          </p>
+        </div>
+
+        <div className="rounded-md border border-border bg-card/40 p-3">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <div>
+              <div className="text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">
+                Static risk
+              </div>
+              <div className="mt-1 text-2xl font-semibold tabular-nums">
+                {report.globalScore}/100
+              </div>
+            </div>
+            <div className="flex flex-wrap gap-1.5">
+              <span
+                className={`rounded border px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide ${scoreTone(
+                  report.globalScore,
+                )}`}
+              >
+                {report.globalScore >= 70 ? "High" : report.globalScore >= 35 ? "Elevated" : "Low"}
+              </span>
+              <span className="rounded border border-border bg-muted/40 px-2 py-0.5 text-[10px] text-muted-foreground">
+                {report.fileSize} bytes
+              </span>
+              <span className="rounded border border-border bg-muted/40 px-2 py-0.5 text-[10px] text-muted-foreground">
+                {report.pe.architecture}
+              </span>
+              <span className="rounded border border-border bg-muted/40 px-2 py-0.5 text-[10px] text-muted-foreground">
+                EP {report.pe.entryPointSection ?? "unknown"}
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <div className="grid gap-2 sm:grid-cols-2">
+          {Object.values(report.techniqueScores).map((score) => (
+            <div key={score.key} className="rounded-md border border-border bg-card/30 p-2.5">
+              <div className="flex items-center justify-between gap-2">
+                <span className="text-xs font-semibold text-foreground">{score.label}</span>
+                <span
+                  className={`rounded border px-1.5 py-0.5 text-[10px] font-semibold tabular-nums ${scoreTone(
+                    score.score,
+                  )}`}
+                >
+                  {score.score}
+                </span>
+              </div>
+              <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-muted">
+                <div
+                  className="h-full bg-primary"
+                  style={{ width: `${Math.min(100, score.score)}%` }}
+                />
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <div className="grid gap-2 sm:grid-cols-2">
+          <div className="rounded-md border border-border bg-card/30 p-2.5">
+            <div className="flex items-center gap-1.5 text-xs font-semibold text-muted-foreground">
+              <FileBadge2 className="h-4 w-4" />
+              PE summary
+            </div>
+            <dl className="mt-2 grid grid-cols-2 gap-2 text-sm">
+              <dt className="text-muted-foreground">Sections</dt>
+              <dd className="text-right tabular-nums">{report.sections.length}</dd>
+              <dt className="text-muted-foreground">Imports</dt>
+              <dd className="text-right tabular-nums">{importCount}</dd>
+              <dt className="text-muted-foreground">Entry RVA</dt>
+              <dd className="text-right font-mono text-xs">
+                0x{report.pe.entryPointRva.toString(16)}
+              </dd>
+              <dt className="text-muted-foreground">Overlay</dt>
+              <dd className="text-right tabular-nums">
+                {report.overlay?.present ? `${report.overlay.size} B` : "none"}
+              </dd>
+            </dl>
+          </div>
+
+          <div className="rounded-md border border-border bg-card/30 p-2.5">
+            <div className="flex items-center gap-1.5 text-xs font-semibold text-muted-foreground">
+              <ShieldCheck className="h-4 w-4" />
+              Entropy
+            </div>
+            <dl className="mt-2 grid grid-cols-2 gap-2 text-sm">
+              <dt className="text-muted-foreground">Global</dt>
+              <dd className="text-right tabular-nums">{report.entropy.global.toFixed(3)}</dd>
+              <dt className="text-muted-foreground">Max window</dt>
+              <dd className="text-right tabular-nums">{report.entropy.maxWindow.toFixed(3)}</dd>
+              <dt className="text-muted-foreground">High sections</dt>
+              <dd className="text-right tabular-nums">
+                {report.sections.filter((section) => section.entropy >= 7.2).length}
+              </dd>
+              <dt className="text-muted-foreground">Warnings</dt>
+              <dd className="text-right tabular-nums">{report.warnings.length}</dd>
+            </dl>
+          </div>
+        </div>
+
+        <div className="rounded-md border border-border bg-card/30 p-2.5">
+          <div className="flex items-center gap-1.5 text-xs font-semibold text-muted-foreground">
+            <ShieldAlert className="h-4 w-4" />
+            Indicators
+          </div>
+          {report.indicators.length === 0 ? (
+            <p className="mt-2 text-sm text-muted-foreground">
+              No PE-specific heuristic indicators found.
+            </p>
+          ) : (
+            <ul className="mt-2 space-y-2">
+              {report.indicators.map((indicator) => (
+                <li key={indicator.id} className="rounded border border-border bg-card/60 p-2.5">
+                  <div className="flex flex-wrap items-center gap-2">
+                    <span
+                      className={`rounded border px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide ${severityBadgeClass(
+                        indicator.severity,
+                      )}`}
+                    >
+                      {indicator.severity}
+                    </span>
+                    <span className="rounded border border-border bg-background px-1.5 py-0.5 text-[10px] text-muted-foreground">
+                      {categoryLabel(indicator.category)}
+                    </span>
+                    <span className="rounded border border-border bg-background px-1.5 py-0.5 text-[10px] text-muted-foreground">
+                      weight {indicator.weight}
+                    </span>
+                  </div>
+                  <p className="mt-1 text-sm font-medium text-foreground">{indicator.title}</p>
+                  <p className="mt-1 text-xs text-muted-foreground">{indicator.description}</p>
+                  <p className="mt-1 break-words font-mono text-[10px] text-muted-foreground">
+                    {indicator.evidence.join(" | ")}
+                  </p>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+
+        <div className="rounded-md border border-border bg-card/30 p-2.5">
+          <div className="flex items-center gap-1.5 text-xs font-semibold text-muted-foreground">
+            <ScanSearch className="h-4 w-4" />
+            Sections
+          </div>
+          <div className="mt-2 overflow-x-auto">
+            <table className="w-full text-left text-xs">
+              <thead className="text-[10px] uppercase tracking-wide text-muted-foreground">
+                <tr>
+                  <th className="py-1 pr-2">Name</th>
+                  <th className="py-1 pr-2">Perms</th>
+                  <th className="py-1 pr-2 text-right">Entropy</th>
+                  <th className="py-1 pr-2 text-right">Raw</th>
+                  <th className="py-1 pr-2 text-right">Virtual</th>
+                </tr>
+              </thead>
+              <tbody>
+                {report.sections.map((section) => (
+                  <tr
+                    key={`${section.name}-${section.virtualAddress}`}
+                    className="border-t border-border"
+                  >
+                    <td className="py-1.5 pr-2 font-mono">
+                      {section.name}
+                      {section.containsEntryPoint && (
+                        <span className="ml-1 rounded border border-primary/30 bg-primary/5 px-1 text-[10px] text-primary">
+                          EP
+                        </span>
+                      )}
+                    </td>
+                    <td className="py-1.5 pr-2 font-mono">
+                      {permissionLabel(
+                        section.permissions.read,
+                        section.permissions.write,
+                        section.permissions.execute,
+                      )}
+                    </td>
+                    <td className="py-1.5 pr-2 text-right tabular-nums">
+                      {section.entropy.toFixed(3)}
+                    </td>
+                    <td className="py-1.5 pr-2 text-right tabular-nums">{section.rawSize}</td>
+                    <td className="py-1.5 pr-2 text-right tabular-nums">{section.virtualSize}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        {suspiciousImports.length > 0 && (
+          <div className="rounded-md border border-border bg-card/30 p-2.5">
+            <div className="flex items-center gap-1.5 text-xs font-semibold text-muted-foreground">
+              <BugPlay className="h-4 w-4" />
+              API evidence
+            </div>
+            <div className="mt-2 flex flex-wrap gap-1.5">
+              {suspiciousImports.map((item) => (
+                <span
+                  key={`${item.dll}:${item.name}`}
+                  className="rounded border border-border bg-background px-1.5 py-0.5 font-mono text-[10px] text-muted-foreground"
+                >
+                  {item.dll}!{item.name}
+                </span>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-3">
       <div className="rounded-md border border-border bg-card/40 p-2.5">
