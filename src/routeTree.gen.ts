@@ -57,6 +57,7 @@ import { Route as DocsItEuAiActAnalisiCodiceRouteImport } from './routes/docs.it
 import { Route as DocsItAiPrivacyFirstEuropaRouteImport } from './routes/docs.it.ai-privacy-first-europa'
 import { Route as AuthenticatedProjectsProjectIdRouteImport } from './routes/_authenticated/projects.$projectId'
 import { Route as AuthenticatedAdminKnowledgeRouteImport } from './routes/_authenticated/admin.knowledge'
+import { Route as AuthenticatedAdminConsentsRouteImport } from './routes/_authenticated/admin.consents'
 import { Route as AuthenticatedProjectsProjectIdIndexRouteImport } from './routes/_authenticated/projects.$projectId.index'
 import { Route as AuthenticatedAdminKnowledgeIndexRouteImport } from './routes/_authenticated/admin.knowledge.index'
 import { Route as LovableEmailQueueProcessRouteImport } from './routes/lovable/email/queue/process'
@@ -324,6 +325,12 @@ const AuthenticatedAdminKnowledgeRoute =
     path: '/knowledge',
     getParentRoute: () => AuthenticatedAdminRoute,
   } as any)
+const AuthenticatedAdminConsentsRoute =
+  AuthenticatedAdminConsentsRouteImport.update({
+    id: '/consents',
+    path: '/consents',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
 const AuthenticatedProjectsProjectIdIndexRoute =
   AuthenticatedProjectsProjectIdIndexRouteImport.update({
     id: '/',
@@ -424,6 +431,7 @@ export interface FileRoutesByFullPath {
   '/knowledge/formats': typeof KnowledgeFormatsRoute
   '/knowledge/integrations': typeof KnowledgeIntegrationsRoute
   '/knowledge/': typeof KnowledgeIndexRoute
+  '/admin/consents': typeof AuthenticatedAdminConsentsRoute
   '/admin/knowledge': typeof AuthenticatedAdminKnowledgeRouteWithChildren
   '/projects/$projectId': typeof AuthenticatedProjectsProjectIdRouteWithChildren
   '/docs/it/ai-privacy-first-europa': typeof DocsItAiPrivacyFirstEuropaRoute
@@ -483,6 +491,7 @@ export interface FileRoutesByTo {
   '/knowledge/formats': typeof KnowledgeFormatsRoute
   '/knowledge/integrations': typeof KnowledgeIntegrationsRoute
   '/knowledge': typeof KnowledgeIndexRoute
+  '/admin/consents': typeof AuthenticatedAdminConsentsRoute
   '/docs/it/ai-privacy-first-europa': typeof DocsItAiPrivacyFirstEuropaRoute
   '/docs/it/eu-ai-act-analisi-codice': typeof DocsItEuAiActAnalisiCodiceRoute
   '/docs/it/gdpr-revisione-codice-ai': typeof DocsItGdprRevisioneCodiceAiRoute
@@ -542,6 +551,7 @@ export interface FileRoutesById {
   '/knowledge/formats': typeof KnowledgeFormatsRoute
   '/knowledge/integrations': typeof KnowledgeIntegrationsRoute
   '/knowledge/': typeof KnowledgeIndexRoute
+  '/_authenticated/admin/consents': typeof AuthenticatedAdminConsentsRoute
   '/_authenticated/admin/knowledge': typeof AuthenticatedAdminKnowledgeRouteWithChildren
   '/_authenticated/projects/$projectId': typeof AuthenticatedProjectsProjectIdRouteWithChildren
   '/docs/it/ai-privacy-first-europa': typeof DocsItAiPrivacyFirstEuropaRoute
@@ -603,6 +613,7 @@ export interface FileRouteTypes {
     | '/knowledge/formats'
     | '/knowledge/integrations'
     | '/knowledge/'
+    | '/admin/consents'
     | '/admin/knowledge'
     | '/projects/$projectId'
     | '/docs/it/ai-privacy-first-europa'
@@ -662,6 +673,7 @@ export interface FileRouteTypes {
     | '/knowledge/formats'
     | '/knowledge/integrations'
     | '/knowledge'
+    | '/admin/consents'
     | '/docs/it/ai-privacy-first-europa'
     | '/docs/it/eu-ai-act-analisi-codice'
     | '/docs/it/gdpr-revisione-codice-ai'
@@ -720,6 +732,7 @@ export interface FileRouteTypes {
     | '/knowledge/formats'
     | '/knowledge/integrations'
     | '/knowledge/'
+    | '/_authenticated/admin/consents'
     | '/_authenticated/admin/knowledge'
     | '/_authenticated/projects/$projectId'
     | '/docs/it/ai-privacy-first-europa'
@@ -1105,6 +1118,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminKnowledgeRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
     }
+    '/_authenticated/admin/consents': {
+      id: '/_authenticated/admin/consents'
+      path: '/consents'
+      fullPath: '/admin/consents'
+      preLoaderRoute: typeof AuthenticatedAdminConsentsRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
     '/_authenticated/projects/$projectId/': {
       id: '/_authenticated/projects/$projectId/'
       path: '/'
@@ -1215,10 +1235,12 @@ const AuthenticatedAdminKnowledgeRouteWithChildren =
   )
 
 interface AuthenticatedAdminRouteChildren {
+  AuthenticatedAdminConsentsRoute: typeof AuthenticatedAdminConsentsRoute
   AuthenticatedAdminKnowledgeRoute: typeof AuthenticatedAdminKnowledgeRouteWithChildren
 }
 
 const AuthenticatedAdminRouteChildren: AuthenticatedAdminRouteChildren = {
+  AuthenticatedAdminConsentsRoute: AuthenticatedAdminConsentsRoute,
   AuthenticatedAdminKnowledgeRoute:
     AuthenticatedAdminKnowledgeRouteWithChildren,
 }
