@@ -161,7 +161,7 @@ export function KnowledgeContent({
 
       <div className="mt-12 rounded-xl border border-primary/30 bg-primary/5 p-6 text-center">
         <Button asChild size="lg">
-          <Link to={locale.cta.href as "/dashboard"}>{locale.cta.label}</Link>
+          <a href={locale.cta.href}>{locale.cta.label}</a>
         </Button>
       </div>
     </article>
