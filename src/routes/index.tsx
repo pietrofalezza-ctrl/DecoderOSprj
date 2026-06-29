@@ -83,6 +83,16 @@ function Landing() {
   const { t } = useTranslation();
   const [menuOpen, setMenuOpen] = useState(false);
 
+  const { canPrompt, installed, isIos, promptInstall } = usePwaInstall();
+  const handleInstall = async () => {
+    if (canPrompt) {
+      await promptInstall();
+      return;
+    }
+    document.getElementById("install")?.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
+  const showInstallBtn = !installed;
+
   const nav = [
     { label: t("landing.nav.howItWorks"), href: "#how-it-works" },
     { label: t("landing.nav.integrations"), href: "#integrations" },
