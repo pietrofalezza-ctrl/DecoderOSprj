@@ -12,7 +12,7 @@ const URL = "https://decoderead.dev/docs/zh/privacy-first-ai-europe";
 const EN_URL = "https://decoderead.dev/docs/privacy-first-ai-europe";
 
 const FAQ = [
-  { q: "什么是真正的"隐私优先 AI"?", a: "三点:数据不在无显式决策的情况下离开边界、您掌握密钥、工具可审计。BYOK + 开源 +(可选)本地推理覆盖全部。" },
+  { q: "什么是真正的『隐私优先 AI』?", a: "三点:数据不在无显式决策的情况下离开边界、您掌握密钥、工具可审计。BYOK + 开源 +(可选)本地推理覆盖全部。" },
   { q: "欧盟有 OpenAI 与 Anthropic 的严肃替代吗?", a: "有。Mistral(法国)提供开源权重与托管模型;Aleph Alpha(德国)主打主权部署;Silo AI(芬兰,AMD)构建欧洲 LLM;OpenEuroLLM 是欧盟资助的多语种开源 LLM 倡议。" },
   { q: "在欧盟托管 LLM 就符合 GDPR 吗?", a: "必要但不充分。还需合法依据、与提供方的 DPA、对数据主体的透明告知,以及尊重删除请求。欧盟托管解决跨境传输问题。" },
   { q: "Decoder 会绑定特定提供方吗?", a: "不会。支持 OpenAI、Anthropic、Google、OpenRouter 的 BYOK,也支持 Ollama / LM Studio 本地。今天可经由 OpenRouter 走 Mistral,随时切换。" },
