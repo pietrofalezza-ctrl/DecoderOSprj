@@ -24,6 +24,7 @@ import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as KnowledgeIndexRouteImport } from './routes/knowledge.index'
+import { Route as KnowledgeConceptsRouteImport } from './routes/knowledge.concepts'
 import { Route as KnowledgeCapabilitiesRouteImport } from './routes/knowledge.capabilities'
 import { Route as KnowledgeSlugRouteImport } from './routes/knowledge.$slug'
 import { Route as DocsStaticCodeAnalysisNoApiKeyRouteImport } from './routes/docs.static-code-analysis-no-api-key'
@@ -129,6 +130,11 @@ const IndexRoute = IndexRouteImport.update({
 const KnowledgeIndexRoute = KnowledgeIndexRouteImport.update({
   id: '/knowledge/',
   path: '/knowledge/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const KnowledgeConceptsRoute = KnowledgeConceptsRouteImport.update({
+  id: '/knowledge/concepts',
+  path: '/knowledge/concepts',
   getParentRoute: () => rootRouteImport,
 } as any)
 const KnowledgeCapabilitiesRoute = KnowledgeCapabilitiesRouteImport.update({
@@ -347,6 +353,7 @@ export interface FileRoutesByFullPath {
   '/docs/static-code-analysis-no-api-key': typeof DocsStaticCodeAnalysisNoApiKeyRoute
   '/knowledge/$slug': typeof KnowledgeSlugRoute
   '/knowledge/capabilities': typeof KnowledgeCapabilitiesRoute
+  '/knowledge/concepts': typeof KnowledgeConceptsRoute
   '/knowledge/': typeof KnowledgeIndexRoute
   '/projects/$projectId': typeof AuthenticatedProjectsProjectIdRouteWithChildren
   '/docs/it/ai-privacy-first-europa': typeof DocsItAiPrivacyFirstEuropaRoute
@@ -395,6 +402,7 @@ export interface FileRoutesByTo {
   '/docs/static-code-analysis-no-api-key': typeof DocsStaticCodeAnalysisNoApiKeyRoute
   '/knowledge/$slug': typeof KnowledgeSlugRoute
   '/knowledge/capabilities': typeof KnowledgeCapabilitiesRoute
+  '/knowledge/concepts': typeof KnowledgeConceptsRoute
   '/knowledge': typeof KnowledgeIndexRoute
   '/docs/it/ai-privacy-first-europa': typeof DocsItAiPrivacyFirstEuropaRoute
   '/docs/it/eu-ai-act-analisi-codice': typeof DocsItEuAiActAnalisiCodiceRoute
@@ -444,6 +452,7 @@ export interface FileRoutesById {
   '/docs/static-code-analysis-no-api-key': typeof DocsStaticCodeAnalysisNoApiKeyRoute
   '/knowledge/$slug': typeof KnowledgeSlugRoute
   '/knowledge/capabilities': typeof KnowledgeCapabilitiesRoute
+  '/knowledge/concepts': typeof KnowledgeConceptsRoute
   '/knowledge/': typeof KnowledgeIndexRoute
   '/_authenticated/projects/$projectId': typeof AuthenticatedProjectsProjectIdRouteWithChildren
   '/docs/it/ai-privacy-first-europa': typeof DocsItAiPrivacyFirstEuropaRoute
@@ -494,6 +503,7 @@ export interface FileRouteTypes {
     | '/docs/static-code-analysis-no-api-key'
     | '/knowledge/$slug'
     | '/knowledge/capabilities'
+    | '/knowledge/concepts'
     | '/knowledge/'
     | '/projects/$projectId'
     | '/docs/it/ai-privacy-first-europa'
@@ -542,6 +552,7 @@ export interface FileRouteTypes {
     | '/docs/static-code-analysis-no-api-key'
     | '/knowledge/$slug'
     | '/knowledge/capabilities'
+    | '/knowledge/concepts'
     | '/knowledge'
     | '/docs/it/ai-privacy-first-europa'
     | '/docs/it/eu-ai-act-analisi-codice'
@@ -590,6 +601,7 @@ export interface FileRouteTypes {
     | '/docs/static-code-analysis-no-api-key'
     | '/knowledge/$slug'
     | '/knowledge/capabilities'
+    | '/knowledge/concepts'
     | '/knowledge/'
     | '/_authenticated/projects/$projectId'
     | '/docs/it/ai-privacy-first-europa'
@@ -622,6 +634,7 @@ export interface RootRouteChildren {
   TermsRoute: typeof TermsRoute
   KnowledgeSlugRoute: typeof KnowledgeSlugRoute
   KnowledgeCapabilitiesRoute: typeof KnowledgeCapabilitiesRoute
+  KnowledgeConceptsRoute: typeof KnowledgeConceptsRoute
   KnowledgeIndexRoute: typeof KnowledgeIndexRoute
   ApiPublicHooksCleanupStaleRepositoriesRoute: typeof ApiPublicHooksCleanupStaleRepositoriesRoute
   LovableEmailQueueProcessRoute: typeof LovableEmailQueueProcessRoute
@@ -732,6 +745,13 @@ declare module '@tanstack/react-router' {
       path: '/knowledge'
       fullPath: '/knowledge/'
       preLoaderRoute: typeof KnowledgeIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/knowledge/concepts': {
+      id: '/knowledge/concepts'
+      path: '/knowledge/concepts'
+      fullPath: '/knowledge/concepts'
+      preLoaderRoute: typeof KnowledgeConceptsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/knowledge/capabilities': {
@@ -1079,6 +1099,7 @@ const rootRouteChildren: RootRouteChildren = {
   TermsRoute: TermsRoute,
   KnowledgeSlugRoute: KnowledgeSlugRoute,
   KnowledgeCapabilitiesRoute: KnowledgeCapabilitiesRoute,
+  KnowledgeConceptsRoute: KnowledgeConceptsRoute,
   KnowledgeIndexRoute: KnowledgeIndexRoute,
   ApiPublicHooksCleanupStaleRepositoriesRoute:
     ApiPublicHooksCleanupStaleRepositoriesRoute,
