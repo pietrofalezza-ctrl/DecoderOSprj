@@ -8,18 +8,20 @@ const Provider = z.enum(["openai", "anthropic", "gemini", "openrouter"]);
 export const listProviders = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
-    const { data: keys, error } = await context.supabase
-      .from("user_ai_credentials_safe")
-      .select("provider, key_hint, updated_at");
+    // SELECT on user_ai_credentials is revoked from `authenticated` to keep
+    // ciphertext unreachable from the client. Read via admin client scoped
+    // strictly to the authenticated owner, projecting only safe columns.
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { data: keys, error } = await supabaseAdmin
+      .from("user_ai_credentials")
+      .select("provider, key_hint, updated_at")
+      .eq("owner_id", context.userId);
     if (error) throw error;
     const { data: endpoints, error: eErr } = await context.supabase
       .from("user_local_endpoints")
       .select("kind, base_url, default_model");
     if (eErr) throw eErr;
 
-    // Decoder offers only two AI modes: user-managed BYOK keys and
-    // local endpoints (Ollama / LM Studio). There is no server-managed
-    // provider.
     return {
       keys: keys ?? [],
       endpoints: endpoints ?? [],
