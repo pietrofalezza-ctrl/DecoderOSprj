@@ -161,5 +161,6 @@ export function KnowledgeIndex({ lang }: { lang: KnowledgeLang }) {
         </ul>
       )}
     </div>
+    </>
   );
 }
