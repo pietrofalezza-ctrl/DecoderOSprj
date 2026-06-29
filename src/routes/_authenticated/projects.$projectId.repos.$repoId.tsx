@@ -1261,9 +1261,16 @@ function WorkspacePage() {
                 </div>
               )}
             </div>
-          </ResizablePanel>
-          <ResizableHandle />
-          <ResizablePanel defaultSize={34} minSize={26}>
+          </WorkspacePanel>
+          <WorkspaceHandle isMobile={isMobile} />
+          <WorkspacePanel
+            isMobile={isMobile}
+            paneKey="insights"
+            activePane={mobilePane}
+            defaultSize={34}
+            minSize={26}
+          >
+
             {selectedFolderPath ? (
               <FolderAnalysisPanel
                 repoId={repoId}
