@@ -233,8 +233,8 @@ function Landing() {
             </div>
           </div>
 
-          <div className="md:col-span-5 flex justify-center">
-            <div className="relative mx-auto w-full max-w-sm aspect-square border border-border bg-card p-6 sm:p-8 flex flex-col items-center justify-center md:max-w-none">
+          <div className="md:col-span-5 flex justify-center min-w-0">
+            <div className="relative mx-auto w-full max-w-[min(384px,100%)] aspect-square border border-border bg-card p-6 sm:p-8 flex flex-col items-center justify-center md:max-w-none">
               <span className="absolute left-0 top-0 h-2 w-2 border-l border-t border-border" />
               <span className="absolute right-0 top-0 h-2 w-2 border-r border-t border-border" />
               <span className="absolute bottom-0 left-0 h-2 w-2 border-b border-l border-border" />
