@@ -13,10 +13,13 @@ export const Route = createFileRoute("/api/public/hooks/cleanup-stale-repositori
   server: {
     handlers: {
       POST: async ({ request }) => {
-        const apikey = request.headers.get("apikey");
-        const expected =
-          process.env.SUPABASE_PUBLISHABLE_KEY ?? process.env.SUPABASE_ANON_KEY ?? "";
-        if (!apikey || !expected || apikey !== expected) {
+        const { timingSafeEqual } = await import("crypto");
+        const auth = request.headers.get("authorization") ?? "";
+        const provided = auth.startsWith("Bearer ") ? auth.slice(7) : "";
+        const expected = process.env.CLEANUP_CRON_SECRET ?? "";
+        const a = Buffer.from(provided);
+        const b = Buffer.from(expected);
+        if (!expected || a.length !== b.length || !timingSafeEqual(a, b)) {
           return new Response("Unauthorized", { status: 401 });
         }
 
