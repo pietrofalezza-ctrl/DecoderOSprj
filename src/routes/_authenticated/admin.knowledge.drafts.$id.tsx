@@ -42,7 +42,7 @@ function DraftEditor() {
   const [meta, setMeta] = useState({
     slug: "",
     type: "concept",
-    status: "draft" as "ai_draft" | "in_review" | "published" | "archived",
+    status: "ai_draft" as "ai_draft" | "in_review" | "published" | "archived",
     tags: "",
     related: "",
   });
