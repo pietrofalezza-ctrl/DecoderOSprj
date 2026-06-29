@@ -326,6 +326,15 @@ function ProjectPage() {
           </div>
         </header>
 
+        <div className="flex items-start gap-3 rounded-lg border border-primary/30 bg-primary/5 p-3 text-xs sm:text-sm">
+          <Sparkles className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
+          <p className="text-muted-foreground">
+            <span className="font-medium text-foreground">New: Chat with your code.</span> Open a repository below,
+            pick a folder, then open the <strong className="text-foreground">Chat</strong> tab to ask questions about
+            the code. Conversations are persisted per repository.
+          </p>
+        </div>
+
         <section className="grid gap-3 md:grid-cols-2 xl:grid-cols-4">
           <MetricCard
             icon={<Sparkles className="h-4 w-4" />}
