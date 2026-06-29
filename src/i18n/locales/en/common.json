@@ -193,7 +193,7 @@
       "kicker": "What Decoder does",
       "title": "Four lenses on your code",
       "body": "Tap any card for details. No key needed for static and malware; AI features use your BYOK key or a local model.",
-      "moreLink": "Learn more",
+      "moreLink": "Learn more about this capability",
       "close": "Close",
       "static": {
         "title": "Static analysis",
@@ -813,7 +813,7 @@
     "demote": "Remove admin"
   },
   "docs": {
-    "title": "Documentation",
+    "title": "Decoder Documentation",
     "intro": "Decoder turns source code into human-readable knowledge. Read this page in your language using the switcher in the header.",
     "gettingStartedTitle": "Getting started",
     "gettingStartedBody": "Sign in, create a project, then bring code in one of three ways: drop a single source file (.js, .ts, .py, .java, .go, .rs, .sql and 20+ more), upload a ZIP of a folder, or import any public GitHub repository. Pick a file in the tree, then click Explain. Choose your proficiency level and human or technical summary.",

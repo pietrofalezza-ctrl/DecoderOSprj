@@ -193,7 +193,7 @@
       "kicker": "Decoder 能做什么",
       "title": "查看代码的四种视角",
       "body": "点击任意卡片查看详情。静态和恶意软件扫描无需密钥;AI 功能使用你的 BYOK 密钥或本地模型。",
-      "moreLink": "了解更多",
+      "moreLink": "了解此功能的更多信息",
       "close": "关闭",
       "static": {
         "title": "静态分析",
@@ -813,7 +813,7 @@
     "demote": "移除管理员"
   },
   "docs": {
-    "title": "文档",
+    "title": "Decoder 文档",
     "intro": "Decoder 把源代码转化为可读的知识。可使用页眉中的切换器以你偏好的语言阅读本页。",
     "gettingStartedTitle": "快速开始",
     "gettingStartedBody": "登录、创建项目,然后通过三种方式之一引入代码:拖入单个源代码文件(.js、.ts、.py、.java、.go、.rs、.sql 等 20+ 种),上传文件夹的 ZIP 压缩包,或导入任意公开 GitHub 仓库。在文件树中选择文件,然后点击「解释」。选择你的水平以及通俗或技术摘要。",
