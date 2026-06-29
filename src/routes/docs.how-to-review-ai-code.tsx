@@ -9,7 +9,7 @@ import { PublicHeaderAuthSlot } from "@/components/PublicHeaderAuthSlot";
 const TITLE = "How to review AI-generated code — a practical guide";
 const DESC =
   "A practical guide to reviewing code written by Copilot, Cursor and other AI tools: hallucinations, security flaws, hidden dependencies, and how to audit them.";
-const URL = "https://decoderdev.lovable.app/docs/how-to-review-ai-code";
+const URL = "https://decoderead.dev/docs/how-to-review-ai-code";
 
 export const Route = createFileRoute("/docs/how-to-review-ai-code")({
   head: () => ({

@@ -23,9 +23,9 @@ export const Route = createFileRoute("/cookies")({
         content:
           "Cookie and local storage notice for Decoder. Privacy-first: no third-party trackers, no profiling, no marketing cookies.",
       },
-      { property: "og:url", content: "https://decoderdev.lovable.app/cookies" },
+      { property: "og:url", content: "https://decoderead.dev/cookies" },
     ],
-    links: [{ rel: "canonical", href: "https://decoderdev.lovable.app/cookies" }],
+    links: [{ rel: "canonical", href: "https://decoderead.dev/cookies" }],
   }),
   component: CookiesPage,
 });

@@ -37,7 +37,7 @@ export const Route = createFileRoute("/auth")({
         property: "og:description",
         content: "Access your Decoder workspace — BYOK cloud or fully local code understanding.",
       },
-      { property: "og:url", content: "https://decoderdev.lovable.app/auth" },
+      { property: "og:url", content: "https://decoderead.dev/auth" },
     ],
   }),
   component: AuthPage,

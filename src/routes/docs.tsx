@@ -20,9 +20,9 @@ export const Route = createFileRoute("/docs")({
         content:
           "Get started with Decoder: connect a cloud provider with your own key, or run fully local with Ollama / LM Studio.",
       },
-      { property: "og:url", content: "https://decoderdev.lovable.app/docs" },
+      { property: "og:url", content: "https://decoderead.dev/docs" },
     ],
-    links: [{ rel: "canonical", href: "https://decoderdev.lovable.app/docs" }],
+    links: [{ rel: "canonical", href: "https://decoderead.dev/docs" }],
     scripts: [
       {
         type: "application/ld+json",
@@ -32,7 +32,7 @@ export const Route = createFileRoute("/docs")({
           name: "Documentation — Decoder",
           description:
             "How to use Decoder: BYOK cloud providers, local Ollama / LM Studio mode, security and ownership.",
-          url: "https://decoderdev.lovable.app/docs",
+          url: "https://decoderead.dev/docs",
         }),
       },
     ],
