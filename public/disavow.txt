@@ -1,0 +1,17 @@
+# Decoder — Google Search Console disavow file
+# Upload at: https://search.google.com/search-console/disavow-links
+# Property: https://decoderead.dev/
+# Generated: 2026-06-29
+#
+# Reason: spam/PBN backlinks detected via Semrush backlink audit.
+# All domains below are low-quality link networks or fake "SEO booster"
+# pages with manipulative anchor text. Disavowing prevents them from
+# damaging the domain's trust signals.
+
+domain:seopxl-organic-boost-lab.shop
+domain:seopxl-performance-authority-engine.shop
+domain:bisprofit.com
+domain:fiverr-affordable-seo-services.site
+domain:fiverr-cost-effective-seo.site
+domain:fiverr-quality-seo-at-affordable-rates.site
+domain:fiverr-seo-for-business-growth.site
