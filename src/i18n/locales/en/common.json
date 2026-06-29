@@ -867,6 +867,16 @@
       "gemini": "Google Gemini",
       "openrouter": "OpenRouter"
     },
+    "welcomeBadges": {
+      "free": "100% free",
+      "noKey": "No API key required",
+      "privacy": "Privacy-first"
+    },
+    "welcomeStats": {
+      "languages": "20+ languages",
+      "formats": "ZIP & single file",
+      "modes": "Local & BYOK"
+    },
     "steps": {
       "s1": {
         "title": "Welcome to Decoder",
@@ -976,7 +986,21 @@
         "cta": {
           "demo": "Start with demo project",
           "provider": "Add AI provider",
-          "dashboard": "Go to dashboard"
+          "dashboard": "Go to dashboard",
+          "noKey": "Try without an API key"
+        }
+      },
+      "sFree": {
+        "title": "What's free — no API key",
+        "subtitle": "These features work out of the box, with no AI provider or LLM required.",
+        "badge": "No API key",
+        "items": {
+          "static": { "title": "Static code analysis", "body": "20+ languages: complexity, smells, anti-patterns." },
+          "malware": { "title": "Malware & ransomware scan", "body": "Heuristic patterns, including LockBit-style markers." },
+          "aiOrigin": { "title": "AI-origin detector", "body": "Heuristic signals on AI-generated code." },
+          "upload": { "title": "ZIP & single file", "body": "Upload an archive or paste a single file." },
+          "history": { "title": "Analysis history", "body": "Every run is saved and re-openable across sessions." },
+          "i18n": { "title": "Multilingual & tone", "body": "EN / IT / ZH plus reader-level tuning." }
         }
       }
     },

@@ -92,6 +92,20 @@ function AdminPage() {
           </Button>
         </section>
 
+        <section className="rounded-lg border border-border bg-card p-5">
+          <h2 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
+            Compliance · Consent records
+          </h2>
+          <p className="mt-1 text-xs text-muted-foreground">
+            Read-only audit log of BYOK and onboarding acknowledgements (terms version,
+            language, IP, user-agent). Filter, search and export to CSV for GDPR /
+            authority requests. Every export is itself audited below.
+          </p>
+          <Button asChild size="sm" className="mt-3">
+            <a href="/admin/consents">Open consent records</a>
+          </Button>
+        </section>
+
         <section className="space-y-3 rounded-lg border border-border bg-card p-5">
           <div className="flex items-start justify-between gap-3">
             <div>
