@@ -16,6 +16,7 @@ import {
   getLocale,
 } from "@/knowledge/registry";
 import type { KnowledgeLang, KnowledgeType } from "@/knowledge/types";
+import { KnowledgeTopNav } from "@/components/knowledge/KnowledgeTopNav";
 
 const TYPES: ("all" | KnowledgeType)[] = [
   "all",
