@@ -1,56 +1,69 @@
-## Goal
-Slim down the homepage into a focused, mobile-first funnel; move secondary content into dedicated sub-pages and on-demand dialogs; localize the FAQ; and confirm parity between the 3 upload methods (single file / ZIP / Git URL all "free, no key").
+## Stato attuale: appari su Google?
 
-## 1. Fix content inconsistencies
+**Sì, sei indicizzato — ma quasi invisibile.**
 
-**FAQ in English (hardcoded in `src/routes/index.tsx`)**
-- Replace the 5 hardcoded `<h3>/<p>` blocks with `t("landing.faq.q1.title/body")` … `q5`.
-- Add localized keys to `src/i18n/locales/{en,it,zh}/common.json`.
-- Update the JSON-LD `FAQPage` schema (also currently English) to read from `t()` so the structured data matches the rendered language.
+- Google Search Console: `https://decoderead.dev/` → `verdict: PASS`, `Submitted and indexed`, ultimo crawl 29 giu 2026 (mobile), sitemap riconosciuta. Quindi le pagine *possono* uscire.
+- Performance Search Console (ultimi 30gg): **0 click / 0 impression riportate** dall'API → il sito esce solo se uno cerca letteralmente "decoderead" o frasi molto lunghe già nelle tue docs. Per query competitive non sei in top 100.
+- Semrush domain: **nessun dato organico** (`No data found`) → traffico stimato ~0, nessuna keyword in top 100 Google US/IT secondo Semrush.
+- Semrush backlinks: **Authority Score 0/100**, 10 backlink da 8 domini. Di questi solo `lovable.app` (AS 55) è reale. Tutti gli altri (seopxl-*, fiverr-*, bisprofit) sono **link spam/PBN tossici** — vanno disconosciuti, peggiorano la reputazione.
 
-**Git URL card showing "BYOK · CHIAVE TUA"**
-- The screenshot 2 reflects an outdated build; current card markup no longer renders that badge. Verify after rebuild and force-remove any residual badge logic in `src/routes/index.tsx` for the Git URL card so the three cards are visually and semantically symmetric (upload is always free; AI features are what require a key — already stated in the section footnote).
+## Cosa dice Semrush sulle keyword target
 
-## 2. Homepage UX rationalization (mobile-first)
+| Keyword | Volume/mese (US) | Difficoltà | Note |
+|---|---|---|---|
+| ai code review | 1.900 | 50 (difficile) | testa qui sono Greptile/CodeRabbit |
+| ai code analysis | 210 | 26 (facile) | **già copri questa — opportunità** |
+| open source ai code review | 20 | 0 (molto facile) | **hai già la pagina, win quasi sicuro** |
+| byok ai code review | n/d | — | nicchia, hai la pagina, sarai tra i pochi |
+| review ai generated code | n/d | — | trend in crescita, copri |
 
-Today the landing renders ~10 stacked full-width sections. New structure (top → bottom), max 6 screens on mobile:
+Traduzione: il piano editoriale è giusto, ma **mancano segnali esterni** (backlink veri, menzioni) e **mancano segnali di freschezza** (il sito è giovane, Google sta ancora "decidendo").
 
-```text
-1. Hero            — H1 + 1-line subtitle + 2 CTAs (Start · Install app)
-2. 3 upload cards  — Single file · ZIP · Git URL  (uniform, no per-card badges)
-3. "How it works"  — 3 compact steps, horizontal scroll on mobile
-4. Capabilities    — 4 tiles: Static · Malware · AI explain · Chat
-                     each tile opens a Dialog with details (was full section)
-5. Trust strip     — privacy/BYOK/open-source one-liner + link to /privacy
-6. FAQ (4 Q)       — Accordion, localized, "See all" → /docs/faq
-```
+## Obiettivo 500 visitatori/giorno
 
-Sections being **removed from the homepage** and relocated:
-- "Install as app" deep band → collapsed into hero CTA + small `/install` page with the full PWA walkthrough.
-- "Integrations", "Pricing notes", long capability blurbs, contributors teaser → moved into existing `/docs/*` and `/contributors` pages, linked from a single "Learn more" footer row.
-- Long capability section → replaced by 4 tiles whose details live inside an on-tap `<Dialog>` (shadcn) so the page stays short but power-users can drill in.
+Va detto chiaro: con AS 0, dominio nuovo e nicchia tecnica, **500/giorno organico richiede 4–8 mesi di lavoro costante**. È raggiungibile, ma non solo con SEO on-page — serve mix di canali. Aritmetica grossolana: ~15.000 visite/mese ≈ ranking top-3 su 4–6 keyword da 200–1.000 vol/mese **oppure** top-10 su 15–20 long-tail + traffico da community/social.
 
-### New sub-pages / dialogs
-- `src/routes/install.tsx` — full PWA install guide (iOS / Android / desktop), pulled out of homepage.
-- 4 capability dialogs rendered inline on the homepage via shadcn `Dialog` (no new route): `StaticDialog`, `MalwareDialog`, `AiExplainDialog`, `ChatDialog`. Each has its own short copy + "Open full docs" link.
+## Piano in 4 fasi
 
-### Mobile-first rules applied
-- All sections use `py-10 sm:py-16`, `px-4 sm:px-6`, max-w-5xl.
-- Cards: `grid-cols-1 sm:grid-cols-3`, equal-height, no overflow.
-- Hero scales: `text-3xl sm:text-5xl md:text-6xl`, line-height tight, no clipping.
-- Capability tiles: 2×2 grid on mobile, 4×1 on desktop, tap target ≥ 48px.
-- Dialogs: `max-h-[85vh] overflow-y-auto`, full-width on `< sm`.
+### Fase 1 — Pulizia & fondamenta (questa settimana)
+1. **Disavow dei backlink spam** in Search Console (carico file `disavow.txt` con i 7 domini fiverr/seopxl/bisprofit). Senza questo, ogni link-building futuro è zavorrato.
+2. **Submit manuale in GSC** delle 10 pagine docs principali (URL Inspection → Request indexing) per accelerare l'ingresso in indice.
+3. **Aggiungere `lastmod` reale** nella sitemap (oggi è statico) — segnala freschezza ai crawler.
+4. **Internal linking audit**: ogni doc deve linkare 3–5 altre doc + homepage deve linkare le 5 doc principali (già parziale, va completato).
 
-## 3. Files touched
-- `src/routes/index.tsx` — major reorganization (delete 4 sections, add 4 dialogs, swap hardcoded FAQ for `t()`).
-- `src/routes/install.tsx` — new.
-- `src/components/landing/CapabilityDialog.tsx` — new (shared dialog shell).
-- `src/i18n/locales/{en,it,zh}/common.json` — add `landing.faq.q1..q5`, `landing.capabilities.{static,malware,aiExplain,chat}.{title,short,long}`.
+### Fase 2 — Contenuti che catturano long-tail (settimane 2–4)
+Pubblicare 6 pagine nuove targetizzate su query a bassa competizione ma intent chiaro:
+- "how to detect ai generated code" (trend forte, low competition)
+- "static code analysis without api key"
+- "free malware scanner for source code"
+- "alternatives to coderabbit free" 
+- "claude code review vs copilot review"
+- versione IT: "come revisionare codice generato da AI" + "analisi malware codice gratis"
 
-## 4. After build
-- Visual QA on 375×667 (iPhone SE) and 768 (tablet).
-- Then a fresh SEO pass + publish (your follow-up step).
+Ogni pagina: 1.200–1.800 parole, esempio reale (snippet vulnerabile + output Decoder), CTA a "prova ora", schema Article + FAQ.
 
-## Out of scope (per your message)
-- No backend changes, no auth/key logic changes, no new analyses.
-- SEO re-optimization & publish handled in the next turn.
+### Fase 3 — Segnali esterni (settimane 2–8, parallelo)
+Questi muovono l'ago più della SEO tecnica per un dominio nuovo:
+- **Show HN** su Hacker News con angle "Open-source AI code review you can run with Ollama" (1 lancio, ben preparato, può portare 2–10k visite in 24h + backlink permanenti)
+- **Post su r/programming, r/cybersecurity, r/selfhosted** con case study LockBit (hai già il materiale)
+- **Dev.to + Hashnode**: cross-post di 3 articoli con link canonical al sito (backlink dofollow gratuiti)
+- **GitHub Awesome lists**: PR per essere aggiunti a `awesome-ai-tools`, `awesome-static-analysis`, `awesome-selfhosted`
+- **Product Hunt launch** preparato (1 giorno, target: top 5 → 3–8k visite)
+
+### Fase 4 — Misura & itera (continuativa)
+- Aggancio mensile via Semrush domain_analysis + GSC export per vedere quali keyword salgono
+- Refresh dei contenuti che arrivano in posizione 11–20 (push verso top 10)
+- Eventuale connettore Semrush per dashboard in-app se vuoi tracking quotidiano
+
+## Cosa serve da te per partire
+
+1. Conferma se vuoi che proceda con **Fase 1** completa adesso (disavow file, sitemap lastmod dinamico, submit URL via GSC API, audit internal linking).
+2. Conferma se vuoi che pubblichi anche i **6 nuovi contenuti Fase 2** (EN + IT delle più strategiche) in questo turno o se prefersci uno alla volta.
+3. Per Fase 3 il lavoro è tuo (post HN/Reddit/PH) — io posso preparare i copy pronti da incollare.
+
+## Dettaglio tecnico (per riferimento)
+
+- File da toccare in Fase 1: `public/sitemap.xml` (lastmod dinamico → meglio promuovere a server route `src/routes/sitemap[.]xml.ts`), nuovo `public/disavow.txt` (solo per upload manuale in GSC, non serve in build).
+- Fase 2: nuove rotte sotto `src/routes/docs.*.tsx` con `head()` completo (title, description, og:*, canonical, JSON-LD Article+FAQ) + aggiornamento sitemap + breadcrumb interni da `/docs`.
+- GSC API: posso chiamare `urlInspection` + sitemap resubmit dal connector già collegato.
+- Disavow file: si carica solo manualmente da [search.google.com/search-console/disavow-links](https://search.google.com/search-console/disavow-links) — ti preparo il `.txt`, lo carichi tu.
