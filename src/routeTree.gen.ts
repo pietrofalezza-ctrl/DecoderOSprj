@@ -39,6 +39,7 @@ import { Route as DocsGdprAiCodeReviewRouteImport } from './routes/docs.gdpr-ai-
 import { Route as DocsFreeMalwareScannerSourceCodeRouteImport } from './routes/docs.free-malware-scanner-source-code'
 import { Route as DocsEuAiActCodeAnalysisRouteImport } from './routes/docs.eu-ai-act-code-analysis'
 import { Route as DocsDetectAiGeneratedCodeRouteImport } from './routes/docs.detect-ai-generated-code'
+import { Route as DocsComparisonGreptileRouteImport } from './routes/docs.comparison-greptile'
 import { Route as DocsComparisonCoderabbitRouteImport } from './routes/docs.comparison-coderabbit'
 import { Route as DocsChatWithYourCodebaseRouteImport } from './routes/docs.chat-with-your-codebase'
 import { Route as DocsAiCodeReviewVsHumanRouteImport } from './routes/docs.ai-code-review-vs-human'
@@ -222,6 +223,11 @@ const DocsDetectAiGeneratedCodeRoute =
     path: '/detect-ai-generated-code',
     getParentRoute: () => DocsRoute,
   } as any)
+const DocsComparisonGreptileRoute = DocsComparisonGreptileRouteImport.update({
+  id: '/comparison-greptile',
+  path: '/comparison-greptile',
+  getParentRoute: () => DocsRoute,
+} as any)
 const DocsComparisonCoderabbitRoute =
   DocsComparisonCoderabbitRouteImport.update({
     id: '/comparison-coderabbit',
@@ -402,6 +408,7 @@ export interface FileRoutesByFullPath {
   '/docs/ai-code-review-vs-human': typeof DocsAiCodeReviewVsHumanRoute
   '/docs/chat-with-your-codebase': typeof DocsChatWithYourCodebaseRoute
   '/docs/comparison-coderabbit': typeof DocsComparisonCoderabbitRoute
+  '/docs/comparison-greptile': typeof DocsComparisonGreptileRoute
   '/docs/detect-ai-generated-code': typeof DocsDetectAiGeneratedCodeRoute
   '/docs/eu-ai-act-code-analysis': typeof DocsEuAiActCodeAnalysisRoute
   '/docs/free-malware-scanner-source-code': typeof DocsFreeMalwareScannerSourceCodeRoute
@@ -460,6 +467,7 @@ export interface FileRoutesByTo {
   '/docs/ai-code-review-vs-human': typeof DocsAiCodeReviewVsHumanRoute
   '/docs/chat-with-your-codebase': typeof DocsChatWithYourCodebaseRoute
   '/docs/comparison-coderabbit': typeof DocsComparisonCoderabbitRoute
+  '/docs/comparison-greptile': typeof DocsComparisonGreptileRoute
   '/docs/detect-ai-generated-code': typeof DocsDetectAiGeneratedCodeRoute
   '/docs/eu-ai-act-code-analysis': typeof DocsEuAiActCodeAnalysisRoute
   '/docs/free-malware-scanner-source-code': typeof DocsFreeMalwareScannerSourceCodeRoute
@@ -518,6 +526,7 @@ export interface FileRoutesById {
   '/docs/ai-code-review-vs-human': typeof DocsAiCodeReviewVsHumanRoute
   '/docs/chat-with-your-codebase': typeof DocsChatWithYourCodebaseRoute
   '/docs/comparison-coderabbit': typeof DocsComparisonCoderabbitRoute
+  '/docs/comparison-greptile': typeof DocsComparisonGreptileRoute
   '/docs/detect-ai-generated-code': typeof DocsDetectAiGeneratedCodeRoute
   '/docs/eu-ai-act-code-analysis': typeof DocsEuAiActCodeAnalysisRoute
   '/docs/free-malware-scanner-source-code': typeof DocsFreeMalwareScannerSourceCodeRoute
@@ -578,6 +587,7 @@ export interface FileRouteTypes {
     | '/docs/ai-code-review-vs-human'
     | '/docs/chat-with-your-codebase'
     | '/docs/comparison-coderabbit'
+    | '/docs/comparison-greptile'
     | '/docs/detect-ai-generated-code'
     | '/docs/eu-ai-act-code-analysis'
     | '/docs/free-malware-scanner-source-code'
@@ -636,6 +646,7 @@ export interface FileRouteTypes {
     | '/docs/ai-code-review-vs-human'
     | '/docs/chat-with-your-codebase'
     | '/docs/comparison-coderabbit'
+    | '/docs/comparison-greptile'
     | '/docs/detect-ai-generated-code'
     | '/docs/eu-ai-act-code-analysis'
     | '/docs/free-malware-scanner-source-code'
@@ -693,6 +704,7 @@ export interface FileRouteTypes {
     | '/docs/ai-code-review-vs-human'
     | '/docs/chat-with-your-codebase'
     | '/docs/comparison-coderabbit'
+    | '/docs/comparison-greptile'
     | '/docs/detect-ai-generated-code'
     | '/docs/eu-ai-act-code-analysis'
     | '/docs/free-malware-scanner-source-code'
@@ -965,6 +977,13 @@ declare module '@tanstack/react-router' {
       path: '/detect-ai-generated-code'
       fullPath: '/docs/detect-ai-generated-code'
       preLoaderRoute: typeof DocsDetectAiGeneratedCodeRouteImport
+      parentRoute: typeof DocsRoute
+    }
+    '/docs/comparison-greptile': {
+      id: '/docs/comparison-greptile'
+      path: '/comparison-greptile'
+      fullPath: '/docs/comparison-greptile'
+      preLoaderRoute: typeof DocsComparisonGreptileRouteImport
       parentRoute: typeof DocsRoute
     }
     '/docs/comparison-coderabbit': {
@@ -1266,6 +1285,7 @@ interface DocsRouteChildren {
   DocsAiCodeReviewVsHumanRoute: typeof DocsAiCodeReviewVsHumanRoute
   DocsChatWithYourCodebaseRoute: typeof DocsChatWithYourCodebaseRoute
   DocsComparisonCoderabbitRoute: typeof DocsComparisonCoderabbitRoute
+  DocsComparisonGreptileRoute: typeof DocsComparisonGreptileRoute
   DocsDetectAiGeneratedCodeRoute: typeof DocsDetectAiGeneratedCodeRoute
   DocsEuAiActCodeAnalysisRoute: typeof DocsEuAiActCodeAnalysisRoute
   DocsFreeMalwareScannerSourceCodeRoute: typeof DocsFreeMalwareScannerSourceCodeRoute
@@ -1289,6 +1309,7 @@ const DocsRouteChildren: DocsRouteChildren = {
   DocsAiCodeReviewVsHumanRoute: DocsAiCodeReviewVsHumanRoute,
   DocsChatWithYourCodebaseRoute: DocsChatWithYourCodebaseRoute,
   DocsComparisonCoderabbitRoute: DocsComparisonCoderabbitRoute,
+  DocsComparisonGreptileRoute: DocsComparisonGreptileRoute,
   DocsDetectAiGeneratedCodeRoute: DocsDetectAiGeneratedCodeRoute,
   DocsEuAiActCodeAnalysisRoute: DocsEuAiActCodeAnalysisRoute,
   DocsFreeMalwareScannerSourceCodeRoute: DocsFreeMalwareScannerSourceCodeRoute,
