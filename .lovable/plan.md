@@ -1,50 +1,66 @@
-## Goal
+# EU Privacy & AI SEO Content Expansion
 
-Publish two new SEO-targeted documentation pages and strengthen internal SEO linking + structured data across the docs cluster.
+Create a set of long-form SEO documentation pages aimed at European users, focused on the intersection of **AI code analysis, data privacy, and EU regulation** (GDPR + EU AI Act), with explicit geo-targeting for **Milan, Verona and Northern Italy**. Each page ships in EN / IT / ZH using the existing locale-routing pattern and is wired into the sitemap, internal links, and structured data.
 
 ## New routes
 
-1. **`src/routes/docs.ai-code-review-tools-byok.tsx`**
-   - Target keyword: **"AI code review tools BYOK"** (low-competition, high-intent)
-   - Angle: why BYOK matters (cost control, key sovereignty, model choice), how Decoder implements it (OpenRouter/OpenAI/Anthropic/Gemini + local Ollama/LM Studio), comparison vs CodeRabbit (no BYOK, SaaS-only pricing) and Greptile (SaaS, no BYOK on standard plans).
-   - Sections: What is BYOK · Why BYOK for code review · Decoder's BYOK model · Side-by-side table (Decoder / CodeRabbit / Greptile) · Setup walkthrough · FAQ.
+All under `src/routes/docs.*` to match existing SEO doc pattern (`docs.comparison-coderabbit`, `docs.ai-code-review-tools-byok`, `docs.open-source-ai-code-review`).
 
-2. **`src/routes/docs.open-source-ai-code-review.tsx`**
-   - Target keyword: **"open source AI code review"** (~400/mo, KD ~25)
-   - Angle: open-source positioning + local inference (Ollama, LM Studio), zero-egress workflow, self-host story, comparison vs closed SaaS (CodeRabbit, Greptile).
-   - Sections: Why open source matters for code review · Local inference setup · Privacy/compliance (no code leaves your machine) · Comparison table · Quickstart · FAQ.
+1. **`docs.eu-ai-act-code-analysis.tsx`** — "EU AI Act compliance for AI code analysis tools"
+   - What the AI Act says about general-purpose AI, transparency, code-related risk tiers
+   - How BYOK + local inference reduce compliance surface
+   - Checklist for European dev teams
 
-## Structured data per page
+2. **`docs.gdpr-ai-code-review.tsx`** — "GDPR-compliant AI code review: data residency & source code as personal data"
+   - Source code as potential personal data (author identifiers, secrets, comments)
+   - Data residency, sub-processors, DPA implications
+   - Decoder's posture (encrypted BYOK, no training, ephemeral ZIP processing)
 
-Each page emits:
-- `Article` JSON-LD (headline, author=Decoder, datePublished, mainEntityOfPage canonical)
-- `FAQPage` JSON-LD (5–6 Q&As)
-- `BreadcrumbList` JSON-LD (Home → Docs → Page)
-- `SoftwareApplication` reference linking back to the app (only on BYOK page, where the offer is most relevant)
+3. **`docs.privacy-first-ai-europe.tsx`** — "Privacy-first AI tools in Europe: a 2026 buyer's guide"
+   - Why EU teams pick BYOK / open source / local inference
+   - Comparison table: typical SaaS AI vs Decoder approach
+   - Links to EU AI projects (Mistral, Aleph Alpha, Silo AI, etc.) as ecosystem context
 
-Plus per-route `head()` with title, description, og:title/description/url, canonical (self-referencing leaf).
+4. **`docs.ai-code-review-milano-nord-italia.tsx`** — Geo-targeted landing
+   - "AI code review per team di sviluppo a Milano, Verona e Nord Italia"
+   - Italian-first copy with EN/ZH translations
+   - Local schema: mentions Milan/Verona/Padua/Bologna/Turin tech hubs, fintech & manufacturing 4.0 angle
+   - LocalBusiness-style framing (without faking a physical address — uses `Organization` + `areaServed` schema)
 
-## Internal linking
+## i18n
 
-- Add a **"Related guides"** block at the bottom of:
-  - `docs.comparison-coderabbit.tsx` (existing) → link the two new pages
-  - `docs.ai-code-review-tools-byok.tsx` → link to comparison + open-source page
-  - `docs.open-source-ai-code-review.tsx` → link to comparison + BYOK page
-  - `contributors.tsx` → link to comparison page (community + OSS narrative)
-- Add a **"Learn more"** footer/section in landing `index.tsx` (or existing docs CTA) pointing to all three docs pages — single-line link list, no layout change.
-- Use `<Link to=...>` (TanStack) for all internal links; descriptive anchor text matching target keywords.
+Each page reads strings from `src/i18n/locales/{en,it,zh}/docs.json` (new namespace section per page). Italian copy is primary for the Milan/Nord Italia page; EN and ZH are faithful translations but keep the geographic emphasis.
 
-## Sitemap
+## SEO wiring per page
 
-Add both new routes to `public/sitemap.xml` with `changefreq=monthly`, `priority=0.8`.
+Following the existing `head-meta` convention:
+- `head()` with route-specific `title`, `description`, `og:title`, `og:description`, `og:url`, `og:type: article`
+- Leaf-only `<link rel="canonical">` to `https://decoderead.dev/docs/<slug>`
+- JSON-LD: `Article` + `FAQPage` + `BreadcrumbList`; geo page also adds `Organization` with `areaServed: ["Milano","Verona","Lombardia","Veneto","Italia"]`
+- `hreflang` alternates (en, it, zh, x-default) via `links`
 
-## Files touched
+## Sitemap & internal linking
 
-- **Create**: `src/routes/docs.ai-code-review-tools-byok.tsx`, `src/routes/docs.open-source-ai-code-review.tsx`
-- **Edit**: `src/routes/docs.comparison-coderabbit.tsx` (Related guides block), `src/routes/contributors.tsx` (one inline link), `src/routes/index.tsx` (Learn more links), `public/sitemap.xml`
+- Add the 4 new URLs to `public/sitemap.xml` with current `lastmod`
+- Update `public/llms.txt` to reference the new guides
+- Add a "Related guides" block on each existing docs page (`comparison-coderabbit`, `ai-code-review-tools-byok`, `open-source-ai-code-review`) linking to the new EU/privacy/Italia pages and vice versa
+- Add a compact "EU privacy & compliance" link cluster in the landing page footer area
+
+## Keywords targeted
+
+Primary: *EU AI Act code review*, *GDPR AI code analysis*, *privacy-first AI Europe*, *AI code review Milano*, *strumenti AI revisione codice Italia*, *BYOK AI Europa*. Long-tail variants per page (volume realistic for KDI <30, matching the strategy from prior SEO work).
 
 ## Out of scope
 
-- No copy changes to landing hero / pricing
-- No new i18n keys (docs pages are EN, consistent with existing `comparison-coderabbit`)
-- No design system changes — reuse existing Tailwind tokens and shadcn components from the comparison page
+- No backend/schema changes
+- No new tracking, no actual geolocation features
+- Not creating a separate domain or subdomain for `.it` — single canonical domain with hreflang
+
+## Files touched (estimate)
+
+- 4 new route files under `src/routes/`
+- 3 locale JSON updates (`en/docs.json`, `it/docs.json`, `zh/docs.json`)
+- `public/sitemap.xml`, `public/llms.txt`
+- 3 existing docs routes — append "Related guides" block
+
+Confirm and I'll build.
