@@ -113,10 +113,63 @@ const SearchSchema = z.object({
   view: z.enum(["analyze"]).optional(),
 });
 
+type MobilePaneKey = "files" | "code" | "insights";
+
+function WorkspacePanelGroup({
+  isMobile,
+  children,
+}: {
+  isMobile: boolean;
+  children: React.ReactNode;
+}) {
+  if (isMobile) return <div className="flex h-full min-h-0 flex-col">{children}</div>;
+  return <ResizablePanelGroup orientation="horizontal">{children}</ResizablePanelGroup>;
+}
+
+function WorkspacePanel({
+  isMobile,
+  paneKey,
+  activePane,
+  defaultSize,
+  minSize,
+  children,
+}: {
+  isMobile: boolean;
+  paneKey: MobilePaneKey;
+  activePane: MobilePaneKey;
+  defaultSize: number;
+  minSize: number;
+  children: React.ReactNode;
+}) {
+  if (isMobile) {
+    return (
+      <div
+        className={cn(
+          "flex min-h-0 w-full flex-1 flex-col overflow-hidden",
+          activePane !== paneKey && "hidden",
+        )}
+      >
+        {children}
+      </div>
+    );
+  }
+  return (
+    <ResizablePanel defaultSize={defaultSize} minSize={minSize}>
+      {children}
+    </ResizablePanel>
+  );
+}
+
+function WorkspaceHandle({ isMobile }: { isMobile: boolean }) {
+  if (isMobile) return null;
+  return <ResizableHandle />;
+}
+
 export const Route = createFileRoute("/_authenticated/projects/$projectId/repos/$repoId")({
   validateSearch: (s) => SearchSchema.parse(s),
   component: WorkspacePage,
 });
+
 
 function WorkspacePage() {
   const { repoId } = Route.useParams();
