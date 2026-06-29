@@ -63,7 +63,7 @@ Questi muovono l'ago più della SEO tecnica per un dominio nuovo:
 
 ## Dettaglio tecnico (per riferimento)
 
-- File da toccare in Fase 1: `public/sitemap.xml` (lastmod dinamico → meglio promuovere a server route `src/routes/sitemap[.]xml.ts`), nuovo `public/disavow.txt` (solo per upload manuale in GSC, non serve in build).
+- File da toccare in Fase 1: `public/sitemap.xml` (lastmod dinamico → meglio promuovere a server route `src/routes/sitemap[.]xml.ts`), `marketing/disavow.txt` (solo per upload manuale in GSC, non esposto pubblicamente).
 - Fase 2: nuove rotte sotto `src/routes/docs.*.tsx` con `head()` completo (title, description, og:*, canonical, JSON-LD Article+FAQ) + aggiornamento sitemap + breadcrumb interni da `/docs`.
 - GSC API: posso chiamare `urlInspection` + sitemap resubmit dal connector già collegato.
 - Disavow file: si carica solo manualmente da [search.google.com/search-console/disavow-links](https://search.google.com/search-console/disavow-links) — ti preparo il `.txt`, lo carichi tu.
