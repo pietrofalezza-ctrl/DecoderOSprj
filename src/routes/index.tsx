@@ -223,6 +223,18 @@ function Landing() {
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </Link>
               </Button>
+              {showInstallBtn && (
+                <Button
+                  type="button"
+                  onClick={handleInstall}
+                  size="lg"
+                  variant="outline"
+                  className="rounded-none px-6 w-full sm:w-auto"
+                >
+                  <Download className="mr-2 h-4 w-4" />
+                  {t("landing.install.ctaInstall")}
+                </Button>
+              )}
               <a
                 href={t("common.repoUrl")}
                 target="_blank"
