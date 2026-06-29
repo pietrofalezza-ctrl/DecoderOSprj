@@ -67,6 +67,7 @@ describe("staticScanDbValues", () => {
         suspiciousWindowCount: 3,
         windowSize: 256,
         windowStep: 128,
+        sections: [],
       },
       findings: [],
       magicSignature: "4d5a",
