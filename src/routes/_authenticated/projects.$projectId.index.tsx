@@ -323,6 +323,9 @@ function ProjectPage() {
                 </DialogContent>
               </Dialog>
             </div>
+            <p className="mt-1 text-right text-[11px] text-muted-foreground sm:max-w-md sm:ml-auto">
+              {t("project.uploadZipHint")}
+            </p>
           </div>
         </header>
 
