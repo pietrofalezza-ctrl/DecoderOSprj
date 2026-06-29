@@ -94,7 +94,7 @@
     "howTitle": "Come funziona",
     "howIntro": "Tre passi dal sorgente alla conoscenza.",
     "step1Title": "Importa il codice",
-    "step1Body": "Carica uno ZIP o importa una repository pubblica da GitHub. I file restano nel tuo account.",
+    "step1Body": "Trascina un singolo file sorgente, carica uno ZIP o importa una repository pubblica da GitHub. I file restano nel tuo account.",
     "step2Title": "Scegli il provider",
     "step2Body": "OpenAI, Anthropic, Gemini, OpenRouter — o locale con Ollama / LM Studio.",
     "step3Title": "Spiega e analizza",
