@@ -315,7 +315,7 @@ function ProjectPage() {
               </Select>
             </div>
             <div className="flex flex-wrap justify-end gap-2">
-              <input ref={fileRef} type="file" accept=".zip" hidden onChange={onFile} />
+              <input ref={fileRef} type="file" accept={acceptAttr} hidden onChange={onFile} />
               <Button variant="outline" onClick={onPick} disabled={uploading} title={t("project.uploadZipHint")}>
                 <Upload className="mr-2 h-4 w-4" />
                 {uploading ? t("project.uploading") : t("project.uploadZip")}
