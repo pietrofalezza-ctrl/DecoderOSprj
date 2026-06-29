@@ -29,6 +29,7 @@ const STATIC_ENTRIES: SitemapEntry[] = [
   { path: "/docs", changefreq: "monthly", priority: "0.7" },
   { path: "/docs/how-to-review-ai-code", changefreq: "monthly", priority: "0.8" },
   { path: "/docs/comparison-coderabbit", changefreq: "monthly", priority: "0.8" },
+  { path: "/docs/comparison-greptile", changefreq: "monthly", priority: "0.8" },
   { path: "/docs/ai-code-review-tools-byok", changefreq: "monthly", priority: "0.8" },
   { path: "/docs/open-source-ai-code-review", changefreq: "monthly", priority: "0.8" },
   { path: "/docs/detect-ai-generated-code", changefreq: "monthly", priority: "0.7" },
