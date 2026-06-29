@@ -1,65 +1,58 @@
-## What you asked
+# Possono le chiavi essere rubate dal database?
 
-1. Some pages still look off-center / overflow on mobile without pinching out.
-2. Where is the new chat feature?
-3. Are the new features reflected in SEO?
-4. How much will Google ranking improve?
-5. Saving an API key throws `new row violates row-level security policy for table "user_ai_credentials"`.
+## Risposta breve
+**No, non in chiaro.** Le BYOK API key sono cifrate prima di toccare il database, e nessuno (né tu, né un altro utente, né chi leggesse un dump del DB) può decifrarle senza il segreto server `DECODER_ENCRYPTION_KEY` che vive solo nell'ambiente delle server functions.
 
-## 1. RLS error on API key save (the blocker)
+## Come sono protette oggi
 
-Root cause: in the last security pass the SELECT policy on `user_ai_credentials` was dropped (to hide `encrypted_key` from clients and route reads through the `_safe` view). But `saveProviderKey` does an `upsert(...)` which issues an INSERT … RETURNING. PostgREST then re-checks the row against the SELECT policy — none exists → Postgres reports it as an RLS violation on insert. The row never lands.
+1. **Cifratura at-rest** — `src/lib/crypto.server.ts` usa **AES-256-GCM** con IV random a 12 byte e auth tag. La chiave a 32 byte è derivata via SHA-256 da `DECODER_ENCRYPTION_KEY` (secret Lovable Cloud, mai esposto al client né al bundle browser).
+2. **Cifratura prima dell'insert** — `credentials.functions.ts` cifra `api_key` in una server function; il plaintext non lascia mai il server.
+3. **RLS attiva** su `user_ai_credentials` con policy `auth.uid() = owner_id` per SELECT/INSERT/UPDATE/DELETE: un utente non può vedere righe di altri utenti.
+4. **Service role isolato** — `SUPABASE_SERVICE_ROLE_KEY` server-only, mai nel bundle.
+5. **Vista "safe"** `user_ai_credentials_safe` che espone solo `provider`, `key_hint`, `updated_at` (no `encrypted_key`).
+6. **Cloud key sicure** — `LOVABLE_API_KEY`, `SUPABASE_SERVICE_ROLE_KEY`, `DECODER_ENCRYPTION_KEY` solo in `process.env` server, accessibili solo dentro `.handler()` di server functions.
 
-Fix (safer of the two options):
-- In `src/lib/credentials.functions.ts`, change the upsert to not return the row: `.upsert(..., { onConflict: "owner_id,provider", ignoreDuplicates: false }).select("provider", { head: true, count: "exact" })` — actually simplest: append `, { count: "exact" }` is wrong; the clean fix is to chain `.select()` off the safe view OR mark the upsert as returning minimal by NOT calling `.select()` and explicitly setting the PostgREST `Prefer: return=minimal` via `.select("provider").throwOnError()` from the safe view. The cleanest path is a small migration: add back a SELECT policy on `user_ai_credentials` scoped to `auth.uid() = owner_id` (data is already encrypted and per-owner; the safe view stays the canonical read path for any UI). This restores upsert+RETURNING and keeps the row owner-scoped — no cross-user exposure.
+## Falla residua trovata (media gravità)
 
-I'll go with the migration: re-add `CREATE POLICY "own creds select" ON public.user_ai_credentials FOR SELECT TO authenticated USING (auth.uid() = owner_id);` and update the security memory note so the next scan doesn't re-flag it (the encrypted column is still owner-only, and the app continues to read through `user_ai_credentials_safe`).
+Controllando lo stato reale del DB:
 
-## 2. Mobile overflow on the project page
+```
+has_table_privilege('authenticated','user_ai_credentials','SELECT') = TRUE
+```
 
-The dashboard cards render fine, but the "Demo1" header row, the analysis-mode pill and the two recharts (`Static scan distribution`, `Analysis activity mix`) overflow the 375px viewport — chart `BarChart` defaults to a fixed min width and the header uses `flex` without `min-w-0`/`truncate`.
+La migration del 7 giugno aveva tolto `SELECT` ad `authenticated` (per forzare l'uso della vista safe), ma una migration successiva del 29 giugno ha **ri-aggiunto la policy SELECT** per sbloccare il salvataggio della key, e il GRANT è tornato attivo. Risultato: un utente autenticato, via Data API, può leggere la propria colonna `encrypted_key` (solo la sua, RLS regge).
 
-Fix in `src/routes/_authenticated/projects.$projectId.index.tsx`:
-- Header: wrap title row in `grid grid-cols-[minmax(0,1fr)_auto] sm:flex`, add `min-w-0 truncate` to the title, `shrink-0` to action buttons (per the responsive-layout pattern).
-- Charts: wrap each `ChartContainer` in `<div className="w-full overflow-x-auto">` and set the chart `width="100%"` with a smaller `barCategoryGap` on mobile; reduce `YAxis width` to 80 on `<sm`.
-- AppShell topbar: tighten the right-side cluster (theme + lang + avatar) with `gap-1 sm:gap-2` so it doesn't push the title off-screen on a 375px iPhone.
+**Impatto reale**: basso. L'utente vedrebbe solo ciphertext della *propria* key, che già conosce in chiaro (l'ha inserita lui). Nessun altro utente è esposto. Ma viola il principio "il ciphertext non esce mai dal server" → se domani la encryption key venisse compromessa e qualcuno avesse anche un dump cliente, sarebbe banale decifrare.
 
-## 3. Where the chat lives + discoverability
+## Vettori che ho verificato e che sono OK
 
-The folder chat already exists — it's the "Chat" tab inside `FolderAnalysisPanel` (visible after you open a repo → select a folder). On mobile that tab is currently buried behind the stacked Files/Code/Insights tabs.
+- Cross-tenant leak via RLS → bloccato (policy `auth.uid() = owner_id`).
+- SQL injection → tutte le query usano Supabase client / parametri.
+- Bundle leak del service key → no, `client.server.ts` è import-protected.
+- Endpoint server pubblici senza auth → tutte le funzioni sensibili usano `requireSupabaseAuth`; webhook (`/api/public/process-email-queue`) verificano il caller.
+- Storage `repositories` → bucket privato, accessi via signed URL nelle server functions.
+- Admin reads su progetti utente → non implementate (nessun admin può vedere repo altrui).
 
-I'll:
-- Promote "Chat" to a top-level tab in the mobile repo workspace alongside Files/Code/Insights.
-- Add a "Chat with this repo" CTA button on the repo page header so users discover it without drilling into a folder.
-- Add a short "Chat with your code" bullet to the homepage feature list and to `/docs`.
+## Fix proposto (1 migration)
 
-## 4. SEO — reflect the new functionality
+```sql
+-- Revoke ridondante: la safe view è il canale di lettura
+REVOKE SELECT ON public.user_ai_credentials FROM authenticated;
+DROP POLICY IF EXISTS "own creds select" ON public.user_ai_credentials;
 
-The homepage subtitle already mentions static/malware/20+ languages/folder chat/history (previous turn). What's still missing:
-- `/contributors` and the new chat/history capabilities aren't in `public/llms.txt` feature list or in JSON-LD `featureList`.
-- No FAQ schema covering the new "AI code chat" / "persistent analysis history" queries.
-- Internal links: homepage doesn't link to `/contributors` or `/history` (auth-only, but the public landing should advertise both as features).
+-- Mantieni INSERT/UPDATE/DELETE (servono al salvataggio)
+-- Il salvataggio funziona perché la server function usa service_role o non legge back la riga
+```
 
-I'll:
-- Extend the homepage JSON-LD `SoftwareApplication.featureList` with: "AI code chat", "Persistent analysis history", "Static + malware analysis without API key", "Community contributors".
-- Add a small FAQ block (with FAQPage JSON-LD) covering: "Can I chat with my code?", "Do I need an API key?", "Are my analyses saved?".
-- Refresh `public/llms.txt` and `public/sitemap.xml` lastmod.
-- Re-run `seo_chat--trigger_scan` after the edits.
+E adeguo `credentials.functions.ts` perché l'`upsert` non faccia `.select()` di ritorno (oppure passi via `supabaseAdmin` lato server, dato che siamo già dentro una server function autenticata che ha già validato `owner_id`).
 
-## 5. Realistic ranking expectations
+## Cosa fare lato operativo (consigli, non codice)
 
-Honest answer (no code change): for the brand term **decoderead** you'll rank #1 within ~1–2 weeks once Search Console picks up the verified sitemap. For competitive heads like *"AI code analysis"* / *"AI code detector"* (KD 60–80, dominated by GitHub, Snyk, DeepCode, Sonar) the ceiling without backlinks is page 3–5 in 2–3 months. The new FAQ + chat content opens long-tail wins like *"chat with your codebase AI"*, *"static malware scan without API key"*, *"AI explainer for unknown code"* — those are reachable in 4–8 weeks. Real lift comes from backlinks (Product Hunt, dev.to writeups, the LinkedIn launch posts already drafted) — not from more on-page tweaks.
+- **Ruota** `DECODER_ENCRYPTION_KEY` se sospetti compromessi (richiede re-encrypt di tutte le righe — posso scriverti la routine se vuoi).
+- Tieni `SUPABASE_SERVICE_ROLE_KEY` e `DECODER_ENCRYPTION_KEY` non visibili nei log.
+- Considera in futuro: spostare l'encryption key in un KMS esterno (AWS KMS / GCP KMS) invece che in una env var.
 
-## Files I'll touch
+## Rating sicurezza attuale: **A− (8.5/10)**
+Dopo il fix sopra: **A (9/10)**. Per arrivare ad A+ servirebbe KMS esterno + audit log su lettura credentials.
 
-- `supabase` migration: re-add owner-scoped SELECT policy on `user_ai_credentials`.
-- `src/routes/_authenticated/projects.$projectId.index.tsx`: mobile header + chart overflow.
-- `src/components/AppShell.tsx`: tighten topbar gaps on small screens.
-- `src/routes/_authenticated/projects.$projectId.repos.$repoId.tsx`: surface Chat tab + repo-level "Chat with repo" CTA.
-- `src/routes/index.tsx`: extend JSON-LD featureList, add FAQ section + FAQPage JSON-LD, link to `/contributors`.
-- `src/i18n/locales/{en,it,zh}/common.json`: strings for the FAQ + CTA.
-- `public/llms.txt`, `public/sitemap.xml`: update.
-- Security memory: note that owner-scoped SELECT on `user_ai_credentials` is intentional (encrypted column, per-owner).
-- Then: SEO rescan.
-
-No business-logic changes beyond the RLS migration; everything else is presentation + metadata.
+Confermi che procedo col fix (revoke SELECT + adeguamento upsert)?
