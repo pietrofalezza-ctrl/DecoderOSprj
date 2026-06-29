@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as TermsRouteImport } from './routes/terms'
+import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as OpenSourceRouteImport } from './routes/open-source'
@@ -24,6 +25,10 @@ import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as KnowledgeIndexRouteImport } from './routes/knowledge.index'
+import { Route as KnowledgeIntegrationsRouteImport } from './routes/knowledge.integrations'
+import { Route as KnowledgeFormatsRouteImport } from './routes/knowledge.formats'
+import { Route as KnowledgeConceptsRouteImport } from './routes/knowledge.concepts'
+import { Route as KnowledgeCapabilitiesRouteImport } from './routes/knowledge.capabilities'
 import { Route as KnowledgeSlugRouteImport } from './routes/knowledge.$slug'
 import { Route as DocsStaticCodeAnalysisNoApiKeyRouteImport } from './routes/docs.static-code-analysis-no-api-key'
 import { Route as DocsSecureCodeReviewByokRouteImport } from './routes/docs.secure-code-review-byok'
@@ -59,6 +64,11 @@ import { Route as AuthenticatedProjectsProjectIdReposRepoIdHistoryRouteImport } 
 const TermsRoute = TermsRouteImport.update({
   id: '/terms',
   path: '/terms',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
+  id: '/sitemap.xml',
+  path: '/sitemap.xml',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ResetPasswordRoute = ResetPasswordRouteImport.update({
@@ -128,6 +138,26 @@ const IndexRoute = IndexRouteImport.update({
 const KnowledgeIndexRoute = KnowledgeIndexRouteImport.update({
   id: '/knowledge/',
   path: '/knowledge/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const KnowledgeIntegrationsRoute = KnowledgeIntegrationsRouteImport.update({
+  id: '/knowledge/integrations',
+  path: '/knowledge/integrations',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const KnowledgeFormatsRoute = KnowledgeFormatsRouteImport.update({
+  id: '/knowledge/formats',
+  path: '/knowledge/formats',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const KnowledgeConceptsRoute = KnowledgeConceptsRouteImport.update({
+  id: '/knowledge/concepts',
+  path: '/knowledge/concepts',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const KnowledgeCapabilitiesRoute = KnowledgeCapabilitiesRouteImport.update({
+  id: '/knowledge/capabilities',
+  path: '/knowledge/capabilities',
   getParentRoute: () => rootRouteImport,
 } as any)
 const KnowledgeSlugRoute = KnowledgeSlugRouteImport.update({
@@ -320,6 +350,7 @@ export interface FileRoutesByFullPath {
   '/open-source': typeof OpenSourceRoute
   '/privacy': typeof PrivacyRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/terms': typeof TermsRoute
   '/admin': typeof AuthenticatedAdminRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
@@ -340,6 +371,10 @@ export interface FileRoutesByFullPath {
   '/docs/secure-code-review-byok': typeof DocsSecureCodeReviewByokRoute
   '/docs/static-code-analysis-no-api-key': typeof DocsStaticCodeAnalysisNoApiKeyRoute
   '/knowledge/$slug': typeof KnowledgeSlugRoute
+  '/knowledge/capabilities': typeof KnowledgeCapabilitiesRoute
+  '/knowledge/concepts': typeof KnowledgeConceptsRoute
+  '/knowledge/formats': typeof KnowledgeFormatsRoute
+  '/knowledge/integrations': typeof KnowledgeIntegrationsRoute
   '/knowledge/': typeof KnowledgeIndexRoute
   '/projects/$projectId': typeof AuthenticatedProjectsProjectIdRouteWithChildren
   '/docs/it/ai-privacy-first-europa': typeof DocsItAiPrivacyFirstEuropaRoute
@@ -367,6 +402,7 @@ export interface FileRoutesByTo {
   '/open-source': typeof OpenSourceRoute
   '/privacy': typeof PrivacyRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/terms': typeof TermsRoute
   '/admin': typeof AuthenticatedAdminRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
@@ -387,6 +423,10 @@ export interface FileRoutesByTo {
   '/docs/secure-code-review-byok': typeof DocsSecureCodeReviewByokRoute
   '/docs/static-code-analysis-no-api-key': typeof DocsStaticCodeAnalysisNoApiKeyRoute
   '/knowledge/$slug': typeof KnowledgeSlugRoute
+  '/knowledge/capabilities': typeof KnowledgeCapabilitiesRoute
+  '/knowledge/concepts': typeof KnowledgeConceptsRoute
+  '/knowledge/formats': typeof KnowledgeFormatsRoute
+  '/knowledge/integrations': typeof KnowledgeIntegrationsRoute
   '/knowledge': typeof KnowledgeIndexRoute
   '/docs/it/ai-privacy-first-europa': typeof DocsItAiPrivacyFirstEuropaRoute
   '/docs/it/eu-ai-act-analisi-codice': typeof DocsItEuAiActAnalisiCodiceRoute
@@ -415,6 +455,7 @@ export interface FileRoutesById {
   '/open-source': typeof OpenSourceRoute
   '/privacy': typeof PrivacyRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/terms': typeof TermsRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
@@ -435,6 +476,10 @@ export interface FileRoutesById {
   '/docs/secure-code-review-byok': typeof DocsSecureCodeReviewByokRoute
   '/docs/static-code-analysis-no-api-key': typeof DocsStaticCodeAnalysisNoApiKeyRoute
   '/knowledge/$slug': typeof KnowledgeSlugRoute
+  '/knowledge/capabilities': typeof KnowledgeCapabilitiesRoute
+  '/knowledge/concepts': typeof KnowledgeConceptsRoute
+  '/knowledge/formats': typeof KnowledgeFormatsRoute
+  '/knowledge/integrations': typeof KnowledgeIntegrationsRoute
   '/knowledge/': typeof KnowledgeIndexRoute
   '/_authenticated/projects/$projectId': typeof AuthenticatedProjectsProjectIdRouteWithChildren
   '/docs/it/ai-privacy-first-europa': typeof DocsItAiPrivacyFirstEuropaRoute
@@ -464,6 +509,7 @@ export interface FileRouteTypes {
     | '/open-source'
     | '/privacy'
     | '/reset-password'
+    | '/sitemap.xml'
     | '/terms'
     | '/admin'
     | '/dashboard'
@@ -484,6 +530,10 @@ export interface FileRouteTypes {
     | '/docs/secure-code-review-byok'
     | '/docs/static-code-analysis-no-api-key'
     | '/knowledge/$slug'
+    | '/knowledge/capabilities'
+    | '/knowledge/concepts'
+    | '/knowledge/formats'
+    | '/knowledge/integrations'
     | '/knowledge/'
     | '/projects/$projectId'
     | '/docs/it/ai-privacy-first-europa'
@@ -511,6 +561,7 @@ export interface FileRouteTypes {
     | '/open-source'
     | '/privacy'
     | '/reset-password'
+    | '/sitemap.xml'
     | '/terms'
     | '/admin'
     | '/dashboard'
@@ -531,6 +582,10 @@ export interface FileRouteTypes {
     | '/docs/secure-code-review-byok'
     | '/docs/static-code-analysis-no-api-key'
     | '/knowledge/$slug'
+    | '/knowledge/capabilities'
+    | '/knowledge/concepts'
+    | '/knowledge/formats'
+    | '/knowledge/integrations'
     | '/knowledge'
     | '/docs/it/ai-privacy-first-europa'
     | '/docs/it/eu-ai-act-analisi-codice'
@@ -558,6 +613,7 @@ export interface FileRouteTypes {
     | '/open-source'
     | '/privacy'
     | '/reset-password'
+    | '/sitemap.xml'
     | '/terms'
     | '/_authenticated/admin'
     | '/_authenticated/dashboard'
@@ -578,6 +634,10 @@ export interface FileRouteTypes {
     | '/docs/secure-code-review-byok'
     | '/docs/static-code-analysis-no-api-key'
     | '/knowledge/$slug'
+    | '/knowledge/capabilities'
+    | '/knowledge/concepts'
+    | '/knowledge/formats'
+    | '/knowledge/integrations'
     | '/knowledge/'
     | '/_authenticated/projects/$projectId'
     | '/docs/it/ai-privacy-first-europa'
@@ -607,8 +667,13 @@ export interface RootRouteChildren {
   OpenSourceRoute: typeof OpenSourceRoute
   PrivacyRoute: typeof PrivacyRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
+  SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   TermsRoute: typeof TermsRoute
   KnowledgeSlugRoute: typeof KnowledgeSlugRoute
+  KnowledgeCapabilitiesRoute: typeof KnowledgeCapabilitiesRoute
+  KnowledgeConceptsRoute: typeof KnowledgeConceptsRoute
+  KnowledgeFormatsRoute: typeof KnowledgeFormatsRoute
+  KnowledgeIntegrationsRoute: typeof KnowledgeIntegrationsRoute
   KnowledgeIndexRoute: typeof KnowledgeIndexRoute
   ApiPublicHooksCleanupStaleRepositoriesRoute: typeof ApiPublicHooksCleanupStaleRepositoriesRoute
   LovableEmailQueueProcessRoute: typeof LovableEmailQueueProcessRoute
@@ -621,6 +686,13 @@ declare module '@tanstack/react-router' {
       path: '/terms'
       fullPath: '/terms'
       preLoaderRoute: typeof TermsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sitemap.xml': {
+      id: '/sitemap.xml'
+      path: '/sitemap.xml'
+      fullPath: '/sitemap.xml'
+      preLoaderRoute: typeof SitemapDotxmlRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/reset-password': {
@@ -719,6 +791,34 @@ declare module '@tanstack/react-router' {
       path: '/knowledge'
       fullPath: '/knowledge/'
       preLoaderRoute: typeof KnowledgeIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/knowledge/integrations': {
+      id: '/knowledge/integrations'
+      path: '/knowledge/integrations'
+      fullPath: '/knowledge/integrations'
+      preLoaderRoute: typeof KnowledgeIntegrationsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/knowledge/formats': {
+      id: '/knowledge/formats'
+      path: '/knowledge/formats'
+      fullPath: '/knowledge/formats'
+      preLoaderRoute: typeof KnowledgeFormatsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/knowledge/concepts': {
+      id: '/knowledge/concepts'
+      path: '/knowledge/concepts'
+      fullPath: '/knowledge/concepts'
+      preLoaderRoute: typeof KnowledgeConceptsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/knowledge/capabilities': {
+      id: '/knowledge/capabilities'
+      path: '/knowledge/capabilities'
+      fullPath: '/knowledge/capabilities'
+      preLoaderRoute: typeof KnowledgeCapabilitiesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/knowledge/$slug': {
@@ -1056,8 +1156,13 @@ const rootRouteChildren: RootRouteChildren = {
   OpenSourceRoute: OpenSourceRoute,
   PrivacyRoute: PrivacyRoute,
   ResetPasswordRoute: ResetPasswordRoute,
+  SitemapDotxmlRoute: SitemapDotxmlRoute,
   TermsRoute: TermsRoute,
   KnowledgeSlugRoute: KnowledgeSlugRoute,
+  KnowledgeCapabilitiesRoute: KnowledgeCapabilitiesRoute,
+  KnowledgeConceptsRoute: KnowledgeConceptsRoute,
+  KnowledgeFormatsRoute: KnowledgeFormatsRoute,
+  KnowledgeIntegrationsRoute: KnowledgeIntegrationsRoute,
   KnowledgeIndexRoute: KnowledgeIndexRoute,
   ApiPublicHooksCleanupStaleRepositoriesRoute:
     ApiPublicHooksCleanupStaleRepositoriesRoute,

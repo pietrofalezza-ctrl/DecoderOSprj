@@ -60,8 +60,30 @@ export function KnowledgeContent({
           Knowledge Hub
         </Link>
         <span className="mx-2">/</span>
+        <Link
+          to={
+            entry.type === "capability"
+              ? "/knowledge/capabilities"
+              : entry.type === "concept"
+                ? "/knowledge/concepts"
+                : entry.type === "integration"
+                  ? "/knowledge/integrations"
+                  : "/knowledge/formats"
+          }
+          className="hover:text-foreground"
+        >
+          {entry.type === "capability"
+            ? "Capabilities"
+            : entry.type === "concept"
+              ? "Concepts"
+              : entry.type === "integration"
+                ? "Integrations"
+                : "Formats"}
+        </Link>
+        <span className="mx-2">/</span>
         <span>{entry.category}</span>
       </nav>
+
 
       <header className="mb-6">
         <div className="mb-3 flex flex-wrap gap-2">

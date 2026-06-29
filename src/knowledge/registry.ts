@@ -1,4 +1,6 @@
 import type { KnowledgeEntry, KnowledgeLang, KnowledgeLocale } from "./types";
+import { KNOWLEDGE_TRANSLATIONS } from "./translations";
+
 import { staticMalwareAnalysis } from "./entries/static-malware-analysis";
 import { byok } from "./entries/byok";
 import { repositoryAnalysis } from "./entries/repository-analysis";
@@ -32,7 +34,7 @@ import { javascriptFormat } from "./entries/javascript-format";
 import { javaFormat } from "./entries/java-format";
 import { dockerfileFormat } from "./entries/dockerfile-format";
 
-export const KNOWLEDGE_ENTRIES: KnowledgeEntry[] = [
+const RAW_ENTRIES: KnowledgeEntry[] = [
   staticMalwareAnalysis,
   byok,
   repositoryAnalysis,
@@ -66,6 +68,20 @@ export const KNOWLEDGE_ENTRIES: KnowledgeEntry[] = [
   javaFormat,
   dockerfileFormat,
 ];
+
+export const KNOWLEDGE_ENTRIES: KnowledgeEntry[] = RAW_ENTRIES.map((entry) => {
+  const overlay = KNOWLEDGE_TRANSLATIONS[entry.slug];
+  if (!overlay) return entry;
+  return {
+    ...entry,
+    i18n: {
+      ...entry.i18n,
+      ...(overlay.it ? { it: overlay.it } : {}),
+      ...(overlay.zh ? { zh: overlay.zh } : {}),
+    },
+  };
+});
+
 
 export const KNOWLEDGE_BY_SLUG: Record<string, KnowledgeEntry> = Object.fromEntries(
   KNOWLEDGE_ENTRIES.map((e) => [e.slug, e]),
