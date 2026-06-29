@@ -42,7 +42,7 @@ function DraftEditor() {
   const [meta, setMeta] = useState({
     slug: "",
     type: "concept",
-    status: "draft" as "draft" | "in_review" | "published" | "archived",
+    status: "draft" as "ai_draft" | "in_review" | "published" | "archived",
     tags: "",
     related: "",
   });
@@ -72,7 +72,7 @@ function DraftEditor() {
   }, [q.data?.translations, lang]);
 
   const saveMut = useMutation({
-    mutationFn: async (status?: "draft" | "in_review" | "published") => {
+    mutationFn: async (status?: "ai_draft" | "in_review" | "published") => {
       const entryRes = await saveEntry({
         data: {
           id,

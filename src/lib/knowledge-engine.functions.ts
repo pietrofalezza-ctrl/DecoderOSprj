@@ -71,7 +71,7 @@ export const listOpportunities = createServerFn({ method: "GET" })
       .order("priority", { ascending: false })
       .order("created_at", { ascending: false })
       .limit(100);
-    if (data?.status) q = q.eq("status", data.status);
+    if (data?.status) q = q.eq("status", data.status as OppStatus);
     const { data: rows, error } = await q;
     if (error) throw error;
     return { rows: rows ?? [] };
@@ -236,7 +236,7 @@ Keep title <60 chars, slug <60 chars, draft 250-600 words, ground claims in the 
         title: String(parsed.title ?? "Untitled"),
         rationale: String(parsed.rationale ?? ""),
         suggested_slug: String(parsed.slug ?? ""),
-        suggested_type: String(parsed.type ?? "concept"),
+        suggested_type: (["capability","concept","integration","format","case_study","guide"].includes(String(parsed.type)) ? String(parsed.type) : "concept") as EntryType,
         keywords: Array.isArray(parsed.keywords) ? (parsed.keywords as string[]) : [],
         related_entries: Array.isArray(parsed.related_slugs)
           ? (parsed.related_slugs as string[])
@@ -244,7 +244,7 @@ Keep title <60 chars, slug <60 chars, draft 250-600 words, ground claims in the 
         status: "open",
         kind: "manual",
         source: "manual",
-        generated_from: { hint: data.hint ?? null, raw: parsed },
+        generated_from: { hint: data.hint ?? null, raw: parsed } as never,
         priority: 5,
       })
       .select("id")
@@ -274,8 +274,8 @@ export const convertOpportunityToDraft = createServerFn({ method: "POST" })
       .upsert(
         {
           slug: opp.suggested_slug || `draft-${data.id.slice(0, 8)}`,
-          type: opp.suggested_type ?? "concept",
-          status: "draft",
+          type: (opp.suggested_type ?? "concept") as EntryType,
+          status: "ai_draft" as EntryStatus,
           lang_default: "en",
           tags: opp.keywords ?? [],
           related_slugs: opp.related_entries ?? [],
