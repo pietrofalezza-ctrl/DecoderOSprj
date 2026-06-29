@@ -23,9 +23,9 @@ export const Route = createFileRoute("/terms")({
         content:
           "Decoder Terms and Conditions: MIT License, permitted uses, trademark restrictions, disclaimer.",
       },
-      { property: "og:url", content: "https://decoderdev.lovable.app/terms" },
+      { property: "og:url", content: "https://decoderead.dev/terms" },
     ],
-    links: [{ rel: "canonical", href: "https://decoderdev.lovable.app/terms" }],
+    links: [{ rel: "canonical", href: "https://decoderead.dev/terms" }],
   }),
   component: TermsPage,
 });

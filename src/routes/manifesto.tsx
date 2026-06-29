@@ -32,9 +32,9 @@ export const Route = createFileRoute("/manifesto")({
           "Our principles: open source, privacy-first, BYOK, local-first, multilingual, accessible.",
       },
       { property: "og:type", content: "article" },
-      { property: "og:url", content: "https://decoderdev.lovable.app/manifesto" },
+      { property: "og:url", content: "https://decoderead.dev/manifesto" },
     ],
-    links: [{ rel: "canonical", href: "https://decoderdev.lovable.app/manifesto" }],
+    links: [{ rel: "canonical", href: "https://decoderead.dev/manifesto" }],
     scripts: [
       {
         type: "application/ld+json",
@@ -44,7 +44,7 @@ export const Route = createFileRoute("/manifesto")({
           headline: "Decoder — Manifesto",
           description:
             "What Decoder stands for: open source, privacy-first, BYOK, local-first, multilingual, accessible.",
-          url: "https://decoderdev.lovable.app/manifesto",
+          url: "https://decoderead.dev/manifesto",
           author: { "@type": "Organization", name: "Decoder" },
           publisher: { "@type": "Organization", name: "Decoder" },
         }),

@@ -23,9 +23,9 @@ export const Route = createFileRoute("/contact")({
         content:
           "Privacy, GDPR, security and feedback contacts for the Decoder open source project.",
       },
-      { property: "og:url", content: "https://decoderdev.lovable.app/contact" },
+      { property: "og:url", content: "https://decoderead.dev/contact" },
     ],
-    links: [{ rel: "canonical", href: "https://decoderdev.lovable.app/contact" }],
+    links: [{ rel: "canonical", href: "https://decoderead.dev/contact" }],
   }),
   component: ContactPage,
 });

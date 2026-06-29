@@ -22,9 +22,9 @@ export const Route = createFileRoute("/data-flow")({
         property: "og:description",
         content: "Local vs cloud BYOK vs GitHub: where your code goes and what to avoid uploading.",
       },
-      { property: "og:url", content: "https://decoderdev.lovable.app/data-flow" },
+      { property: "og:url", content: "https://decoderead.dev/data-flow" },
     ],
-    links: [{ rel: "canonical", href: "https://decoderdev.lovable.app/data-flow" }],
+    links: [{ rel: "canonical", href: "https://decoderead.dev/data-flow" }],
   }),
   component: DataFlowPage,
 });

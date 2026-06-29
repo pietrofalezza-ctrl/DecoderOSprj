@@ -23,9 +23,9 @@ export const Route = createFileRoute("/privacy")({
         content:
           "Privacy notice for the Decoder open-source educational demo. Covers data types, retention, deletion, and AI provider transfers.",
       },
-      { property: "og:url", content: "https://decoderdev.lovable.app/privacy" },
+      { property: "og:url", content: "https://decoderead.dev/privacy" },
     ],
-    links: [{ rel: "canonical", href: "https://decoderdev.lovable.app/privacy" }],
+    links: [{ rel: "canonical", href: "https://decoderead.dev/privacy" }],
   }),
   component: PrivacyPage,
 });

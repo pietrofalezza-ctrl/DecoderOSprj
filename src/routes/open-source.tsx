@@ -38,10 +38,10 @@ export const Route = createFileRoute("/open-source")({
         content:
           "Open code, open prompts, open rules. A community-driven tool to question AI-generated code.",
       },
-      { property: "og:url", content: "https://decoderdev.lovable.app/open-source" },
+      { property: "og:url", content: "https://decoderead.dev/open-source" },
       { property: "og:type", content: "website" },
     ],
-    links: [{ rel: "canonical", href: "https://decoderdev.lovable.app/open-source" }],
+    links: [{ rel: "canonical", href: "https://decoderead.dev/open-source" }],
     scripts: [
       {
         type: "application/ld+json",
