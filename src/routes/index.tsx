@@ -110,7 +110,9 @@ function Landing() {
           <div className="flex items-center gap-1">
             <LangSwitcher />
             <ThemeToggle />
-            <PublicHeaderAuthSlot />
+            <div className="hidden sm:block">
+              <PublicHeaderAuthSlot />
+            </div>
             <Sheet open={menuOpen} onOpenChange={setMenuOpen}>
               <SheetTrigger asChild>
                 <Button
