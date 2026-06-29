@@ -1,37 +1,55 @@
-## Problem
+## 1. Make "install as web app" visible on the home page
 
-On mobile (375px) the repo workspace at `/projects/$projectId/repos/$repoId` renders three resizable horizontal panels side-by-side (File tree 20% + Code 46% + Insights 34%). At 375px each panel collapses to ~50–130px wide, causing the clipped/overlapping UI in the screenshot: file names show "robo…", "pub…", code wraps one token per line, and the Insight panel buttons get truncated ("Esegui analisi su qu…").
+Today the install hint only exists deep in the FAQ copy (`installTitle` / `installBody` in `en/common.json`). Surface it on the landing so visitors immediately understand Decoder is an installable PWA — no app store, no download.
 
-The horizontal `ResizablePanelGroup` has no mobile fallback, so even though the AppShell header is mobile-friendly, the workspace body is not.
+- Add a new compact **"Install Decoder as an app"** band on `src/routes/index.tsx`, placed between the hero and the existing flow diagram so it shows in the first scroll on mobile.
+- Content (EN / IT / ZH, added to all three locale files):
+  - Title: "Install Decoder on your device"
+  - Body: "It's a web app — no store, no download. Desktop: click the install icon in the address bar (Chrome/Edge/Brave). iOS Safari: Share → Add to Home Screen. Android Chrome: ⋮ → Install app."
+  - Three small device chips (Desktop · iOS · Android) with their respective one-line instruction.
+- Add a smart **"Install app"** button next to the existing "Get started" CTA that:
+  - Listens for `beforeinstallprompt` and, when available, triggers `prompt()` directly (Chrome/Edge/Android).
+  - Falls back to scrolling to the new install band (iOS Safari + browsers without the event), since iOS cannot be programmatically triggered.
+  - Hides itself when `window.matchMedia('(display-mode: standalone)').matches` (already installed).
+- Keep manifest-only PWA scope — no service worker added (per project PWA guidance).
 
-## Scope
+## 2. Mobile-focused SEO refresh
 
-Frontend / presentation only. No business logic, no data flow, no copy changes. File: `src/routes/_authenticated/projects.$projectId.repos.$repoId.tsx` (the wrapper around the three panels, lines ~943–1735).
+Re-verify the routes that matter for the mobile-indexing pass and patch what's drifted since the last scan:
 
-## Changes
+- Run `seo_chat--trigger_scan` and address every failing finding it returns (title length, meta description, OG/Twitter, canonical, JSON-LD, viewport, tap-target spacing).
+- Verify per-route `head()` on `/`, `/auth`, `/terms`, `/history` etc. still self-references `https://decoderead.dev` in `canonical` + `og:url` (private routes stay `noindex`).
+- Add the missing `twitter:card` / `twitter:title` / `twitter:description` tags on `/` (currently only OG tags are set) — required for proper mobile share previews on X and iMessage.
+- Add `apple-mobile-web-app-capable`, `apple-mobile-web-app-title`, and `apple-mobile-web-app-status-bar-style` meta in `__root.tsx` so iOS treats the installed PWA correctly.
+- Confirm `manifest.webmanifest` advertises proper 192/512 PNG icons (currently only the SVG favicon is declared, which Lighthouse PWA audit flags). Generate two PNG icons (192 + 512, maskable) and reference them.
+- Re-check `public/sitemap.xml` against current routes; drop any auth-only paths and keep `/`, `/terms`, `/auth`.
+- After fixes, call `seo_chat--update_findings` to close the items we patched.
 
-1. **Mobile detection** — reuse the existing `useIsMobile()` hook from `src/hooks/use-mobile.tsx` (already used elsewhere) to branch the layout below the `md` breakpoint.
+## 3. Google "Decoder" search visibility — current state & improvements
 
-2. **Desktop (≥ md)** — keep the current `ResizablePanelGroup` 3-column layout unchanged.
+What I can confirm right now:
 
-3. **Mobile (< md)** — replace the resizable group with a stacked single-column layout driven by a small segmented control at the top:
-   - Segmented tabs: `Files · Code · Insights` (icons + label, sticky just under the AppShell header).
-   - Only the selected pane renders full-width (`w-full`, no fixed panel sizes), so the code viewer and insight panel each get the full 375px and stop clipping.
-   - Default tab = `Code` when a file is selected, otherwise `Files`.
-   - Selecting a file in the `Files` tab auto-switches to `Code`.
-   - Triggering an analysis / folder action auto-switches to `Insights` (mirrors what desktop does visually with the third column).
+- The Search Console connector returns **no verified property** for `decoderead.dev`, so I cannot pull live impressions/positions, and the URL inspector returns `PERMISSION_DENIED`. That means we don't currently have a way to see *exactly* how Google ranks the site for "Decoder".
+- Public reality check: the unqualified query **"Decoder"** is extremely high-volume and dominated by huge incumbents (the rapper Logic's "Decoder", QR/barcode decoders, JSON decoder, video-codec decoders, Wikipedia). A new domain at AS ~0 will not rank for the bare word in the foreseeable future — that's expected, not a bug.
+- Branded queries like **"Decoder dev"**, **"decoderead"**, **"decoderead.dev"**, **"Decoder AI code analysis"** are realistic short-term targets and the ones we should measure.
 
-4. **Inner panel tweaks for narrow widths**
-   - `FileTree` container: add `min-w-0` and let rows truncate with `truncate` instead of clipping; remove the inherited 20% width assumption on mobile.
-   - `CodeViewer` wrapper: keep horizontal scroll for long lines (no forced wrap), but ensure the surrounding flex parents use `min-w-0` so the viewer takes full viewport width.
-   - `InsightPanel` action buttons ("Run analysis…", "Configure AI provider", "Add an API key"): allow `whitespace-normal` and `text-left` on mobile so multi-line labels don't get cropped; ensure CTA chips wrap to a second line instead of overflowing.
+Improvements I'll implement / recommend:
 
-5. **Verification**
-   - Playwright at 375×800 against `/projects/.../repos/...` (using injected Supabase session): confirm `docW === winW === 375`, no horizontal scroll, each of the three tabs shows its pane full-width, and no truncated CTAs.
-   - Spot-check at 768px (tablet) that the desktop 3-panel layout is restored.
+1. **Verify the site in Google Search Console** through the connector flow (generate META token → embed in `__root.tsx` → call `/siteVerification/v1/webResource` → `PUT` the site). Until this is done we are flying blind.
+2. **Submit `sitemap.xml`** once verified, and request indexing on `/`, `/terms`, `/auth`.
+3. **Disambiguate the brand**: tighten the homepage `<h1>` and JSON-LD `name`/`alternateName` to "Decoder — AI code analysis" and add `alternateName: ["Decoder dev", "decoderead"]` in the `SoftwareApplication` schema so Google associates the bare brand with the site.
+4. **Long-tail title rotation**: keep "AI code analysis & AI-generated code review" but add an Organization JSON-LD with `sameAs` pointing to the GitHub repo + LinkedIn / IG marketing accounts — strong sameAs signals are the cheapest way to win a brand SERP and earn a sitelink/knowledge panel.
+5. **Internal anchor text**: ensure footer and nav consistently use the phrase "Decoder" (not just the logo) so on-page anchors reinforce the brand entity.
+6. **External signals**: a single GitHub README mention and one LinkedIn post that links `decoderead.dev` with anchor text "Decoder" usually flips a brand SERP within 1–2 crawl cycles.
 
-## Out of scope
+After (1) is done I'll be able to pull the real Search Console snapshot (impressions, positions, top queries, mobile vs desktop split) and act on actual data.
 
-- Resizing behaviour on tablet/desktop, panel default sizes, copy, i18n.
-- Public landing routes (already optimized in the previous mobile pass).
-- AppShell header (already mobile-friendly).
+## 4. Deliverables
+
+- Updated `src/routes/index.tsx` with install band + smart install button.
+- New `src/hooks/use-pwa-install.ts` for `beforeinstallprompt` handling.
+- Updated `src/routes/__root.tsx` with Twitter card + Apple PWA meta + (after verification) the `google-site-verification` token.
+- Updated `public/manifest.webmanifest` with PNG icons; generated `public/icon-192.png` and `public/icon-512.png`.
+- Updated EN / IT / ZH locale strings.
+- Closed SEO findings after the rescan.
+- Short report back to you with: Search Console verification outcome, the current top queries (if any data is already collected), and the prioritized improvement list.
