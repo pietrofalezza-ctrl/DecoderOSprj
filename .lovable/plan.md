@@ -1,52 +1,46 @@
-## Obiettivo
-Rinforzare la SEO ora che ci sono nuove funzionalità (Folder Chat AI, History delle analisi AI) e portare la keyword **AI** in modo coerente su titoli, description, OG e JSON-LD — senza scadere nel keyword-stuffing.
+## Problem
 
-## Stato attuale (dallo scan SEO)
-- Failing: Google Search Console non collegato, hero LCP lento, contrasto + `<main>` landmark sulla build pubblicata.
-- Title/description già presenti su `__root.tsx` e `/` ma le nuove route (`/history`, `/projects/.../history`) non hanno head meta dedicato.
-- Sitemap server-route esistente: va aggiornata con le nuove pagine pubbliche (history resta dietro auth → si esclude).
+On 375px screens the landing page (`/`) scrolls horizontally (~34px overflow) and sections look clipped or stacked under the sticky header. Playwright audit confirmed:
 
-## Cosa farò
+- `docW = 409` vs `winW = 375` → the page itself is wider than the viewport.
+- Root cause: `HeroIllustration` uses `max-w-sm` (384px) inside a `px-4` container (available width ≈ 343px). Since the hero grid has no explicit `grid-cols-1` on mobile, the illustration's natural width forces every sibling column to 384px, which is why the eyebrow chips ("PERSONAL PROJECT · OPEN SOURCE"), the providers row ("04. OPENROUTER"), and the hero copy all clip on the right.
+- Landing header right cluster (`LangSwitcher + ThemeToggle + PublicHeaderAuthSlot "Get started" + Menu`) is wider than the available header space, pushing the row out and contributing to the overflow.
+- The sticky header uses `bg-background/80 backdrop-blur`; on scroll, text bleeds visibly through the translucent bar, which reads as "sections overlap".
+- The "AI SOURCE → DECODER → YOU" flow diagram (`landing-bits.tsx`) keeps three boxes + two arrows in a single row at 343px, so labels squeeze together.
 
-### 1. Riscrittura copy SEO con keyword "AI" (it/en coerente al sito)
-Allineo titolo + description in `__root.tsx` e `src/routes/index.tsx`:
-- Title (≤60 char): `Decoder — AI code analysis & AI-generated code review`
-- Description (≤160 char): `Decoder is an open-source AI code analysis tool: review AI-generated code, run static & malware checks, chat with your repo in any language.`
-- og:title / og:description / twitter:* allineati.
-- JSON-LD `SoftwareApplication` aggiornata: `applicationCategory: "DeveloperApplication"`, `keywords: "AI code analysis, AI code review, AI-generated code, static analysis, malware analysis"`.
+Other public routes (`/docs`, `/manifesto`, `/terms`, `/privacy`, `/data-flow`) use the same minimal public header pattern and inherit the same right-cluster crowding, but no horizontal overflow.
 
-### 2. Head meta per le pagine pubbliche già esistenti senza title dedicato
-Verifico e, dove manca, aggiungo `head()` con title/description/og che includono "AI" in modo naturale a:
-- `/manifesto`, `/open-source`, `/data-flow`, `/docs`, `/docs/how-to-review-ai-code`, `/contact`, `/privacy`, `/terms`, `/cookies`.
-Esempio: `Docs — Decoder AI code review` / `Manifesto — Open-source AI code analysis`.
+## Scope
 
-### 3. Pagine History (autenticate)
-Aggiungo `meta: [{ name: "robots", content: "noindex" }]` su `/history` e `/projects/$/repos/$/history`: sono dietro auth, non vanno in indice ma il tag evita ambiguità.
+Frontend / presentation only. No backend or copy changes.
 
-### 4. Sitemap
-Aggiorno `src/routes/sitemap[.]xml.ts` (se presente) o il `public/sitemap.xml` esistente per riflettere le sole route pubbliche attuali. Non includo `/history*` (auth).
+## Changes
 
-### 5. Accessibilità + landmark (finding aperto)
-- Verifico che ci sia **un solo** `<main>` nel layout pubblico (`_public` o `__root` shell) e lo aggiungo se manca.
-- Sostituisco eventuali `text-muted-foreground/50` o grigi arbitrari a basso contrasto sulla landing con i token (`text-foreground` / `text-muted-foreground`).
+1. **Stop the hero from blowing out width** — `src/routes/index.tsx`
+   - Add `grid-cols-1` to the hero grid so mobile is explicitly single-column with `minmax(0,1fr)`.
+   - Wrap text column with `min-w-0` so flex/grid children can shrink.
+   - Constrain `HeroIllustration` wrapper to `max-w-[min(384px,100%)]` (or `w-full max-w-sm` + `min-w-0` on parent) so it never exceeds the viewport.
 
-### 6. LCP performance (finding aperto)
-Sull'hero della landing:
-- Rimuovo `loading="lazy"` se presente.
-- Aggiungo `fetchpriority="high"` e `width`/`height` espliciti.
-- Aggiungo un `<link rel="preload" as="image">` nel `head()` di `/`.
+2. **Tighten the eyebrow / providers rows** — `src/routes/index.tsx`
+   - Add `min-w-0` and allow wrapping; reduce mobile font-size or letter-spacing so chips fit at 343px.
+   - Ensure no single chip uses `whitespace-nowrap` that exceeds the row.
 
-### 7. Google Search Console
-È un finding "mid": non posso collegarlo da solo. A fine implementazione segnalo il pulsante per autorizzare l'OAuth (lo lancio se confermi).
+3. **Fix the public header on mobile** — `src/routes/index.tsx`, and the same pattern in `src/routes/docs.tsx`, `manifesto.tsx`, `terms.tsx`, `privacy.tsx`, `data-flow.tsx`, `cookies.tsx`, `open-source.tsx`, `contact.tsx`, `reset-password.tsx` where applicable
+   - Hide `PublicHeaderAuthSlot` CTA below `sm:` (move "Get started" into the hamburger sheet as the primary action) OR render it as an icon-only button on mobile.
+   - Keep `LangSwitcher` and `ThemeToggle` visible; ensure the row uses `gap-1` + `shrink-0` for action buttons and `min-w-0 truncate` for the logo wordmark.
 
-## Cosa NON faccio
-- Non ricreo sitemap/robots da zero se già esistono.
-- Non aggiungo nuove route SEO finte solo per la keyword (anti-pattern).
-- Non tocco logica di business o componenti già funzionanti.
+4. **Make the sticky header opaque on mobile** — `src/routes/index.tsx`
+   - Replace `bg-background/80 backdrop-blur` with `bg-background sm:bg-background/80 sm:backdrop-blur` so mobile gets a solid bar (no bleed-through under the header).
 
-## Verifica
-- Re-run dello scan SEO (`Rescan` dal tab SEO) dopo il publish.
-- Controllo con `tsgo` che le head() siano valide.
-- Ti ricordo che gli aggiornamenti og:* sui link condivisi appaiono solo dopo che il crawler ri-fetcha (puoi forzarlo nel link-preview debugger di LinkedIn/Facebook).
+5. **Stack the flow diagram on small screens** — `src/components/landing/landing-bits.tsx`
+   - Switch the `flex items-center justify-between` row to `flex-col gap-3 sm:flex-row sm:items-center sm:justify-between`, and rotate the arrow glyphs 90° on mobile so the diagram reads top-to-bottom at 375px without crowding.
 
-Confermi e procedo?
+6. **Verification**
+   - Re-run the Playwright overflow audit at 375px: target `docW === winW` and the overflowing-elements list empty.
+   - Capture full-height mobile screenshots for `/`, `/docs`, `/manifesto`, `/terms`, `/privacy`, `/data-flow` and confirm no horizontal scroll, header opacity correct, and the diagram stacks cleanly.
+
+## Out of scope
+
+- AppShell (authenticated) routes — already optimized in a prior pass.
+- Copy / i18n / typography redesign.
+- Tablet (`md:`) breakpoint tuning beyond what's needed to keep existing desktop layout intact.

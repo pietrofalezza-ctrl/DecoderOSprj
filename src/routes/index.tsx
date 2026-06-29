@@ -89,7 +89,7 @@ function Landing() {
   return (
     <div className="min-h-screen bg-background text-foreground">
       {/* Header */}
-      <header className="sticky top-0 z-30 border-b border-border/60 bg-background/80 backdrop-blur">
+      <header className="sticky top-0 z-30 border-b border-border/60 bg-background sm:bg-background/80 sm:backdrop-blur">
         <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-2 px-4 sm:px-6">
           <Link to="/" aria-label={t("brand.name")} className="shrink-0">
             <Logo />
@@ -110,7 +110,9 @@ function Landing() {
           <div className="flex items-center gap-1">
             <LangSwitcher />
             <ThemeToggle />
-            <PublicHeaderAuthSlot />
+            <div className="hidden sm:block">
+              <PublicHeaderAuthSlot />
+            </div>
             <Sheet open={menuOpen} onOpenChange={setMenuOpen}>
               <SheetTrigger asChild>
                 <Button
@@ -158,6 +160,16 @@ function Landing() {
                     <Github className="h-4 w-4" />
                     GitHub
                   </a>
+                  <div className="mt-4 border-t border-border pt-4">
+                    <Link
+                      to="/auth"
+                      onClick={() => setMenuOpen(false)}
+                      className="inline-flex w-full items-center justify-center gap-2 rounded-md bg-primary px-4 py-3 text-sm font-medium text-primary-foreground hover:opacity-90"
+                    >
+                      {t("landing.ctaStart")}
+                      <ArrowRight className="h-4 w-4" />
+                    </Link>
+                  </div>
                 </nav>
               </SheetContent>
             </Sheet>
@@ -167,8 +179,8 @@ function Landing() {
 
       {/* Hero — editorial */}
       <section className="relative">
-        <div className="mx-auto grid max-w-6xl gap-10 px-4 py-12 sm:px-6 md:grid-cols-12 md:gap-16 md:py-28">
-          <div className="md:col-span-7 space-y-8">
+        <div className="mx-auto grid max-w-6xl grid-cols-1 gap-10 px-4 py-12 sm:px-6 md:grid-cols-12 md:gap-16 md:py-28">
+          <div className="md:col-span-7 space-y-8 min-w-0">
             <div className="flex flex-wrap gap-6 text-[10px] uppercase tracking-[0.2em] text-muted-foreground font-mono">
               <span className="border-b border-border pb-1">Case Study 01</span>
               <span className="border-b border-border pb-1">{t("landing.heroBadgeOpen")}</span>
@@ -221,8 +233,8 @@ function Landing() {
             </div>
           </div>
 
-          <div className="md:col-span-5 flex justify-center">
-            <div className="relative mx-auto w-full max-w-sm aspect-square border border-border bg-card p-6 sm:p-8 flex flex-col items-center justify-center md:max-w-none">
+          <div className="md:col-span-5 flex justify-center min-w-0">
+            <div className="relative mx-auto w-full max-w-[min(384px,100%)] aspect-square border border-border bg-card p-6 sm:p-8 flex flex-col items-center justify-center md:max-w-none">
               <span className="absolute left-0 top-0 h-2 w-2 border-l border-t border-border" />
               <span className="absolute right-0 top-0 h-2 w-2 border-r border-t border-border" />
               <span className="absolute bottom-0 left-0 h-2 w-2 border-b border-l border-border" />
