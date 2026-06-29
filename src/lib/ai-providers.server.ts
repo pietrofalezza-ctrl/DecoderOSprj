@@ -97,7 +97,7 @@ export async function callCloudProvider(args: {
   const { provider, apiKey, system, user } = args;
 
   if (provider === "openai") {
-    const r = await fetch("https://api.openai.com/v1/chat/completions", {
+    const r = await fetchWithRetry("OpenAI", "https://api.openai.com/v1/chat/completions", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -117,7 +117,7 @@ export async function callCloudProvider(args: {
   }
 
   if (provider === "anthropic") {
-    const r = await fetch("https://api.anthropic.com/v1/messages", {
+    const r = await fetchWithRetry("Anthropic", "https://api.anthropic.com/v1/messages", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -138,7 +138,7 @@ export async function callCloudProvider(args: {
 
   if (provider === "gemini") {
     const url = `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent?key=${encodeURIComponent(apiKey)}`;
-    const r = await fetch(url, {
+    const r = await fetchWithRetry("Gemini", url, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -158,7 +158,7 @@ export async function callCloudProvider(args: {
   }
 
   if (provider === "openrouter") {
-    const r = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+    const r = await fetchWithRetry("OpenRouter", "https://openrouter.ai/api/v1/chat/completions", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
