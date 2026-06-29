@@ -14,6 +14,7 @@ import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as OpenSourceRouteImport } from './routes/open-source'
 import { Route as ManifestoRouteImport } from './routes/manifesto'
+import { Route as InstallRouteImport } from './routes/install'
 import { Route as DocsRouteImport } from './routes/docs'
 import { Route as DataFlowRouteImport } from './routes/data-flow'
 import { Route as CookiesRouteImport } from './routes/cookies'
@@ -70,6 +71,11 @@ const OpenSourceRoute = OpenSourceRouteImport.update({
 const ManifestoRoute = ManifestoRouteImport.update({
   id: '/manifesto',
   path: '/manifesto',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const InstallRoute = InstallRouteImport.update({
+  id: '/install',
+  path: '/install',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DocsRoute = DocsRouteImport.update({
@@ -256,6 +262,7 @@ export interface FileRoutesByFullPath {
   '/cookies': typeof CookiesRoute
   '/data-flow': typeof DataFlowRoute
   '/docs': typeof DocsRouteWithChildren
+  '/install': typeof InstallRoute
   '/manifesto': typeof ManifestoRoute
   '/open-source': typeof OpenSourceRoute
   '/privacy': typeof PrivacyRoute
@@ -294,6 +301,7 @@ export interface FileRoutesByTo {
   '/cookies': typeof CookiesRoute
   '/data-flow': typeof DataFlowRoute
   '/docs': typeof DocsRouteWithChildren
+  '/install': typeof InstallRoute
   '/manifesto': typeof ManifestoRoute
   '/open-source': typeof OpenSourceRoute
   '/privacy': typeof PrivacyRoute
@@ -333,6 +341,7 @@ export interface FileRoutesById {
   '/cookies': typeof CookiesRoute
   '/data-flow': typeof DataFlowRoute
   '/docs': typeof DocsRouteWithChildren
+  '/install': typeof InstallRoute
   '/manifesto': typeof ManifestoRoute
   '/open-source': typeof OpenSourceRoute
   '/privacy': typeof PrivacyRoute
@@ -373,6 +382,7 @@ export interface FileRouteTypes {
     | '/cookies'
     | '/data-flow'
     | '/docs'
+    | '/install'
     | '/manifesto'
     | '/open-source'
     | '/privacy'
@@ -411,6 +421,7 @@ export interface FileRouteTypes {
     | '/cookies'
     | '/data-flow'
     | '/docs'
+    | '/install'
     | '/manifesto'
     | '/open-source'
     | '/privacy'
@@ -449,6 +460,7 @@ export interface FileRouteTypes {
     | '/cookies'
     | '/data-flow'
     | '/docs'
+    | '/install'
     | '/manifesto'
     | '/open-source'
     | '/privacy'
@@ -489,6 +501,7 @@ export interface RootRouteChildren {
   CookiesRoute: typeof CookiesRoute
   DataFlowRoute: typeof DataFlowRoute
   DocsRoute: typeof DocsRouteWithChildren
+  InstallRoute: typeof InstallRoute
   ManifestoRoute: typeof ManifestoRoute
   OpenSourceRoute: typeof OpenSourceRoute
   PrivacyRoute: typeof PrivacyRoute
@@ -533,6 +546,13 @@ declare module '@tanstack/react-router' {
       path: '/manifesto'
       fullPath: '/manifesto'
       preLoaderRoute: typeof ManifestoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/install': {
+      id: '/install'
+      path: '/install'
+      fullPath: '/install'
+      preLoaderRoute: typeof InstallRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/docs': {
@@ -860,6 +880,7 @@ const rootRouteChildren: RootRouteChildren = {
   CookiesRoute: CookiesRoute,
   DataFlowRoute: DataFlowRoute,
   DocsRoute: DocsRouteWithChildren,
+  InstallRoute: InstallRoute,
   ManifestoRoute: ManifestoRoute,
   OpenSourceRoute: OpenSourceRoute,
   PrivacyRoute: PrivacyRoute,
