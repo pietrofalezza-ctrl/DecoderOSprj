@@ -9,6 +9,7 @@ import {
   CheckCircle2,
   FileCode,
   Folder,
+  MessageSquare,
   Play,
   Sparkles,
   Wrench,
@@ -28,6 +29,7 @@ import {
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { DiffViewer } from "./DiffViewer";
 import { FindingsList } from "./FindingsList";
+import { FolderChatPanel } from "./FolderChatPanel";
 
 import { runAnalysis } from "@/lib/analysis.functions";
 import { aggregateFolderAnalysis, listFolderFiles } from "@/lib/folder-analysis.functions";
@@ -56,6 +58,8 @@ export function FolderAnalysisPanel({
   folderPath,
   providerValue,
   language,
+  proficiency = "intermediate",
+  explanationType = "human",
   onClose,
   onOpenFile,
 }: {
@@ -63,6 +67,8 @@ export function FolderAnalysisPanel({
   folderPath: string;
   providerValue: string;
   language: "en" | "it" | "zh";
+  proficiency?: "nontech" | "junior" | "intermediate" | "senior" | "architect" | "cto";
+  explanationType?: "human" | "technical";
   onClose: () => void;
   onOpenFile: (fileId: string) => void;
 }) {
@@ -77,7 +83,7 @@ export function FolderAnalysisPanel({
   const [aggText, setAggText] = useState<string>("");
   const [diffText, setDiffText] = useState<string>("");
   const [diffNotes, setDiffNotes] = useState<string>("");
-  const [tab, setTab] = useState<"summary" | "files" | "fix">("summary");
+  const [tab, setTab] = useState<"summary" | "files" | "fix" | "chat">("summary");
   const [running, setRunning] = useState(false);
   const [progress, setProgress] = useState({ done: 0, total: 0 });
 
@@ -310,6 +316,10 @@ export function FolderAnalysisPanel({
               <Wrench className="h-3 w-3" />
               {t("workspace.fix.tab")}
             </TabsTrigger>
+            <TabsTrigger value="chat" className="gap-1.5">
+              <MessageSquare className="h-3 w-3" />
+              {t("workspace.folderChat.tab")}
+            </TabsTrigger>
           </TabsList>
         </div>
 
@@ -412,6 +422,21 @@ export function FolderAnalysisPanel({
               />
             </div>
           </div>
+        </TabsContent>
+
+        <TabsContent
+          forceMount
+          value="chat"
+          className="m-0 flex-1 overflow-hidden data-[state=inactive]:hidden"
+        >
+          <FolderChatPanel
+            repoId={repoId}
+            folderPath={folderPath}
+            providerValue={providerValue}
+            proficiency={proficiency}
+            explanationType={explanationType}
+            uiLanguage={language}
+          />
         </TabsContent>
       </Tabs>
     </div>

@@ -21,7 +21,7 @@ export function emptyTechniqueScores(): TechniqueScores {
       key,
       { key, label: TECHNIQUE_LABELS[key], score: 0, indicatorIds: [] } satisfies TechniqueScore,
     ]),
-  ) as TechniqueScores;
+  ) as unknown as TechniqueScores;
 }
 
 export function scoreIndicators(indicators: StaticAnalysisIndicator[]): {

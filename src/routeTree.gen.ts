@@ -23,12 +23,14 @@ import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as DocsHowToReviewAiCodeRouteImport } from './routes/docs.how-to-review-ai-code'
 import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated/settings'
+import { Route as AuthenticatedHistoryRouteImport } from './routes/_authenticated/history'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedProjectsProjectIdRouteImport } from './routes/_authenticated/projects.$projectId'
 import { Route as AuthenticatedProjectsProjectIdIndexRouteImport } from './routes/_authenticated/projects.$projectId.index'
 import { Route as LovableEmailQueueProcessRouteImport } from './routes/lovable/email/queue/process'
 import { Route as ApiPublicHooksCleanupStaleRepositoriesRouteImport } from './routes/api/public/hooks/cleanup-stale-repositories'
 import { Route as AuthenticatedProjectsProjectIdReposRepoIdRouteImport } from './routes/_authenticated/projects.$projectId.repos.$repoId'
+import { Route as AuthenticatedProjectsProjectIdReposRepoIdHistoryRouteImport } from './routes/_authenticated/projects.$projectId.repos.$repoId.history'
 
 const TermsRoute = TermsRouteImport.update({
   id: '/terms',
@@ -99,6 +101,11 @@ const AuthenticatedSettingsRoute = AuthenticatedSettingsRouteImport.update({
   path: '/settings',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedHistoryRoute = AuthenticatedHistoryRouteImport.update({
+  id: '/history',
+  path: '/history',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
@@ -134,6 +141,12 @@ const AuthenticatedProjectsProjectIdReposRepoIdRoute =
     path: '/repos/$repoId',
     getParentRoute: () => AuthenticatedProjectsProjectIdRoute,
   } as any)
+const AuthenticatedProjectsProjectIdReposRepoIdHistoryRoute =
+  AuthenticatedProjectsProjectIdReposRepoIdHistoryRouteImport.update({
+    id: '/history',
+    path: '/history',
+    getParentRoute: () => AuthenticatedProjectsProjectIdReposRepoIdRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -148,13 +161,15 @@ export interface FileRoutesByFullPath {
   '/reset-password': typeof ResetPasswordRoute
   '/terms': typeof TermsRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/history': typeof AuthenticatedHistoryRoute
   '/settings': typeof AuthenticatedSettingsRoute
   '/docs/how-to-review-ai-code': typeof DocsHowToReviewAiCodeRoute
   '/projects/$projectId': typeof AuthenticatedProjectsProjectIdRouteWithChildren
   '/api/public/hooks/cleanup-stale-repositories': typeof ApiPublicHooksCleanupStaleRepositoriesRoute
   '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
   '/projects/$projectId/': typeof AuthenticatedProjectsProjectIdIndexRoute
-  '/projects/$projectId/repos/$repoId': typeof AuthenticatedProjectsProjectIdReposRepoIdRoute
+  '/projects/$projectId/repos/$repoId': typeof AuthenticatedProjectsProjectIdReposRepoIdRouteWithChildren
+  '/projects/$projectId/repos/$repoId/history': typeof AuthenticatedProjectsProjectIdReposRepoIdHistoryRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -169,12 +184,14 @@ export interface FileRoutesByTo {
   '/reset-password': typeof ResetPasswordRoute
   '/terms': typeof TermsRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/history': typeof AuthenticatedHistoryRoute
   '/settings': typeof AuthenticatedSettingsRoute
   '/docs/how-to-review-ai-code': typeof DocsHowToReviewAiCodeRoute
   '/api/public/hooks/cleanup-stale-repositories': typeof ApiPublicHooksCleanupStaleRepositoriesRoute
   '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
   '/projects/$projectId': typeof AuthenticatedProjectsProjectIdIndexRoute
-  '/projects/$projectId/repos/$repoId': typeof AuthenticatedProjectsProjectIdReposRepoIdRoute
+  '/projects/$projectId/repos/$repoId': typeof AuthenticatedProjectsProjectIdReposRepoIdRouteWithChildren
+  '/projects/$projectId/repos/$repoId/history': typeof AuthenticatedProjectsProjectIdReposRepoIdHistoryRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -191,13 +208,15 @@ export interface FileRoutesById {
   '/reset-password': typeof ResetPasswordRoute
   '/terms': typeof TermsRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
+  '/_authenticated/history': typeof AuthenticatedHistoryRoute
   '/_authenticated/settings': typeof AuthenticatedSettingsRoute
   '/docs/how-to-review-ai-code': typeof DocsHowToReviewAiCodeRoute
   '/_authenticated/projects/$projectId': typeof AuthenticatedProjectsProjectIdRouteWithChildren
   '/api/public/hooks/cleanup-stale-repositories': typeof ApiPublicHooksCleanupStaleRepositoriesRoute
   '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
   '/_authenticated/projects/$projectId/': typeof AuthenticatedProjectsProjectIdIndexRoute
-  '/_authenticated/projects/$projectId/repos/$repoId': typeof AuthenticatedProjectsProjectIdReposRepoIdRoute
+  '/_authenticated/projects/$projectId/repos/$repoId': typeof AuthenticatedProjectsProjectIdReposRepoIdRouteWithChildren
+  '/_authenticated/projects/$projectId/repos/$repoId/history': typeof AuthenticatedProjectsProjectIdReposRepoIdHistoryRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -214,6 +233,7 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/terms'
     | '/dashboard'
+    | '/history'
     | '/settings'
     | '/docs/how-to-review-ai-code'
     | '/projects/$projectId'
@@ -221,6 +241,7 @@ export interface FileRouteTypes {
     | '/lovable/email/queue/process'
     | '/projects/$projectId/'
     | '/projects/$projectId/repos/$repoId'
+    | '/projects/$projectId/repos/$repoId/history'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -235,12 +256,14 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/terms'
     | '/dashboard'
+    | '/history'
     | '/settings'
     | '/docs/how-to-review-ai-code'
     | '/api/public/hooks/cleanup-stale-repositories'
     | '/lovable/email/queue/process'
     | '/projects/$projectId'
     | '/projects/$projectId/repos/$repoId'
+    | '/projects/$projectId/repos/$repoId/history'
   id:
     | '__root__'
     | '/'
@@ -256,6 +279,7 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/terms'
     | '/_authenticated/dashboard'
+    | '/_authenticated/history'
     | '/_authenticated/settings'
     | '/docs/how-to-review-ai-code'
     | '/_authenticated/projects/$projectId'
@@ -263,6 +287,7 @@ export interface FileRouteTypes {
     | '/lovable/email/queue/process'
     | '/_authenticated/projects/$projectId/'
     | '/_authenticated/projects/$projectId/repos/$repoId'
+    | '/_authenticated/projects/$projectId/repos/$repoId/history'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -382,6 +407,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedSettingsRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/history': {
+      id: '/_authenticated/history'
+      path: '/history'
+      fullPath: '/history'
+      preLoaderRoute: typeof AuthenticatedHistoryRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/dashboard': {
       id: '/_authenticated/dashboard'
       path: '/dashboard'
@@ -424,12 +456,34 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedProjectsProjectIdReposRepoIdRouteImport
       parentRoute: typeof AuthenticatedProjectsProjectIdRoute
     }
+    '/_authenticated/projects/$projectId/repos/$repoId/history': {
+      id: '/_authenticated/projects/$projectId/repos/$repoId/history'
+      path: '/history'
+      fullPath: '/projects/$projectId/repos/$repoId/history'
+      preLoaderRoute: typeof AuthenticatedProjectsProjectIdReposRepoIdHistoryRouteImport
+      parentRoute: typeof AuthenticatedProjectsProjectIdReposRepoIdRoute
+    }
   }
 }
 
+interface AuthenticatedProjectsProjectIdReposRepoIdRouteChildren {
+  AuthenticatedProjectsProjectIdReposRepoIdHistoryRoute: typeof AuthenticatedProjectsProjectIdReposRepoIdHistoryRoute
+}
+
+const AuthenticatedProjectsProjectIdReposRepoIdRouteChildren: AuthenticatedProjectsProjectIdReposRepoIdRouteChildren =
+  {
+    AuthenticatedProjectsProjectIdReposRepoIdHistoryRoute:
+      AuthenticatedProjectsProjectIdReposRepoIdHistoryRoute,
+  }
+
+const AuthenticatedProjectsProjectIdReposRepoIdRouteWithChildren =
+  AuthenticatedProjectsProjectIdReposRepoIdRoute._addFileChildren(
+    AuthenticatedProjectsProjectIdReposRepoIdRouteChildren,
+  )
+
 interface AuthenticatedProjectsProjectIdRouteChildren {
   AuthenticatedProjectsProjectIdIndexRoute: typeof AuthenticatedProjectsProjectIdIndexRoute
-  AuthenticatedProjectsProjectIdReposRepoIdRoute: typeof AuthenticatedProjectsProjectIdReposRepoIdRoute
+  AuthenticatedProjectsProjectIdReposRepoIdRoute: typeof AuthenticatedProjectsProjectIdReposRepoIdRouteWithChildren
 }
 
 const AuthenticatedProjectsProjectIdRouteChildren: AuthenticatedProjectsProjectIdRouteChildren =
@@ -437,7 +491,7 @@ const AuthenticatedProjectsProjectIdRouteChildren: AuthenticatedProjectsProjectI
     AuthenticatedProjectsProjectIdIndexRoute:
       AuthenticatedProjectsProjectIdIndexRoute,
     AuthenticatedProjectsProjectIdReposRepoIdRoute:
-      AuthenticatedProjectsProjectIdReposRepoIdRoute,
+      AuthenticatedProjectsProjectIdReposRepoIdRouteWithChildren,
   }
 
 const AuthenticatedProjectsProjectIdRouteWithChildren =
@@ -447,12 +501,14 @@ const AuthenticatedProjectsProjectIdRouteWithChildren =
 
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
+  AuthenticatedHistoryRoute: typeof AuthenticatedHistoryRoute
   AuthenticatedSettingsRoute: typeof AuthenticatedSettingsRoute
   AuthenticatedProjectsProjectIdRoute: typeof AuthenticatedProjectsProjectIdRouteWithChildren
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
+  AuthenticatedHistoryRoute: AuthenticatedHistoryRoute,
   AuthenticatedSettingsRoute: AuthenticatedSettingsRoute,
   AuthenticatedProjectsProjectIdRoute:
     AuthenticatedProjectsProjectIdRouteWithChildren,

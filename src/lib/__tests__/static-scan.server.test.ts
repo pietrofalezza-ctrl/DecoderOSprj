@@ -25,6 +25,7 @@ const mockAssessment = {
     suspiciousWindowCount: 3,
     windowSize: 256,
     windowStep: 128,
+    sections: [],
   },
   findings: [
     {
@@ -67,6 +68,7 @@ describe("staticScanDbValues", () => {
         suspiciousWindowCount: 3,
         windowSize: 256,
         windowStep: 128,
+        sections: [],
       },
       findings: [],
       magicSignature: "4d5a",
@@ -78,8 +80,8 @@ describe("staticScanDbValues", () => {
         isTextLikeExt: false,
         pathLooksSafe: true,
       },
-    },
-  };
+    } as unknown as StaticScanPayload["report"],
+  } satisfies StaticScanPayload;
 
   it("maps status field", () => {
     expect(staticScanDbValues(basePayload).static_scan_status).toBe("block");

@@ -25,6 +25,7 @@ export const updateMyProfile = createServerFn({ method: "POST" })
       preferred_proficiency: z
         .enum(["nontech", "junior", "intermediate", "senior", "architect", "cto"])
         .optional(),
+      preferred_explanation_type: z.enum(["human", "technical"]).optional(),
     }),
   )
   .handler(async ({ context, data }) => {

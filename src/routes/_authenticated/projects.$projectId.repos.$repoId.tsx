@@ -55,6 +55,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { AiOriginPanel, type RepoAiOriginResult } from "@/components/AiOriginPanel";
 import { getRepository, getFileContent } from "@/lib/repos.functions";
+import { getMyProfile } from "@/lib/profile.functions";
 import { listProviders } from "@/lib/credentials.functions";
 import { explainFile, saveLocalExplanation } from "@/lib/explain.functions";
 import { runAnalysis, saveLocalAnalysis, analyzeRepoAiOrigin } from "@/lib/analysis.functions";
@@ -121,6 +122,7 @@ function WorkspacePage() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const getRepo = useServerFn(getRepository);
+  const getProfile = useServerFn(getMyProfile);
   const getContent = useServerFn(getFileContent);
   const providersFn = useServerFn(listProviders);
   const explain = useServerFn(explainFile);
@@ -213,6 +215,25 @@ function WorkspacePage() {
     queryKey: ["file-chat-session", selectedFileId],
     queryFn: () => listChat({ data: { file_id: selectedFileId! } }),
   });
+
+  // Hydrate proficiency / explanation type from the user's saved profile preferences
+  // (will be overridden by per-file history if it exists).
+  const profileQ = useQuery({
+    queryKey: ["my-profile-prefs"],
+    queryFn: () => getProfile(),
+    staleTime: 5 * 60_000,
+  });
+  const profileHydratedRef = useRef(false);
+  useEffect(() => {
+    if (profileHydratedRef.current) return;
+    const p = profileQ.data?.profile;
+    if (!p) return;
+    profileHydratedRef.current = true;
+    if (p.preferred_proficiency) setProficiency(p.preferred_proficiency as Proficiency);
+    if (p.preferred_explanation_type === "human" || p.preferred_explanation_type === "technical") {
+      setSummarySub(p.preferred_explanation_type);
+    }
+  }, [profileQ.data]);
 
   useEffect(() => {
     if (!shouldPersistSearchQuery(fileSearch, lastRecordedSearch)) return;
@@ -1150,6 +1171,8 @@ function WorkspacePage() {
                 folderPath={selectedFolderPath}
                 providerValue={providerValue}
                 language={lang}
+                proficiency={proficiency}
+                explanationType={summarySub}
                 onClose={() => setSelectedFolderPath(null)}
                 onOpenFile={(id) => {
                   setSelectedFileId(id);

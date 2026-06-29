@@ -20,7 +20,19 @@
     "manifesto": "宣言",
     "account": "账户",
     "signedInAs": "登录身份",
-    "apiKeys": "API 密钥"
+    "apiKeys": "API 密钥",
+    "history": "历史"
+  },
+  "history": {
+    "accountTitle": "你的分析历史",
+    "accountSubtitle": "所有项目的全部 LLM 与静态分析记录。",
+    "repoTitle": "仓库历史",
+    "repoSubtitle": "本仓库的所有分析与聊天均已保存。",
+    "backToWorkspace": "返回工作区",
+    "empty": "暂无保存的分析。可在工作区运行解释、质量、安全分析或聊天。",
+    "loadMore": "加载更多",
+    "filterKind": "类型",
+    "allKinds": "全部类型"
   },
   "languages": {
     "en": "English",
@@ -516,6 +528,15 @@
       "aggregatePending": "分析完成。正在生成文件夹概要…",
       "emptyHint": "按 \"分析整个文件夹\" 开始。",
       "noFindings": "此文件没有结构化条目。"
+    },
+    "folderChat": {
+      "tab": "聊天",
+      "needsProvider": "文件夹聊天需要使用你 BYOK API 密钥的云端模型。",
+      "emptyHint": "可询问该文件夹下文件的任何问题,模型仅能看到此文件夹。",
+      "placeholder": "针对该文件夹提问 —— 架构、风险、重构……",
+      "thinking": "思考中…",
+      "hint": "Ctrl/⌘+回车 发送。将使用你的语气与水平偏好。",
+      "saved": "对话已保存到历史。"
     },
     "fix": {
       "tab": "修复",

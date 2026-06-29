@@ -1,7 +1,7 @@
 import { Link, useNavigate } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
-import { LogOut, Settings, LayoutDashboard, BookOpen, ChevronDown, Github } from "lucide-react";
+import { LogOut, Settings, LayoutDashboard, BookOpen, ChevronDown, Github, History } from "lucide-react";
 import type { ReactNode } from "react";
 
 import { Button } from "@/components/ui/button";
@@ -105,6 +105,12 @@ export function AppShell({ children }: { children: ReactNode }) {
                   <Link to="/dashboard">
                     <LayoutDashboard className="mr-2 h-5 w-5" />
                     {t("nav.dashboard")}
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link to="/history">
+                    <History className="mr-2 h-5 w-5" />
+                    {t("nav.history")}
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
