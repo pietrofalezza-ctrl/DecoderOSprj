@@ -34,6 +34,12 @@ import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticat
 import { Route as AuthenticatedHistoryRouteImport } from './routes/_authenticated/history'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
+import { Route as DocsZhPrivacyFirstAiEuropeRouteImport } from './routes/docs.zh.privacy-first-ai-europe'
+import { Route as DocsZhGdprAiCodeReviewRouteImport } from './routes/docs.zh.gdpr-ai-code-review'
+import { Route as DocsZhEuAiActCodeAnalysisRouteImport } from './routes/docs.zh.eu-ai-act-code-analysis'
+import { Route as DocsItGdprRevisioneCodiceAiRouteImport } from './routes/docs.it.gdpr-revisione-codice-ai'
+import { Route as DocsItEuAiActAnalisiCodiceRouteImport } from './routes/docs.it.eu-ai-act-analisi-codice'
+import { Route as DocsItAiPrivacyFirstEuropaRouteImport } from './routes/docs.it.ai-privacy-first-europa'
 import { Route as AuthenticatedProjectsProjectIdRouteImport } from './routes/_authenticated/projects.$projectId'
 import { Route as AuthenticatedProjectsProjectIdIndexRouteImport } from './routes/_authenticated/projects.$projectId.index'
 import { Route as LovableEmailQueueProcessRouteImport } from './routes/lovable/email/queue/process'
@@ -170,6 +176,41 @@ const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
   path: '/admin',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const DocsZhPrivacyFirstAiEuropeRoute =
+  DocsZhPrivacyFirstAiEuropeRouteImport.update({
+    id: '/zh/privacy-first-ai-europe',
+    path: '/zh/privacy-first-ai-europe',
+    getParentRoute: () => DocsRoute,
+  } as any)
+const DocsZhGdprAiCodeReviewRoute = DocsZhGdprAiCodeReviewRouteImport.update({
+  id: '/zh/gdpr-ai-code-review',
+  path: '/zh/gdpr-ai-code-review',
+  getParentRoute: () => DocsRoute,
+} as any)
+const DocsZhEuAiActCodeAnalysisRoute =
+  DocsZhEuAiActCodeAnalysisRouteImport.update({
+    id: '/zh/eu-ai-act-code-analysis',
+    path: '/zh/eu-ai-act-code-analysis',
+    getParentRoute: () => DocsRoute,
+  } as any)
+const DocsItGdprRevisioneCodiceAiRoute =
+  DocsItGdprRevisioneCodiceAiRouteImport.update({
+    id: '/it/gdpr-revisione-codice-ai',
+    path: '/it/gdpr-revisione-codice-ai',
+    getParentRoute: () => DocsRoute,
+  } as any)
+const DocsItEuAiActAnalisiCodiceRoute =
+  DocsItEuAiActAnalisiCodiceRouteImport.update({
+    id: '/it/eu-ai-act-analisi-codice',
+    path: '/it/eu-ai-act-analisi-codice',
+    getParentRoute: () => DocsRoute,
+  } as any)
+const DocsItAiPrivacyFirstEuropaRoute =
+  DocsItAiPrivacyFirstEuropaRouteImport.update({
+    id: '/it/ai-privacy-first-europa',
+    path: '/it/ai-privacy-first-europa',
+    getParentRoute: () => DocsRoute,
+  } as any)
 const AuthenticatedProjectsProjectIdRoute =
   AuthenticatedProjectsProjectIdRouteImport.update({
     id: '/projects/$projectId',
@@ -233,6 +274,12 @@ export interface FileRoutesByFullPath {
   '/docs/open-source-ai-code-review': typeof DocsOpenSourceAiCodeReviewRoute
   '/docs/privacy-first-ai-europe': typeof DocsPrivacyFirstAiEuropeRoute
   '/projects/$projectId': typeof AuthenticatedProjectsProjectIdRouteWithChildren
+  '/docs/it/ai-privacy-first-europa': typeof DocsItAiPrivacyFirstEuropaRoute
+  '/docs/it/eu-ai-act-analisi-codice': typeof DocsItEuAiActAnalisiCodiceRoute
+  '/docs/it/gdpr-revisione-codice-ai': typeof DocsItGdprRevisioneCodiceAiRoute
+  '/docs/zh/eu-ai-act-code-analysis': typeof DocsZhEuAiActCodeAnalysisRoute
+  '/docs/zh/gdpr-ai-code-review': typeof DocsZhGdprAiCodeReviewRoute
+  '/docs/zh/privacy-first-ai-europe': typeof DocsZhPrivacyFirstAiEuropeRoute
   '/api/public/hooks/cleanup-stale-repositories': typeof ApiPublicHooksCleanupStaleRepositoriesRoute
   '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
   '/projects/$projectId/': typeof AuthenticatedProjectsProjectIdIndexRoute
@@ -264,6 +311,12 @@ export interface FileRoutesByTo {
   '/docs/how-to-review-ai-code': typeof DocsHowToReviewAiCodeRoute
   '/docs/open-source-ai-code-review': typeof DocsOpenSourceAiCodeReviewRoute
   '/docs/privacy-first-ai-europe': typeof DocsPrivacyFirstAiEuropeRoute
+  '/docs/it/ai-privacy-first-europa': typeof DocsItAiPrivacyFirstEuropaRoute
+  '/docs/it/eu-ai-act-analisi-codice': typeof DocsItEuAiActAnalisiCodiceRoute
+  '/docs/it/gdpr-revisione-codice-ai': typeof DocsItGdprRevisioneCodiceAiRoute
+  '/docs/zh/eu-ai-act-code-analysis': typeof DocsZhEuAiActCodeAnalysisRoute
+  '/docs/zh/gdpr-ai-code-review': typeof DocsZhGdprAiCodeReviewRoute
+  '/docs/zh/privacy-first-ai-europe': typeof DocsZhPrivacyFirstAiEuropeRoute
   '/api/public/hooks/cleanup-stale-repositories': typeof ApiPublicHooksCleanupStaleRepositoriesRoute
   '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
   '/projects/$projectId': typeof AuthenticatedProjectsProjectIdIndexRoute
@@ -298,6 +351,12 @@ export interface FileRoutesById {
   '/docs/open-source-ai-code-review': typeof DocsOpenSourceAiCodeReviewRoute
   '/docs/privacy-first-ai-europe': typeof DocsPrivacyFirstAiEuropeRoute
   '/_authenticated/projects/$projectId': typeof AuthenticatedProjectsProjectIdRouteWithChildren
+  '/docs/it/ai-privacy-first-europa': typeof DocsItAiPrivacyFirstEuropaRoute
+  '/docs/it/eu-ai-act-analisi-codice': typeof DocsItEuAiActAnalisiCodiceRoute
+  '/docs/it/gdpr-revisione-codice-ai': typeof DocsItGdprRevisioneCodiceAiRoute
+  '/docs/zh/eu-ai-act-code-analysis': typeof DocsZhEuAiActCodeAnalysisRoute
+  '/docs/zh/gdpr-ai-code-review': typeof DocsZhGdprAiCodeReviewRoute
+  '/docs/zh/privacy-first-ai-europe': typeof DocsZhPrivacyFirstAiEuropeRoute
   '/api/public/hooks/cleanup-stale-repositories': typeof ApiPublicHooksCleanupStaleRepositoriesRoute
   '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
   '/_authenticated/projects/$projectId/': typeof AuthenticatedProjectsProjectIdIndexRoute
@@ -332,6 +391,12 @@ export interface FileRouteTypes {
     | '/docs/open-source-ai-code-review'
     | '/docs/privacy-first-ai-europe'
     | '/projects/$projectId'
+    | '/docs/it/ai-privacy-first-europa'
+    | '/docs/it/eu-ai-act-analisi-codice'
+    | '/docs/it/gdpr-revisione-codice-ai'
+    | '/docs/zh/eu-ai-act-code-analysis'
+    | '/docs/zh/gdpr-ai-code-review'
+    | '/docs/zh/privacy-first-ai-europe'
     | '/api/public/hooks/cleanup-stale-repositories'
     | '/lovable/email/queue/process'
     | '/projects/$projectId/'
@@ -363,6 +428,12 @@ export interface FileRouteTypes {
     | '/docs/how-to-review-ai-code'
     | '/docs/open-source-ai-code-review'
     | '/docs/privacy-first-ai-europe'
+    | '/docs/it/ai-privacy-first-europa'
+    | '/docs/it/eu-ai-act-analisi-codice'
+    | '/docs/it/gdpr-revisione-codice-ai'
+    | '/docs/zh/eu-ai-act-code-analysis'
+    | '/docs/zh/gdpr-ai-code-review'
+    | '/docs/zh/privacy-first-ai-europe'
     | '/api/public/hooks/cleanup-stale-repositories'
     | '/lovable/email/queue/process'
     | '/projects/$projectId'
@@ -396,6 +467,12 @@ export interface FileRouteTypes {
     | '/docs/open-source-ai-code-review'
     | '/docs/privacy-first-ai-europe'
     | '/_authenticated/projects/$projectId'
+    | '/docs/it/ai-privacy-first-europa'
+    | '/docs/it/eu-ai-act-analisi-codice'
+    | '/docs/it/gdpr-revisione-codice-ai'
+    | '/docs/zh/eu-ai-act-code-analysis'
+    | '/docs/zh/gdpr-ai-code-review'
+    | '/docs/zh/privacy-first-ai-europe'
     | '/api/public/hooks/cleanup-stale-repositories'
     | '/lovable/email/queue/process'
     | '/_authenticated/projects/$projectId/'
@@ -598,6 +675,48 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/docs/zh/privacy-first-ai-europe': {
+      id: '/docs/zh/privacy-first-ai-europe'
+      path: '/zh/privacy-first-ai-europe'
+      fullPath: '/docs/zh/privacy-first-ai-europe'
+      preLoaderRoute: typeof DocsZhPrivacyFirstAiEuropeRouteImport
+      parentRoute: typeof DocsRoute
+    }
+    '/docs/zh/gdpr-ai-code-review': {
+      id: '/docs/zh/gdpr-ai-code-review'
+      path: '/zh/gdpr-ai-code-review'
+      fullPath: '/docs/zh/gdpr-ai-code-review'
+      preLoaderRoute: typeof DocsZhGdprAiCodeReviewRouteImport
+      parentRoute: typeof DocsRoute
+    }
+    '/docs/zh/eu-ai-act-code-analysis': {
+      id: '/docs/zh/eu-ai-act-code-analysis'
+      path: '/zh/eu-ai-act-code-analysis'
+      fullPath: '/docs/zh/eu-ai-act-code-analysis'
+      preLoaderRoute: typeof DocsZhEuAiActCodeAnalysisRouteImport
+      parentRoute: typeof DocsRoute
+    }
+    '/docs/it/gdpr-revisione-codice-ai': {
+      id: '/docs/it/gdpr-revisione-codice-ai'
+      path: '/it/gdpr-revisione-codice-ai'
+      fullPath: '/docs/it/gdpr-revisione-codice-ai'
+      preLoaderRoute: typeof DocsItGdprRevisioneCodiceAiRouteImport
+      parentRoute: typeof DocsRoute
+    }
+    '/docs/it/eu-ai-act-analisi-codice': {
+      id: '/docs/it/eu-ai-act-analisi-codice'
+      path: '/it/eu-ai-act-analisi-codice'
+      fullPath: '/docs/it/eu-ai-act-analisi-codice'
+      preLoaderRoute: typeof DocsItEuAiActAnalisiCodiceRouteImport
+      parentRoute: typeof DocsRoute
+    }
+    '/docs/it/ai-privacy-first-europa': {
+      id: '/docs/it/ai-privacy-first-europa'
+      path: '/it/ai-privacy-first-europa'
+      fullPath: '/docs/it/ai-privacy-first-europa'
+      preLoaderRoute: typeof DocsItAiPrivacyFirstEuropaRouteImport
+      parentRoute: typeof DocsRoute
+    }
     '/_authenticated/projects/$projectId': {
       id: '/_authenticated/projects/$projectId'
       path: '/projects/$projectId'
@@ -705,6 +824,12 @@ interface DocsRouteChildren {
   DocsHowToReviewAiCodeRoute: typeof DocsHowToReviewAiCodeRoute
   DocsOpenSourceAiCodeReviewRoute: typeof DocsOpenSourceAiCodeReviewRoute
   DocsPrivacyFirstAiEuropeRoute: typeof DocsPrivacyFirstAiEuropeRoute
+  DocsItAiPrivacyFirstEuropaRoute: typeof DocsItAiPrivacyFirstEuropaRoute
+  DocsItEuAiActAnalisiCodiceRoute: typeof DocsItEuAiActAnalisiCodiceRoute
+  DocsItGdprRevisioneCodiceAiRoute: typeof DocsItGdprRevisioneCodiceAiRoute
+  DocsZhEuAiActCodeAnalysisRoute: typeof DocsZhEuAiActCodeAnalysisRoute
+  DocsZhGdprAiCodeReviewRoute: typeof DocsZhGdprAiCodeReviewRoute
+  DocsZhPrivacyFirstAiEuropeRoute: typeof DocsZhPrivacyFirstAiEuropeRoute
 }
 
 const DocsRouteChildren: DocsRouteChildren = {
@@ -716,6 +841,12 @@ const DocsRouteChildren: DocsRouteChildren = {
   DocsHowToReviewAiCodeRoute: DocsHowToReviewAiCodeRoute,
   DocsOpenSourceAiCodeReviewRoute: DocsOpenSourceAiCodeReviewRoute,
   DocsPrivacyFirstAiEuropeRoute: DocsPrivacyFirstAiEuropeRoute,
+  DocsItAiPrivacyFirstEuropaRoute: DocsItAiPrivacyFirstEuropaRoute,
+  DocsItEuAiActAnalisiCodiceRoute: DocsItEuAiActAnalisiCodiceRoute,
+  DocsItGdprRevisioneCodiceAiRoute: DocsItGdprRevisioneCodiceAiRoute,
+  DocsZhEuAiActCodeAnalysisRoute: DocsZhEuAiActCodeAnalysisRoute,
+  DocsZhGdprAiCodeReviewRoute: DocsZhGdprAiCodeReviewRoute,
+  DocsZhPrivacyFirstAiEuropeRoute: DocsZhPrivacyFirstAiEuropeRoute,
 }
 
 const DocsRouteWithChildren = DocsRoute._addFileChildren(DocsRouteChildren)
