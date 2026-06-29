@@ -5,41 +5,38 @@ import {
   ArrowRight,
   Github,
   ShieldCheck,
-  Sparkles,
-  Zap,
-  Users,
-  Bot,
-  GitPullRequest,
-  Eye,
-  GitFork,
-  MessageSquare,
-  Languages,
-  Scale,
-  HeartHandshake,
   Menu,
   Download,
-  Monitor,
-  Smartphone,
-  Apple,
   FileCode2,
   FileArchive,
   Link2,
+  Bug,
+  Sparkles,
+  MessageSquare,
+  ChevronRight,
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 import { LangSwitcher } from "@/components/LangSwitcher";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { Logo } from "@/components/Logo";
 import { PublicHeaderAuthSlot } from "@/components/PublicHeaderAuthSlot";
 import { usePwaInstall } from "@/hooks/use-pwa-install";
-import {
-  GuardrailDiagram,
-  CommunityCard,
-  Step,
-  WhyNowCard,
-  Value,
-} from "@/components/landing/landing-bits";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -48,7 +45,7 @@ export const Route = createFileRoute("/")({
       {
         name: "description",
         content:
-          "Open-source AI code analysis. Audit AI-generated code from Copilot, Cursor and Claude with BYOK cloud or local models, plus static and malware checks.",
+          "Open-source AI code analysis. Audit AI-generated code from Copilot, Cursor and Claude with BYOK cloud or local models, plus free static and malware checks.",
       },
       { property: "og:title", content: "Decoder — AI code analysis & AI-generated code review" },
       {
@@ -72,19 +69,6 @@ export const Route = createFileRoute("/")({
           operatingSystem: "Web, Linux, macOS, Windows",
           url: "https://decoderead.dev",
           license: "https://opensource.org/licenses/MIT",
-          keywords:
-            "AI code analysis, AI code review, AI-generated code, static code analysis, malware analysis, AI code chat",
-          featureList: [
-            "Single-file upload across 20+ programming languages",
-            "ZIP archive and public GitHub repository import",
-            "AI code analysis with BYOK (OpenAI, Anthropic, Gemini, OpenRouter)",
-            "Local AI via Ollama and LM Studio",
-            "Static code analysis without an API key",
-            "Static malware / supply-chain scan without an API key",
-            "AI chat with your repository",
-            "Persistent analysis history per repository",
-            "Community contributors page",
-          ],
           offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
         }),
       },
@@ -99,7 +83,7 @@ export const Route = createFileRoute("/")({
               name: "Can I upload just one file?",
               acceptedAnswer: {
                 "@type": "Answer",
-                text: "Yes. Decoder accepts a single source file (.js, .ts, .py, .java, .go, .rs, .sql and 20+ more), a ZIP archive of a folder, or a public GitHub repository URL. No setup is required.",
+                text: "Yes. Decoder accepts a single source file (.js, .ts, .py, .java, .go, .rs, .sql and 20+ more), a ZIP archive of a folder, or a public GitHub/GitLab URL. All three options behave the same way — no setup required.",
               },
             },
             {
@@ -107,7 +91,7 @@ export const Route = createFileRoute("/")({
               name: "Do I need an API key to use Decoder?",
               acceptedAnswer: {
                 "@type": "Answer",
-                text: "No. Static code analysis and malware scanning run fully offline on the server without any API key. You only need a BYOK key (OpenAI, Anthropic, Gemini, OpenRouter) or a local Ollama / LM Studio endpoint if you want LLM-assisted explanations and chat.",
+                text: "No. Static code analysis and malware scanning run fully offline with no API key. A BYOK cloud key (OpenAI, Anthropic, Gemini, OpenRouter) or a local Ollama / LM Studio endpoint is only needed for LLM-assisted explanations and chat.",
               },
             },
             {
@@ -115,7 +99,7 @@ export const Route = createFileRoute("/")({
               name: "Can I chat with my code?",
               acceptedAnswer: {
                 "@type": "Answer",
-                text: "Yes. Decoder includes folder- and file-scoped AI chat. Open a repository, pick a folder or file, then open the Chat tab. Chats are persisted per repository so you can resume them later.",
+                text: "Yes. Open a repository, pick a folder or file, then open the Chat tab. Conversations are persisted per repository so you can resume them later.",
               },
             },
             {
@@ -123,7 +107,7 @@ export const Route = createFileRoute("/")({
               name: "Are my analyses saved across sessions?",
               acceptedAnswer: {
                 "@type": "Answer",
-                text: "Yes. Every explanation, quality / security / AI-origin analysis, static scan and chat turn is persisted in your account history and is recoverable from the History page or the per-repository timeline.",
+                text: "Yes. Every explanation, quality / security / AI-origin analysis, static scan and chat turn is persisted in your account history and is recoverable from the History page.",
               },
             },
             {
@@ -131,7 +115,7 @@ export const Route = createFileRoute("/")({
               name: "Which languages does the static analysis support?",
               acceptedAnswer: {
                 "@type": "Answer",
-                text: "Decoder's static analysis covers 20+ languages including JavaScript, TypeScript, Python, Java, Rust, Go, C/C++, C#, Ruby, PHP, Kotlin, Swift, SQL and more.",
+                text: "20+ languages including JavaScript, TypeScript, Python, Java, Rust, Go, C/C++, C#, Ruby, PHP, Kotlin, Swift and SQL.",
               },
             },
           ],
@@ -141,6 +125,45 @@ export const Route = createFileRoute("/")({
   }),
   component: Landing,
 });
+
+type Capability = {
+  key: "static" | "malware" | "aiExplain" | "chat";
+  icon: React.ReactNode;
+  href?: string;
+};
+
+function CapabilityCard({ cap }: { cap: Capability }) {
+  const { t } = useTranslation();
+  const base = `landing.capabilities.${cap.key}`;
+  return (
+    <Dialog>
+      <DialogTrigger asChild>
+        <button
+          type="button"
+          className="group flex h-full min-h-[148px] w-full flex-col items-start gap-3 border border-border bg-card p-5 text-left transition-colors hover:border-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+        >
+          <span className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-border text-primary">
+            {cap.icon}
+          </span>
+          <h3 className="font-display text-base font-medium">{t(`${base}.title`)}</h3>
+          <p className="text-sm text-muted-foreground">{t(`${base}.short`)}</p>
+          <span className="mt-auto inline-flex items-center gap-1 text-xs text-primary opacity-80 group-hover:opacity-100">
+            {t("landing.capabilities.moreLink")}
+            <ChevronRight className="h-3 w-3" />
+          </span>
+        </button>
+      </DialogTrigger>
+      <DialogContent className="max-h-[85vh] overflow-y-auto sm:max-w-md">
+        <DialogHeader>
+          <DialogTitle className="font-display">{t(`${base}.title`)}</DialogTitle>
+          <DialogDescription className="pt-2 text-sm leading-relaxed text-muted-foreground">
+            {t(`${base}.long`)}
+          </DialogDescription>
+        </DialogHeader>
+      </DialogContent>
+    </Dialog>
+  );
+}
 
 function Landing() {
   const { t } = useTranslation();
@@ -152,16 +175,40 @@ function Landing() {
       await promptInstall();
       return;
     }
-    document.getElementById("install")?.scrollIntoView({ behavior: "smooth", block: "start" });
+    window.location.href = "/install";
   };
   const showInstallBtn = !installed;
 
   const nav = [
-    { label: t("landing.nav.howItWorks"), href: "#how-it-works" },
-    { label: t("landing.nav.integrations"), href: "#integrations" },
+    { label: t("landing.nav.docs"), to: "/docs" as const },
     { label: t("landing.nav.openSource"), to: "/open-source" as const },
     { label: t("landing.nav.manifesto"), to: "/manifesto" as const },
-    { label: t("landing.nav.docs"), to: "/docs" as const },
+    { label: t("landing.learnMore.install"), to: "/install" as const },
+  ];
+
+  const capabilities: Capability[] = [
+    { key: "static", icon: <ShieldCheck className="h-5 w-5" /> },
+    { key: "malware", icon: <Bug className="h-5 w-5" /> },
+    { key: "aiExplain", icon: <Sparkles className="h-5 w-5" /> },
+    { key: "chat", icon: <MessageSquare className="h-5 w-5" /> },
+  ];
+
+  const inputs = [
+    {
+      icon: <FileCode2 className="h-5 w-5" />,
+      title: t("landing.inputs.fileTitle"),
+      body: t("landing.inputs.fileBody"),
+    },
+    {
+      icon: <FileArchive className="h-5 w-5" />,
+      title: t("landing.inputs.zipTitle"),
+      body: t("landing.inputs.zipBody"),
+    },
+    {
+      icon: <Link2 className="h-5 w-5" />,
+      title: t("landing.inputs.urlTitle"),
+      body: t("landing.inputs.urlBody"),
+    },
   ];
 
   return (
@@ -171,7 +218,8 @@ function Landing() {
         className="sticky top-0 z-30 border-b border-border/60 bg-background sm:bg-background/80 sm:backdrop-blur"
         style={{ paddingTop: "env(safe-area-inset-top)" }}
       >
-        <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-2 px-4 sm:px-6"
+        <div
+          className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-2 px-4 sm:px-6"
           style={{
             paddingLeft: "max(1rem, env(safe-area-inset-left))",
             paddingRight: "max(1rem, env(safe-area-inset-right))",
@@ -181,17 +229,11 @@ function Landing() {
             <Logo />
           </Link>
           <nav className="hidden items-center gap-7 text-sm text-muted-foreground md:flex">
-            {nav.map((item) =>
-              "to" in item && item.to ? (
-                <Link key={item.label} to={item.to} className="hover:text-foreground">
-                  {item.label}
-                </Link>
-              ) : (
-                <a key={item.label} href={item.href} className="hover:text-foreground">
-                  {item.label}
-                </a>
-              ),
-            )}
+            {nav.map((item) => (
+              <Link key={item.label} to={item.to} className="hover:text-foreground">
+                {item.label}
+              </Link>
+            ))}
           </nav>
           <div className="flex items-center gap-1">
             <LangSwitcher />
@@ -204,7 +246,7 @@ function Landing() {
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="md:hidden h-10 w-10"
+                  className="h-10 w-10 md:hidden"
                   aria-label="Open menu"
                 >
                   <Menu className="h-5 w-5" />
@@ -215,27 +257,23 @@ function Landing() {
                   <SheetTitle>{t("brand.name")}</SheetTitle>
                 </SheetHeader>
                 <nav className="mt-6 flex flex-col gap-1 text-base">
-                  {nav.map((item) =>
-                    "to" in item && item.to ? (
-                      <Link
-                        key={item.label}
-                        to={item.to}
-                        onClick={() => setMenuOpen(false)}
-                        className="rounded-md px-3 py-3 hover:bg-accent"
-                      >
-                        {item.label}
-                      </Link>
-                    ) : (
-                      <a
-                        key={item.label}
-                        href={item.href}
-                        onClick={() => setMenuOpen(false)}
-                        className="rounded-md px-3 py-3 hover:bg-accent"
-                      >
-                        {item.label}
-                      </a>
-                    ),
-                  )}
+                  {nav.map((item) => (
+                    <Link
+                      key={item.label}
+                      to={item.to}
+                      onClick={() => setMenuOpen(false)}
+                      className="rounded-md px-3 py-3 hover:bg-accent"
+                    >
+                      {item.label}
+                    </Link>
+                  ))}
+                  <Link
+                    to="/contributors"
+                    onClick={() => setMenuOpen(false)}
+                    className="rounded-md px-3 py-3 hover:bg-accent"
+                  >
+                    {t("landing.learnMore.contributors")}
+                  </Link>
                   <a
                     href={t("common.repoUrl")}
                     target="_blank"
@@ -263,136 +301,63 @@ function Landing() {
         </div>
       </header>
 
-      {/* Hero — editorial */}
+      {/* 1. Hero */}
       <section className="relative">
-        <div className="mx-auto grid max-w-6xl grid-cols-1 gap-10 px-4 py-12 sm:px-6 md:grid-cols-12 md:gap-16 md:py-28">
-          <div className="md:col-span-7 space-y-8 min-w-0">
-            <div className="flex flex-wrap gap-6 text-[10px] uppercase tracking-[0.2em] text-muted-foreground font-mono">
-              <span className="border-b border-border pb-1">Case Study 01</span>
-              <span className="border-b border-border pb-1">{t("landing.heroBadgeOpen")}</span>
-              <span className="border-b border-border pb-1">{t("landing.heroBadgePrivacy")}</span>
-            </div>
-
-            <h1 className="font-display text-4xl font-medium leading-[1.05] tracking-tight text-foreground sm:text-5xl md:text-7xl">
-              <Trans
-                i18nKey="landing.hero"
-                components={{
-                  1: <span className="italic" />,
-                  2: <span className="italic" />,
-                }}
-              />
-            </h1>
-
-            <p className="max-w-xl text-lg font-light leading-relaxed text-muted-foreground">
-              {t("landing.heroSubtitle")}
-            </p>
-
-            <div className="flex flex-wrap items-center gap-4 pt-2 sm:gap-6">
-              <Button asChild size="lg" className="rounded-none px-6 w-full sm:w-auto">
-                <Link to="/auth">
-                  {t("landing.ctaStart")}
-                  <ArrowRight className="ml-2 h-4 w-4" />
-                </Link>
-              </Button>
-              {showInstallBtn && (
-                <Button
-                  type="button"
-                  onClick={handleInstall}
-                  size="lg"
-                  variant="outline"
-                  className="rounded-none px-6 w-full sm:w-auto"
-                >
-                  <Download className="mr-2 h-4 w-4" />
-                  {t("landing.install.ctaInstall")}
-                </Button>
-              )}
-              <a
-                href={t("common.repoUrl")}
-                target="_blank"
-                rel="noreferrer"
-                className="inline-flex items-center gap-2 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
-              >
-                <Github className="h-5 w-5" />
-                {t("landing.ctaGithub")}
-              </a>
-            </div>
-
-            <div className="pt-8 md:pt-10">
-              <p className="mb-4 font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground/70">
-                {t("landing.providersStrip")}
-              </p>
-              <div className="flex flex-wrap gap-x-5 gap-y-2 font-mono text-[11px] tracking-tight text-muted-foreground sm:gap-x-8 sm:text-xs">
-                <span>01. OPENAI</span>
-                <span>02. ANTHROPIC</span>
-                <span>03. GOOGLE</span>
-                <span>04. OPENROUTER</span>
-                <span>05. OLLAMA</span>
-              </div>
-            </div>
+        <div className="mx-auto max-w-5xl px-4 py-12 sm:px-6 sm:py-20 md:py-24">
+          <div className="flex flex-wrap gap-x-6 gap-y-2 font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
+            <span className="border-b border-border pb-1">{t("landing.heroBadgeOpen")}</span>
+            <span className="border-b border-border pb-1">{t("landing.heroBadgePrivacy")}</span>
           </div>
 
-          <div className="md:col-span-5 flex justify-center min-w-0">
-            <div className="relative mx-auto w-full max-w-[min(384px,100%)] aspect-square border border-border bg-card p-6 sm:p-8 flex flex-col items-center justify-center md:max-w-none">
-              <span className="absolute left-0 top-0 h-2 w-2 border-l border-t border-border" />
-              <span className="absolute right-0 top-0 h-2 w-2 border-r border-t border-border" />
-              <span className="absolute bottom-0 left-0 h-2 w-2 border-b border-l border-border" />
-              <span className="absolute bottom-0 right-0 h-2 w-2 border-b border-r border-border" />
+          <h1 className="mt-6 font-display text-3xl font-medium leading-[1.1] tracking-tight text-foreground sm:text-5xl md:text-6xl">
+            <Trans
+              i18nKey="landing.hero"
+              components={{
+                1: <span className="italic" />,
+                2: <span className="italic" />,
+              }}
+            />
+          </h1>
 
-              <div className="w-full space-y-6 opacity-90">
-                <div className="flex items-center justify-between gap-4">
-                  <div className="h-px flex-1 bg-border" />
-                  <div className="border border-border px-3 py-1 font-mono text-[10px] text-muted-foreground">
-                    RAW_INPUT
-                  </div>
-                  <div className="h-px flex-1 bg-border" />
-                </div>
+          <p className="mt-5 max-w-2xl text-base font-light leading-relaxed text-muted-foreground sm:text-lg">
+            {t("landing.heroSubtitle")}
+          </p>
 
-                <div className="relative border border-border p-6">
-                  <div className="space-y-3">
-                    <div className="h-1.5 w-full bg-muted" />
-                    <div className="h-1.5 w-3/4 bg-muted" />
-                    <div className="h-1.5 w-5/6 bg-muted/60" />
-                    <div className="h-1.5 w-1/2 bg-muted" />
-                  </div>
-                </div>
-
-                <div className="flex justify-center">
-                  <div className="relative h-12 w-px bg-border">
-                    <span className="absolute -left-1 bottom-0 h-2 w-2 rotate-45 border-b border-r border-border" />
-                  </div>
-                </div>
-
-                <div className="border border-border bg-background/40 p-6">
-                  <div className="mb-4 flex justify-between">
-                    <span className="h-2 w-2 rounded-full bg-muted-foreground/60" />
-                    <span className="font-mono text-[9px] text-muted-foreground">
-                      PARSED_SCHEMA.V1
-                    </span>
-                  </div>
-                  <div className="space-y-2">
-                    <div className="flex gap-2">
-                      <div className="h-1 w-4 bg-muted-foreground/60" />
-                      <div className="h-1 w-full bg-muted" />
-                    </div>
-                    <div className="flex gap-2">
-                      <div className="h-1 w-4 bg-muted-foreground/60" />
-                      <div className="h-1 w-2/3 bg-muted" />
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div className="absolute bottom-4 font-mono text-[9px] uppercase tracking-[0.2em] text-muted-foreground/60">
-                Analysis · Logic Visualization
-              </div>
-            </div>
+          <div className="mt-7 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center sm:gap-4">
+            <Button asChild size="lg" className="rounded-none px-6">
+              <Link to="/auth">
+                {t("landing.ctaStart")}
+                <ArrowRight className="ml-2 h-4 w-4" />
+              </Link>
+            </Button>
+            {showInstallBtn && (
+              <Button
+                type="button"
+                onClick={handleInstall}
+                size="lg"
+                variant="outline"
+                className="rounded-none px-6"
+              >
+                <Download className="mr-2 h-4 w-4" />
+                {t("landing.install.ctaInstall")}
+              </Button>
+            )}
+            <a
+              href={t("common.repoUrl")}
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex items-center gap-2 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
+            >
+              <Github className="h-5 w-5" />
+              {t("landing.ctaGithub")}
+            </a>
           </div>
         </div>
       </section>
 
-      {/* Inputs strip — what you can drop in */}
-      <section id="inputs" className="border-t border-border bg-background">
-        <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 md:py-16">
+      {/* 2. Inputs */}
+      <section id="inputs" className="border-t border-border bg-card/30">
+        <div className="mx-auto max-w-5xl px-4 py-12 sm:px-6 sm:py-16">
           <div className="max-w-2xl">
             <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-primary">
               {t("landing.inputs.kicker")}
@@ -405,23 +370,7 @@ function Landing() {
             </p>
           </div>
           <ul className="mt-8 grid gap-4 sm:grid-cols-3">
-            {[
-              {
-                icon: <FileCode2 className="h-5 w-5" />,
-                title: t("landing.inputs.fileTitle"),
-                body: t("landing.inputs.fileBody"),
-              },
-              {
-                icon: <FileArchive className="h-5 w-5" />,
-                title: t("landing.inputs.zipTitle"),
-                body: t("landing.inputs.zipBody"),
-              },
-              {
-                icon: <Link2 className="h-5 w-5" />,
-                title: t("landing.inputs.urlTitle"),
-                body: t("landing.inputs.urlBody"),
-              },
-            ].map((item, i) => (
+            {inputs.map((item, i) => (
               <li
                 key={item.title}
                 className="flex flex-col gap-3 border border-border bg-card p-5"
@@ -439,379 +388,117 @@ function Landing() {
               </li>
             ))}
           </ul>
-          <p className="mt-6 text-xs text-muted-foreground/80 sm:text-sm">
-            {t("landing.inputs.languagesNote")}
-          </p>
-          <p className="mt-3 rounded-md border border-border bg-card/60 p-4 text-sm text-muted-foreground">
+          <p className="mt-6 rounded-md border border-border bg-background/60 p-4 text-sm text-muted-foreground">
             {t("landing.inputs.pricingNote")}
           </p>
-
         </div>
       </section>
 
-      {/* Install as app band */}
-      <section id="install" className="border-y border-border bg-card/40">
-        <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 md:py-14">
-          <div className="grid gap-8 md:grid-cols-12 md:items-start md:gap-12">
-            <div className="md:col-span-5">
-              <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-primary">
-                {t("landing.install.kicker")}
-              </p>
-              <h2 className="mt-3 font-display text-2xl font-medium leading-tight tracking-tight sm:text-3xl md:text-4xl">
-                {t("landing.install.title")}
-              </h2>
-              <p className="mt-4 max-w-md text-sm text-muted-foreground">
-                {t("landing.install.body")}
-              </p>
-              {showInstallBtn ? (
-                <Button
-                  type="button"
-                  onClick={handleInstall}
-                  size="lg"
-                  className="mt-6 rounded-none px-6 w-full sm:w-auto"
-                >
-                  <Download className="mr-2 h-4 w-4" />
-                  {t("landing.install.ctaInstall")}
-                </Button>
-              ) : (
-                <span className="mt-6 inline-flex items-center gap-2 border border-border px-3 py-2 font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
-                  <Download className="h-3 w-3" />
-                  {t("landing.install.installedBadge")}
-                </span>
-              )}
-            </div>
-
-            <ul className="grid gap-4 md:col-span-7 sm:grid-cols-3">
-              {[
-                {
-                  icon: <Monitor className="h-5 w-5" />,
-                  title: t("landing.install.desktopTitle"),
-                  body: t("landing.install.desktopBody"),
-                },
-                {
-                  icon: <Apple className="h-5 w-5" />,
-                  title: t("landing.install.iosTitle"),
-                  body: t("landing.install.iosBody"),
-                },
-                {
-                  icon: <Smartphone className="h-5 w-5" />,
-                  title: t("landing.install.androidTitle"),
-                  body: t("landing.install.androidBody"),
-                },
-              ].map((step, i) => (
-                <li
-                  key={step.title}
-                  className="border border-border bg-background p-5"
-                >
-                  <div className="flex items-center justify-between">
-                    <span className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-border text-primary">
-                      {step.icon}
-                    </span>
-                    <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground/70">
-                      0{i + 1}
-                    </span>
-                  </div>
-                  <h3 className="mt-4 font-display text-lg font-medium">{step.title}</h3>
-                  <p className="mt-2 text-sm text-muted-foreground">{step.body}</p>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </div>
-      </section>
-
-      {/* Open-source strip — guardrail framing */}
-      <section className="border-y border-border bg-background">
-        <div className="mx-auto grid max-w-7xl items-center gap-6 px-4 py-10 sm:px-6 md:grid-cols-12">
-          <div className="md:col-span-7">
+      {/* 3. Capabilities — 4 tiles with detail dialogs */}
+      <section className="border-t border-border bg-background">
+        <div className="mx-auto max-w-5xl px-4 py-12 sm:px-6 sm:py-16">
+          <div className="max-w-2xl">
             <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-primary">
-              {t("landing.osStrip.kicker")}
+              {t("landing.capabilities.kicker")}
             </p>
-            <h2 className="mt-2 font-display text-2xl font-medium tracking-tight md:text-3xl">
-              {t("landing.osStrip.title")}
+            <h2 className="mt-2 font-display text-2xl font-medium tracking-tight sm:text-3xl md:text-4xl">
+              {t("landing.capabilities.title")}
             </h2>
-            <p className="mt-2 max-w-2xl text-sm text-muted-foreground">
-              {t("landing.osStrip.body")}
+            <p className="mt-3 text-sm text-muted-foreground sm:text-base">
+              {t("landing.capabilities.body")}
             </p>
           </div>
-          <div className="flex flex-wrap items-center gap-3 md:col-span-5 md:justify-end">
+          <div className="mt-8 grid grid-cols-2 gap-3 lg:grid-cols-4">
+            {capabilities.map((cap) => (
+              <CapabilityCard key={cap.key} cap={cap} />
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* 4. Trust / open source — compact strip */}
+      <section className="border-t border-border bg-card/40">
+        <div className="mx-auto flex max-w-5xl flex-col gap-5 px-4 py-8 sm:flex-row sm:items-center sm:justify-between sm:px-6 sm:py-10">
+          <p className="text-sm text-muted-foreground">
+            <span className="font-medium text-foreground">MIT · BYOK · Local-friendly.</span>{" "}
+            {t("landing.osStrip.body")}
+          </p>
+          <div className="flex flex-wrap gap-2">
             <Button asChild size="sm" variant="outline" className="rounded-none">
               <a href={t("common.repoUrl")} target="_blank" rel="noreferrer">
                 <Github className="mr-2 h-4 w-4" />
                 {t("landing.osStrip.ctaRepo")}
               </a>
             </Button>
-            <Button asChild size="sm" className="rounded-none">
-              <Link to="/open-source">
-                <GitFork className="mr-2 h-4 w-4" />
-                {t("landing.osStrip.ctaContribute")}
-              </Link>
+            <Button asChild size="sm" variant="ghost" className="rounded-none">
+              <Link to="/privacy">{t("landing.valuePrivacy")}</Link>
             </Button>
           </div>
-          <div className="md:col-span-12">
-            <div className="flex flex-wrap gap-x-6 gap-y-2 font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
-              <span className="inline-flex items-center gap-1.5">
-                <Scale className="h-3 w-3" />
-                {t("landing.osStrip.license")}
-              </span>
-              <span className="inline-flex items-center gap-1.5">
-                <HeartHandshake className="h-3 w-3" />
-                {t("landing.osStrip.noProfit")}
-              </span>
-              <span className="inline-flex items-center gap-1.5">
-                <Users className="h-3 w-3" />
-                {t("landing.osStrip.communityOwned")}
-              </span>
-            </div>
-          </div>
         </div>
       </section>
 
-      {/* Guardrail mission */}
-      <section className="border-b border-border/60 bg-card/40">
-        <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 md:py-20">
-          <div className="grid gap-12 md:grid-cols-12">
-            <div className="md:col-span-5">
-              <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-primary">
-                {t("landing.guardrail.kicker")}
-              </p>
-              <h2 className="mt-3 font-display text-3xl font-medium leading-tight tracking-tight sm:text-4xl md:text-5xl">
-                {t("landing.guardrail.title")}
-              </h2>
-              <p className="mt-5 text-muted-foreground">{t("landing.guardrail.intro")}</p>
-              <div className="mt-8">
-                <GuardrailDiagram t={t} />
-              </div>
-            </div>
-
-            <ol className="space-y-6 md:col-span-7">
-              {[
-                {
-                  icon: <ShieldCheck className="h-5 w-5" />,
-                  title: t("landing.guardrail.point1Title"),
-                  body: t("landing.guardrail.point1Body"),
-                },
-                {
-                  icon: <Users className="h-5 w-5" />,
-                  title: t("landing.guardrail.point2Title"),
-                  body: t("landing.guardrail.point2Body"),
-                },
-                {
-                  icon: <GitPullRequest className="h-5 w-5" />,
-                  title: t("landing.guardrail.point3Title"),
-                  body: t("landing.guardrail.point3Body"),
-                },
-              ].map((p, i) => (
-                <li
-                  key={p.title}
-                  className="flex gap-5 border-l-2 border-border pl-6 transition-colors hover:border-primary"
-                >
-                  <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground/70">
-                    0{i + 1}
-                  </span>
-                  <div className="flex-1">
-                    <div className="mb-2 inline-flex h-9 w-9 items-center justify-center rounded-full border border-border bg-background text-primary">
-                      {p.icon}
-                    </div>
-                    <h3 className="font-display text-xl font-medium">{p.title}</h3>
-                    <p className="mt-2 text-sm text-muted-foreground">{p.body}</p>
-                  </div>
-                </li>
-              ))}
-            </ol>
-          </div>
-        </div>
-      </section>
-
-      {/* Why now — AI-generated code era */}
-      <section className="border-y border-border/60 bg-card/40">
-        <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 md:py-16">
-          <div className="max-w-2xl">
-            <p className="text-xs font-semibold uppercase tracking-wide text-primary">
-              {t("landing.whyNowKicker")}
-            </p>
-            <h2 className="mt-2 font-display text-3xl font-medium tracking-tight sm:text-4xl md:text-5xl">
-              {t("landing.whyNowTitle")}
-            </h2>
-            <p className="mt-3 text-muted-foreground">{t("landing.whyNowIntro")}</p>
-          </div>
-          <div className="mt-10 grid gap-6 md:grid-cols-3">
-            <WhyNowCard
-              icon={<Bot className="h-5 w-5" />}
-              title={t("landing.whyNow1Title")}
-              body={t("landing.whyNow1Body")}
-            />
-            <WhyNowCard
-              icon={<GitPullRequest className="h-5 w-5" />}
-              title={t("landing.whyNow2Title")}
-              body={t("landing.whyNow2Body")}
-            />
-            <WhyNowCard
-              icon={<Eye className="h-5 w-5" />}
-              title={t("landing.whyNow3Title")}
-              body={t("landing.whyNow3Body")}
-            />
-          </div>
-        </div>
-      </section>
-
-      {/* How it works */}
-      <section id="how-it-works" className="border-t border-border/60 bg-card/40">
-        <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 md:py-16">
-          <h2 className="font-display text-3xl font-medium tracking-tight sm:text-4xl">
-            {t("landing.howTitle")}
-          </h2>
-          <p className="mt-2 max-w-2xl text-muted-foreground">{t("landing.howIntro")}</p>
-          <ol className="mt-10 grid gap-6 md:grid-cols-3">
-            <Step n={1} title={t("landing.step1Title")} body={t("landing.step1Body")} />
-            <Step n={2} title={t("landing.step2Title")} body={t("landing.step2Body")} />
-            <Step n={3} title={t("landing.step3Title")} body={t("landing.step3Body")} />
-          </ol>
-        </div>
-      </section>
-
-      {/* Integrations */}
-      <section id="integrations" className="mx-auto max-w-7xl px-4 py-12 sm:px-6 md:py-16">
-        <h2 className="font-display text-3xl font-medium tracking-tight sm:text-4xl">
-          {t("landing.integrationsTitle")}
-        </h2>
-        <p className="mt-2 max-w-2xl text-muted-foreground">{t("landing.integrationsBody")}</p>
-        <div className="mt-8 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
-          {[
-            "OpenAI",
-            "Anthropic",
-            "Google Gemini",
-            "OpenRouter",
-            "Ollama",
-            "LM Studio",
-            "GitHub",
-          ].map((p) => (
-            <div
-              key={p}
-              className="rounded-lg border border-border bg-card px-4 py-6 text-center text-sm text-card-foreground"
-            >
-              {p}
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* Values strip */}
-      <section className="border-t border-border/60 bg-card/40">
-        <div className="mx-auto grid max-w-7xl grid-cols-2 gap-6 px-4 py-10 sm:px-6 md:grid-cols-4 md:py-12">
-          <Value
-            icon={<Sparkles className="h-5 w-5" />}
-            title={t("landing.value100Open")}
-            body={t("landing.valueOpenSource")}
-          />
-          <Value
-            icon={<ShieldCheck className="h-5 w-5" />}
-            title={t("landing.valuePrivacy")}
-            body={t("landing.valuePrivacyBody")}
-          />
-          <Value
-            icon={<Zap className="h-5 w-5" />}
-            title={t("landing.valueNoLockin")}
-            body={t("landing.valueNoLockinBody")}
-          />
-          <Value
-            icon={<Users className="h-5 w-5" />}
-            title={t("landing.valueForAll")}
-            body={t("landing.valueForAllBody")}
-          />
-        </div>
-      </section>
-
-      {/* Community CTA */}
+      {/* 5. FAQ */}
       <section className="border-t border-border bg-background">
-        <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 md:py-20">
+        <div className="mx-auto max-w-3xl px-4 py-12 sm:px-6 sm:py-16">
+          <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-primary">
+            {t("landing.faq.kicker")}
+          </p>
+          <h2 className="mt-2 font-display text-2xl font-medium tracking-tight sm:text-3xl">
+            {t("landing.faq.title")}
+          </h2>
+          <Accordion type="single" collapsible className="mt-6">
+            {["q1", "q2", "q3", "q4", "q5"].map((k) => (
+              <AccordionItem key={k} value={k}>
+                <AccordionTrigger className="text-left text-base font-medium">
+                  {t(`landing.faq.${k}.q`)}
+                </AccordionTrigger>
+                <AccordionContent className="text-sm leading-relaxed text-muted-foreground">
+                  {t(`landing.faq.${k}.a`)}
+                </AccordionContent>
+              </AccordionItem>
+            ))}
+          </Accordion>
+        </div>
+      </section>
+
+      {/* 6. Learn more — links out */}
+      <section className="border-t border-border bg-card/30">
+        <div className="mx-auto max-w-5xl px-4 py-10 sm:px-6 sm:py-12">
           <div className="max-w-2xl">
             <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-primary">
-              {t("landing.community.kicker")}
+              {t("landing.learnMore.kicker")}
             </p>
-            <h2 className="mt-2 font-display text-3xl font-medium tracking-tight sm:text-4xl md:text-5xl">
-              {t("landing.community.title")}
+            <h2 className="mt-2 font-display text-xl font-medium tracking-tight sm:text-2xl">
+              {t("landing.learnMore.title")}
             </h2>
-            <p className="mt-3 text-muted-foreground">{t("landing.community.body")}</p>
+            <p className="mt-2 text-sm text-muted-foreground">
+              {t("landing.learnMore.body")}
+            </p>
           </div>
-          <div className="mt-10 grid gap-5 md:grid-cols-3">
-            <CommunityCard
-              icon={<MessageSquare className="h-5 w-5" />}
-              title={t("landing.community.cta1Title")}
-              body={t("landing.community.cta1Body")}
-              link={t("landing.community.cta1Link")}
-              href={`${t("common.repoUrl")}/issues`}
-            />
-            <CommunityCard
-              icon={<GitPullRequest className="h-5 w-5" />}
-              title={t("landing.community.cta2Title")}
-              body={t("landing.community.cta2Body")}
-              link={t("landing.community.cta2Link")}
-              href={`${t("common.repoUrl")}/blob/main/src/lib/analysis-prompt.ts`}
-            />
-            <CommunityCard
-              icon={<Languages className="h-5 w-5" />}
-              title={t("landing.community.cta3Title")}
-              body={t("landing.community.cta3Body")}
-              link={t("landing.community.cta3Link")}
-              href={`${t("common.repoUrl")}/tree/main/src/i18n/locales`}
-            />
-          </div>
-        </div>
-      </section>
-
-      {/* FAQ */}
-      <section className="border-t border-border bg-card/30">
-        <div className="mx-auto max-w-4xl px-4 py-12 sm:px-6 md:py-20">
-          <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-primary">FAQ</p>
-          <h2 className="mt-2 font-display text-3xl font-medium tracking-tight sm:text-4xl">
-            Frequently asked questions
-          </h2>
-          <div className="mt-8 space-y-6">
-            <div>
-              <h3 className="text-base font-semibold">Can I upload just one file?</h3>
-              <p className="mt-2 text-sm text-muted-foreground">
-                Yes. Decoder accepts a single source file (<code>.js</code>, <code>.ts</code>, <code>.py</code>,{" "}
-                <code>.java</code>, <code>.go</code>, <code>.rs</code>, <code>.sql</code> and 20+ more), a ZIP archive
-                of a folder, or a public GitHub repository URL. No setup is required.
-              </p>
-            </div>
-            <div>
-              <h3 className="text-base font-semibold">Do I need an API key to use Decoder?</h3>
-              <p className="mt-2 text-sm text-muted-foreground">
-                No. Static code analysis and malware scanning run fully offline on the server with no API key. A BYOK
-                cloud key (OpenAI, Anthropic, Gemini, OpenRouter) or a local Ollama / LM Studio endpoint is only needed
-                for LLM-assisted explanations and chat.
-              </p>
-            </div>
-            <div>
-              <h3 className="text-base font-semibold">Can I chat with my code?</h3>
-              <p className="mt-2 text-sm text-muted-foreground">
-                Yes. Open a repository, pick a folder or file, then open the <strong>Chat</strong> tab. Conversations
-                are persisted per repository so you can resume them across sessions.
-              </p>
-            </div>
-            <div>
-              <h3 className="text-base font-semibold">Are my analyses saved across sessions?</h3>
-              <p className="mt-2 text-sm text-muted-foreground">
-                Yes. Every explanation, quality / security / AI-origin analysis, static scan and chat turn is persisted
-                in your account history and is recoverable from the History page.
-              </p>
-            </div>
-            <div>
-              <h3 className="text-base font-semibold">Which languages does the static analysis support?</h3>
-              <p className="mt-2 text-sm text-muted-foreground">
-                20+ languages including JavaScript, TypeScript, Python, Java, Rust, Go, C/C++, C#, Ruby, PHP, Kotlin,
-                Swift and SQL.
-              </p>
-            </div>
+          <div className="mt-6 flex flex-wrap gap-2">
+            {[
+              { to: "/docs" as const, label: t("landing.learnMore.docs") },
+              { to: "/manifesto" as const, label: t("landing.learnMore.manifesto") },
+              { to: "/open-source" as const, label: t("landing.learnMore.openSource") },
+              { to: "/contributors" as const, label: t("landing.learnMore.contributors") },
+              { to: "/install" as const, label: t("landing.learnMore.install") },
+            ].map((l) => (
+              <Link
+                key={l.to}
+                to={l.to}
+                className="inline-flex items-center gap-1 border border-border bg-background px-3 py-2 text-sm hover:border-primary hover:text-foreground"
+              >
+                {l.label}
+                <ChevronRight className="h-3 w-3" />
+              </Link>
+            ))}
           </div>
         </div>
       </section>
 
       {/* Footer */}
       <footer className="border-t border-border/60">
-        <div className="mx-auto max-w-7xl px-4 py-8 text-xs text-muted-foreground sm:px-6">
+        <div className="mx-auto max-w-6xl px-4 py-8 text-xs text-muted-foreground sm:px-6">
           <div className="flex flex-col items-center justify-between gap-3 md:flex-row">
             <Logo />
             <nav className="flex flex-wrap justify-center gap-5">
@@ -822,7 +509,7 @@ function Landing() {
                 {t("landing.nav.manifesto")}
               </Link>
               <Link to="/contributors" className="hover:text-foreground">
-                Contributors
+                {t("landing.learnMore.contributors")}
               </Link>
               <Link to="/docs" className="hover:text-foreground">
                 {t("landing.nav.docs")}

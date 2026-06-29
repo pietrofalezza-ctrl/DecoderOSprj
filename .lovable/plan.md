@@ -1,48 +1,56 @@
-# Fix misleading "Gratis · senza chiave" copy + plain-language pass on the inputs section
+## Goal
+Slim down the homepage into a focused, mobile-first funnel; move secondary content into dedicated sub-pages and on-demand dialogs; localize the FAQ; and confirm parity between the 3 upload methods (single file / ZIP / Git URL all "free, no key").
 
-## Why it's wrong today
+## 1. Fix content inconsistencies
 
-Hai ragione. Sulle tre card di input (Singolo file · ZIP · URL Git) compaiono badge "GRATIS · SENZA CHIAVE" e "BYOK · CHIAVE TUA". Il messaggio è fuorviante: la gratuità non dipende dal **tipo di upload**, ma dal **tipo di analisi**.
+**FAQ in English (hardcoded in `src/routes/index.tsx`)**
+- Replace the 5 hardcoded `<h3>/<p>` blocks with `t("landing.faq.q1.title/body")` … `q5`.
+- Add localized keys to `src/i18n/locales/{en,it,zh}/common.json`.
+- Update the JSON-LD `FAQPage` schema (also currently English) to read from `t()` so the structured data matches the rendered language.
 
-In realtà:
-- **Caricare è sempre gratis** (file, ZIP, URL Git — tutti uguali).
-- **Analisi statica e antimalware** non richiedono chiavi, su tutti e tre i tipi di upload.
-- **Spiegazioni AI, AI-origin e chat sul codice** richiedono BYOK o un modello locale, su tutti e tre i tipi di upload.
+**Git URL card showing "BYOK · CHIAVE TUA"**
+- The screenshot 2 reflects an outdated build; current card markup no longer renders that badge. Verify after rebuild and force-remove any residual badge logic in `src/routes/index.tsx` for the Git URL card so the three cards are visually and semantically symmetric (upload is always free; AI features are what require a key — already stated in the section footnote).
 
-Il badge "BYOK" sulla card URL Git è proprio sbagliato (le scansioni statica/antimalware girano gratis anche su un repo).
+## 2. Homepage UX rationalization (mobile-first)
 
-## What changes
+Today the landing renders ~10 stacked full-width sections. New structure (top → bottom), max 6 screens on mobile:
 
-### 1. Inputs section in `src/routes/index.tsx`
-- Rimuovo i badge per-card (`freeBadge` / `byokBadge`).
-- Aggiungo una **singola riga esplicativa sotto i tre cards** che chiarisce su quale asse è la gratuità:
-  - IT: "Caricare è sempre gratuito su tutti e tre i tipi. Le analisi statica e antimalware funzionano senza chiavi. Le funzioni AI (spiegazioni, AI-origin, chat sul codice) richiedono una tua chiave (BYOK) o un modello locale."
-  - EN: "Uploading is always free for all three inputs. Static and malware checks run without any key. The AI features (explanations, AI-origin, chat) need your own provider key (BYOK) or a local model."
-  - ZH: equivalent.
-- Riscrivo i body delle card in linguaggio non tecnico, niente elenco di estensioni nel corpo (sposto i 20+ linguaggi in un sottotitolo neutro):
-  - IT — "Singolo file": "Trascina un file di codice singolo. Decoder lo apre subito, anche se non sai cosa contiene."
-  - IT — "Archivio ZIP": "Carica una cartella zippata. Decoder conserva la struttura del progetto."
-  - IT — "URL repository Git": "Incolla il link di un progetto pubblico su GitHub o GitLab. Niente login richiesto."
-- Le stesse rese in EN/ZH con tono accessibile e coerente con T&C e privacy policy (stesso lessico: "tua chiave", "modello locale", "scansione statica", "antimalware").
+```text
+1. Hero            — H1 + 1-line subtitle + 2 CTAs (Start · Install app)
+2. 3 upload cards  — Single file · ZIP · Git URL  (uniform, no per-card badges)
+3. "How it works"  — 3 compact steps, horizontal scroll on mobile
+4. Capabilities    — 4 tiles: Static · Malware · AI explain · Chat
+                     each tile opens a Dialog with details (was full section)
+5. Trust strip     — privacy/BYOK/open-source one-liner + link to /privacy
+6. FAQ (4 Q)       — Accordion, localized, "See all" → /docs/faq
+```
 
-### 2. i18n strings — `src/i18n/locales/{en,it,zh}/common.json`
-- Sostituisco `landing.inputs.freeBadge` / `byokBadge` con una nuova chiave `landing.inputs.pricingNote` (la riga unica esplicativa).
-- Aggiorno `fileBody` / `zipBody` / `urlBody` con i nuovi copy semplificati.
-- Aggiungo `landing.inputs.languagesNote` per "Riconosce oltre 20 linguaggi" come riga sussidiaria sotto le card, in modo da non perdere il segnale di copertura.
+Sections being **removed from the homepage** and relocated:
+- "Install as app" deep band → collapsed into hero CTA + small `/install` page with the full PWA walkthrough.
+- "Integrations", "Pricing notes", long capability blurbs, contributors teaser → moved into existing `/docs/*` and `/contributors` pages, linked from a single "Learn more" footer row.
+- Long capability section → replaced by 4 tiles whose details live inside an on-tap `<Dialog>` (shadcn) so the page stays short but power-users can drill in.
 
-### 3. Coerenza con T&C e Privacy
-- Allineo il vocabolario a quello già usato in `/terms` e `/privacy`: "tua chiave (BYOK)", "inferenza locale", "scansione statica", "scansione antimalware". Non introduco termini nuovi che non compaiono già nei documenti legali.
+### New sub-pages / dialogs
+- `src/routes/install.tsx` — full PWA install guide (iOS / Android / desktop), pulled out of homepage.
+- 4 capability dialogs rendered inline on the homepage via shadcn `Dialog` (no new route): `StaticDialog`, `MalwareDialog`, `AiExplainDialog`, `ChatDialog`. Each has its own short copy + "Open full docs" link.
 
-## What does NOT change
+### Mobile-first rules applied
+- All sections use `py-10 sm:py-16`, `px-4 sm:px-6`, max-w-5xl.
+- Cards: `grid-cols-1 sm:grid-cols-3`, equal-height, no overflow.
+- Hero scales: `text-3xl sm:text-5xl md:text-6xl`, line-height tight, no clipping.
+- Capability tiles: 2×2 grid on mobile, 4×1 on desktop, tap target ≥ 48px.
+- Dialogs: `max-h-[85vh] overflow-y-auto`, full-width on `< sm`.
 
-- Nessuna logica di business, nessun gate di funzionalità, nessuna modifica a auth/database.
-- Solo testo nel landing + i18n. Niente nuovi route, niente nuove dipendenze.
+## 3. Files touched
+- `src/routes/index.tsx` — major reorganization (delete 4 sections, add 4 dialogs, swap hardcoded FAQ for `t()`).
+- `src/routes/install.tsx` — new.
+- `src/components/landing/CapabilityDialog.tsx` — new (shared dialog shell).
+- `src/i18n/locales/{en,it,zh}/common.json` — add `landing.faq.q1..q5`, `landing.capabilities.{static,malware,aiExplain,chat}.{title,short,long}`.
 
-## Files touched
+## 4. After build
+- Visual QA on 375×667 (iPhone SE) and 768 (tablet).
+- Then a fresh SEO pass + publish (your follow-up step).
 
-- `src/routes/index.tsx` — rimozione badge per-card, aggiunta riga esplicativa sotto la griglia.
-- `src/i18n/locales/it/common.json`
-- `src/i18n/locales/en/common.json`
-- `src/i18n/locales/zh/common.json`
-
-Confermi e procedo.
+## Out of scope (per your message)
+- No backend changes, no auth/key logic changes, no new analyses.
+- SEO re-optimization & publish handled in the next turn.

@@ -55,7 +55,6 @@
       "languagesNote": "Riconosce oltre 20 linguaggi (JavaScript, TypeScript, Python, Java, Go, Rust, SQL e altri).",
       "pricingNote": "Caricare è sempre gratuito su tutti e tre i tipi. Le scansioni statica e antimalware funzionano senza alcuna chiave. Le funzioni AI (spiegazioni, AI-origin, chat sul codice) richiedono una tua chiave (BYOK) o un modello locale."
     },
-
     "heroBadgeOpen": "Progetto personale · Open source",
     "heroBadgePrivacy": "BYOK o inferenza locale",
     "heroBadgeAiEra": "Codice e prompt pubblici",
@@ -165,6 +164,67 @@
       "architectureBody": "Fa parte del modulo di autenticazione e interagisce con il database utenti.",
       "dependencies": "Dipendenze",
       "applyComments": "Applica commenti"
+    },
+    "faq": {
+      "kicker": "FAQ",
+      "title": "Domande frequenti",
+      "q1": {
+        "q": "Posso caricare un solo file?",
+        "a": "Sì. Decoder accetta un singolo file sorgente (.js, .ts, .py, .java, .go, .rs, .sql e 20+ altri), un archivio ZIP di una cartella o un URL pubblico GitHub/GitLab. Nessuna configurazione richiesta: tutte e tre le modalità funzionano allo stesso modo."
+      },
+      "q2": {
+        "q": "Mi serve una chiave API per usare Decoder?",
+        "a": "No. L'analisi statica del codice e la scansione antimalware girano completamente offline senza alcuna chiave API. Una chiave cloud BYOK (OpenAI, Anthropic, Gemini, OpenRouter) o un endpoint locale Ollama / LM Studio serve solo per le spiegazioni assistite da LLM e la chat."
+      },
+      "q3": {
+        "q": "Posso chattare con il mio codice?",
+        "a": "Sì. Apri un repository, scegli una cartella o un file e apri la scheda Chat. Le conversazioni sono salvate per repository, così puoi riprenderle in sessioni successive."
+      },
+      "q4": {
+        "q": "Le mie analisi vengono salvate tra le sessioni?",
+        "a": "Sì. Ogni spiegazione, analisi di qualità/sicurezza/AI-origin, scansione statica e turno di chat è persistente nello storico del tuo account e recuperabile dalla pagina Cronologia."
+      },
+      "q5": {
+        "q": "Quali linguaggi supporta l'analisi statica?",
+        "a": "20+ linguaggi tra cui JavaScript, TypeScript, Python, Java, Rust, Go, C/C++, C#, Ruby, PHP, Kotlin, Swift e SQL."
+      }
+    },
+    "capabilities": {
+      "kicker": "Cosa fa Decoder",
+      "title": "Quattro modi di leggere il tuo codice",
+      "body": "Tocca una card per i dettagli. Statica e antimalware non richiedono chiavi; le funzioni AI usano la tua chiave BYOK o un modello locale.",
+      "moreLink": "Scopri di più",
+      "close": "Chiudi",
+      "static": {
+        "title": "Analisi statica",
+        "short": "Controlli offline di qualità, complessità e rischio.",
+        "long": "Decoder analizza 20+ linguaggi e segnala hotspot di complessità, codice morto, pattern pericolosi e indicatori di supply-chain. Gira interamente sul server, senza chiave API."
+      },
+      "malware": {
+        "title": "Scansione antimalware",
+        "short": "Controlli euristici e per firma su codice ostile.",
+        "long": "Rileva offuscamento, chiamate di rete sospette, packer e pattern noti come ostili (es. payload tipo LockBit). Gratis, offline, nessuna chiave API."
+      },
+      "aiExplain": {
+        "title": "Spiegazioni AI",
+        "short": "Walkthrough in linguaggio naturale di qualunque file.",
+        "long": "Usa la tua chiave BYOK (OpenAI, Anthropic, Gemini, OpenRouter) o un modello locale (Ollama, LM Studio) per spiegare logica, rischi e segnali di AI-origin nel tono che preferisci."
+      },
+      "chat": {
+        "title": "Chat sul tuo repo",
+        "short": "Fai domande su cartelle o singoli file.",
+        "long": "Conversazioni a livello di cartella o file. Persistenti per repository, così puoi riprendere lo stesso thread in sessioni diverse."
+      }
+    },
+    "learnMore": {
+      "kicker": "Approfondisci",
+      "title": "Docs, manifesto e contributor",
+      "body": "L'homepage resta leggera di proposito. Il resto è a un click.",
+      "docs": "Documentazione",
+      "manifesto": "Manifesto",
+      "openSource": "Open source",
+      "contributors": "Contributor",
+      "install": "Installa come app"
     }
   },
   "terms": {
@@ -507,7 +567,6 @@
       "generating": "Sto verbalizzando il report…",
       "hint": "Trasforma il report della scansione offline in una sintesi in linguaggio naturale usando il tuo provider AI."
     },
-
     "howTo": {
       "title": "Come avviare un'analisi",
       "step1": "Scegli un file dall'albero a sinistra",
@@ -616,7 +675,9 @@
     "outline": {
       "summary": "{{total}} insight · {{mapped}} collegati al codice · {{unmapped}} generali"
     },
-    "filter": { "all": "Tutti" },
+    "filter": {
+      "all": "Tutti"
+    },
     "category": {
       "summary": "Riassunto",
       "quality": "Qualità",
@@ -645,7 +706,9 @@
       "quality": "Controlla qualità",
       "security": "Controlla sicurezza"
     },
-    "unmapped": { "title": "Osservazioni a livello file" }
+    "unmapped": {
+      "title": "Osservazioni a livello file"
+    }
   },
   "aiOrigin": {
     "title": "Probabilità origine AI",
@@ -702,7 +765,6 @@
     "passwordMismatch": "Le password non coincidono.",
     "passwordTooShort": "La password deve contenere almeno 8 caratteri.",
     "byokSection": "Provider AI (BYOK)",
-
     "byokIntro": "Decoder non salva mai le tue chiavi in chiaro. Il tuo codice non viene usato per addestrare modelli.",
     "addKey": "Salva chiave",
     "removeKey": "Rimuovi",
