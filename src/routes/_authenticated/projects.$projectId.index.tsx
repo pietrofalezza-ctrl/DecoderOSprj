@@ -226,7 +226,7 @@ function ProjectPage() {
 
   return (
     <AppShell>
-      <div className="mx-auto max-w-7xl px-6 py-10 space-y-8">
+      <div className="mx-auto w-full max-w-7xl px-4 py-6 sm:px-6 sm:py-10 space-y-8">
         <header className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
           <div className="space-y-3">
             <div className="space-y-1">
@@ -260,7 +260,7 @@ function ProjectPage() {
                 onValueChange={(v) => modeMut.mutate(v as AnalysisMode)}
                 disabled={modeMut.isPending}
               >
-                <SelectTrigger className="mt-1 h-9 w-56">
+                <SelectTrigger className="mt-1 h-9 w-full sm:w-56">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -326,6 +326,15 @@ function ProjectPage() {
           </div>
         </header>
 
+        <div className="flex items-start gap-3 rounded-lg border border-primary/30 bg-primary/5 p-3 text-xs sm:text-sm">
+          <Sparkles className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
+          <p className="text-muted-foreground">
+            <span className="font-medium text-foreground">New: Chat with your code.</span> Open a repository below,
+            pick a folder, then open the <strong className="text-foreground">Chat</strong> tab to ask questions about
+            the code. Conversations are persisted per repository.
+          </p>
+        </div>
+
         <section className="grid gap-3 md:grid-cols-2 xl:grid-cols-4">
           <MetricCard
             icon={<Sparkles className="h-4 w-4" />}
@@ -388,7 +397,8 @@ function ProjectPage() {
                   <YAxis
                     dataKey="name"
                     type="category"
-                    width={120}
+                    width={90}
+                    tick={{ fontSize: 11 }}
                     tickLine={false}
                     axisLine={false}
                   />
@@ -428,7 +438,8 @@ function ProjectPage() {
                   <YAxis
                     dataKey="label"
                     type="category"
-                    width={170}
+                    width={110}
+                    tick={{ fontSize: 11 }}
                     tickLine={false}
                     axisLine={false}
                   />

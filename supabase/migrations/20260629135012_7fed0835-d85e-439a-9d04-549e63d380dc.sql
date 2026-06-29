@@ -1,0 +1,1 @@
+CREATE POLICY "own creds select" ON public.user_ai_credentials FOR SELECT TO authenticated USING (auth.uid() = owner_id);

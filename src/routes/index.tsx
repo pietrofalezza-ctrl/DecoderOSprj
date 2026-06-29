@@ -64,14 +64,65 @@ export const Route = createFileRoute("/")({
           "@type": "SoftwareApplication",
           name: "Decoder",
           description:
-            "Open-source AI code analysis tool. Review AI-generated code, run static and malware checks, chat with your repository.",
+            "Open-source AI code analysis tool. Review AI-generated code, run static and malware checks, chat with your repository, keep a persistent analysis history.",
           applicationCategory: "DeveloperApplication",
           operatingSystem: "Web, Linux, macOS, Windows",
           url: "https://decoderead.dev",
           license: "https://opensource.org/licenses/MIT",
           keywords:
-            "AI code analysis, AI code review, AI-generated code, static code analysis, malware analysis",
+            "AI code analysis, AI code review, AI-generated code, static code analysis, malware analysis, AI code chat",
+          featureList: [
+            "AI code analysis with BYOK (OpenAI, Anthropic, Gemini, OpenRouter)",
+            "Local AI via Ollama and LM Studio",
+            "Static code analysis without an API key",
+            "Static malware / supply-chain scan without an API key",
+            "AI chat with your repository",
+            "Persistent analysis history per repository",
+            "Multi-language support (20+ languages)",
+            "Community contributors page",
+          ],
           offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+        }),
+      },
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "FAQPage",
+          mainEntity: [
+            {
+              "@type": "Question",
+              name: "Do I need an API key to use Decoder?",
+              acceptedAnswer: {
+                "@type": "Answer",
+                text: "No. Static code analysis and malware scanning run fully offline on the server without any API key. You only need a BYOK key (OpenAI, Anthropic, Gemini, OpenRouter) or a local Ollama / LM Studio endpoint if you want LLM-assisted explanations and chat.",
+              },
+            },
+            {
+              "@type": "Question",
+              name: "Can I chat with my code?",
+              acceptedAnswer: {
+                "@type": "Answer",
+                text: "Yes. Decoder includes folder- and file-scoped AI chat. Open a repository, pick a folder or file, then open the Chat tab. Chats are persisted per repository so you can resume them later.",
+              },
+            },
+            {
+              "@type": "Question",
+              name: "Are my analyses saved across sessions?",
+              acceptedAnswer: {
+                "@type": "Answer",
+                text: "Yes. Every explanation, quality / security / AI-origin analysis, static scan and chat turn is persisted in your account history and is recoverable from the History page or the per-repository timeline.",
+              },
+            },
+            {
+              "@type": "Question",
+              name: "Which languages does the static analysis support?",
+              acceptedAnswer: {
+                "@type": "Answer",
+                text: "Decoder's static analysis covers 20+ languages including JavaScript, TypeScript, Python, Java, Rust, Go, C/C++, C#, Ruby, PHP, Kotlin, Swift, SQL and more.",
+              },
+            },
+          ],
         }),
       },
     ],
@@ -634,6 +685,47 @@ function Landing() {
               link={t("landing.community.cta3Link")}
               href={`${t("common.repoUrl")}/tree/main/src/i18n/locales`}
             />
+          </div>
+        </div>
+      </section>
+
+      {/* FAQ */}
+      <section className="border-t border-border bg-card/30">
+        <div className="mx-auto max-w-4xl px-4 py-12 sm:px-6 md:py-20">
+          <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-primary">FAQ</p>
+          <h2 className="mt-2 font-display text-3xl font-medium tracking-tight sm:text-4xl">
+            Frequently asked questions
+          </h2>
+          <div className="mt-8 space-y-6">
+            <div>
+              <h3 className="text-base font-semibold">Do I need an API key to use Decoder?</h3>
+              <p className="mt-2 text-sm text-muted-foreground">
+                No. Static code analysis and malware scanning run fully offline on the server with no API key. A BYOK
+                cloud key (OpenAI, Anthropic, Gemini, OpenRouter) or a local Ollama / LM Studio endpoint is only needed
+                for LLM-assisted explanations and chat.
+              </p>
+            </div>
+            <div>
+              <h3 className="text-base font-semibold">Can I chat with my code?</h3>
+              <p className="mt-2 text-sm text-muted-foreground">
+                Yes. Open a repository, pick a folder or file, then open the <strong>Chat</strong> tab. Conversations
+                are persisted per repository so you can resume them across sessions.
+              </p>
+            </div>
+            <div>
+              <h3 className="text-base font-semibold">Are my analyses saved across sessions?</h3>
+              <p className="mt-2 text-sm text-muted-foreground">
+                Yes. Every explanation, quality / security / AI-origin analysis, static scan and chat turn is persisted
+                in your account history and is recoverable from the History page.
+              </p>
+            </div>
+            <div>
+              <h3 className="text-base font-semibold">Which languages does the static analysis support?</h3>
+              <p className="mt-2 text-sm text-muted-foreground">
+                20+ languages including JavaScript, TypeScript, Python, Java, Rust, Go, C/C++, C#, Ruby, PHP, Kotlin,
+                Swift and SQL.
+              </p>
+            </div>
           </div>
         </div>
       </section>
