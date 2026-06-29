@@ -214,6 +214,56 @@ function SettingsPage() {
         <OnboardingHelpSection />
 
         <section
+          id="credentials-status"
+          className="space-y-3 rounded-lg border border-border bg-card p-5 scroll-mt-20"
+        >
+          <h2 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
+            Credentials status
+          </h2>
+          <p className="text-xs text-muted-foreground">
+            Stato delle chiavi memorizzate per il tuo account. Una chiave non leggibile è
+            ancora presente nel database ma non è decifrabile (es. chiave di cifratura
+            ruotata): reinseriscila per ripristinarla.
+          </p>
+          <div className="space-y-2">
+            {(credStatus.data?.providers ?? []).map((c) => (
+              <div
+                key={c.provider}
+                className="flex items-center justify-between rounded-md border border-border px-3 py-2 text-xs"
+              >
+                <div className="flex items-center gap-3">
+                  <span className="font-medium">{t(`settings.providers.${c.provider}`)}</span>
+                  {!c.configured && (
+                    <span className="text-muted-foreground">Nessuna chiave</span>
+                  )}
+                  {c.configured && c.readable && (
+                    <span className="text-emerald-600 dark:text-emerald-400">
+                      Configurata · {c.key_hint ?? "••••"}
+                    </span>
+                  )}
+                  {c.configured && !c.readable && (
+                    <span className="inline-flex items-center gap-1 text-amber-600 dark:text-amber-400">
+                      <AlertTriangle className="h-3 w-3" /> Chiave presente ma non leggibile —
+                      reinseriscila
+                    </span>
+                  )}
+                </div>
+                {c.updated_at && (
+                  <span className="text-muted-foreground">
+                    {new Date(c.updated_at).toLocaleDateString()}
+                  </span>
+                )}
+              </div>
+            ))}
+            {credStatus.isError && (
+              <p className="text-xs text-amber-600 dark:text-amber-400">
+                Impossibile leggere lo stato delle credenziali al momento.
+              </p>
+            )}
+          </div>
+        </section>
+
+        <section
           id="byok"
           className="space-y-4 rounded-lg border border-border bg-card p-5 scroll-mt-20"
         >
