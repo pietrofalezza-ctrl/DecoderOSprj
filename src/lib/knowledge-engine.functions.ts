@@ -144,6 +144,8 @@ export const upsertEntry = createServerFn({ method: "POST" })
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const payload = {
       ...data,
+      type: data.type as EntryType,
+      status: data.status as EntryStatus,
       reviewed_by: data.status === "published" ? context.userId : null,
       published_at: data.status === "published" ? new Date().toISOString() : null,
     };
