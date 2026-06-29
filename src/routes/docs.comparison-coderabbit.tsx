@@ -201,6 +201,26 @@ function ComparisonPage() {
             principles behind the project.
           </p>
         </Section>
+
+        <Section icon={<BookOpen className="h-5 w-5" />} title="Related guides">
+          <ul>
+            <li>
+              <Link to="/docs/ai-code-review-tools-byok" className="text-foreground underline">
+                AI code review tools with BYOK — provider, pricing and key storage
+              </Link>
+            </li>
+            <li>
+              <Link to="/docs/open-source-ai-code-review" className="text-foreground underline">
+                Open-source AI code review with local inference (Ollama, LM Studio)
+              </Link>
+            </li>
+            <li>
+              <Link to="/docs/how-to-review-ai-code" className="text-foreground underline">
+                How to review AI-generated code
+              </Link>
+            </li>
+          </ul>
+        </Section>
       </main>
 
       <footer className="border-t border-border px-6 py-6 text-center text-xs text-muted-foreground">

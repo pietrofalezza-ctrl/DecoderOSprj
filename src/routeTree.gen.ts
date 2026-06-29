@@ -22,6 +22,7 @@ import { Route as ContactRouteImport } from './routes/contact'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as DocsOpenSourceAiCodeReviewRouteImport } from './routes/docs.open-source-ai-code-review'
 import { Route as DocsHowToReviewAiCodeRouteImport } from './routes/docs.how-to-review-ai-code'
 import { Route as DocsComparisonCoderabbitRouteImport } from './routes/docs.comparison-coderabbit'
 import { Route as DocsAiCodeReviewToolsByokRouteImport } from './routes/docs.ai-code-review-tools-byok'
@@ -100,6 +101,12 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DocsOpenSourceAiCodeReviewRoute =
+  DocsOpenSourceAiCodeReviewRouteImport.update({
+    id: '/open-source-ai-code-review',
+    path: '/open-source-ai-code-review',
+    getParentRoute: () => DocsRoute,
+  } as any)
 const DocsHowToReviewAiCodeRoute = DocsHowToReviewAiCodeRouteImport.update({
   id: '/how-to-review-ai-code',
   path: '/how-to-review-ai-code',
@@ -194,6 +201,7 @@ export interface FileRoutesByFullPath {
   '/docs/ai-code-review-tools-byok': typeof DocsAiCodeReviewToolsByokRoute
   '/docs/comparison-coderabbit': typeof DocsComparisonCoderabbitRoute
   '/docs/how-to-review-ai-code': typeof DocsHowToReviewAiCodeRoute
+  '/docs/open-source-ai-code-review': typeof DocsOpenSourceAiCodeReviewRoute
   '/projects/$projectId': typeof AuthenticatedProjectsProjectIdRouteWithChildren
   '/api/public/hooks/cleanup-stale-repositories': typeof ApiPublicHooksCleanupStaleRepositoriesRoute
   '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
@@ -221,6 +229,7 @@ export interface FileRoutesByTo {
   '/docs/ai-code-review-tools-byok': typeof DocsAiCodeReviewToolsByokRoute
   '/docs/comparison-coderabbit': typeof DocsComparisonCoderabbitRoute
   '/docs/how-to-review-ai-code': typeof DocsHowToReviewAiCodeRoute
+  '/docs/open-source-ai-code-review': typeof DocsOpenSourceAiCodeReviewRoute
   '/api/public/hooks/cleanup-stale-repositories': typeof ApiPublicHooksCleanupStaleRepositoriesRoute
   '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
   '/projects/$projectId': typeof AuthenticatedProjectsProjectIdIndexRoute
@@ -249,6 +258,7 @@ export interface FileRoutesById {
   '/docs/ai-code-review-tools-byok': typeof DocsAiCodeReviewToolsByokRoute
   '/docs/comparison-coderabbit': typeof DocsComparisonCoderabbitRoute
   '/docs/how-to-review-ai-code': typeof DocsHowToReviewAiCodeRoute
+  '/docs/open-source-ai-code-review': typeof DocsOpenSourceAiCodeReviewRoute
   '/_authenticated/projects/$projectId': typeof AuthenticatedProjectsProjectIdRouteWithChildren
   '/api/public/hooks/cleanup-stale-repositories': typeof ApiPublicHooksCleanupStaleRepositoriesRoute
   '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
@@ -278,6 +288,7 @@ export interface FileRouteTypes {
     | '/docs/ai-code-review-tools-byok'
     | '/docs/comparison-coderabbit'
     | '/docs/how-to-review-ai-code'
+    | '/docs/open-source-ai-code-review'
     | '/projects/$projectId'
     | '/api/public/hooks/cleanup-stale-repositories'
     | '/lovable/email/queue/process'
@@ -305,6 +316,7 @@ export interface FileRouteTypes {
     | '/docs/ai-code-review-tools-byok'
     | '/docs/comparison-coderabbit'
     | '/docs/how-to-review-ai-code'
+    | '/docs/open-source-ai-code-review'
     | '/api/public/hooks/cleanup-stale-repositories'
     | '/lovable/email/queue/process'
     | '/projects/$projectId'
@@ -332,6 +344,7 @@ export interface FileRouteTypes {
     | '/docs/ai-code-review-tools-byok'
     | '/docs/comparison-coderabbit'
     | '/docs/how-to-review-ai-code'
+    | '/docs/open-source-ai-code-review'
     | '/_authenticated/projects/$projectId'
     | '/api/public/hooks/cleanup-stale-repositories'
     | '/lovable/email/queue/process'
@@ -450,6 +463,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/docs/open-source-ai-code-review': {
+      id: '/docs/open-source-ai-code-review'
+      path: '/open-source-ai-code-review'
+      fullPath: '/docs/open-source-ai-code-review'
+      preLoaderRoute: typeof DocsOpenSourceAiCodeReviewRouteImport
+      parentRoute: typeof DocsRoute
     }
     '/docs/how-to-review-ai-code': {
       id: '/docs/how-to-review-ai-code'
@@ -602,12 +622,14 @@ interface DocsRouteChildren {
   DocsAiCodeReviewToolsByokRoute: typeof DocsAiCodeReviewToolsByokRoute
   DocsComparisonCoderabbitRoute: typeof DocsComparisonCoderabbitRoute
   DocsHowToReviewAiCodeRoute: typeof DocsHowToReviewAiCodeRoute
+  DocsOpenSourceAiCodeReviewRoute: typeof DocsOpenSourceAiCodeReviewRoute
 }
 
 const DocsRouteChildren: DocsRouteChildren = {
   DocsAiCodeReviewToolsByokRoute: DocsAiCodeReviewToolsByokRoute,
   DocsComparisonCoderabbitRoute: DocsComparisonCoderabbitRoute,
   DocsHowToReviewAiCodeRoute: DocsHowToReviewAiCodeRoute,
+  DocsOpenSourceAiCodeReviewRoute: DocsOpenSourceAiCodeReviewRoute,
 }
 
 const DocsRouteWithChildren = DocsRoute._addFileChildren(DocsRouteChildren)
