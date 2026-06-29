@@ -1,34 +1,50 @@
-# Plan: SEO rescan & OpenRouter rate-limit handling
+## Goal
 
-## 1. SEO rescan
-- Trigger a fresh `seo_chat` scan so findings reflect the latest changes (admin route, Settings credentials panel, audit-log UI, cleanup endpoint hardening, new copy on landing).
-- After the scan completes (~1 min), review and fix any new failing findings, then mark them fixed.
-- Confirm `/admin`, `/settings`, and other auth-gated routes remain excluded from `sitemap.xml`.
+Publish two new SEO-targeted documentation pages and strengthen internal SEO linking + structured data across the docs cluster.
 
-## 2. OpenRouter 429 — diagnose & improve UX
-**Why it happens (most common, in order):**
-1. **Free-tier daily/minute cap** on OpenRouter free models (`:free` suffix → ~20 RPM, ~50–200 RPD per key).
-2. **402 / insufficient credits** on paid models with $0 balance (OpenRouter sometimes returns this as a rate error).
-3. **Per-model RPM caps** (Anthropic/OpenAI via OpenRouter are stricter than the account default).
-4. **Burst from parallel calls** — Chat + Static-explain + AI-Origin firing on the same key simultaneously across tabs.
+## New routes
 
-**Code changes:**
-- **Parse OpenRouter error envelope** in `src/lib/byok/*` (or wherever the BYOK fetch lives): extract `error.code`, `error.message`, and `X-RateLimit-*` / `Retry-After` headers; classify as `rate_limit_free_tier`, `rate_limit_model`, `insufficient_credits`, or `generic_429`.
-- **Surface a clear toast/inline message** per class:
-  - Free-tier → "Daily free-tier limit reached on OpenRouter. Wait until reset or add credits / switch model."
-  - Credits → "OpenRouter key has no credits. Top up at openrouter.ai/credits."
-  - Model RPM → "Model X is rate-limited (retry in Ns)." with countdown from `Retry-After`.
-- **Add exponential backoff with jitter** (max 2 retries) on 429 in `FolderChatPanel`, AI-Origin, and Static-explain calls; disable the send button during cooldown.
-- **Serialize concurrent BYOK calls** per key with a small in-memory queue so Chat + Explain don't fire in parallel against the same provider.
-- **Log classified errors** to `analysis_activities` (already present) with `error_kind` for future debugging.
+1. **`src/routes/docs.ai-code-review-tools-byok.tsx`**
+   - Target keyword: **"AI code review tools BYOK"** (low-competition, high-intent)
+   - Angle: why BYOK matters (cost control, key sovereignty, model choice), how Decoder implements it (OpenRouter/OpenAI/Anthropic/Gemini + local Ollama/LM Studio), comparison vs CodeRabbit (no BYOK, SaaS-only pricing) and Greptile (SaaS, no BYOK on standard plans).
+   - Sections: What is BYOK · Why BYOK for code review · Decoder's BYOK model · Side-by-side table (Decoder / CodeRabbit / Greptile) · Setup walkthrough · FAQ.
 
-## 3. Verification
-- Manual: trigger 25 quick chat sends with a free OpenRouter model in dev; confirm toast appears, button disables, retry resumes after `Retry-After`.
-- Re-run SEO scan after toast copy changes (only landing/help text affected).
+2. **`src/routes/docs.open-source-ai-code-review.tsx`**
+   - Target keyword: **"open source AI code review"** (~400/mo, KD ~25)
+   - Angle: open-source positioning + local inference (Ollama, LM Studio), zero-egress workflow, self-host story, comparison vs closed SaaS (CodeRabbit, Greptile).
+   - Sections: Why open source matters for code review · Local inference setup · Privacy/compliance (no code leaves your machine) · Comparison table · Quickstart · FAQ.
 
-## Technical notes
-- BYOK provider call lives in `src/lib/byok-openrouter.functions.ts` (server fn) — classify there; pass `errorKind` to the client via thrown `Error` with a structured `cause`.
-- `Retry-After` may be seconds or HTTP-date; handle both.
-- Don't change the request body shape per provider rules in `ai-models-using`.
+## Structured data per page
 
-No DB migration required.
+Each page emits:
+- `Article` JSON-LD (headline, author=Decoder, datePublished, mainEntityOfPage canonical)
+- `FAQPage` JSON-LD (5–6 Q&As)
+- `BreadcrumbList` JSON-LD (Home → Docs → Page)
+- `SoftwareApplication` reference linking back to the app (only on BYOK page, where the offer is most relevant)
+
+Plus per-route `head()` with title, description, og:title/description/url, canonical (self-referencing leaf).
+
+## Internal linking
+
+- Add a **"Related guides"** block at the bottom of:
+  - `docs.comparison-coderabbit.tsx` (existing) → link the two new pages
+  - `docs.ai-code-review-tools-byok.tsx` → link to comparison + open-source page
+  - `docs.open-source-ai-code-review.tsx` → link to comparison + BYOK page
+  - `contributors.tsx` → link to comparison page (community + OSS narrative)
+- Add a **"Learn more"** footer/section in landing `index.tsx` (or existing docs CTA) pointing to all three docs pages — single-line link list, no layout change.
+- Use `<Link to=...>` (TanStack) for all internal links; descriptive anchor text matching target keywords.
+
+## Sitemap
+
+Add both new routes to `public/sitemap.xml` with `changefreq=monthly`, `priority=0.8`.
+
+## Files touched
+
+- **Create**: `src/routes/docs.ai-code-review-tools-byok.tsx`, `src/routes/docs.open-source-ai-code-review.tsx`
+- **Edit**: `src/routes/docs.comparison-coderabbit.tsx` (Related guides block), `src/routes/contributors.tsx` (one inline link), `src/routes/index.tsx` (Learn more links), `public/sitemap.xml`
+
+## Out of scope
+
+- No copy changes to landing hero / pricing
+- No new i18n keys (docs pages are EN, consistent with existing `comparison-coderabbit`)
+- No design system changes — reuse existing Tailwind tokens and shadcn components from the comparison page
