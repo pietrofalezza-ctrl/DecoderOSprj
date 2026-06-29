@@ -75,13 +75,14 @@ export const Route = createFileRoute("/")({
           keywords:
             "AI code analysis, AI code review, AI-generated code, static code analysis, malware analysis, AI code chat",
           featureList: [
+            "Single-file upload across 20+ programming languages",
+            "ZIP archive and public GitHub repository import",
             "AI code analysis with BYOK (OpenAI, Anthropic, Gemini, OpenRouter)",
             "Local AI via Ollama and LM Studio",
             "Static code analysis without an API key",
             "Static malware / supply-chain scan without an API key",
             "AI chat with your repository",
             "Persistent analysis history per repository",
-            "Multi-language support (20+ languages)",
             "Community contributors page",
           ],
           offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
@@ -93,6 +94,14 @@ export const Route = createFileRoute("/")({
           "@context": "https://schema.org",
           "@type": "FAQPage",
           mainEntity: [
+            {
+              "@type": "Question",
+              name: "Can I upload just one file?",
+              acceptedAnswer: {
+                "@type": "Answer",
+                text: "Yes. Decoder accepts a single source file (.js, .ts, .py, .java, .go, .rs, .sql and 20+ more), a ZIP archive of a folder, or a public GitHub repository URL. No setup is required.",
+              },
+            },
             {
               "@type": "Question",
               name: "Do I need an API key to use Decoder?",
@@ -767,6 +776,14 @@ function Landing() {
             Frequently asked questions
           </h2>
           <div className="mt-8 space-y-6">
+            <div>
+              <h3 className="text-base font-semibold">Can I upload just one file?</h3>
+              <p className="mt-2 text-sm text-muted-foreground">
+                Yes. Decoder accepts a single source file (<code>.js</code>, <code>.ts</code>, <code>.py</code>,{" "}
+                <code>.java</code>, <code>.go</code>, <code>.rs</code>, <code>.sql</code> and 20+ more), a ZIP archive
+                of a folder, or a public GitHub repository URL. No setup is required.
+              </p>
+            </div>
             <div>
               <h3 className="text-base font-semibold">Do I need an API key to use Decoder?</h3>
               <p className="mt-2 text-sm text-muted-foreground">
