@@ -27,6 +27,7 @@ import {
   saveLocalEndpoint,
   deleteLocalEndpoint,
 } from "@/lib/credentials.functions";
+import { getCredentialsStatus } from "@/lib/maintenance.functions";
 import { exportMyData, deleteMyAccount } from "@/lib/account.functions";
 import { listByokAckHistory } from "@/lib/byok-acknowledgement.functions";
 import { useByokAck } from "@/hooks/use-byok-ack";
@@ -62,6 +63,11 @@ function SettingsPage() {
 
   const profile = useQuery({ queryKey: ["profile"], queryFn: () => getProfile() });
   const prov = useQuery({ queryKey: ["providers"], queryFn: () => list() });
+  const credStatusFn = useServerFn(getCredentialsStatus);
+  const credStatus = useQuery({
+    queryKey: ["credentials-status"],
+    queryFn: () => credStatusFn(),
+  });
 
   const [displayName, setDisplayName] = useState("");
   const [language, setLanguage] = useState<Language>("en");
