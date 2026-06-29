@@ -83,7 +83,7 @@ function Landing() {
   const { t } = useTranslation();
   const [menuOpen, setMenuOpen] = useState(false);
 
-  const { canPrompt, installed, isIos, promptInstall } = usePwaInstall();
+  const { canPrompt, installed, promptInstall } = usePwaInstall();
   const handleInstall = async () => {
     if (canPrompt) {
       await promptInstall();
