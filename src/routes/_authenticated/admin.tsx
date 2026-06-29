@@ -3,7 +3,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import { ShieldCheck, RotateCw, AlertTriangle } from "lucide-react";
+import { ShieldCheck, RotateCw, AlertTriangle, Download } from "lucide-react";
 
 import { AppShell } from "@/components/AppShell";
 import { Button } from "@/components/ui/button";
@@ -102,6 +102,34 @@ function AdminPage() {
             >
               <RotateCw className="mr-1.5 h-3.5 w-3.5" />
               {rotateMut.isPending ? "Rescheduling…" : "Reschedule now"}
+            </Button>
+          </div>
+        </section>
+
+        <section className="space-y-3 rounded-lg border border-border bg-card p-5">
+          <div className="flex items-start justify-between gap-3">
+            <div>
+              <h2 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
+                Disavow spam backlinks
+              </h2>
+              <p className="mt-1 text-xs text-muted-foreground">
+                Download the disavow file and upload it to{" "}
+                <a
+                  href="https://search.google.com/search-console/disavow-links"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="underline"
+                >
+                  Google Search Console
+                </a>
+                . This tells Google to ignore the low-quality/PBN backlinks detected by Semrush.
+              </p>
+            </div>
+            <Button asChild size="sm">
+              <a href="/disavow.txt" download="disavow.txt">
+                <Download className="mr-1.5 h-3.5 w-3.5" />
+                Download disavow.txt
+              </a>
             </Button>
           </div>
         </section>
