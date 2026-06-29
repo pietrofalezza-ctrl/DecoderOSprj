@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { KNOWLEDGE_ENTRIES, getLocale } from "@/knowledge/registry";
 import type { KnowledgeLang, KnowledgeType } from "@/knowledge/types";
+import { KnowledgeTopNav } from "@/components/knowledge/KnowledgeTopNav";
 
 const TYPE_LABEL: Record<KnowledgeType, { title: string; intro: string }> = {
   capability: {
