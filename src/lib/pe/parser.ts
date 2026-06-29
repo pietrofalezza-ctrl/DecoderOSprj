@@ -118,13 +118,12 @@ function parseImports(input: {
         warnings.push(`Import thunk table for ${dll} is truncated.`);
         break;
       }
-      const raw = isPe64
+      const raw: number = isPe64
         ? Number(view.getBigUint64(entryOffset, true) & 0x7fffffffn)
         : view.getUint32(entryOffset, true);
-      const ordinalMask = isPe64 ? 0x8000000000000000n : 0x80000000;
       const isOrdinal = isPe64
-        ? (view.getBigUint64(entryOffset, true) & ordinalMask) !== 0n
-        : (raw & ordinalMask) !== 0;
+        ? (view.getBigUint64(entryOffset, true) & 0x8000000000000000n) !== 0n
+        : (view.getUint32(entryOffset, true) & 0x80000000) !== 0;
       if (raw === 0) break;
       if (isOrdinal) {
         symbols.push({ name: `ordinal_${raw & 0xffff}`, ordinal: raw & 0xffff, thunkRva });
