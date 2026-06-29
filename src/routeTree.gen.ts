@@ -55,10 +55,16 @@ import { Route as DocsItGdprRevisioneCodiceAiRouteImport } from './routes/docs.i
 import { Route as DocsItEuAiActAnalisiCodiceRouteImport } from './routes/docs.it.eu-ai-act-analisi-codice'
 import { Route as DocsItAiPrivacyFirstEuropaRouteImport } from './routes/docs.it.ai-privacy-first-europa'
 import { Route as AuthenticatedProjectsProjectIdRouteImport } from './routes/_authenticated/projects.$projectId'
+import { Route as AuthenticatedAdminKnowledgeRouteImport } from './routes/_authenticated/admin.knowledge'
 import { Route as AuthenticatedProjectsProjectIdIndexRouteImport } from './routes/_authenticated/projects.$projectId.index'
+import { Route as AuthenticatedAdminKnowledgeIndexRouteImport } from './routes/_authenticated/admin.knowledge.index'
 import { Route as LovableEmailQueueProcessRouteImport } from './routes/lovable/email/queue/process'
+import { Route as ApiPublicHooksGithubPrRouteImport } from './routes/api/public/hooks.github-pr'
 import { Route as ApiPublicHooksCleanupStaleRepositoriesRouteImport } from './routes/api/public/hooks/cleanup-stale-repositories'
+import { Route as AuthenticatedAdminKnowledgeOpportunitiesRouteImport } from './routes/_authenticated/admin.knowledge.opportunities'
+import { Route as AuthenticatedAdminKnowledgeDraftsRouteImport } from './routes/_authenticated/admin.knowledge.drafts'
 import { Route as AuthenticatedProjectsProjectIdReposRepoIdRouteImport } from './routes/_authenticated/projects.$projectId.repos.$repoId'
+import { Route as AuthenticatedAdminKnowledgeDraftsIdRouteImport } from './routes/_authenticated/admin.knowledge.drafts.$id'
 import { Route as AuthenticatedProjectsProjectIdReposRepoIdHistoryRouteImport } from './routes/_authenticated/projects.$projectId.repos.$repoId.history'
 
 const TermsRoute = TermsRouteImport.update({
@@ -306,11 +312,23 @@ const AuthenticatedProjectsProjectIdRoute =
     path: '/projects/$projectId',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const AuthenticatedAdminKnowledgeRoute =
+  AuthenticatedAdminKnowledgeRouteImport.update({
+    id: '/knowledge',
+    path: '/knowledge',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
 const AuthenticatedProjectsProjectIdIndexRoute =
   AuthenticatedProjectsProjectIdIndexRouteImport.update({
     id: '/',
     path: '/',
     getParentRoute: () => AuthenticatedProjectsProjectIdRoute,
+  } as any)
+const AuthenticatedAdminKnowledgeIndexRoute =
+  AuthenticatedAdminKnowledgeIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => AuthenticatedAdminKnowledgeRoute,
   } as any)
 const LovableEmailQueueProcessRoute =
   LovableEmailQueueProcessRouteImport.update({
@@ -318,17 +336,40 @@ const LovableEmailQueueProcessRoute =
     path: '/lovable/email/queue/process',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ApiPublicHooksGithubPrRoute = ApiPublicHooksGithubPrRouteImport.update({
+  id: '/api/public/hooks/github-pr',
+  path: '/api/public/hooks/github-pr',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicHooksCleanupStaleRepositoriesRoute =
   ApiPublicHooksCleanupStaleRepositoriesRouteImport.update({
     id: '/api/public/hooks/cleanup-stale-repositories',
     path: '/api/public/hooks/cleanup-stale-repositories',
     getParentRoute: () => rootRouteImport,
   } as any)
+const AuthenticatedAdminKnowledgeOpportunitiesRoute =
+  AuthenticatedAdminKnowledgeOpportunitiesRouteImport.update({
+    id: '/opportunities',
+    path: '/opportunities',
+    getParentRoute: () => AuthenticatedAdminKnowledgeRoute,
+  } as any)
+const AuthenticatedAdminKnowledgeDraftsRoute =
+  AuthenticatedAdminKnowledgeDraftsRouteImport.update({
+    id: '/drafts',
+    path: '/drafts',
+    getParentRoute: () => AuthenticatedAdminKnowledgeRoute,
+  } as any)
 const AuthenticatedProjectsProjectIdReposRepoIdRoute =
   AuthenticatedProjectsProjectIdReposRepoIdRouteImport.update({
     id: '/repos/$repoId',
     path: '/repos/$repoId',
     getParentRoute: () => AuthenticatedProjectsProjectIdRoute,
+  } as any)
+const AuthenticatedAdminKnowledgeDraftsIdRoute =
+  AuthenticatedAdminKnowledgeDraftsIdRouteImport.update({
+    id: '/$id',
+    path: '/$id',
+    getParentRoute: () => AuthenticatedAdminKnowledgeDraftsRoute,
   } as any)
 const AuthenticatedProjectsProjectIdReposRepoIdHistoryRoute =
   AuthenticatedProjectsProjectIdReposRepoIdHistoryRouteImport.update({
@@ -352,7 +393,7 @@ export interface FileRoutesByFullPath {
   '/reset-password': typeof ResetPasswordRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/terms': typeof TermsRoute
-  '/admin': typeof AuthenticatedAdminRoute
+  '/admin': typeof AuthenticatedAdminRouteWithChildren
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/history': typeof AuthenticatedHistoryRoute
   '/settings': typeof AuthenticatedSettingsRoute
@@ -376,6 +417,7 @@ export interface FileRoutesByFullPath {
   '/knowledge/formats': typeof KnowledgeFormatsRoute
   '/knowledge/integrations': typeof KnowledgeIntegrationsRoute
   '/knowledge/': typeof KnowledgeIndexRoute
+  '/admin/knowledge': typeof AuthenticatedAdminKnowledgeRouteWithChildren
   '/projects/$projectId': typeof AuthenticatedProjectsProjectIdRouteWithChildren
   '/docs/it/ai-privacy-first-europa': typeof DocsItAiPrivacyFirstEuropaRoute
   '/docs/it/eu-ai-act-analisi-codice': typeof DocsItEuAiActAnalisiCodiceRoute
@@ -383,9 +425,14 @@ export interface FileRoutesByFullPath {
   '/docs/zh/eu-ai-act-code-analysis': typeof DocsZhEuAiActCodeAnalysisRoute
   '/docs/zh/gdpr-ai-code-review': typeof DocsZhGdprAiCodeReviewRoute
   '/docs/zh/privacy-first-ai-europe': typeof DocsZhPrivacyFirstAiEuropeRoute
+  '/admin/knowledge/drafts': typeof AuthenticatedAdminKnowledgeDraftsRouteWithChildren
+  '/admin/knowledge/opportunities': typeof AuthenticatedAdminKnowledgeOpportunitiesRoute
   '/api/public/hooks/cleanup-stale-repositories': typeof ApiPublicHooksCleanupStaleRepositoriesRoute
+  '/api/public/hooks/github-pr': typeof ApiPublicHooksGithubPrRoute
   '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
+  '/admin/knowledge/': typeof AuthenticatedAdminKnowledgeIndexRoute
   '/projects/$projectId/': typeof AuthenticatedProjectsProjectIdIndexRoute
+  '/admin/knowledge/drafts/$id': typeof AuthenticatedAdminKnowledgeDraftsIdRoute
   '/projects/$projectId/repos/$repoId': typeof AuthenticatedProjectsProjectIdReposRepoIdRouteWithChildren
   '/projects/$projectId/repos/$repoId/history': typeof AuthenticatedProjectsProjectIdReposRepoIdHistoryRoute
 }
@@ -404,7 +451,7 @@ export interface FileRoutesByTo {
   '/reset-password': typeof ResetPasswordRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/terms': typeof TermsRoute
-  '/admin': typeof AuthenticatedAdminRoute
+  '/admin': typeof AuthenticatedAdminRouteWithChildren
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/history': typeof AuthenticatedHistoryRoute
   '/settings': typeof AuthenticatedSettingsRoute
@@ -434,9 +481,14 @@ export interface FileRoutesByTo {
   '/docs/zh/eu-ai-act-code-analysis': typeof DocsZhEuAiActCodeAnalysisRoute
   '/docs/zh/gdpr-ai-code-review': typeof DocsZhGdprAiCodeReviewRoute
   '/docs/zh/privacy-first-ai-europe': typeof DocsZhPrivacyFirstAiEuropeRoute
+  '/admin/knowledge/drafts': typeof AuthenticatedAdminKnowledgeDraftsRouteWithChildren
+  '/admin/knowledge/opportunities': typeof AuthenticatedAdminKnowledgeOpportunitiesRoute
   '/api/public/hooks/cleanup-stale-repositories': typeof ApiPublicHooksCleanupStaleRepositoriesRoute
+  '/api/public/hooks/github-pr': typeof ApiPublicHooksGithubPrRoute
   '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
+  '/admin/knowledge': typeof AuthenticatedAdminKnowledgeIndexRoute
   '/projects/$projectId': typeof AuthenticatedProjectsProjectIdIndexRoute
+  '/admin/knowledge/drafts/$id': typeof AuthenticatedAdminKnowledgeDraftsIdRoute
   '/projects/$projectId/repos/$repoId': typeof AuthenticatedProjectsProjectIdReposRepoIdRouteWithChildren
   '/projects/$projectId/repos/$repoId/history': typeof AuthenticatedProjectsProjectIdReposRepoIdHistoryRoute
 }
@@ -457,7 +509,7 @@ export interface FileRoutesById {
   '/reset-password': typeof ResetPasswordRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/terms': typeof TermsRoute
-  '/_authenticated/admin': typeof AuthenticatedAdminRoute
+  '/_authenticated/admin': typeof AuthenticatedAdminRouteWithChildren
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/history': typeof AuthenticatedHistoryRoute
   '/_authenticated/settings': typeof AuthenticatedSettingsRoute
@@ -481,6 +533,7 @@ export interface FileRoutesById {
   '/knowledge/formats': typeof KnowledgeFormatsRoute
   '/knowledge/integrations': typeof KnowledgeIntegrationsRoute
   '/knowledge/': typeof KnowledgeIndexRoute
+  '/_authenticated/admin/knowledge': typeof AuthenticatedAdminKnowledgeRouteWithChildren
   '/_authenticated/projects/$projectId': typeof AuthenticatedProjectsProjectIdRouteWithChildren
   '/docs/it/ai-privacy-first-europa': typeof DocsItAiPrivacyFirstEuropaRoute
   '/docs/it/eu-ai-act-analisi-codice': typeof DocsItEuAiActAnalisiCodiceRoute
@@ -488,9 +541,14 @@ export interface FileRoutesById {
   '/docs/zh/eu-ai-act-code-analysis': typeof DocsZhEuAiActCodeAnalysisRoute
   '/docs/zh/gdpr-ai-code-review': typeof DocsZhGdprAiCodeReviewRoute
   '/docs/zh/privacy-first-ai-europe': typeof DocsZhPrivacyFirstAiEuropeRoute
+  '/_authenticated/admin/knowledge/drafts': typeof AuthenticatedAdminKnowledgeDraftsRouteWithChildren
+  '/_authenticated/admin/knowledge/opportunities': typeof AuthenticatedAdminKnowledgeOpportunitiesRoute
   '/api/public/hooks/cleanup-stale-repositories': typeof ApiPublicHooksCleanupStaleRepositoriesRoute
+  '/api/public/hooks/github-pr': typeof ApiPublicHooksGithubPrRoute
   '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
+  '/_authenticated/admin/knowledge/': typeof AuthenticatedAdminKnowledgeIndexRoute
   '/_authenticated/projects/$projectId/': typeof AuthenticatedProjectsProjectIdIndexRoute
+  '/_authenticated/admin/knowledge/drafts/$id': typeof AuthenticatedAdminKnowledgeDraftsIdRoute
   '/_authenticated/projects/$projectId/repos/$repoId': typeof AuthenticatedProjectsProjectIdReposRepoIdRouteWithChildren
   '/_authenticated/projects/$projectId/repos/$repoId/history': typeof AuthenticatedProjectsProjectIdReposRepoIdHistoryRoute
 }
@@ -535,6 +593,7 @@ export interface FileRouteTypes {
     | '/knowledge/formats'
     | '/knowledge/integrations'
     | '/knowledge/'
+    | '/admin/knowledge'
     | '/projects/$projectId'
     | '/docs/it/ai-privacy-first-europa'
     | '/docs/it/eu-ai-act-analisi-codice'
@@ -542,9 +601,14 @@ export interface FileRouteTypes {
     | '/docs/zh/eu-ai-act-code-analysis'
     | '/docs/zh/gdpr-ai-code-review'
     | '/docs/zh/privacy-first-ai-europe'
+    | '/admin/knowledge/drafts'
+    | '/admin/knowledge/opportunities'
     | '/api/public/hooks/cleanup-stale-repositories'
+    | '/api/public/hooks/github-pr'
     | '/lovable/email/queue/process'
+    | '/admin/knowledge/'
     | '/projects/$projectId/'
+    | '/admin/knowledge/drafts/$id'
     | '/projects/$projectId/repos/$repoId'
     | '/projects/$projectId/repos/$repoId/history'
   fileRoutesByTo: FileRoutesByTo
@@ -593,9 +657,14 @@ export interface FileRouteTypes {
     | '/docs/zh/eu-ai-act-code-analysis'
     | '/docs/zh/gdpr-ai-code-review'
     | '/docs/zh/privacy-first-ai-europe'
+    | '/admin/knowledge/drafts'
+    | '/admin/knowledge/opportunities'
     | '/api/public/hooks/cleanup-stale-repositories'
+    | '/api/public/hooks/github-pr'
     | '/lovable/email/queue/process'
+    | '/admin/knowledge'
     | '/projects/$projectId'
+    | '/admin/knowledge/drafts/$id'
     | '/projects/$projectId/repos/$repoId'
     | '/projects/$projectId/repos/$repoId/history'
   id:
@@ -639,6 +708,7 @@ export interface FileRouteTypes {
     | '/knowledge/formats'
     | '/knowledge/integrations'
     | '/knowledge/'
+    | '/_authenticated/admin/knowledge'
     | '/_authenticated/projects/$projectId'
     | '/docs/it/ai-privacy-first-europa'
     | '/docs/it/eu-ai-act-analisi-codice'
@@ -646,9 +716,14 @@ export interface FileRouteTypes {
     | '/docs/zh/eu-ai-act-code-analysis'
     | '/docs/zh/gdpr-ai-code-review'
     | '/docs/zh/privacy-first-ai-europe'
+    | '/_authenticated/admin/knowledge/drafts'
+    | '/_authenticated/admin/knowledge/opportunities'
     | '/api/public/hooks/cleanup-stale-repositories'
+    | '/api/public/hooks/github-pr'
     | '/lovable/email/queue/process'
+    | '/_authenticated/admin/knowledge/'
     | '/_authenticated/projects/$projectId/'
+    | '/_authenticated/admin/knowledge/drafts/$id'
     | '/_authenticated/projects/$projectId/repos/$repoId'
     | '/_authenticated/projects/$projectId/repos/$repoId/history'
   fileRoutesById: FileRoutesById
@@ -676,6 +751,7 @@ export interface RootRouteChildren {
   KnowledgeIntegrationsRoute: typeof KnowledgeIntegrationsRoute
   KnowledgeIndexRoute: typeof KnowledgeIndexRoute
   ApiPublicHooksCleanupStaleRepositoriesRoute: typeof ApiPublicHooksCleanupStaleRepositoriesRoute
+  ApiPublicHooksGithubPrRoute: typeof ApiPublicHooksGithubPrRoute
   LovableEmailQueueProcessRoute: typeof LovableEmailQueueProcessRoute
 }
 
@@ -1003,6 +1079,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedProjectsProjectIdRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/admin/knowledge': {
+      id: '/_authenticated/admin/knowledge'
+      path: '/knowledge'
+      fullPath: '/admin/knowledge'
+      preLoaderRoute: typeof AuthenticatedAdminKnowledgeRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
     '/_authenticated/projects/$projectId/': {
       id: '/_authenticated/projects/$projectId/'
       path: '/'
@@ -1010,11 +1093,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedProjectsProjectIdIndexRouteImport
       parentRoute: typeof AuthenticatedProjectsProjectIdRoute
     }
+    '/_authenticated/admin/knowledge/': {
+      id: '/_authenticated/admin/knowledge/'
+      path: '/'
+      fullPath: '/admin/knowledge/'
+      preLoaderRoute: typeof AuthenticatedAdminKnowledgeIndexRouteImport
+      parentRoute: typeof AuthenticatedAdminKnowledgeRoute
+    }
     '/lovable/email/queue/process': {
       id: '/lovable/email/queue/process'
       path: '/lovable/email/queue/process'
       fullPath: '/lovable/email/queue/process'
       preLoaderRoute: typeof LovableEmailQueueProcessRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/hooks/github-pr': {
+      id: '/api/public/hooks/github-pr'
+      path: '/api/public/hooks/github-pr'
+      fullPath: '/api/public/hooks/github-pr'
+      preLoaderRoute: typeof ApiPublicHooksGithubPrRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/public/hooks/cleanup-stale-repositories': {
@@ -1024,12 +1121,33 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicHooksCleanupStaleRepositoriesRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/admin/knowledge/opportunities': {
+      id: '/_authenticated/admin/knowledge/opportunities'
+      path: '/opportunities'
+      fullPath: '/admin/knowledge/opportunities'
+      preLoaderRoute: typeof AuthenticatedAdminKnowledgeOpportunitiesRouteImport
+      parentRoute: typeof AuthenticatedAdminKnowledgeRoute
+    }
+    '/_authenticated/admin/knowledge/drafts': {
+      id: '/_authenticated/admin/knowledge/drafts'
+      path: '/drafts'
+      fullPath: '/admin/knowledge/drafts'
+      preLoaderRoute: typeof AuthenticatedAdminKnowledgeDraftsRouteImport
+      parentRoute: typeof AuthenticatedAdminKnowledgeRoute
+    }
     '/_authenticated/projects/$projectId/repos/$repoId': {
       id: '/_authenticated/projects/$projectId/repos/$repoId'
       path: '/repos/$repoId'
       fullPath: '/projects/$projectId/repos/$repoId'
       preLoaderRoute: typeof AuthenticatedProjectsProjectIdReposRepoIdRouteImport
       parentRoute: typeof AuthenticatedProjectsProjectIdRoute
+    }
+    '/_authenticated/admin/knowledge/drafts/$id': {
+      id: '/_authenticated/admin/knowledge/drafts/$id'
+      path: '/$id'
+      fullPath: '/admin/knowledge/drafts/$id'
+      preLoaderRoute: typeof AuthenticatedAdminKnowledgeDraftsIdRouteImport
+      parentRoute: typeof AuthenticatedAdminKnowledgeDraftsRoute
     }
     '/_authenticated/projects/$projectId/repos/$repoId/history': {
       id: '/_authenticated/projects/$projectId/repos/$repoId/history'
@@ -1040,6 +1158,54 @@ declare module '@tanstack/react-router' {
     }
   }
 }
+
+interface AuthenticatedAdminKnowledgeDraftsRouteChildren {
+  AuthenticatedAdminKnowledgeDraftsIdRoute: typeof AuthenticatedAdminKnowledgeDraftsIdRoute
+}
+
+const AuthenticatedAdminKnowledgeDraftsRouteChildren: AuthenticatedAdminKnowledgeDraftsRouteChildren =
+  {
+    AuthenticatedAdminKnowledgeDraftsIdRoute:
+      AuthenticatedAdminKnowledgeDraftsIdRoute,
+  }
+
+const AuthenticatedAdminKnowledgeDraftsRouteWithChildren =
+  AuthenticatedAdminKnowledgeDraftsRoute._addFileChildren(
+    AuthenticatedAdminKnowledgeDraftsRouteChildren,
+  )
+
+interface AuthenticatedAdminKnowledgeRouteChildren {
+  AuthenticatedAdminKnowledgeDraftsRoute: typeof AuthenticatedAdminKnowledgeDraftsRouteWithChildren
+  AuthenticatedAdminKnowledgeOpportunitiesRoute: typeof AuthenticatedAdminKnowledgeOpportunitiesRoute
+  AuthenticatedAdminKnowledgeIndexRoute: typeof AuthenticatedAdminKnowledgeIndexRoute
+}
+
+const AuthenticatedAdminKnowledgeRouteChildren: AuthenticatedAdminKnowledgeRouteChildren =
+  {
+    AuthenticatedAdminKnowledgeDraftsRoute:
+      AuthenticatedAdminKnowledgeDraftsRouteWithChildren,
+    AuthenticatedAdminKnowledgeOpportunitiesRoute:
+      AuthenticatedAdminKnowledgeOpportunitiesRoute,
+    AuthenticatedAdminKnowledgeIndexRoute:
+      AuthenticatedAdminKnowledgeIndexRoute,
+  }
+
+const AuthenticatedAdminKnowledgeRouteWithChildren =
+  AuthenticatedAdminKnowledgeRoute._addFileChildren(
+    AuthenticatedAdminKnowledgeRouteChildren,
+  )
+
+interface AuthenticatedAdminRouteChildren {
+  AuthenticatedAdminKnowledgeRoute: typeof AuthenticatedAdminKnowledgeRouteWithChildren
+}
+
+const AuthenticatedAdminRouteChildren: AuthenticatedAdminRouteChildren = {
+  AuthenticatedAdminKnowledgeRoute:
+    AuthenticatedAdminKnowledgeRouteWithChildren,
+}
+
+const AuthenticatedAdminRouteWithChildren =
+  AuthenticatedAdminRoute._addFileChildren(AuthenticatedAdminRouteChildren)
 
 interface AuthenticatedProjectsProjectIdReposRepoIdRouteChildren {
   AuthenticatedProjectsProjectIdReposRepoIdHistoryRoute: typeof AuthenticatedProjectsProjectIdReposRepoIdHistoryRoute
@@ -1075,7 +1241,7 @@ const AuthenticatedProjectsProjectIdRouteWithChildren =
   )
 
 interface AuthenticatedRouteRouteChildren {
-  AuthenticatedAdminRoute: typeof AuthenticatedAdminRoute
+  AuthenticatedAdminRoute: typeof AuthenticatedAdminRouteWithChildren
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedHistoryRoute: typeof AuthenticatedHistoryRoute
   AuthenticatedSettingsRoute: typeof AuthenticatedSettingsRoute
@@ -1083,7 +1249,7 @@ interface AuthenticatedRouteRouteChildren {
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
-  AuthenticatedAdminRoute: AuthenticatedAdminRoute,
+  AuthenticatedAdminRoute: AuthenticatedAdminRouteWithChildren,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedHistoryRoute: AuthenticatedHistoryRoute,
   AuthenticatedSettingsRoute: AuthenticatedSettingsRoute,
@@ -1166,6 +1332,7 @@ const rootRouteChildren: RootRouteChildren = {
   KnowledgeIndexRoute: KnowledgeIndexRoute,
   ApiPublicHooksCleanupStaleRepositoriesRoute:
     ApiPublicHooksCleanupStaleRepositoriesRoute,
+  ApiPublicHooksGithubPrRoute: ApiPublicHooksGithubPrRoute,
   LovableEmailQueueProcessRoute: LovableEmailQueueProcessRoute,
 }
 export const routeTree = rootRouteImport
