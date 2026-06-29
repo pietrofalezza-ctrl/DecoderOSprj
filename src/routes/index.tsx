@@ -75,13 +75,14 @@ export const Route = createFileRoute("/")({
           keywords:
             "AI code analysis, AI code review, AI-generated code, static code analysis, malware analysis, AI code chat",
           featureList: [
+            "Single-file upload across 20+ programming languages",
+            "ZIP archive and public GitHub repository import",
             "AI code analysis with BYOK (OpenAI, Anthropic, Gemini, OpenRouter)",
             "Local AI via Ollama and LM Studio",
             "Static code analysis without an API key",
             "Static malware / supply-chain scan without an API key",
             "AI chat with your repository",
             "Persistent analysis history per repository",
-            "Multi-language support (20+ languages)",
             "Community contributors page",
           ],
           offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
