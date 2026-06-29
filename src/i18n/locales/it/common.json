@@ -193,7 +193,7 @@
       "kicker": "Cosa fa Decoder",
       "title": "Quattro modi di leggere il tuo codice",
       "body": "Tocca una card per i dettagli. Statica e antimalware non richiedono chiavi; le funzioni AI usano la tua chiave BYOK o un modello locale.",
-      "moreLink": "Scopri di più",
+      "moreLink": "Scopri di più su questa funzione",
       "close": "Chiudi",
       "static": {
         "title": "Analisi statica",
@@ -813,7 +813,7 @@
     "demote": "Rimuovi admin"
   },
   "docs": {
-    "title": "Documentazione",
+    "title": "Documentazione di Decoder",
     "intro": "Decoder trasforma il codice sorgente in conoscenza leggibile. Leggi questa pagina nella tua lingua tramite il selettore nell'intestazione.",
     "gettingStartedTitle": "Per iniziare",
     "gettingStartedBody": "Accedi, crea un progetto, poi porta codice in uno dei tre modi: trascina un singolo file sorgente (.js, .ts, .py, .java, .go, .rs, .sql e oltre 20 altri), carica uno ZIP di una cartella o importa una repository pubblica da GitHub. Seleziona un file nell'albero, poi clicca Spiega. Scegli il tuo livello e il riassunto umano o tecnico.",
