@@ -22,10 +22,14 @@ import { Route as ContactRouteImport } from './routes/contact'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as DocsPrivacyFirstAiEuropeRouteImport } from './routes/docs.privacy-first-ai-europe'
 import { Route as DocsOpenSourceAiCodeReviewRouteImport } from './routes/docs.open-source-ai-code-review'
 import { Route as DocsHowToReviewAiCodeRouteImport } from './routes/docs.how-to-review-ai-code'
+import { Route as DocsGdprAiCodeReviewRouteImport } from './routes/docs.gdpr-ai-code-review'
+import { Route as DocsEuAiActCodeAnalysisRouteImport } from './routes/docs.eu-ai-act-code-analysis'
 import { Route as DocsComparisonCoderabbitRouteImport } from './routes/docs.comparison-coderabbit'
 import { Route as DocsAiCodeReviewToolsByokRouteImport } from './routes/docs.ai-code-review-tools-byok'
+import { Route as DocsAiCodeReviewMilanoNordItaliaRouteImport } from './routes/docs.ai-code-review-milano-nord-italia'
 import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated/settings'
 import { Route as AuthenticatedHistoryRouteImport } from './routes/_authenticated/history'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
@@ -101,6 +105,12 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DocsPrivacyFirstAiEuropeRoute =
+  DocsPrivacyFirstAiEuropeRouteImport.update({
+    id: '/privacy-first-ai-europe',
+    path: '/privacy-first-ai-europe',
+    getParentRoute: () => DocsRoute,
+  } as any)
 const DocsOpenSourceAiCodeReviewRoute =
   DocsOpenSourceAiCodeReviewRouteImport.update({
     id: '/open-source-ai-code-review',
@@ -110,6 +120,16 @@ const DocsOpenSourceAiCodeReviewRoute =
 const DocsHowToReviewAiCodeRoute = DocsHowToReviewAiCodeRouteImport.update({
   id: '/how-to-review-ai-code',
   path: '/how-to-review-ai-code',
+  getParentRoute: () => DocsRoute,
+} as any)
+const DocsGdprAiCodeReviewRoute = DocsGdprAiCodeReviewRouteImport.update({
+  id: '/gdpr-ai-code-review',
+  path: '/gdpr-ai-code-review',
+  getParentRoute: () => DocsRoute,
+} as any)
+const DocsEuAiActCodeAnalysisRoute = DocsEuAiActCodeAnalysisRouteImport.update({
+  id: '/eu-ai-act-code-analysis',
+  path: '/eu-ai-act-code-analysis',
   getParentRoute: () => DocsRoute,
 } as any)
 const DocsComparisonCoderabbitRoute =
@@ -122,6 +142,12 @@ const DocsAiCodeReviewToolsByokRoute =
   DocsAiCodeReviewToolsByokRouteImport.update({
     id: '/ai-code-review-tools-byok',
     path: '/ai-code-review-tools-byok',
+    getParentRoute: () => DocsRoute,
+  } as any)
+const DocsAiCodeReviewMilanoNordItaliaRoute =
+  DocsAiCodeReviewMilanoNordItaliaRouteImport.update({
+    id: '/ai-code-review-milano-nord-italia',
+    path: '/ai-code-review-milano-nord-italia',
     getParentRoute: () => DocsRoute,
   } as any)
 const AuthenticatedSettingsRoute = AuthenticatedSettingsRouteImport.update({
@@ -198,10 +224,14 @@ export interface FileRoutesByFullPath {
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/history': typeof AuthenticatedHistoryRoute
   '/settings': typeof AuthenticatedSettingsRoute
+  '/docs/ai-code-review-milano-nord-italia': typeof DocsAiCodeReviewMilanoNordItaliaRoute
   '/docs/ai-code-review-tools-byok': typeof DocsAiCodeReviewToolsByokRoute
   '/docs/comparison-coderabbit': typeof DocsComparisonCoderabbitRoute
+  '/docs/eu-ai-act-code-analysis': typeof DocsEuAiActCodeAnalysisRoute
+  '/docs/gdpr-ai-code-review': typeof DocsGdprAiCodeReviewRoute
   '/docs/how-to-review-ai-code': typeof DocsHowToReviewAiCodeRoute
   '/docs/open-source-ai-code-review': typeof DocsOpenSourceAiCodeReviewRoute
+  '/docs/privacy-first-ai-europe': typeof DocsPrivacyFirstAiEuropeRoute
   '/projects/$projectId': typeof AuthenticatedProjectsProjectIdRouteWithChildren
   '/api/public/hooks/cleanup-stale-repositories': typeof ApiPublicHooksCleanupStaleRepositoriesRoute
   '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
@@ -226,10 +256,14 @@ export interface FileRoutesByTo {
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/history': typeof AuthenticatedHistoryRoute
   '/settings': typeof AuthenticatedSettingsRoute
+  '/docs/ai-code-review-milano-nord-italia': typeof DocsAiCodeReviewMilanoNordItaliaRoute
   '/docs/ai-code-review-tools-byok': typeof DocsAiCodeReviewToolsByokRoute
   '/docs/comparison-coderabbit': typeof DocsComparisonCoderabbitRoute
+  '/docs/eu-ai-act-code-analysis': typeof DocsEuAiActCodeAnalysisRoute
+  '/docs/gdpr-ai-code-review': typeof DocsGdprAiCodeReviewRoute
   '/docs/how-to-review-ai-code': typeof DocsHowToReviewAiCodeRoute
   '/docs/open-source-ai-code-review': typeof DocsOpenSourceAiCodeReviewRoute
+  '/docs/privacy-first-ai-europe': typeof DocsPrivacyFirstAiEuropeRoute
   '/api/public/hooks/cleanup-stale-repositories': typeof ApiPublicHooksCleanupStaleRepositoriesRoute
   '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
   '/projects/$projectId': typeof AuthenticatedProjectsProjectIdIndexRoute
@@ -255,10 +289,14 @@ export interface FileRoutesById {
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/history': typeof AuthenticatedHistoryRoute
   '/_authenticated/settings': typeof AuthenticatedSettingsRoute
+  '/docs/ai-code-review-milano-nord-italia': typeof DocsAiCodeReviewMilanoNordItaliaRoute
   '/docs/ai-code-review-tools-byok': typeof DocsAiCodeReviewToolsByokRoute
   '/docs/comparison-coderabbit': typeof DocsComparisonCoderabbitRoute
+  '/docs/eu-ai-act-code-analysis': typeof DocsEuAiActCodeAnalysisRoute
+  '/docs/gdpr-ai-code-review': typeof DocsGdprAiCodeReviewRoute
   '/docs/how-to-review-ai-code': typeof DocsHowToReviewAiCodeRoute
   '/docs/open-source-ai-code-review': typeof DocsOpenSourceAiCodeReviewRoute
+  '/docs/privacy-first-ai-europe': typeof DocsPrivacyFirstAiEuropeRoute
   '/_authenticated/projects/$projectId': typeof AuthenticatedProjectsProjectIdRouteWithChildren
   '/api/public/hooks/cleanup-stale-repositories': typeof ApiPublicHooksCleanupStaleRepositoriesRoute
   '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
@@ -285,10 +323,14 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/history'
     | '/settings'
+    | '/docs/ai-code-review-milano-nord-italia'
     | '/docs/ai-code-review-tools-byok'
     | '/docs/comparison-coderabbit'
+    | '/docs/eu-ai-act-code-analysis'
+    | '/docs/gdpr-ai-code-review'
     | '/docs/how-to-review-ai-code'
     | '/docs/open-source-ai-code-review'
+    | '/docs/privacy-first-ai-europe'
     | '/projects/$projectId'
     | '/api/public/hooks/cleanup-stale-repositories'
     | '/lovable/email/queue/process'
@@ -313,10 +355,14 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/history'
     | '/settings'
+    | '/docs/ai-code-review-milano-nord-italia'
     | '/docs/ai-code-review-tools-byok'
     | '/docs/comparison-coderabbit'
+    | '/docs/eu-ai-act-code-analysis'
+    | '/docs/gdpr-ai-code-review'
     | '/docs/how-to-review-ai-code'
     | '/docs/open-source-ai-code-review'
+    | '/docs/privacy-first-ai-europe'
     | '/api/public/hooks/cleanup-stale-repositories'
     | '/lovable/email/queue/process'
     | '/projects/$projectId'
@@ -341,10 +387,14 @@ export interface FileRouteTypes {
     | '/_authenticated/dashboard'
     | '/_authenticated/history'
     | '/_authenticated/settings'
+    | '/docs/ai-code-review-milano-nord-italia'
     | '/docs/ai-code-review-tools-byok'
     | '/docs/comparison-coderabbit'
+    | '/docs/eu-ai-act-code-analysis'
+    | '/docs/gdpr-ai-code-review'
     | '/docs/how-to-review-ai-code'
     | '/docs/open-source-ai-code-review'
+    | '/docs/privacy-first-ai-europe'
     | '/_authenticated/projects/$projectId'
     | '/api/public/hooks/cleanup-stale-repositories'
     | '/lovable/email/queue/process'
@@ -464,6 +514,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/docs/privacy-first-ai-europe': {
+      id: '/docs/privacy-first-ai-europe'
+      path: '/privacy-first-ai-europe'
+      fullPath: '/docs/privacy-first-ai-europe'
+      preLoaderRoute: typeof DocsPrivacyFirstAiEuropeRouteImport
+      parentRoute: typeof DocsRoute
+    }
     '/docs/open-source-ai-code-review': {
       id: '/docs/open-source-ai-code-review'
       path: '/open-source-ai-code-review'
@@ -478,6 +535,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DocsHowToReviewAiCodeRouteImport
       parentRoute: typeof DocsRoute
     }
+    '/docs/gdpr-ai-code-review': {
+      id: '/docs/gdpr-ai-code-review'
+      path: '/gdpr-ai-code-review'
+      fullPath: '/docs/gdpr-ai-code-review'
+      preLoaderRoute: typeof DocsGdprAiCodeReviewRouteImport
+      parentRoute: typeof DocsRoute
+    }
+    '/docs/eu-ai-act-code-analysis': {
+      id: '/docs/eu-ai-act-code-analysis'
+      path: '/eu-ai-act-code-analysis'
+      fullPath: '/docs/eu-ai-act-code-analysis'
+      preLoaderRoute: typeof DocsEuAiActCodeAnalysisRouteImport
+      parentRoute: typeof DocsRoute
+    }
     '/docs/comparison-coderabbit': {
       id: '/docs/comparison-coderabbit'
       path: '/comparison-coderabbit'
@@ -490,6 +561,13 @@ declare module '@tanstack/react-router' {
       path: '/ai-code-review-tools-byok'
       fullPath: '/docs/ai-code-review-tools-byok'
       preLoaderRoute: typeof DocsAiCodeReviewToolsByokRouteImport
+      parentRoute: typeof DocsRoute
+    }
+    '/docs/ai-code-review-milano-nord-italia': {
+      id: '/docs/ai-code-review-milano-nord-italia'
+      path: '/ai-code-review-milano-nord-italia'
+      fullPath: '/docs/ai-code-review-milano-nord-italia'
+      preLoaderRoute: typeof DocsAiCodeReviewMilanoNordItaliaRouteImport
       parentRoute: typeof DocsRoute
     }
     '/_authenticated/settings': {
@@ -619,17 +697,25 @@ const AuthenticatedRouteRouteWithChildren =
   AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
 
 interface DocsRouteChildren {
+  DocsAiCodeReviewMilanoNordItaliaRoute: typeof DocsAiCodeReviewMilanoNordItaliaRoute
   DocsAiCodeReviewToolsByokRoute: typeof DocsAiCodeReviewToolsByokRoute
   DocsComparisonCoderabbitRoute: typeof DocsComparisonCoderabbitRoute
+  DocsEuAiActCodeAnalysisRoute: typeof DocsEuAiActCodeAnalysisRoute
+  DocsGdprAiCodeReviewRoute: typeof DocsGdprAiCodeReviewRoute
   DocsHowToReviewAiCodeRoute: typeof DocsHowToReviewAiCodeRoute
   DocsOpenSourceAiCodeReviewRoute: typeof DocsOpenSourceAiCodeReviewRoute
+  DocsPrivacyFirstAiEuropeRoute: typeof DocsPrivacyFirstAiEuropeRoute
 }
 
 const DocsRouteChildren: DocsRouteChildren = {
+  DocsAiCodeReviewMilanoNordItaliaRoute: DocsAiCodeReviewMilanoNordItaliaRoute,
   DocsAiCodeReviewToolsByokRoute: DocsAiCodeReviewToolsByokRoute,
   DocsComparisonCoderabbitRoute: DocsComparisonCoderabbitRoute,
+  DocsEuAiActCodeAnalysisRoute: DocsEuAiActCodeAnalysisRoute,
+  DocsGdprAiCodeReviewRoute: DocsGdprAiCodeReviewRoute,
   DocsHowToReviewAiCodeRoute: DocsHowToReviewAiCodeRoute,
   DocsOpenSourceAiCodeReviewRoute: DocsOpenSourceAiCodeReviewRoute,
+  DocsPrivacyFirstAiEuropeRoute: DocsPrivacyFirstAiEuropeRoute,
 }
 
 const DocsRouteWithChildren = DocsRoute._addFileChildren(DocsRouteChildren)

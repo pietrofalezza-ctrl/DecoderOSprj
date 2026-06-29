@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url><loc>https://decoderead.dev/</loc><lastmod>2026-06-29</lastmod><changefreq>weekly</changefreq><priority>1.0</priority></url>
   <url><loc>https://decoderead.dev/auth</loc><changefreq>yearly</changefreq><priority>0.3</priority></url>
   <url><loc>https://decoderead.dev/manifesto</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
@@ -10,6 +10,48 @@
   <url><loc>https://decoderead.dev/docs/comparison-coderabbit</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
   <url><loc>https://decoderead.dev/docs/ai-code-review-tools-byok</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
   <url><loc>https://decoderead.dev/docs/open-source-ai-code-review</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url>
+    <loc>https://decoderead.dev/docs/eu-ai-act-code-analysis</loc>
+    <lastmod>2026-06-29</lastmod><changefreq>monthly</changefreq><priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://decoderead.dev/docs/eu-ai-act-code-analysis"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://decoderead.dev/docs/it/eu-ai-act-analisi-codice"/>
+    <xhtml:link rel="alternate" hreflang="zh" href="https://decoderead.dev/docs/zh/eu-ai-act-code-analysis"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://decoderead.dev/docs/eu-ai-act-code-analysis"/>
+  </url>
+  <url>
+    <loc>https://decoderead.dev/docs/it/eu-ai-act-analisi-codice</loc>
+    <lastmod>2026-06-29</lastmod><changefreq>monthly</changefreq><priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://decoderead.dev/docs/zh/eu-ai-act-code-analysis</loc>
+    <lastmod>2026-06-29</lastmod><changefreq>monthly</changefreq><priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://decoderead.dev/docs/gdpr-ai-code-review</loc>
+    <lastmod>2026-06-29</lastmod><changefreq>monthly</changefreq><priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://decoderead.dev/docs/gdpr-ai-code-review"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://decoderead.dev/docs/it/gdpr-revisione-codice-ai"/>
+    <xhtml:link rel="alternate" hreflang="zh" href="https://decoderead.dev/docs/zh/gdpr-ai-code-review"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://decoderead.dev/docs/gdpr-ai-code-review"/>
+  </url>
+  <url><loc>https://decoderead.dev/docs/it/gdpr-revisione-codice-ai</loc><lastmod>2026-06-29</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://decoderead.dev/docs/zh/gdpr-ai-code-review</loc><lastmod>2026-06-29</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url>
+    <loc>https://decoderead.dev/docs/privacy-first-ai-europe</loc>
+    <lastmod>2026-06-29</lastmod><changefreq>monthly</changefreq><priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://decoderead.dev/docs/privacy-first-ai-europe"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://decoderead.dev/docs/it/ai-privacy-first-europa"/>
+    <xhtml:link rel="alternate" hreflang="zh" href="https://decoderead.dev/docs/zh/privacy-first-ai-europe"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://decoderead.dev/docs/privacy-first-ai-europe"/>
+  </url>
+  <url><loc>https://decoderead.dev/docs/it/ai-privacy-first-europa</loc><lastmod>2026-06-29</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://decoderead.dev/docs/zh/privacy-first-ai-europe</loc><lastmod>2026-06-29</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url>
+    <loc>https://decoderead.dev/docs/ai-code-review-milano-nord-italia</loc>
+    <lastmod>2026-06-29</lastmod><changefreq>monthly</changefreq><priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="it" href="https://decoderead.dev/docs/ai-code-review-milano-nord-italia"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://decoderead.dev/docs/ai-code-review-milano-nord-italia"/>
+  </url>
   <url><loc>https://decoderead.dev/data-flow</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
   <url><loc>https://decoderead.dev/contact</loc><changefreq>yearly</changefreq><priority>0.4</priority></url>
   <url><loc>https://decoderead.dev/terms</loc><changefreq>monthly</changefreq><priority>0.5</priority></url>
