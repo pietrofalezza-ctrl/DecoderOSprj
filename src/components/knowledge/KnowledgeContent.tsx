@@ -191,6 +191,7 @@ export function KnowledgeContent({
         </Button>
       </div>
     </article>
+    </>
   );
 }
 
