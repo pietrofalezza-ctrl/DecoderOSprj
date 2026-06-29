@@ -182,6 +182,8 @@ function WorkspacePage() {
   const [repoAiResult, setRepoAiResult] = useState<RepoAiOriginResult | null>(null);
   const [selection, setSelection] = useState<CodeSelection | null>(null);
   const [useSelection, setUseSelection] = useState(true);
+  const isMobile = useIsMobile();
+  const [mobilePane, setMobilePane] = useState<"files" | "code" | "insights">("files");
 
   const cloudKeys = useMemo(() => provs.data?.keys ?? [], [provs.data?.keys]);
   const localEndpoints = useMemo(() => provs.data?.endpoints ?? [], [provs.data?.endpoints]);
