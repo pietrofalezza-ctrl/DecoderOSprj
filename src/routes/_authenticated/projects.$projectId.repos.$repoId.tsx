@@ -997,9 +997,44 @@ function WorkspacePage() {
         </Sheet>
       )}
 
-      <div className="h-[calc(100vh-3.5rem)]">
-        <ResizablePanelGroup orientation="horizontal">
-          <ResizablePanel defaultSize={20} minSize={14}>
+      <div className="flex h-[calc(100vh-3.5rem)] flex-col">
+        {isMobile && (
+          <div className="flex shrink-0 items-center gap-1 border-b border-border bg-background p-1.5">
+            {(
+              [
+                { key: "files", label: t("workspace.files") },
+                { key: "code", label: t("workspace.tabs.code", { defaultValue: "Code" }) },
+                {
+                  key: "insights",
+                  label: t("workspace.tabs.insights", { defaultValue: "Insights" }),
+                },
+              ] as { key: MobilePaneKey; label: string }[]
+            ).map((tab) => (
+              <button
+                key={tab.key}
+                type="button"
+                onClick={() => setMobilePane(tab.key)}
+                className={cn(
+                  "flex-1 rounded-md px-2 py-1.5 text-xs font-medium transition-colors",
+                  mobilePane === tab.key
+                    ? "bg-primary text-primary-foreground"
+                    : "text-muted-foreground hover:bg-muted",
+                )}
+              >
+                {tab.label}
+              </button>
+            ))}
+          </div>
+        )}
+        <WorkspacePanelGroup isMobile={isMobile}>
+          <WorkspacePanel
+            isMobile={isMobile}
+            paneKey="files"
+            activePane={mobilePane}
+            defaultSize={20}
+            minSize={14}
+          >
+
             <div className="flex h-full flex-col border-r border-border bg-sidebar">
               <div className="flex items-center justify-between gap-2 border-b border-border px-3 py-2">
                 <span className="truncate text-xs font-medium uppercase text-muted-foreground">
