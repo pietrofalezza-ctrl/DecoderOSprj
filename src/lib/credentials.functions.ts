@@ -35,7 +35,11 @@ export const saveProviderKey = createServerFn({ method: "POST" })
     const { encryptSecret, keyHint } = await import("./crypto.server");
     const encrypted = encryptSecret(data.api_key);
     const hint = keyHint(data.api_key);
-    const { error } = await context.supabase.from("user_ai_credentials").upsert(
+    // Use the admin client so the write never needs SELECT on the base table
+    // (the safe view is the only client-facing read path). owner_id is bound
+    // to the authenticated userId from the middleware, so this is safe.
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { error } = await supabaseAdmin.from("user_ai_credentials").upsert(
       {
         owner_id: context.userId,
         provider: data.provider,
@@ -52,9 +56,11 @@ export const deleteProviderKey = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator(z.object({ provider: Provider }))
   .handler(async ({ context, data }) => {
-    const { error } = await context.supabase
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { error } = await supabaseAdmin
       .from("user_ai_credentials")
       .delete()
+      .eq("owner_id", context.userId)
       .eq("provider", data.provider);
     if (error) throw error;
     return { ok: true };
