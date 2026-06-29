@@ -17,6 +17,10 @@ import {
   Scale,
   HeartHandshake,
   Menu,
+  Download,
+  Monitor,
+  Smartphone,
+  Apple,
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -25,6 +29,7 @@ import { LangSwitcher } from "@/components/LangSwitcher";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { Logo } from "@/components/Logo";
 import { PublicHeaderAuthSlot } from "@/components/PublicHeaderAuthSlot";
+import { usePwaInstall } from "@/hooks/use-pwa-install";
 import {
   GuardrailDiagram,
   CommunityCard,
