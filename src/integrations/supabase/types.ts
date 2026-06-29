@@ -455,6 +455,314 @@ export type Database = {
           },
         ]
       }
+      knowledge_audit: {
+        Row: {
+          action: string
+          actor: string | null
+          at: string
+          diff: Json
+          entry_id: string | null
+          id: string
+          opportunity_id: string | null
+        }
+        Insert: {
+          action: string
+          actor?: string | null
+          at?: string
+          diff?: Json
+          entry_id?: string | null
+          id?: string
+          opportunity_id?: string | null
+        }
+        Update: {
+          action?: string
+          actor?: string | null
+          at?: string
+          diff?: Json
+          entry_id?: string | null
+          id?: string
+          opportunity_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "knowledge_audit_entry_id_fkey"
+            columns: ["entry_id"]
+            isOneToOne: false
+            referencedRelation: "knowledge_entries"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "knowledge_audit_opportunity_id_fkey"
+            columns: ["opportunity_id"]
+            isOneToOne: false
+            referencedRelation: "knowledge_opportunities"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      knowledge_edges: {
+        Row: {
+          auto_generated: boolean
+          created_at: string
+          from_entry: string
+          relation: string
+          to_entry: string
+          weight: number
+        }
+        Insert: {
+          auto_generated?: boolean
+          created_at?: string
+          from_entry: string
+          relation?: string
+          to_entry: string
+          weight?: number
+        }
+        Update: {
+          auto_generated?: boolean
+          created_at?: string
+          from_entry?: string
+          relation?: string
+          to_entry?: string
+          weight?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "knowledge_edges_from_entry_fkey"
+            columns: ["from_entry"]
+            isOneToOne: false
+            referencedRelation: "knowledge_entries"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "knowledge_edges_to_entry_fkey"
+            columns: ["to_entry"]
+            isOneToOne: false
+            referencedRelation: "knowledge_entries"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      knowledge_entries: {
+        Row: {
+          category: string | null
+          created_at: string
+          created_by: string | null
+          difficulty: number
+          doc_impact: number
+          id: string
+          lang_default: string
+          priority: number
+          published_at: string | null
+          related_slugs: string[]
+          reviewed_by: string | null
+          seo_impact: number
+          slug: string
+          source: Database["public"]["Enums"]["knowledge_entry_source"]
+          source_ref: Json
+          status: Database["public"]["Enums"]["knowledge_entry_status"]
+          tags: string[]
+          type: Database["public"]["Enums"]["knowledge_entry_type"]
+          updated_at: string
+        }
+        Insert: {
+          category?: string | null
+          created_at?: string
+          created_by?: string | null
+          difficulty?: number
+          doc_impact?: number
+          id?: string
+          lang_default?: string
+          priority?: number
+          published_at?: string | null
+          related_slugs?: string[]
+          reviewed_by?: string | null
+          seo_impact?: number
+          slug: string
+          source?: Database["public"]["Enums"]["knowledge_entry_source"]
+          source_ref?: Json
+          status?: Database["public"]["Enums"]["knowledge_entry_status"]
+          tags?: string[]
+          type: Database["public"]["Enums"]["knowledge_entry_type"]
+          updated_at?: string
+        }
+        Update: {
+          category?: string | null
+          created_at?: string
+          created_by?: string | null
+          difficulty?: number
+          doc_impact?: number
+          id?: string
+          lang_default?: string
+          priority?: number
+          published_at?: string | null
+          related_slugs?: string[]
+          reviewed_by?: string | null
+          seo_impact?: number
+          slug?: string
+          source?: Database["public"]["Enums"]["knowledge_entry_source"]
+          source_ref?: Json
+          status?: Database["public"]["Enums"]["knowledge_entry_status"]
+          tags?: string[]
+          type?: Database["public"]["Enums"]["knowledge_entry_type"]
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      knowledge_opportunities: {
+        Row: {
+          created_at: string
+          difficulty: number
+          doc_impact: number
+          eta_minutes: number | null
+          generated_from: Json
+          id: string
+          keywords: string[]
+          kind: string
+          priority: number
+          rationale: string | null
+          related_entries: string[]
+          seo_impact: number
+          source: Database["public"]["Enums"]["knowledge_entry_source"]
+          status: Database["public"]["Enums"]["knowledge_opportunity_status"]
+          suggested_slug: string | null
+          suggested_type:
+            | Database["public"]["Enums"]["knowledge_entry_type"]
+            | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          difficulty?: number
+          doc_impact?: number
+          eta_minutes?: number | null
+          generated_from?: Json
+          id?: string
+          keywords?: string[]
+          kind: string
+          priority?: number
+          rationale?: string | null
+          related_entries?: string[]
+          seo_impact?: number
+          source?: Database["public"]["Enums"]["knowledge_entry_source"]
+          status?: Database["public"]["Enums"]["knowledge_opportunity_status"]
+          suggested_slug?: string | null
+          suggested_type?:
+            | Database["public"]["Enums"]["knowledge_entry_type"]
+            | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          difficulty?: number
+          doc_impact?: number
+          eta_minutes?: number | null
+          generated_from?: Json
+          id?: string
+          keywords?: string[]
+          kind?: string
+          priority?: number
+          rationale?: string | null
+          related_entries?: string[]
+          seo_impact?: number
+          source?: Database["public"]["Enums"]["knowledge_entry_source"]
+          status?: Database["public"]["Enums"]["knowledge_opportunity_status"]
+          suggested_slug?: string | null
+          suggested_type?:
+            | Database["public"]["Enums"]["knowledge_entry_type"]
+            | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      knowledge_sources: {
+        Row: {
+          id: string
+          ingested_at: string
+          kind: string
+          payload: Json
+          ref: string | null
+          sha: string | null
+        }
+        Insert: {
+          id?: string
+          ingested_at?: string
+          kind: string
+          payload?: Json
+          ref?: string | null
+          sha?: string | null
+        }
+        Update: {
+          id?: string
+          ingested_at?: string
+          kind?: string
+          payload?: Json
+          ref?: string | null
+          sha?: string | null
+        }
+        Relationships: []
+      }
+      knowledge_translations: {
+        Row: {
+          body_md: string | null
+          created_at: string
+          entry_id: string
+          faq: Json
+          glossary: Json
+          id: string
+          keywords: string[]
+          lang: string
+          meta_description: string | null
+          meta_title: string | null
+          og_image: string | null
+          summary: string | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          body_md?: string | null
+          created_at?: string
+          entry_id: string
+          faq?: Json
+          glossary?: Json
+          id?: string
+          keywords?: string[]
+          lang: string
+          meta_description?: string | null
+          meta_title?: string | null
+          og_image?: string | null
+          summary?: string | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          body_md?: string | null
+          created_at?: string
+          entry_id?: string
+          faq?: Json
+          glossary?: Json
+          id?: string
+          keywords?: string[]
+          lang?: string
+          meta_description?: string | null
+          meta_title?: string | null
+          og_image?: string | null
+          summary?: string | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "knowledge_translations_entry_id_fkey"
+            columns: ["entry_id"]
+            isOneToOne: false
+            referencedRelation: "knowledge_entries"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       maintenance_audit_log: {
         Row: {
           created_at: string
@@ -834,6 +1142,29 @@ export type Database = {
     }
     Enums: {
       app_role: "admin" | "user"
+      knowledge_entry_source:
+        | "manual"
+        | "pr"
+        | "changelog"
+        | "codebase_scan"
+        | "user_doc"
+      knowledge_entry_status:
+        | "ai_draft"
+        | "in_review"
+        | "published"
+        | "archived"
+      knowledge_entry_type:
+        | "capability"
+        | "concept"
+        | "integration"
+        | "format"
+        | "case_study"
+        | "guide"
+      knowledge_opportunity_status:
+        | "open"
+        | "accepted"
+        | "dismissed"
+        | "converted"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -962,6 +1293,33 @@ export const Constants = {
   public: {
     Enums: {
       app_role: ["admin", "user"],
+      knowledge_entry_source: [
+        "manual",
+        "pr",
+        "changelog",
+        "codebase_scan",
+        "user_doc",
+      ],
+      knowledge_entry_status: [
+        "ai_draft",
+        "in_review",
+        "published",
+        "archived",
+      ],
+      knowledge_entry_type: [
+        "capability",
+        "concept",
+        "integration",
+        "format",
+        "case_study",
+        "guide",
+      ],
+      knowledge_opportunity_status: [
+        "open",
+        "accepted",
+        "dismissed",
+        "converted",
+      ],
     },
   },
 } as const
