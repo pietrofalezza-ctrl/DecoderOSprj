@@ -79,8 +79,8 @@ describe("staticScanDbValues", () => {
         isTextLikeExt: false,
         pathLooksSafe: true,
       },
-    },
-  };
+    } as unknown as StaticScanPayload["report"],
+  } satisfies StaticScanPayload;
 
   it("maps status field", () => {
     expect(staticScanDbValues(basePayload).static_scan_status).toBe("block");
