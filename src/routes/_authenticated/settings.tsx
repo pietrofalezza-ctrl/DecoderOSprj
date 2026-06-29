@@ -288,7 +288,7 @@ function SettingsPage() {
                       void requireAck(async () => {
                         try {
                           await saveKey({ data: { provider: p, api_key: key } });
-                          qc.invalidateQueries({ queryKey: ["providers"] });
+                          qc.invalidateQueries({ queryKey: ["providers"] }); qc.invalidateQueries({ queryKey: ["credentials-status"] });
                           toast.success(t("settings.saved"));
                         } catch (e) {
                           toast.error(getErrorMessage(e, t("errors.generic")));
@@ -300,7 +300,7 @@ function SettingsPage() {
                   }
                   onRemove={async () => {
                     await removeKey({ data: { provider: p } });
-                    qc.invalidateQueries({ queryKey: ["providers"] });
+                    qc.invalidateQueries({ queryKey: ["providers"] }); qc.invalidateQueries({ queryKey: ["credentials-status"] });
                   }}
                 />
               );
@@ -328,12 +328,12 @@ function SettingsPage() {
                     await saveEndpoint({
                       data: { kind, base_url, default_model: default_model || undefined },
                     });
-                    qc.invalidateQueries({ queryKey: ["providers"] });
+                    qc.invalidateQueries({ queryKey: ["providers"] }); qc.invalidateQueries({ queryKey: ["credentials-status"] });
                     toast.success(t("settings.saved"));
                   }}
                   onRemove={async () => {
                     await removeEndpoint({ data: { kind } });
-                    qc.invalidateQueries({ queryKey: ["providers"] });
+                    qc.invalidateQueries({ queryKey: ["providers"] }); qc.invalidateQueries({ queryKey: ["credentials-status"] });
                   }}
                 />
               );
