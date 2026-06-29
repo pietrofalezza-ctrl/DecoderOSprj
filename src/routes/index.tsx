@@ -21,6 +21,9 @@ import {
   Monitor,
   Smartphone,
   Apple,
+  FileCode2,
+  FileArchive,
+  Link2,
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
