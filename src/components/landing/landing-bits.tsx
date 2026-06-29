@@ -3,22 +3,22 @@ import { ArrowRight, Bot, ShieldCheck, Users } from "lucide-react";
 export function GuardrailDiagram({ t }: { t: (k: string) => string }) {
   return (
     <div className="border border-border bg-background p-5 font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
-      <div className="flex items-center justify-between gap-3">
+      <div className="flex flex-col items-stretch gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex-1 border border-border bg-card px-2 py-3 text-center">
           <Bot className="mx-auto mb-1.5 h-4 w-4 text-foreground" />
           AI source
         </div>
-        <div className="flex flex-col items-center text-foreground">
-          <span className="h-px w-6 bg-border" />
-          <ArrowRight className="h-3 w-3" />
+        <div className="flex flex-row items-center justify-center text-foreground sm:flex-col">
+          <span className="h-px w-6 bg-border sm:h-px sm:w-6" />
+          <ArrowRight className="h-3 w-3 rotate-90 sm:rotate-0" />
         </div>
         <div className="flex-1 border-2 border-primary bg-primary/5 px-2 py-3 text-center text-primary">
           <ShieldCheck className="mx-auto mb-1.5 h-4 w-4" />
           Decoder
         </div>
-        <div className="flex flex-col items-center text-foreground">
+        <div className="flex flex-row items-center justify-center text-foreground sm:flex-col">
           <span className="h-px w-6 bg-border" />
-          <ArrowRight className="h-3 w-3" />
+          <ArrowRight className="h-3 w-3 rotate-90 sm:rotate-0" />
         </div>
         <div className="flex-1 border border-border bg-card px-2 py-3 text-center">
           <Users className="mx-auto mb-1.5 h-4 w-4 text-foreground" />
