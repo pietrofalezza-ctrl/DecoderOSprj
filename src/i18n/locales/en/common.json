@@ -55,7 +55,6 @@
       "languagesNote": "Recognises 20+ languages (JavaScript, TypeScript, Python, Java, Go, Rust, SQL and more).",
       "pricingNote": "Uploading is always free for all three inputs. Static and malware scans run without any key. The AI features (explanations, AI-origin, code chat) need your own provider key (BYOK) or a local model."
     },
-
     "heroBadgeOpen": "Personal project · Open source",
     "heroBadgePrivacy": "BYOK or local inference",
     "heroBadgeAiEra": "Public code and prompts",
@@ -165,6 +164,67 @@
       "architectureBody": "Part of the authentication module, interacts with the users database.",
       "dependencies": "Dependencies",
       "applyComments": "Apply comments"
+    },
+    "faq": {
+      "kicker": "FAQ",
+      "title": "Frequently asked questions",
+      "q1": {
+        "q": "Can I upload just one file?",
+        "a": "Yes. Decoder accepts a single source file (.js, .ts, .py, .java, .go, .rs, .sql and 20+ more), a ZIP archive of a folder, or a public GitHub/GitLab URL. No setup is required and all three options behave the same way."
+      },
+      "q2": {
+        "q": "Do I need an API key to use Decoder?",
+        "a": "No. Static code analysis and malware scanning run fully offline with no API key. A BYOK cloud key (OpenAI, Anthropic, Gemini, OpenRouter) or a local Ollama / LM Studio endpoint is only needed for LLM-assisted explanations and chat."
+      },
+      "q3": {
+        "q": "Can I chat with my code?",
+        "a": "Yes. Open a repository, pick a folder or file, then open the Chat tab. Conversations are persisted per repository so you can resume them across sessions."
+      },
+      "q4": {
+        "q": "Are my analyses saved across sessions?",
+        "a": "Yes. Every explanation, quality / security / AI-origin analysis, static scan and chat turn is persisted in your account history and is recoverable from the History page."
+      },
+      "q5": {
+        "q": "Which languages does the static analysis support?",
+        "a": "20+ languages including JavaScript, TypeScript, Python, Java, Rust, Go, C/C++, C#, Ruby, PHP, Kotlin, Swift and SQL."
+      }
+    },
+    "capabilities": {
+      "kicker": "What Decoder does",
+      "title": "Four lenses on your code",
+      "body": "Tap any card for details. No key needed for static and malware; AI features use your BYOK key or a local model.",
+      "moreLink": "Learn more",
+      "close": "Close",
+      "static": {
+        "title": "Static analysis",
+        "short": "Offline checks for quality, complexity and risk.",
+        "long": "Decoder parses 20+ languages and flags complexity hotspots, dead code, dangerous patterns and supply-chain smells. Runs entirely on the server, no API key required."
+      },
+      "malware": {
+        "title": "Malware scan",
+        "short": "Heuristic + signature checks for hostile code.",
+        "long": "Detects obfuscation, suspicious network calls, packers and known-bad patterns (e.g. LockBit-style payloads). Free, offline, no API key required."
+      },
+      "aiExplain": {
+        "title": "AI explanations",
+        "short": "Natural-language walkthroughs of any file.",
+        "long": "Uses your BYOK key (OpenAI, Anthropic, Gemini, OpenRouter) or a local model (Ollama, LM Studio) to explain logic, risks and AI-origin signals in plain language and your preferred tone."
+      },
+      "chat": {
+        "title": "Chat with your repo",
+        "short": "Ask questions about folders or single files.",
+        "long": "Folder- and file-scoped conversations. Conversations are persisted per repository, so you can resume the same thread across sessions."
+      }
+    },
+    "learnMore": {
+      "kicker": "Go deeper",
+      "title": "Docs, manifesto and contributors",
+      "body": "The homepage stays light on purpose. Everything else lives one click away.",
+      "docs": "Documentation",
+      "manifesto": "Manifesto",
+      "openSource": "Open source",
+      "contributors": "Contributors",
+      "install": "Install as app"
     }
   },
   "terms": {
@@ -507,7 +567,6 @@
       "generating": "Generating explanation…",
       "hint": "Turn the offline scan report into a plain-language summary using your configured AI provider."
     },
-
     "howTo": {
       "title": "How to start an analysis",
       "step1": "Pick a file from the tree on the left",
@@ -616,7 +675,9 @@
     "outline": {
       "summary": "{{total}} insights · {{mapped}} mapped to code · {{unmapped}} general"
     },
-    "filter": { "all": "All" },
+    "filter": {
+      "all": "All"
+    },
     "category": {
       "summary": "Summary",
       "quality": "Quality",
@@ -645,7 +706,9 @@
       "quality": "Check quality",
       "security": "Check security"
     },
-    "unmapped": { "title": "File-level observations" }
+    "unmapped": {
+      "title": "File-level observations"
+    }
   },
   "aiOrigin": {
     "title": "AI-origin probability",
@@ -702,7 +765,6 @@
     "passwordMismatch": "Passwords do not match.",
     "passwordTooShort": "Password must be at least 8 characters.",
     "byokSection": "AI providers (BYOK)",
-
     "byokIntro": "Decoder never stores your keys in plain text. Your code is never used for training.",
     "addKey": "Save key",
     "removeKey": "Remove",
@@ -818,7 +880,11 @@
           "b1": "Uses Ollama, LM Studio or another local model.",
           "b2": "Designed so that code is processed locally.",
           "b3": "Recommended for sensitive or private code.",
-          "flow": { "code": "Your code", "model": "Local model", "ui": "Decoder UI" }
+          "flow": {
+            "code": "Your code",
+            "model": "Local model",
+            "ui": "Decoder UI"
+          }
         },
         "cloud": {
           "title": "Cloud BYOK mode",
@@ -1069,7 +1135,12 @@
     },
     "whatWeUseTitle": "What we actually store",
     "whatWeUseBody": "The full list of cookies and browser storage used by Decoder:",
-    "col": { "name": "Name", "purpose": "Purpose", "storage": "Storage", "retention": "Retention" },
+    "col": {
+      "name": "Name",
+      "purpose": "Purpose",
+      "storage": "Storage",
+      "retention": "Retention"
+    },
     "rows": {
       "auth": {
         "name": "sb-* (Supabase auth)",

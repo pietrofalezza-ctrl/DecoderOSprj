@@ -55,7 +55,6 @@
       "languagesNote": "识别 20+ 种语言(JavaScript、TypeScript、Python、Java、Go、Rust、SQL 等)。",
       "pricingNote": "三种上传方式都始终免费。静态分析与恶意代码扫描无需任何密钥。AI 功能(解释、AI 来源识别、代码对话)需要你自己的提供方密钥(BYOK)或本地模型。"
     },
-
     "heroBadgeOpen": "个人项目 · 开源",
     "heroBadgePrivacy": "BYOK 或本地推理",
     "heroBadgeAiEra": "公开的代码与提示词",
@@ -165,6 +164,67 @@
       "architectureBody": "属于认证模块,与用户数据库交互。",
       "dependencies": "依赖",
       "applyComments": "应用注释"
+    },
+    "faq": {
+      "kicker": "常见问题",
+      "title": "常见问题",
+      "q1": {
+        "q": "我可以只上传一个文件吗?",
+        "a": "可以。Decoder 接受单个源文件(.js、.ts、.py、.java、.go、.rs、.sql 等 20+ 种)、文件夹的 ZIP 压缩包或公共 GitHub/GitLab URL。无需任何配置,三种方式行为一致。"
+      },
+      "q2": {
+        "q": "使用 Decoder 需要 API 密钥吗?",
+        "a": "不需要。静态代码分析和恶意软件扫描完全离线运行,不需要任何 API 密钥。仅在使用 LLM 解释和对话功能时,才需要 BYOK 云端密钥(OpenAI、Anthropic、Gemini、OpenRouter)或本地 Ollama / LM Studio 端点。"
+      },
+      "q3": {
+        "q": "我可以与我的代码对话吗?",
+        "a": "可以。打开一个仓库,选择文件夹或文件,然后打开 Chat 标签。对话按仓库持久化,可以跨会话恢复。"
+      },
+      "q4": {
+        "q": "我的分析会跨会话保存吗?",
+        "a": "是的。每次解释、质量/安全/AI 来源分析、静态扫描和对话轮次都会保存到你的账户历史中,可以从历史页面恢复。"
+      },
+      "q5": {
+        "q": "静态分析支持哪些语言?",
+        "a": "20+ 种语言,包括 JavaScript、TypeScript、Python、Java、Rust、Go、C/C++、C#、Ruby、PHP、Kotlin、Swift 和 SQL。"
+      }
+    },
+    "capabilities": {
+      "kicker": "Decoder 能做什么",
+      "title": "查看代码的四种视角",
+      "body": "点击任意卡片查看详情。静态和恶意软件扫描无需密钥;AI 功能使用你的 BYOK 密钥或本地模型。",
+      "moreLink": "了解更多",
+      "close": "关闭",
+      "static": {
+        "title": "静态分析",
+        "short": "对质量、复杂度和风险的离线检查。",
+        "long": "Decoder 解析 20+ 种语言,标记复杂度热点、死代码、危险模式和供应链信号。完全在服务器运行,无需 API 密钥。"
+      },
+      "malware": {
+        "title": "恶意软件扫描",
+        "short": "针对恶意代码的启发式与特征检测。",
+        "long": "检测混淆、可疑网络调用、打包器和已知恶意模式(例如 LockBit 类载荷)。免费、离线、无需 API 密钥。"
+      },
+      "aiExplain": {
+        "title": "AI 解释",
+        "short": "任意文件的自然语言讲解。",
+        "long": "使用你的 BYOK 密钥(OpenAI、Anthropic、Gemini、OpenRouter)或本地模型(Ollama、LM Studio),以你偏好的语气解释逻辑、风险和 AI 来源信号。"
+      },
+      "chat": {
+        "title": "与你的仓库对话",
+        "short": "对文件夹或单个文件提问。",
+        "long": "文件夹和文件级别的对话。对话按仓库持久化,可以跨会话继续同一线程。"
+      }
+    },
+    "learnMore": {
+      "kicker": "深入了解",
+      "title": "文档、宣言和贡献者",
+      "body": "首页特意保持简洁。其他内容都在一次点击之外。",
+      "docs": "文档",
+      "manifesto": "宣言",
+      "openSource": "开源",
+      "contributors": "贡献者",
+      "install": "安装为应用"
     }
   },
   "terms": {
@@ -507,7 +567,6 @@
       "generating": "正在生成解释…",
       "hint": "使用已配置的 AI 提供商将离线扫描报告转换为通俗易懂的总结。"
     },
-
     "howTo": {
       "title": "如何开始分析",
       "step1": "在左侧文件树中选择一个文件",
@@ -616,7 +675,9 @@
     "outline": {
       "summary": "{{total}} 条洞察 · {{mapped}} 条关联到代码 · {{unmapped}} 条通用"
     },
-    "filter": { "all": "全部" },
+    "filter": {
+      "all": "全部"
+    },
     "category": {
       "summary": "摘要",
       "quality": "质量",
@@ -645,7 +706,9 @@
       "quality": "检查质量",
       "security": "检查安全"
     },
-    "unmapped": { "title": "文件级观察" }
+    "unmapped": {
+      "title": "文件级观察"
+    }
   },
   "aiOrigin": {
     "title": "AI 来源概率",
@@ -702,7 +765,6 @@
     "passwordMismatch": "两次输入的密码不一致。",
     "passwordTooShort": "密码长度至少需要 8 个字符。",
     "byokSection": "AI 提供商(自带密钥)",
-
     "byokIntro": "Decoder 不会以明文保存你的密钥。你的代码不会被用于训练模型。",
     "addKey": "保存密钥",
     "removeKey": "移除",
@@ -818,7 +880,11 @@
           "b1": "使用 Ollama、LM Studio 或其他本地模型。",
           "b2": "代码可在本地处理。",
           "b3": "推荐用于敏感或私有代码。",
-          "flow": { "code": "你的代码", "model": "本地模型", "ui": "Decoder 界面" }
+          "flow": {
+            "code": "你的代码",
+            "model": "本地模型",
+            "ui": "Decoder 界面"
+          }
         },
         "cloud": {
           "title": "云端 BYOK 模式",
@@ -1069,7 +1135,12 @@
     },
     "whatWeUseTitle": "我们实际存储什么",
     "whatWeUseBody": "Decoder 使用的 Cookie 和浏览器存储完整列表：",
-    "col": { "name": "名称", "purpose": "用途", "storage": "存储位置", "retention": "保留期" },
+    "col": {
+      "name": "名称",
+      "purpose": "用途",
+      "storage": "存储位置",
+      "retention": "保留期"
+    },
     "rows": {
       "auth": {
         "name": "sb-* (Supabase 认证)",
