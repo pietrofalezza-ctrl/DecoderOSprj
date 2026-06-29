@@ -196,7 +196,7 @@
     "dataCollectedIntro": "I dati elencati di seguito sono trattati nella misura strettamente necessaria al funzionamento della demo:",
     "dataCollected": {
       "account": "Account: email, nome visualizzato e timestamp di creazione (gestiti dal modulo di autenticazione).",
-      "content": "Contenuti: file caricati conservati nello storage privato del server (accessibili solo al proprietario tramite RLS) con retention indicativa di 60 giorni dall'ultimo utilizzo, metadati (path, dimensione, sha256, linguaggio, tipo di sorgente — zip o GitHub) e spiegazioni IA generate.",
+      "content": "Contenuti: file caricati conservati nello storage privato del server (accessibili solo al proprietario tramite RLS) con retention indicativa di 60 giorni dall'ultimo utilizzo, metadati (path, dimensione, sha256, linguaggio, tipo di sorgente — singolo file, zip o GitHub) e spiegazioni IA generate.",
       "credentials": "Chiavi API utente: cifrate at-rest con AES-256-GCM e mai restituite al browser. Decoder non offre alcuna AI gestita lato server: per usare un provider cloud devi configurare la tua chiave (BYOK).",
       "usage": "Metadati d'uso: provider e modello IA usati per ogni spiegazione, lingua e livello di proficiency preferiti, ruolo applicativo (es. admin). Nessuna profilazione comportamentale né tracciamento di terze parti.",
       "notracking": "Nessun tracker pubblicitario, nessun analytics di terze parti, nessuna profilazione. L'unico cookie impostato è tecnico (preferenza UI della sidebar) e non richiede consenso ai sensi del provvedimento del Garante del 10 giugno 2021."
