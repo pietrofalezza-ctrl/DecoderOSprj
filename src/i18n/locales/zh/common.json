@@ -94,7 +94,7 @@
     "howTitle": "工作流程",
     "howIntro": "从源代码到知识,只需三步。",
     "step1Title": "导入代码",
-    "step1Body": "上传 ZIP 或导入公开 GitHub 仓库。文件保留在你的账户中。",
+    "step1Body": "拖入单个源代码文件、上传 ZIP 或导入公开 GitHub 仓库。文件保留在你的账户中。",
     "step2Title": "选择提供商",
     "step2Body": "OpenAI、Anthropic、Gemini、OpenRouter,或本地 Ollama / LM Studio。",
     "step3Title": "解释与分析",
