@@ -36,7 +36,7 @@ export function KnowledgeTopNav() {
             Docs
           </Link>
           <Link
-            to="/app"
+            to="/dashboard"
             className="ml-1 rounded-md bg-primary px-3 py-1.5 text-sm font-medium text-primary-foreground hover:bg-primary/90"
           >
             Open app
