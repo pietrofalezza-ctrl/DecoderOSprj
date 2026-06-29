@@ -24,6 +24,7 @@ import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as DocsHowToReviewAiCodeRouteImport } from './routes/docs.how-to-review-ai-code'
 import { Route as DocsComparisonCoderabbitRouteImport } from './routes/docs.comparison-coderabbit'
+import { Route as DocsAiCodeReviewToolsByokRouteImport } from './routes/docs.ai-code-review-tools-byok'
 import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated/settings'
 import { Route as AuthenticatedHistoryRouteImport } from './routes/_authenticated/history'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
@@ -110,6 +111,12 @@ const DocsComparisonCoderabbitRoute =
     path: '/comparison-coderabbit',
     getParentRoute: () => DocsRoute,
   } as any)
+const DocsAiCodeReviewToolsByokRoute =
+  DocsAiCodeReviewToolsByokRouteImport.update({
+    id: '/ai-code-review-tools-byok',
+    path: '/ai-code-review-tools-byok',
+    getParentRoute: () => DocsRoute,
+  } as any)
 const AuthenticatedSettingsRoute = AuthenticatedSettingsRouteImport.update({
   id: '/settings',
   path: '/settings',
@@ -184,6 +191,7 @@ export interface FileRoutesByFullPath {
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/history': typeof AuthenticatedHistoryRoute
   '/settings': typeof AuthenticatedSettingsRoute
+  '/docs/ai-code-review-tools-byok': typeof DocsAiCodeReviewToolsByokRoute
   '/docs/comparison-coderabbit': typeof DocsComparisonCoderabbitRoute
   '/docs/how-to-review-ai-code': typeof DocsHowToReviewAiCodeRoute
   '/projects/$projectId': typeof AuthenticatedProjectsProjectIdRouteWithChildren
@@ -210,6 +218,7 @@ export interface FileRoutesByTo {
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/history': typeof AuthenticatedHistoryRoute
   '/settings': typeof AuthenticatedSettingsRoute
+  '/docs/ai-code-review-tools-byok': typeof DocsAiCodeReviewToolsByokRoute
   '/docs/comparison-coderabbit': typeof DocsComparisonCoderabbitRoute
   '/docs/how-to-review-ai-code': typeof DocsHowToReviewAiCodeRoute
   '/api/public/hooks/cleanup-stale-repositories': typeof ApiPublicHooksCleanupStaleRepositoriesRoute
@@ -237,6 +246,7 @@ export interface FileRoutesById {
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/history': typeof AuthenticatedHistoryRoute
   '/_authenticated/settings': typeof AuthenticatedSettingsRoute
+  '/docs/ai-code-review-tools-byok': typeof DocsAiCodeReviewToolsByokRoute
   '/docs/comparison-coderabbit': typeof DocsComparisonCoderabbitRoute
   '/docs/how-to-review-ai-code': typeof DocsHowToReviewAiCodeRoute
   '/_authenticated/projects/$projectId': typeof AuthenticatedProjectsProjectIdRouteWithChildren
@@ -265,6 +275,7 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/history'
     | '/settings'
+    | '/docs/ai-code-review-tools-byok'
     | '/docs/comparison-coderabbit'
     | '/docs/how-to-review-ai-code'
     | '/projects/$projectId'
@@ -291,6 +302,7 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/history'
     | '/settings'
+    | '/docs/ai-code-review-tools-byok'
     | '/docs/comparison-coderabbit'
     | '/docs/how-to-review-ai-code'
     | '/api/public/hooks/cleanup-stale-repositories'
@@ -317,6 +329,7 @@ export interface FileRouteTypes {
     | '/_authenticated/dashboard'
     | '/_authenticated/history'
     | '/_authenticated/settings'
+    | '/docs/ai-code-review-tools-byok'
     | '/docs/comparison-coderabbit'
     | '/docs/how-to-review-ai-code'
     | '/_authenticated/projects/$projectId'
@@ -452,6 +465,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DocsComparisonCoderabbitRouteImport
       parentRoute: typeof DocsRoute
     }
+    '/docs/ai-code-review-tools-byok': {
+      id: '/docs/ai-code-review-tools-byok'
+      path: '/ai-code-review-tools-byok'
+      fullPath: '/docs/ai-code-review-tools-byok'
+      preLoaderRoute: typeof DocsAiCodeReviewToolsByokRouteImport
+      parentRoute: typeof DocsRoute
+    }
     '/_authenticated/settings': {
       id: '/_authenticated/settings'
       path: '/settings'
@@ -579,11 +599,13 @@ const AuthenticatedRouteRouteWithChildren =
   AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
 
 interface DocsRouteChildren {
+  DocsAiCodeReviewToolsByokRoute: typeof DocsAiCodeReviewToolsByokRoute
   DocsComparisonCoderabbitRoute: typeof DocsComparisonCoderabbitRoute
   DocsHowToReviewAiCodeRoute: typeof DocsHowToReviewAiCodeRoute
 }
 
 const DocsRouteChildren: DocsRouteChildren = {
+  DocsAiCodeReviewToolsByokRoute: DocsAiCodeReviewToolsByokRoute,
   DocsComparisonCoderabbitRoute: DocsComparisonCoderabbitRoute,
   DocsHowToReviewAiCodeRoute: DocsHowToReviewAiCodeRoute,
 }
