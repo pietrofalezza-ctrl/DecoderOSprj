@@ -794,6 +794,10 @@ export type Database = {
       }
     }
     Functions: {
+      admin_reschedule_cron: {
+        Args: { _command: string; _job_name: string; _schedule: string }
+        Returns: undefined
+      }
       delete_email: {
         Args: { message_id: number; queue_name: string }
         Returns: boolean
