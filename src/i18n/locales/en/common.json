@@ -196,7 +196,7 @@
     "dataCollectedIntro": "The data listed below is processed strictly to the extent necessary to operate the demo:",
     "dataCollected": {
       "account": "Account: email, display name and creation timestamp (managed by the auth module).",
-      "content": "Content: uploaded files kept in the server's private storage (owner-only access enforced via RLS) with an indicative 60-day retention from last activity, metadata (path, size, sha256, language, repository source — zip or GitHub) and AI explanations.",
+      "content": "Content: uploaded files kept in the server's private storage (owner-only access enforced via RLS) with an indicative 60-day retention from last activity, metadata (path, size, sha256, language, repository source — single file, zip or GitHub) and AI explanations.",
       "credentials": "User API keys: encrypted at rest with AES-256-GCM and never returned to the browser. Decoder does not provide any server-managed AI: to use a cloud provider you must configure your own key (BYOK).",
       "usage": "Usage metadata: AI provider and model used for each explanation, preferred language and proficiency level, application role (e.g. admin). No behavioural profiling, no third-party tracking.",
       "notracking": "No advertising trackers, no third-party analytics, no profiling. The only cookie set is technical (sidebar UI preference) and requires no consent under the Italian DPA decision of 10 June 2021."
