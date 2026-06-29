@@ -78,6 +78,8 @@ import {
   sendFileChatMessage,
 } from "@/lib/chat.functions";
 import { getErrorMessage } from "@/lib/errors";
+import { cn } from "@/lib/utils";
+import { useIsMobile } from "@/hooks/use-mobile";
 import { filterFilesBySearch, normalizeSearchQuery, shouldPersistSearchQuery } from "@/lib/search";
 import { recordRepositorySearch } from "@/lib/search.functions";
 import {
