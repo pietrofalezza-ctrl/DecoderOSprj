@@ -1,4 +1,6 @@
 import type { KnowledgeEntry, KnowledgeLang, KnowledgeLocale } from "./types";
+import { KNOWLEDGE_TRANSLATIONS } from "./translations";
+
 import { staticMalwareAnalysis } from "./entries/static-malware-analysis";
 import { byok } from "./entries/byok";
 import { repositoryAnalysis } from "./entries/repository-analysis";
