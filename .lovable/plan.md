@@ -1,53 +1,68 @@
 
 ## Goal
-1. Make it explicit on the homepage that Decoder accepts **single files** (not only ZIP archives).
-2. Rationalize the landing page layout so the value proposition, supported inputs, and free-vs-BYOK split are visually clearer on first visit (desktop + mobile).
+1. Implement **real single-file upload** (not just ZIP), wired through the existing pipeline.
+2. Make the feature **coherent end-to-end**: project page UI/onboarding, T&C, docs, FAQ, JSON-LD, sitemap copy, plus the landing strip already shipped.
+3. Run a **Playwright-based E2E coherence test** against the live preview to verify every claim on the landing page maps to a working flow.
 
-## Scope
-Only `src/routes/index.tsx` (landing) + i18n strings in `src/i18n/locales/{en,it,zh}/common.json`. No backend/business logic changes.
+## Part A — Single-file upload (real implementation)
 
-## Changes
+### Approach: client-side zip wrap (zero new backend)
+The server already validates and stores a ZIP via `createRepositoryFromZip`. The simplest, lowest-risk path:
 
-### 1. Hero — sharper one-line promise
-- Replace the current dense hero subhead with a 2-line structure:
-  - **Line 1 (promise):** "AI code analysis for unknown code — paste, drop a file, or upload a repo."
-  - **Line 2 (proof):** "Static + malware scan run free. AI explainer & chat unlock with your own key (BYOK)."
-- Keep the existing CTA pair (Start free / See how it works) but standardize size and add a thin "No signup for static scan" microcopy under the buttons.
+1. Add **fflate** as a dependency (tiny, pure-JS, Worker-safe — already common in the stack).
+2. In `src/routes/_authenticated/projects.$projectId.index.tsx`:
+   - Widen the picker: `accept=".zip,.js,.jsx,.ts,.tsx,.mjs,.cjs,.py,.java,.go,.rs,.c,.cc,.cpp,.h,.hpp,.cs,.rb,.php,.kt,.kts,.swift,.sql,.sh,.bash,.html,.css,.scss,.json,.yml,.yaml,.toml,.xml,.md,.txt,.vue,.svelte,.dart,.scala,.lua,.r"`.
+   - On file pick: if extension is `.zip` → existing flow. Otherwise → wrap the file into an in-memory zip (`fflate.zipSync({ [file.name]: bytes })`) and call the same server-fn with `name = file.name.replace(/\.\w+$/, "")`.
+   - Enforce the same 25 MB limit client-side with a clear toast before zipping.
+3. **Drag & drop**: add a small drop zone on the project page header that accepts the same set. Reuses the same handler.
+4. Update the button label/copy: split CTA into **Upload file or ZIP** + the existing **Import from GitHub**.
+5. New i18n keys (EN/IT/ZH): `uploadFileOrZip`, `uploadFileOrZipHint`, `dropHere`, `fileTooLarge`, `unsupportedExtension`.
 
-### 2. New "What you can drop in" strip (right under hero)
-A single horizontal strip with 3 input modes shown as equal cards, replacing the current scattered mentions:
-- **Single file** — `.js .ts .py .java .go .rs .sql …` (20+) — *new, currently missing*
-- **ZIP archive** — full folder with structure preserved
-- **Git repo URL** — public GitHub/GitLab link
+### No backend changes
+- No new server-fn, no new table, no migration.
+- The zip on the server still extracts to individual files — a single-file upload simply produces a one-entry repository.
 
-Each card: icon + label + one-line example. This is the visual fix for "manca l'aspetto dei singoli file".
+## Part B — Coherence pass
 
-### 3. Rationalize section order
-Current order has install-PWA, features, FAQ, contributors scattered. Reorder for funnel clarity:
-1. Hero
-2. "What you can drop in" (new strip)
-3. "What you get" — 4 analysis modes (Static · Malware · AI-origin · Chat) with the free/BYOK badge clearly on each
-4. Live demo / screenshot block (existing)
-5. Supported languages chip cloud (compact, replaces the long list)
-6. Install on your device (PWA)
-7. FAQ
-8. Contributors
-9. Footer
+Update every surface that today says "ZIP only" or omits single files:
 
-### 4. Branding clarity
-- Single H1 (currently fine, just tighten copy).
-- Consistent badge component for "Free" vs "BYOK" used everywhere modes are mentioned (hero, modes section, FAQ) so the distinction is instantly readable.
-- Reduce gradient/glow density on mobile (the hero currently feels heavy at 375px) by lowering blur opacity below `sm:`.
+- **Project page** (`projects.$projectId.index.tsx`): copy + tooltip + hint.
+- **T&C** (`src/routes/terms.tsx`): in the "User content" / "Acceptable use" section, replace "ZIP archives" with "single source files, ZIP archives, or public Git URLs"; keep 25 MB cap explicit.
+- **Docs** (`src/routes/docs.tsx` and `docs.how-to-review-ai-code.tsx`): add a "Supported inputs" subsection listing the three modes; update step-by-step to mention single-file path.
+- **Landing JSON-LD** (`src/routes/index.tsx`): add "Single-file upload (20+ languages)" to `featureList`.
+- **FAQ** (landing + JSON-LD): add a Q&A "Can I upload just one file?" → yes.
+- **sitemap/llms.txt**: no URL changes; only update `llms.txt` description if it lists supported inputs.
+- **Onboarding banner** on the empty project state ("Drop a file or a ZIP, or import a public Git repo…").
 
-### 5. i18n
-Add keys for the new strip + microcopy in `en`, `it`, `zh`. No key removals.
+## Part C — Playwright E2E coherence run
+
+Script under `/tmp/browser/coherence/` driving headless Chromium against `http://localhost:8080`:
+
+1. **Landing → claims extraction**: load `/`, screenshot, assert presence of the Inputs strip (3 cards), FAQ items, "Install app" section, "AI code analysis" H1, single H1 count, JSON-LD parses.
+2. **Auth restore** via `LOVABLE_BROWSER_SUPABASE_*` env (per browser-use rules).
+3. **Project flow** (authenticated):
+   - Create or open a project.
+   - **Single-file upload**: pick a small `.py` from `/tmp` — assert navigation to the repo page and that 1 file is listed.
+   - **ZIP upload**: build a tiny in-memory zip with 2 files via Python, upload it — assert file count = 2.
+   - **GitHub import dialog**: open and assert the form renders (don't submit, to avoid hitting GitHub).
+4. **Analysis modes** on the single-file repo:
+   - Static scan: trigger and assert the report appears (no key required).
+   - Malware: trigger and assert the report appears (no key required).
+   - AI-origin: assert UI clearly states "BYOK required" when no key configured (the recent error-surfacing fix).
+   - Chat tab: assert the panel renders and shows the "needs BYOK" guidance.
+5. **History page**: open `/history`, assert recent activities show up.
+6. **T&C / Docs / Contributors**: load each, check that copy mentions single-file support.
+7. **Mobile pass**: re-run landing + project page at 375×667, screenshot, assert no horizontal scroll on the project page header.
+
+Output: a markdown report at `/tmp/browser/coherence/report.md` summarizing pass/fail per check + thumbnail screenshots.
 
 ## Out of scope
-- No new routes, no backend, no auth, no actual single-file upload pipeline changes (the projects flow already accepts single files via the same dropzone — this is purely making it visible on the landing).
-- No new design system tokens; reuse existing semantic tokens.
-- No SEO rescan in this turn (copy changes are minor; titles/descriptions stay).
+- No new providers, no schema changes, no SEO rescan (copy delta is small; can rescan after).
+- No streaming uploads, no chunked upload — 25 MB cap stays.
+- No paid features.
 
-## Verification
-- Visual check at 375px and 1280px via the running preview.
-- Confirm `<main>` landmark and single H1 remain.
-- Confirm all three locales render without missing keys.
+## Verification checklist
+- `tsgo --noEmit` clean.
+- `fflate` installed.
+- Manual: drop a `.py` from the project page → lands on a repo page with one file.
+- Playwright report shows all green for ZIP, single file, static, malware; expected "BYOK required" surfaces for AI/Chat without a key.
