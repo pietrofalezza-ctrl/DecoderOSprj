@@ -1837,8 +1837,8 @@ function WorkspacePage() {
                 </div>
               </div>
             )}
-          </ResizablePanel>
-        </ResizablePanelGroup>
+          </WorkspacePanel>
+        </WorkspacePanelGroup>
       </div>
     </AppShell>
   );
