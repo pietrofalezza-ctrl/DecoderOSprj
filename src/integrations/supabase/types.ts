@@ -455,6 +455,45 @@ export type Database = {
           },
         ]
       }
+      maintenance_audit_log: {
+        Row: {
+          created_at: string
+          duration_ms: number | null
+          error: string | null
+          finished_at: string | null
+          id: string
+          job_name: string
+          request_id: string | null
+          started_at: string
+          stats: Json
+          status: string
+        }
+        Insert: {
+          created_at?: string
+          duration_ms?: number | null
+          error?: string | null
+          finished_at?: string | null
+          id?: string
+          job_name: string
+          request_id?: string | null
+          started_at?: string
+          stats?: Json
+          status: string
+        }
+        Update: {
+          created_at?: string
+          duration_ms?: number | null
+          error?: string | null
+          finished_at?: string | null
+          id?: string
+          job_name?: string
+          request_id?: string | null
+          started_at?: string
+          stats?: Json
+          status?: string
+        }
+        Relationships: []
+      }
       password_reset_challenges: {
         Row: {
           attempts: number
