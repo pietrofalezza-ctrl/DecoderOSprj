@@ -96,6 +96,14 @@ export const Route = createFileRoute("/")({
           mainEntity: [
             {
               "@type": "Question",
+              name: "Can I upload just one file?",
+              acceptedAnswer: {
+                "@type": "Answer",
+                text: "Yes. Decoder accepts a single source file (.js, .ts, .py, .java, .go, .rs, .sql and 20+ more), a ZIP archive of a folder, or a public GitHub repository URL. No setup is required.",
+              },
+            },
+            {
+              "@type": "Question",
               name: "Do I need an API key to use Decoder?",
               acceptedAnswer: {
                 "@type": "Answer",
