@@ -41,7 +41,20 @@
   },
   "landing": {
     "hero": "越来越多的代码由 <1>AI</1> 编写。Decoder 帮助你<2>阅读它</2>。",
-    "heroSubtitle": "开源 AI 代码分析(MIT)。静态代码与恶意软件检测无需任何 API 密钥即可运行,支持 20+ 种语言 — 自带密钥(BYOK)或本地推理以获得 AI 解读、仓库聊天与持久化历史。",
+    "heroSubtitle": "开源 AI 代码分析(MIT)。支持上传单个文件、ZIP 压缩包或公共 Git 仓库链接。静态与恶意软件检测在 20+ 种语言中免费运行 — 自带密钥(BYOK)或本地推理可解锁 AI 解读、仓库聊天与持久化历史。",
+    "inputs": {
+      "kicker": "可上传的内容",
+      "title": "单个文件、ZIP 压缩包或 Git 链接",
+      "body": "无需任何配置。Decoder 支持下方三种输入方式中的任意一种。",
+      "fileTitle": "单个文件",
+      "fileBody": "拖入 .js、.ts、.py、.java、.go、.rs、.sql 等(20+ 种语言)。",
+      "zipTitle": "ZIP 压缩包",
+      "zipBody": "上传整个文件夹,保留目录结构与路径。",
+      "urlTitle": "Git 仓库链接",
+      "urlBody": "粘贴任意公开的 GitHub 或 GitLab 仓库链接。",
+      "freeBadge": "免费 · 无需密钥",
+      "byokBadge": "BYOK · 自带密钥"
+    },
     "heroBadgeOpen": "个人项目 · 开源",
     "heroBadgePrivacy": "BYOK 或本地推理",
     "heroBadgeAiEra": "公开的代码与提示词",
