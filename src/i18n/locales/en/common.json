@@ -20,7 +20,19 @@
     "manifesto": "Manifesto",
     "account": "Account",
     "signedInAs": "Signed in as",
-    "apiKeys": "API keys"
+    "apiKeys": "API keys",
+    "history": "History"
+  },
+  "history": {
+    "accountTitle": "Your analysis history",
+    "accountSubtitle": "Every LLM and static analysis you've run, across all projects.",
+    "repoTitle": "Repository history",
+    "repoSubtitle": "All analyses and chats persisted for this repository.",
+    "backToWorkspace": "Back to workspace",
+    "empty": "No saved analyses yet. Run an explanation, quality, security or chat turn from the workspace.",
+    "loadMore": "Load more",
+    "filterKind": "Type",
+    "allKinds": "All types"
   },
   "languages": {
     "en": "English",
