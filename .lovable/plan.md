@@ -1,69 +1,177 @@
-## Stato attuale: appari su Google?
+# Knowledge Hub per Decoder
 
-**Sì, sei indicizzato — ma quasi invisibile.**
+Obiettivo: trasformare le funzionalità di Decoder in una base di conoscenza navigabile, indicizzabile e comprensibile da LLM. Non è un blog, non è "news": è documentazione semantica che funge da landing page autonoma per ogni concetto.
 
-- Google Search Console: `https://decoderead.dev/` → `verdict: PASS`, `Submitted and indexed`, ultimo crawl 29 giu 2026 (mobile), sitemap riconosciuta. Quindi le pagine *possono* uscire.
-- Performance Search Console (ultimi 30gg): **0 click / 0 impression riportate** dall'API → il sito esce solo se uno cerca letteralmente "decoderead" o frasi molto lunghe già nelle tue docs. Per query competitive non sei in top 100.
-- Semrush domain: **nessun dato organico** (`No data found`) → traffico stimato ~0, nessuna keyword in top 100 Google US/IT secondo Semrush.
-- Semrush backlinks: **Authority Score 0/100**, 10 backlink da 8 domini. Di questi solo `lovable.app` (AS 55) è reale. Tutti gli altri (seopxl-*, fiverr-*, bisprofit) sono **link spam/PBN tossici** — vanno disconosciuti, peggiorano la reputazione.
+## 1. Analisi dell'architettura attuale
 
-## Cosa dice Semrush sulle keyword target
+Oggi Decoder ha:
+- Routes `docs.*` flat (es. `docs.comparison-coderabbit.tsx`, `docs.it.gdpr-revisione-codice-ai.tsx`) — copre articoli SEO ad hoc, multilingua tramite prefisso nel filename.
+- Nessuna entità "concetto/feature" centralizzata: ogni pagina è un .tsx scritto a mano → difficile generare automaticamente, difficile mantenere coerenza e knowledge graph.
+- Sitemap statica in `public/sitemap.xml` aggiornata a mano.
+- i18n JSON unico (`common.json`) per UI strings, non per contenuti lunghi.
 
-| Keyword | Volume/mese (US) | Difficoltà | Note |
-|---|---|---|---|
-| ai code review | 1.900 | 50 (difficile) | testa qui sono Greptile/CodeRabbit |
-| ai code analysis | 210 | 26 (facile) | **già copri questa — opportunità** |
-| open source ai code review | 20 | 0 (molto facile) | **hai già la pagina, win quasi sicuro** |
-| byok ai code review | n/d | — | nicchia, hai la pagina, sarai tra i pochi |
-| review ai generated code | n/d | — | trend in crescita, copri |
+**Decisione progettuale chiave**: il Knowledge Hub NON deve essere una collezione di `.tsx` scritti a mano. Deve essere **data-driven**: ogni pagina è derivata da un oggetto strutturato. Questo abilita:
+- generazione automatica di nuove pagine
+- knowledge graph coerente (i link sono dati, non hardcoded)
+- livelli di lettura (stessa entità, contenuto diverso)
+- multilingua scalabile
+- sitemap, schema.org, breadcrumb generati
 
-Traduzione: il piano editoriale è giusto, ma **mancano segnali esterni** (backlink veri, menzioni) e **mancano segnali di freschezza** (il sito è giovane, Google sta ancora "decidendo").
+## 2. Tassonomia proposta
 
-## Obiettivo 500 visitatori/giorno
+Tre tipi di entità interconnesse:
 
-Va detto chiaro: con AS 0, dominio nuovo e nicchia tecnica, **500/giorno organico richiede 4–8 mesi di lavoro costante**. È raggiungibile, ma non solo con SEO on-page — serve mix di canali. Aritmetica grossolana: ~15.000 visite/mese ≈ ranking top-3 su 4–6 keyword da 200–1.000 vol/mese **oppure** top-10 su 15–20 long-tail + traffico da community/social.
+1. **Capabilities** — funzionalità di Decoder (Static Malware Analysis, BYOK, Repository Analysis, Local AI, Chat, AI Origin Detection, …)
+2. **Concepts** — concetti tecnici trasversali (Entropy, PE Header, Zip Slip, RLS, BYOK pattern, Static vs Dynamic, LLM Prompting, …)
+3. **Integrations** — provider/runtime (Ollama, OpenRouter, Lovable AI Gateway, GitHub, Supabase Auth, …)
 
-## Piano in 4 fasi
+Una quarta dimensione orizzontale: **Formats/Languages** (PowerShell, Python, JS, Java, ZIP, PE binary, …) — modellati come tag, non come pagine separate di default, ma con landing dedicate per i top 6-8 (alta intent SEO: "come analizzare file PowerShell", "cos'è un file ZIP").
 
-### Fase 1 — Pulizia & fondamenta (questa settimana)
-1. **Disavow dei backlink spam** in Search Console (carico file `disavow.txt` con i 7 domini fiverr/seopxl/bisprofit). Senza questo, ogni link-building futuro è zavorrato.
-2. **Submit manuale in GSC** delle 10 pagine docs principali (URL Inspection → Request indexing) per accelerare l'ingresso in indice.
-3. **Aggiungere `lastmod` reale** nella sitemap (oggi è statico) — segnala freschezza ai crawler.
-4. **Internal linking audit**: ogni doc deve linkare 3–5 altre doc + homepage deve linkare le 5 doc principali (già parziale, va completato).
+## 3. Struttura URL
 
-### Fase 2 — Contenuti che catturano long-tail (settimane 2–4)
-Pubblicare 6 pagine nuove targetizzate su query a bassa competizione ma intent chiaro:
-- "how to detect ai generated code" (trend forte, low competition)
-- "static code analysis without api key"
-- "free malware scanner for source code"
-- "alternatives to coderabbit free" 
-- "claude code review vs copilot review"
-- versione IT: "come revisionare codice generato da AI" + "analisi malware codice gratis"
+```text
+/knowledge                              Hub index + search + filtri
+/knowledge/capabilities                 lista capabilities
+/knowledge/concepts                     lista concetti
+/knowledge/integrations                 lista integrazioni
+/knowledge/formats                      lista formati/linguaggi
+/knowledge/<slug>                       pagina entità (slug univoco globale)
+/knowledge/it/<slug-it>                 versione italiana
+/knowledge/zh/<slug>                    versione cinese
+```
 
-Ogni pagina: 1.200–1.800 parole, esempio reale (snippet vulnerabile + output Decoder), CTA a "prova ora", schema Article + FAQ.
+Esempi:
+- `/knowledge/static-malware-analysis`
+- `/knowledge/byok`
+- `/knowledge/entropy`
+- `/knowledge/ollama`
+- `/knowledge/powershell-analysis`
+- `/knowledge/it/analisi-statica-malware`
 
-### Fase 3 — Segnali esterni (settimane 2–8, parallelo)
-Questi muovono l'ago più della SEO tecnica per un dominio nuovo:
-- **Show HN** su Hacker News con angle "Open-source AI code review you can run with Ollama" (1 lancio, ben preparato, può portare 2–10k visite in 24h + backlink permanenti)
-- **Post su r/programming, r/cybersecurity, r/selfhosted** con case study LockBit (hai già il materiale)
-- **Dev.to + Hashnode**: cross-post di 3 articoli con link canonical al sito (backlink dofollow gratuiti)
-- **GitHub Awesome lists**: PR per essere aggiunti a `awesome-ai-tools`, `awesome-static-analysis`, `awesome-selfhosted`
-- **Product Hunt launch** preparato (1 giorno, target: top 5 → 3–8k visite)
+Slug univoci globalmente (no collisioni tra capability/concept), permette knowledge graph piatto. La categoria appare nel breadcrumb, non nell'URL — mantiene URL corti e shareable, e ne abilita la ricategorizzazione senza redirect.
 
-### Fase 4 — Misura & itera (continuativa)
-- Aggancio mensile via Semrush domain_analysis + GSC export per vedere quali keyword salgono
-- Refresh dei contenuti che arrivano in posizione 11–20 (push verso top 10)
-- Eventuale connettore Semrush per dashboard in-app se vuoi tracking quotidiano
+Livelli di lettura via **search param** `?level=junior|dev|senior|security|cto|beginner` (default: `dev`). Mantiene un solo URL canonico per pagina (no duplicate content), ma permette deep-link a un livello.
 
-## Cosa serve da te per partire
+## 4. Modello dati (TypeScript)
 
-1. Conferma se vuoi che proceda con **Fase 1** completa adesso (disavow file, sitemap lastmod dinamico, submit URL via GSC API, audit internal linking).
-2. Conferma se vuoi che pubblichi anche i **6 nuovi contenuti Fase 2** (EN + IT delle più strategiche) in questo turno o se prefersci uno alla volta.
-3. Per Fase 3 il lavoro è tuo (post HN/Reddit/PH) — io posso preparare i copy pronti da incollare.
+File: `src/knowledge/entries/*.ts` — un file per entità, type-safe.
 
-## Dettaglio tecnico (per riferimento)
+```ts
+type Level = "beginner" | "junior" | "dev" | "senior" | "security" | "cto";
+type Lang = "en" | "it" | "zh";
 
-- File da toccare in Fase 1: `public/sitemap.xml` (lastmod dinamico → meglio promuovere a server route `src/routes/sitemap[.]xml.ts`), `marketing/disavow.txt` (solo per upload manuale in GSC, non esposto pubblicamente).
-- Fase 2: nuove rotte sotto `src/routes/docs.*.tsx` con `head()` completo (title, description, og:*, canonical, JSON-LD Article+FAQ) + aggiornamento sitemap + breadcrumb interni da `/docs`.
-- GSC API: posso chiamare `urlInspection` + sitemap resubmit dal connector già collegato.
-- Disavow file: si carica solo manualmente da [search.google.com/search-console/disavow-links](https://search.google.com/search-console/disavow-links) — ti preparo il `.txt`, lo carichi tu.
+interface KnowledgeEntry {
+  slug: string;                          // globalmente unico
+  type: "capability" | "concept" | "integration" | "format";
+  category: string;                      // es. "Analysis", "Privacy", "Runtime"
+  tags: string[];                        // formati, linguaggi, provider, livelli tecnici
+  related: string[];                     // slug di altre entry → knowledge graph
+  screenshot?: string;                   // path src/assets
+  i18n: Record<Lang, {
+    title: string;
+    metaTitle: string;                   // SEO title <60 char
+    metaDescription: string;             // <160 char
+    intro: string;
+    byLevel: Partial<Record<Level, {     // contenuto cambia REALMENTE per livello
+      whatItIs: string;
+      whyUseful: string;
+      howDecoderImplements: string;
+      whenToUse: string;
+      whenNotToUse: string;
+      practicalExample: string;
+    }>>;
+    faq: { q: string; a: string }[];
+    glossary: { term: string; definition: string }[];
+    cta: { label: string; href: string };
+  }>;
+}
+```
+
+Validazione con zod in build/dev → impossibile pubblicare entry rotte.
+
+## 5. Knowledge graph
+
+`related` è esplicito ma:
+- **Inverso automatico**: se A → B, allora B mostra A in "Related" (calcolato a build time).
+- **Per-tag**: pagine che condividono tag appaiono come "Related by topic".
+- **Per-category**: navigazione laterale per categoria.
+
+Visualizzazione: nel footer di ogni pagina una sezione "Related concepts" con 4-8 card. Una pagina hub `/knowledge/graph` (opzionale fase 2) mostra il grafo D3/visx.
+
+## 6. Routes TanStack
+
+Approccio data-driven, no esplosione di file:
+
+```text
+src/routes/knowledge/
+  route.tsx                              layout + search/filtri header
+  index.tsx                              hub home (search, filtri, top entries)
+  $slug.tsx                              pagina EN per slug
+  it.$slug.tsx                           pagina IT
+  zh.$slug.tsx                           pagina ZH
+  capabilities.tsx                       lista filtrata type=capability
+  concepts.tsx
+  integrations.tsx
+  formats.tsx
+```
+
+`$slug.tsx` legge `KNOWLEDGE_BY_SLUG[slug]` (importato staticamente, tree-shakable), genera head, JSON-LD, breadcrumb, contenuto livello-aware, related.
+
+Sitemap dinamica: nuova route `src/routes/sitemap[.]xml.ts` che enumera tutte le entry + lingue + alternates hreflang. Sostituisce (con conferma user) `public/sitemap.xml` per le rotte knowledge (le altre rimangono).
+
+## 7. Funzionalità (fase 1)
+
+1. **Search interna** lato client: indice Fuse.js su titoli, intro, FAQ, glossary, tags. Tasto `/` per aprire.
+2. **Filtri**: type, category, tag (formato/lingua/provider), livello tecnico.
+3. **Selettore livello** persistente in localStorage + override via `?level=`.
+4. **Selettore lingua** integrato col `LangSwitcher` esistente.
+5. **SEO completa per pagina**: meta title/description, canonical, OG, Twitter, hreflang alternates, breadcrumb JSON-LD, `Article` + `FAQPage` + `DefinedTerm` (glossary) schemas.
+6. **CTA finale** contestuale (es. "Prova Static Analysis ora" → `/dashboard`).
+
+## 8. Contenuti iniziali (seed)
+
+12 capabilities + 10 concepts + 4 integrations + 6 formats = **32 entries** × 3 lingue.
+Per evitare contenuto sciatto: stesura iniziale in EN per tutte; IT/ZH solo per le top 12 ad alta intent (resto fallback EN con `hreflang` corretto e nessuna pagina duplicata). Espansione progressiva.
+
+Livelli: scrivere `dev` (default) per tutte; `beginner` + `security` per le top 10; altri livelli on-demand. Il selettore mostra solo i livelli disponibili per quella entry.
+
+## 9. "Generazione futura"
+
+Quando si aggiunge una feature a Decoder:
+1. Si crea `src/knowledge/entries/<slug>.ts` (template via `bun run scripts/new-knowledge-entry.ts <slug>`).
+2. Lo script propone automaticamente: `related` candidati (per tag overlap), FAQ stub, glossary stub.
+3. Validazione zod + build aggiorna sitemap, search index, knowledge graph.
+
+Niente generazione runtime via LLM (rischio allucinazioni in pagine indicizzate); l'LLM può essere usato off-line dal manutentore per draft, ma il commit è statico e revisionato.
+
+## 10. Cosa NON faccio in fase 1
+
+- Niente grafo D3 interattivo (rinviato).
+- Niente generazione contenuti via LLM a runtime.
+- Niente migrazione delle `docs.*` esistenti: restano live, aggiungo internal links bidirezionali tra `docs/*` rilevanti e nuove `knowledge/*` (es. la pagina docs "comparison-coderabbit" linka a `knowledge/byok`, `knowledge/static-malware-analysis`).
+- Nessuna nuova tabella DB: tutto statico.
+
+## 11. Navbar
+
+Aggiungo voce "Knowledge" in `AppShell.tsx` (autenticato) e nell'header pubblico, accanto a Docs. Docs resta per articoli long-form/comparativi; Knowledge è la base strutturata.
+
+## 12. Sezioni dettagli tecnici
+
+- **Routing/SSR**: ogni `$slug.tsx` definisce `head()` con title/description/canonical/og/twitter/JSON-LD; hreflang alternates puntano alle versioni `it`/`zh` se l'entry le ha.
+- **Performance**: entries importati staticamente, code-splitting per route. Search index pre-buildato e lazy-loaded (~50KB gzip).
+- **Validazione build**: script `scripts/validate-knowledge.ts` eseguito in CI — verifica slug unici, `related` esistenti, lunghezze meta, immagini esistenti.
+- **Accessibilità**: heading hierarchy h1>h2>h3, ARIA su filtri, focus management nella search.
+
+## 13. Deliverable fase 1
+
+- `src/knowledge/` (types, registry, 32 entries seed, validate script, new-entry script)
+- `src/routes/knowledge/*` (layout, index, $slug, it.$slug, zh.$slug, listing per type)
+- `src/components/knowledge/*` (SearchPalette, FilterBar, LevelSwitcher, RelatedGrid, GlossaryList, FAQList)
+- `src/routes/sitemap[.]xml.ts` dinamica + rimozione URL knowledge da `public/sitemap.xml`
+- Navbar updates in `AppShell.tsx` + header pubblico
+- Aggiornamento `robots.txt` (nessuna disallow su `/knowledge`)
+- i18n keys per chrome UI (search placeholder, filtri, labels livelli) in `common.json` × 3 lingue
+
+Stima: prima PR — scaffolding + 8 entries seed in EN, navbar, search, sitemap dinamica. PR successive: espansione contenuti, IT/ZH, livelli aggiuntivi.
+
+Confermami se questa tassonomia (capability/concept/integration/format) e la struttura URL `/knowledge/<slug>` (slug globale, categoria nel breadcrumb) ti convince, oppure preferisci URL categorizzati tipo `/knowledge/capabilities/static-malware-analysis`. Procedo poi con la prima PR di scaffolding + 8 entry seed.
