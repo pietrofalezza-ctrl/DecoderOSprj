@@ -84,15 +84,8 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "apple-mobile-web-app-title", content: "Decoder" },
       { name: "apple-mobile-web-app-status-bar-style", content: "black-translucent" },
       { name: "application-name", content: "Decoder" },
-      { title: "Decoder" },
-      {
-        name: "description",
-        content:
-          "Open-source AI code analysis: review AI-generated code, run static & malware checks, chat with your repo.",
-      },
       { property: "og:site_name", content: "Decoder" },
       { property: "og:type", content: "website" },
-      { property: "og:url", content: "https://decoderead.dev/" },
       { name: "twitter:card", content: "summary_large_image" },
       {
         property: "og:image",
