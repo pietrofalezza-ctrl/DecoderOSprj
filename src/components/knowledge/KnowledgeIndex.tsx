@@ -67,6 +67,23 @@ export function KnowledgeIndex({ lang }: { lang: KnowledgeLang }) {
         </p>
       </header>
 
+      <nav aria-label="Browse by type" className="mb-6 flex flex-wrap gap-2">
+        <Link to="/knowledge/capabilities" className="rounded-full border border-border bg-card px-3 py-1.5 text-sm font-medium hover:border-primary/50">
+          Capabilities
+        </Link>
+        <Link to="/knowledge/concepts" className="rounded-full border border-border bg-card px-3 py-1.5 text-sm font-medium hover:border-primary/50">
+          Concepts
+        </Link>
+        <Link to="/knowledge/integrations" className="rounded-full border border-border bg-card px-3 py-1.5 text-sm font-medium hover:border-primary/50">
+          Integrations
+        </Link>
+        <Link to="/knowledge/formats" className="rounded-full border border-border bg-card px-3 py-1.5 text-sm font-medium hover:border-primary/50">
+          Formats
+        </Link>
+      </nav>
+
+
+
       <div className="mb-6 grid gap-3 sm:grid-cols-[1fr_180px_180px]">
         <Input
           placeholder="Search capabilities, concepts, formats…"
