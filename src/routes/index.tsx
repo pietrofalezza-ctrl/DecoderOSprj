@@ -650,6 +650,9 @@ function Landing() {
               <Link to="/manifesto" className="hover:text-foreground">
                 {t("landing.nav.manifesto")}
               </Link>
+              <Link to="/contributors" className="hover:text-foreground">
+                Contributors
+              </Link>
               <Link to="/docs" className="hover:text-foreground">
                 {t("landing.nav.docs")}
               </Link>
