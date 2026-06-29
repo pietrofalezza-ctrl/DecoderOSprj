@@ -47,6 +47,7 @@ import { Route as DocsZhEuAiActCodeAnalysisRouteImport } from './routes/docs.zh.
 import { Route as DocsItGdprRevisioneCodiceAiRouteImport } from './routes/docs.it.gdpr-revisione-codice-ai'
 import { Route as DocsItEuAiActAnalisiCodiceRouteImport } from './routes/docs.it.eu-ai-act-analisi-codice'
 import { Route as DocsItAiPrivacyFirstEuropaRouteImport } from './routes/docs.it.ai-privacy-first-europa'
+import { Route as ApiPublicDisavowRouteImport } from './routes/api/public/disavow'
 import { Route as AuthenticatedProjectsProjectIdRouteImport } from './routes/_authenticated/projects.$projectId'
 import { Route as AuthenticatedProjectsProjectIdIndexRouteImport } from './routes/_authenticated/projects.$projectId.index'
 import { Route as LovableEmailQueueProcessRouteImport } from './routes/lovable/email/queue/process'
@@ -258,6 +259,11 @@ const DocsItAiPrivacyFirstEuropaRoute =
     path: '/it/ai-privacy-first-europa',
     getParentRoute: () => DocsRoute,
   } as any)
+const ApiPublicDisavowRoute = ApiPublicDisavowRouteImport.update({
+  id: '/api/public/disavow',
+  path: '/api/public/disavow',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthenticatedProjectsProjectIdRoute =
   AuthenticatedProjectsProjectIdRouteImport.update({
     id: '/projects/$projectId',
@@ -328,6 +334,7 @@ export interface FileRoutesByFullPath {
   '/docs/secure-code-review-byok': typeof DocsSecureCodeReviewByokRoute
   '/docs/static-code-analysis-no-api-key': typeof DocsStaticCodeAnalysisNoApiKeyRoute
   '/projects/$projectId': typeof AuthenticatedProjectsProjectIdRouteWithChildren
+  '/api/public/disavow': typeof ApiPublicDisavowRoute
   '/docs/it/ai-privacy-first-europa': typeof DocsItAiPrivacyFirstEuropaRoute
   '/docs/it/eu-ai-act-analisi-codice': typeof DocsItEuAiActAnalisiCodiceRoute
   '/docs/it/gdpr-revisione-codice-ai': typeof DocsItGdprRevisioneCodiceAiRoute
@@ -372,6 +379,7 @@ export interface FileRoutesByTo {
   '/docs/privacy-first-ai-europe': typeof DocsPrivacyFirstAiEuropeRoute
   '/docs/secure-code-review-byok': typeof DocsSecureCodeReviewByokRoute
   '/docs/static-code-analysis-no-api-key': typeof DocsStaticCodeAnalysisNoApiKeyRoute
+  '/api/public/disavow': typeof ApiPublicDisavowRoute
   '/docs/it/ai-privacy-first-europa': typeof DocsItAiPrivacyFirstEuropaRoute
   '/docs/it/eu-ai-act-analisi-codice': typeof DocsItEuAiActAnalisiCodiceRoute
   '/docs/it/gdpr-revisione-codice-ai': typeof DocsItGdprRevisioneCodiceAiRoute
@@ -419,6 +427,7 @@ export interface FileRoutesById {
   '/docs/secure-code-review-byok': typeof DocsSecureCodeReviewByokRoute
   '/docs/static-code-analysis-no-api-key': typeof DocsStaticCodeAnalysisNoApiKeyRoute
   '/_authenticated/projects/$projectId': typeof AuthenticatedProjectsProjectIdRouteWithChildren
+  '/api/public/disavow': typeof ApiPublicDisavowRoute
   '/docs/it/ai-privacy-first-europa': typeof DocsItAiPrivacyFirstEuropaRoute
   '/docs/it/eu-ai-act-analisi-codice': typeof DocsItEuAiActAnalisiCodiceRoute
   '/docs/it/gdpr-revisione-codice-ai': typeof DocsItGdprRevisioneCodiceAiRoute
@@ -466,6 +475,7 @@ export interface FileRouteTypes {
     | '/docs/secure-code-review-byok'
     | '/docs/static-code-analysis-no-api-key'
     | '/projects/$projectId'
+    | '/api/public/disavow'
     | '/docs/it/ai-privacy-first-europa'
     | '/docs/it/eu-ai-act-analisi-codice'
     | '/docs/it/gdpr-revisione-codice-ai'
@@ -510,6 +520,7 @@ export interface FileRouteTypes {
     | '/docs/privacy-first-ai-europe'
     | '/docs/secure-code-review-byok'
     | '/docs/static-code-analysis-no-api-key'
+    | '/api/public/disavow'
     | '/docs/it/ai-privacy-first-europa'
     | '/docs/it/eu-ai-act-analisi-codice'
     | '/docs/it/gdpr-revisione-codice-ai'
@@ -556,6 +567,7 @@ export interface FileRouteTypes {
     | '/docs/secure-code-review-byok'
     | '/docs/static-code-analysis-no-api-key'
     | '/_authenticated/projects/$projectId'
+    | '/api/public/disavow'
     | '/docs/it/ai-privacy-first-europa'
     | '/docs/it/eu-ai-act-analisi-codice'
     | '/docs/it/gdpr-revisione-codice-ai'
@@ -584,6 +596,7 @@ export interface RootRouteChildren {
   PrivacyRoute: typeof PrivacyRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
   TermsRoute: typeof TermsRoute
+  ApiPublicDisavowRoute: typeof ApiPublicDisavowRoute
   ApiPublicHooksCleanupStaleRepositoriesRoute: typeof ApiPublicHooksCleanupStaleRepositoriesRoute
   LovableEmailQueueProcessRoute: typeof LovableEmailQueueProcessRoute
 }
@@ -856,6 +869,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DocsItAiPrivacyFirstEuropaRouteImport
       parentRoute: typeof DocsRoute
     }
+    '/api/public/disavow': {
+      id: '/api/public/disavow'
+      path: '/api/public/disavow'
+      fullPath: '/api/public/disavow'
+      preLoaderRoute: typeof ApiPublicDisavowRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_authenticated/projects/$projectId': {
       id: '/_authenticated/projects/$projectId'
       path: '/projects/$projectId'
@@ -1017,6 +1037,7 @@ const rootRouteChildren: RootRouteChildren = {
   PrivacyRoute: PrivacyRoute,
   ResetPasswordRoute: ResetPasswordRoute,
   TermsRoute: TermsRoute,
+  ApiPublicDisavowRoute: ApiPublicDisavowRoute,
   ApiPublicHooksCleanupStaleRepositoriesRoute:
     ApiPublicHooksCleanupStaleRepositoriesRoute,
   LovableEmailQueueProcessRoute: LovableEmailQueueProcessRoute,
