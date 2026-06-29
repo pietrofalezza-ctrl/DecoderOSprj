@@ -1150,6 +1150,8 @@ function WorkspacePage() {
                 folderPath={selectedFolderPath}
                 providerValue={providerValue}
                 language={lang}
+                proficiency={proficiency}
+                explanationType={summarySub}
                 onClose={() => setSelectedFolderPath(null)}
                 onOpenFile={(id) => {
                   setSelectedFileId(id);
