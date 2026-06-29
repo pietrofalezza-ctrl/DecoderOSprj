@@ -54,6 +54,8 @@ export function KnowledgeIndex({ lang }: { lang: KnowledgeLang }) {
   }, [q, type, category, lang]);
 
   return (
+    <>
+      <KnowledgeTopNav />
     <div className="mx-auto max-w-6xl px-4 py-10">
       <header className="mb-8">
         <p className="text-sm font-medium uppercase tracking-wide text-primary">
