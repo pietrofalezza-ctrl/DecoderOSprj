@@ -25,6 +25,8 @@ const mockAssessment = {
     suspiciousWindowCount: 3,
     windowSize: 256,
     windowStep: 128,
+    windowStep: 128,
+    sections: [],
   },
   findings: [
     {
