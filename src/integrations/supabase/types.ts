@@ -94,28 +94,38 @@ export type Database = {
         Row: {
           content: string
           created_at: string
+          folder_session_id: string | null
           id: string
           owner_id: string
           role: string
-          session_id: string
+          session_id: string | null
         }
         Insert: {
           content: string
           created_at?: string
+          folder_session_id?: string | null
           id?: string
           owner_id: string
           role: string
-          session_id: string
+          session_id?: string | null
         }
         Update: {
           content?: string
           created_at?: string
+          folder_session_id?: string | null
           id?: string
           owner_id?: string
           role?: string
-          session_id?: string
+          session_id?: string | null
         }
         Relationships: [
+          {
+            foreignKeyName: "analysis_chat_messages_folder_session_id_fkey"
+            columns: ["folder_session_id"]
+            isOneToOne: false
+            referencedRelation: "folder_chat_sessions"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "analysis_chat_messages_session_id_fkey"
             columns: ["session_id"]
@@ -391,6 +401,60 @@ export type Database = {
           },
         ]
       }
+      folder_chat_sessions: {
+        Row: {
+          created_at: string
+          folder_path: string
+          id: string
+          model: string | null
+          owner_id: string
+          project_id: string | null
+          provider: string | null
+          repository_id: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          folder_path: string
+          id?: string
+          model?: string | null
+          owner_id: string
+          project_id?: string | null
+          provider?: string | null
+          repository_id: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          folder_path?: string
+          id?: string
+          model?: string | null
+          owner_id?: string
+          project_id?: string | null
+          provider?: string | null
+          repository_id?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "folder_chat_sessions_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "folder_chat_sessions_repository_id_fkey"
+            columns: ["repository_id"]
+            isOneToOne: false
+            referencedRelation: "repositories"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       password_reset_challenges: {
         Row: {
           attempts: number
@@ -429,6 +493,7 @@ export type Database = {
           created_at: string
           display_name: string | null
           id: string
+          preferred_explanation_type: string
           preferred_language: string
           preferred_proficiency: string
           updated_at: string
@@ -437,6 +502,7 @@ export type Database = {
           created_at?: string
           display_name?: string | null
           id: string
+          preferred_explanation_type?: string
           preferred_language?: string
           preferred_proficiency?: string
           updated_at?: string
@@ -445,6 +511,7 @@ export type Database = {
           created_at?: string
           display_name?: string | null
           id?: string
+          preferred_explanation_type?: string
           preferred_language?: string
           preferred_proficiency?: string
           updated_at?: string
