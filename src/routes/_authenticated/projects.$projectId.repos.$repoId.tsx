@@ -78,6 +78,8 @@ import {
   sendFileChatMessage,
 } from "@/lib/chat.functions";
 import { getErrorMessage } from "@/lib/errors";
+import { cn } from "@/lib/utils";
+import { useIsMobile } from "@/hooks/use-mobile";
 import { filterFilesBySearch, normalizeSearchQuery, shouldPersistSearchQuery } from "@/lib/search";
 import { recordRepositorySearch } from "@/lib/search.functions";
 import {
@@ -111,10 +113,63 @@ const SearchSchema = z.object({
   view: z.enum(["analyze"]).optional(),
 });
 
+type MobilePaneKey = "files" | "code" | "insights";
+
+function WorkspacePanelGroup({
+  isMobile,
+  children,
+}: {
+  isMobile: boolean;
+  children: React.ReactNode;
+}) {
+  if (isMobile) return <div className="flex h-full min-h-0 flex-col">{children}</div>;
+  return <ResizablePanelGroup orientation="horizontal">{children}</ResizablePanelGroup>;
+}
+
+function WorkspacePanel({
+  isMobile,
+  paneKey,
+  activePane,
+  defaultSize,
+  minSize,
+  children,
+}: {
+  isMobile: boolean;
+  paneKey: MobilePaneKey;
+  activePane: MobilePaneKey;
+  defaultSize: number;
+  minSize: number;
+  children: React.ReactNode;
+}) {
+  if (isMobile) {
+    return (
+      <div
+        className={cn(
+          "flex min-h-0 w-full flex-1 flex-col overflow-hidden",
+          activePane !== paneKey && "hidden",
+        )}
+      >
+        {children}
+      </div>
+    );
+  }
+  return (
+    <ResizablePanel defaultSize={defaultSize} minSize={minSize}>
+      {children}
+    </ResizablePanel>
+  );
+}
+
+function WorkspaceHandle({ isMobile }: { isMobile: boolean }) {
+  if (isMobile) return null;
+  return <ResizableHandle />;
+}
+
 export const Route = createFileRoute("/_authenticated/projects/$projectId/repos/$repoId")({
   validateSearch: (s) => SearchSchema.parse(s),
   component: WorkspacePage,
 });
+
 
 function WorkspacePage() {
   const { repoId } = Route.useParams();
@@ -180,6 +235,8 @@ function WorkspacePage() {
   const [repoAiResult, setRepoAiResult] = useState<RepoAiOriginResult | null>(null);
   const [selection, setSelection] = useState<CodeSelection | null>(null);
   const [useSelection, setUseSelection] = useState(true);
+  const isMobile = useIsMobile();
+  const [mobilePane, setMobilePane] = useState<"files" | "code" | "insights">("files");
 
   const cloudKeys = useMemo(() => provs.data?.keys ?? [], [provs.data?.keys]);
   const localEndpoints = useMemo(() => provs.data?.endpoints ?? [], [provs.data?.endpoints]);
@@ -888,6 +945,7 @@ function WorkspacePage() {
   const runFromSelection = (kind: "explain" | "summarize" | "comment" | "quality" | "security") => {
     if (!selection) return;
     setUseSelection(true);
+    if (isMobile) setMobilePane("insights");
     if (kind === "explain" || kind === "summarize" || kind === "comment") {
       setMainTab("summary");
       setSummarySub(kind === "comment" || kind === "summarize" ? "human" : "technical");
@@ -940,9 +998,44 @@ function WorkspacePage() {
         </Sheet>
       )}
 
-      <div className="h-[calc(100vh-3.5rem)]">
-        <ResizablePanelGroup orientation="horizontal">
-          <ResizablePanel defaultSize={20} minSize={14}>
+      <div className="flex h-[calc(100vh-3.5rem)] flex-col">
+        {isMobile && (
+          <div className="flex shrink-0 items-center gap-1 border-b border-border bg-background p-1.5">
+            {(
+              [
+                { key: "files", label: t("workspace.files") },
+                { key: "code", label: t("workspace.tabs.code", { defaultValue: "Code" }) },
+                {
+                  key: "insights",
+                  label: t("workspace.tabs.insights", { defaultValue: "Insights" }),
+                },
+              ] as { key: MobilePaneKey; label: string }[]
+            ).map((tab) => (
+              <button
+                key={tab.key}
+                type="button"
+                onClick={() => setMobilePane(tab.key)}
+                className={cn(
+                  "flex-1 rounded-md px-2 py-1.5 text-xs font-medium transition-colors",
+                  mobilePane === tab.key
+                    ? "bg-primary text-primary-foreground"
+                    : "text-muted-foreground hover:bg-muted",
+                )}
+              >
+                {tab.label}
+              </button>
+            ))}
+          </div>
+        )}
+        <WorkspacePanelGroup isMobile={isMobile}>
+          <WorkspacePanel
+            isMobile={isMobile}
+            paneKey="files"
+            activePane={mobilePane}
+            defaultSize={20}
+            minSize={14}
+          >
+
             <div className="flex h-full flex-col border-r border-border bg-sidebar">
               <div className="flex items-center justify-between gap-2 border-b border-border px-3 py-2">
                 <span className="truncate text-xs font-medium uppercase text-muted-foreground">
@@ -1019,12 +1112,14 @@ function WorkspacePage() {
                         onSelect={(f) => {
                           setSelectedFileId(f.id);
                           setSelectedFolderPath(null);
+                          if (isMobile) setMobilePane("code");
                         }}
                         onSelectFolder={
                           llmEnabled
                             ? (p) => {
                                 setSelectedFolderPath(p);
                                 setSelectedFileId(null);
+                                if (isMobile) setMobilePane("insights");
                               }
                             : undefined
                         }
@@ -1039,9 +1134,16 @@ function WorkspacePage() {
                 </div>
               </ScrollArea>
             </div>
-          </ResizablePanel>
-          <ResizableHandle />
-          <ResizablePanel defaultSize={46} minSize={20}>
+          </WorkspacePanel>
+          <WorkspaceHandle isMobile={isMobile} />
+          <WorkspacePanel
+            isMobile={isMobile}
+            paneKey="code"
+            activePane={mobilePane}
+            defaultSize={46}
+            minSize={20}
+          >
+
             <div className="h-full">
               {selectedFolderPath ? (
                 <div className="flex h-full items-center justify-center p-6">
@@ -1162,9 +1264,16 @@ function WorkspacePage() {
                 </div>
               )}
             </div>
-          </ResizablePanel>
-          <ResizableHandle />
-          <ResizablePanel defaultSize={34} minSize={26}>
+          </WorkspacePanel>
+          <WorkspaceHandle isMobile={isMobile} />
+          <WorkspacePanel
+            isMobile={isMobile}
+            paneKey="insights"
+            activePane={mobilePane}
+            defaultSize={34}
+            minSize={26}
+          >
+
             {selectedFolderPath ? (
               <FolderAnalysisPanel
                 repoId={repoId}
@@ -1731,8 +1840,8 @@ function WorkspacePage() {
                 </div>
               </div>
             )}
-          </ResizablePanel>
-        </ResizablePanelGroup>
+          </WorkspacePanel>
+        </WorkspacePanelGroup>
       </div>
     </AppShell>
   );
