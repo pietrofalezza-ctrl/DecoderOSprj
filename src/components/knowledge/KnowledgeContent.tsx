@@ -17,6 +17,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { getLocale, getRelatedEntries } from "@/knowledge/registry";
+import { KnowledgeTopNav } from "@/components/knowledge/KnowledgeTopNav";
 import type { KnowledgeEntry, KnowledgeLang, KnowledgeLevel } from "@/knowledge/types";
 import { KNOWLEDGE_LEVELS } from "@/knowledge/types";
 
