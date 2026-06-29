@@ -319,6 +319,77 @@ function Landing() {
         </div>
       </section>
 
+      {/* Install as app band */}
+      <section id="install" className="border-y border-border bg-card/40">
+        <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 md:py-14">
+          <div className="grid gap-8 md:grid-cols-12 md:items-start md:gap-12">
+            <div className="md:col-span-5">
+              <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-primary">
+                {t("landing.install.kicker")}
+              </p>
+              <h2 className="mt-3 font-display text-2xl font-medium leading-tight tracking-tight sm:text-3xl md:text-4xl">
+                {t("landing.install.title")}
+              </h2>
+              <p className="mt-4 max-w-md text-sm text-muted-foreground">
+                {t("landing.install.body")}
+              </p>
+              {showInstallBtn ? (
+                <Button
+                  type="button"
+                  onClick={handleInstall}
+                  size="lg"
+                  className="mt-6 rounded-none px-6 w-full sm:w-auto"
+                >
+                  <Download className="mr-2 h-4 w-4" />
+                  {t("landing.install.ctaInstall")}
+                </Button>
+              ) : (
+                <span className="mt-6 inline-flex items-center gap-2 border border-border px-3 py-2 font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
+                  <Download className="h-3 w-3" />
+                  {t("landing.install.installedBadge")}
+                </span>
+              )}
+            </div>
+
+            <ul className="grid gap-4 md:col-span-7 sm:grid-cols-3">
+              {[
+                {
+                  icon: <Monitor className="h-5 w-5" />,
+                  title: t("landing.install.desktopTitle"),
+                  body: t("landing.install.desktopBody"),
+                },
+                {
+                  icon: <Apple className="h-5 w-5" />,
+                  title: t("landing.install.iosTitle"),
+                  body: t("landing.install.iosBody"),
+                },
+                {
+                  icon: <Smartphone className="h-5 w-5" />,
+                  title: t("landing.install.androidTitle"),
+                  body: t("landing.install.androidBody"),
+                },
+              ].map((step, i) => (
+                <li
+                  key={step.title}
+                  className="border border-border bg-background p-5"
+                >
+                  <div className="flex items-center justify-between">
+                    <span className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-border text-primary">
+                      {step.icon}
+                    </span>
+                    <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground/70">
+                      0{i + 1}
+                    </span>
+                  </div>
+                  <h3 className="mt-4 font-display text-lg font-medium">{step.title}</h3>
+                  <p className="mt-2 text-sm text-muted-foreground">{step.body}</p>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      </section>
+
       {/* Open-source strip — guardrail framing */}
       <section className="border-y border-border bg-background">
         <div className="mx-auto grid max-w-7xl items-center gap-6 px-4 py-10 sm:px-6 md:grid-cols-12">
