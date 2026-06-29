@@ -104,5 +104,6 @@ export function KnowledgeList({
         <p className="mt-8 text-center text-muted-foreground">No entries match your search.</p>
       )}
     </div>
+    </>
   );
 }
