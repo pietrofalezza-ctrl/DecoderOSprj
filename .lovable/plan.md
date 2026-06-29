@@ -1,54 +1,34 @@
-## Goal
-Harden maintenance cron endpoints, add operator visibility, and give admins a guided rotation flow.
+# Plan: SEO rescan & OpenRouter rate-limit handling
 
-## 1. E2E/CI test for cleanup auth
-- Add `src/routes/api/public/hooks/__tests__/cleanup-stale-repositories.test.ts` (vitest) that imports the route handler and asserts:
-  - No `Authorization` header → 401
-  - `Authorization: Bearer wrong` → 401
-  - `Authorization: Bearer <CLEANUP_CRON_SECRET>` (env stubbed) → 200 with stats JSON
-  - Length-mismatched bearer is rejected without throwing (timing-safe path)
-- Mock `@/integrations/supabase/client.server` so no real DB call happens.
-- The test runs under the existing `bunx vitest run` pipeline (no new CI wiring needed).
+## 1. SEO rescan
+- Trigger a fresh `seo_chat` scan so findings reflect the latest changes (admin route, Settings credentials panel, audit-log UI, cleanup endpoint hardening, new copy on landing).
+- After the scan completes (~1 min), review and fix any new failing findings, then mark them fixed.
+- Confirm `/admin`, `/settings`, and other auth-gated routes remain excluded from `sitemap.xml`.
 
-## 2. Server-side audit log for cleanup runs
-- New table `public.maintenance_audit_log` via migration:
-  - `job_name text`, `started_at timestamptz`, `finished_at timestamptz`, `status text` (`ok`/`error`), `stats jsonb` (scanned/deleted/files/objects), `error text`, `request_id text`.
-  - GRANT `SELECT` to `authenticated` (RLS gates it), `ALL` to `service_role`.
-  - RLS: only `public.has_role(auth.uid(), 'admin')` may SELECT; no INSERT/UPDATE/DELETE for clients (writes go through service role).
-- Modify `cleanup-stale-repositories.ts` to insert one row per run (success or failure) using `supabaseAdmin`, capturing a generated `request_id` and returning it in the response.
+## 2. OpenRouter 429 — diagnose & improve UX
+**Why it happens (most common, in order):**
+1. **Free-tier daily/minute cap** on OpenRouter free models (`:free` suffix → ~20 RPM, ~50–200 RPD per key).
+2. **402 / insufficient credits** on paid models with $0 balance (OpenRouter sometimes returns this as a rate error).
+3. **Per-model RPM caps** (Anthropic/OpenAI via OpenRouter are stricter than the account default).
+4. **Burst from parallel calls** — Chat + Static-explain + AI-Origin firing on the same key simultaneously across tabs.
 
-## 3. Admin UI: audit log + credentials status + rotation wizard
-- New protected route `src/routes/_authenticated/admin.tsx` gated by `has_role('admin')` server check (redirect to `/` otherwise).
-- Sections:
-  - **Maintenance audit log** — table of last 50 runs from `maintenance_audit_log`, with timestamps, status, repos removed, and `request_id`. Backed by `listMaintenanceAudit` server fn (admin-only via `has_role` check).
-  - **Rotate cleanup secret** — button + confirmation dialog. Calls `rotateCleanupCronSecret` server fn that:
-    1. Verifies caller is admin.
-    2. Generates 48-char random secret server-side.
-    3. Updates `CLEANUP_CRON_SECRET` via Lovable secret store (note: requires manual `secrets--update_secret` flow — see Open question).
-    4. Reschedules `cron.unschedule` + `cron.schedule` with the new bearer.
-    5. Logs the rotation into `maintenance_audit_log` (`job_name='rotate-cleanup-secret'`).
+**Code changes:**
+- **Parse OpenRouter error envelope** in `src/lib/byok/*` (or wherever the BYOK fetch lives): extract `error.code`, `error.message`, and `X-RateLimit-*` / `Retry-After` headers; classify as `rate_limit_free_tier`, `rate_limit_model`, `insufficient_credits`, or `generic_429`.
+- **Surface a clear toast/inline message** per class:
+  - Free-tier → "Daily free-tier limit reached on OpenRouter. Wait until reset or add credits / switch model."
+  - Credits → "OpenRouter key has no credits. Top up at openrouter.ai/credits."
+  - Model RPM → "Model X is rate-limited (retry in Ns)." with countdown from `Retry-After`.
+- **Add exponential backoff with jitter** (max 2 retries) on 429 in `FolderChatPanel`, AI-Origin, and Static-explain calls; disable the send button during cooldown.
+- **Serialize concurrent BYOK calls** per key with a small in-memory queue so Chat + Explain don't fire in parallel against the same provider.
+- **Log classified errors** to `analysis_activities` (already present) with `error_kind` for future debugging.
 
-## 4. Credentials status panel in Settings
-- Extend `src/routes/_authenticated/settings.tsx` with a new "Credentials status" card:
-  - For each supported provider, show: configured (Yes/No), key hint, last updated.
-  - If `listProviders` throws or returns empty when the user expects a key, show a clear warning: *"Una chiave risulta salvata ma non è leggibile — contatta il supporto o reinseriscila."*
-  - Add a server fn `getCredentialsStatus` returning `{ provider, configured, key_hint, updated_at, readable }[]` so the UI can distinguish "missing" from "unreadable" (e.g. decryption probe failure).
-
-## 5. Apply same protection schema to all maintenance cron endpoints
-- Inventory: today only `cleanup-stale-repositories` and the email-queue processor under `/api/public/hooks/*`. Audit each handler and ensure:
-  - Reads a dedicated `*_CRON_SECRET` (no `VITE_` prefix, never the anon key).
-  - Uses `timingSafeEqual` bearer comparison.
-  - Writes a `maintenance_audit_log` row.
-- Email-queue processor: introduce `EMAIL_QUEUE_CRON_SECRET` if it currently uses the anon key, and reschedule its pg_cron with the new bearer.
+## 3. Verification
+- Manual: trigger 25 quick chat sends with a free OpenRouter model in dev; confirm toast appears, button disables, retry resumes after `Retry-After`.
+- Re-run SEO scan after toast copy changes (only landing/help text affected).
 
 ## Technical notes
-- `pg_cron` rescheduling done via `supabase--insert` SQL (`cron.unschedule` + `cron.schedule`) inside the rotation server fn — runs with service role.
-- `maintenance_audit_log` writes use `supabaseAdmin` so they bypass RLS; reads use the user-scoped client and rely on the RLS policy + `has_role` check.
-- All admin server fns verify `has_role(context.userId, 'admin')` before touching admin data, matching the pattern in existing privileged fns.
+- BYOK provider call lives in `src/lib/byok-openrouter.functions.ts` (server fn) — classify there; pass `errorKind` to the client via thrown `Error` with a structured `cause`.
+- `Retry-After` may be seconds or HTTP-date; handle both.
+- Don't change the request body shape per provider rules in `ai-models-using`.
 
-## Open question
-The Lovable secret store can't be mutated from runtime server code — `CLEANUP_CRON_SECRET` rotation needs the `secrets--update_secret` tool, which prompts the user. Two options for the "rotation wizard":
-- **(A)** UI generates+displays a new secret, admin pastes it into the secret-rotation prompt, then clicks "Reschedule cron" which sends the new value to the rescheduler. Fully guided, no secret persisted in DB.
-- **(B)** Store the active cron secret in a new admin-only table (`cron_secrets`), rotate purely server-side, and have the cron endpoint compare against the DB value instead of `process.env`. Single-click rotation but adds a DB-hosted secret.
-
-Which do you prefer? I'll default to **(A)** unless you say otherwise.
+No DB migration required.
