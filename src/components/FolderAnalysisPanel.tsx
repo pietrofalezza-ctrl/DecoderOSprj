@@ -316,6 +316,10 @@ export function FolderAnalysisPanel({
               <Wrench className="h-3 w-3" />
               {t("workspace.fix.tab")}
             </TabsTrigger>
+            <TabsTrigger value="chat" className="gap-1.5">
+              <MessageSquare className="h-3 w-3" />
+              {t("workspace.folderChat.tab")}
+            </TabsTrigger>
           </TabsList>
         </div>
 
