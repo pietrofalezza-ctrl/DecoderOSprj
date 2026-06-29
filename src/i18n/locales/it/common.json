@@ -753,7 +753,7 @@
     "title": "Documentazione",
     "intro": "Decoder trasforma il codice sorgente in conoscenza leggibile. Leggi questa pagina nella tua lingua tramite il selettore nell'intestazione.",
     "gettingStartedTitle": "Per iniziare",
-    "gettingStartedBody": "Accedi, crea un progetto, carica uno ZIP o importa una repository pubblica da GitHub, seleziona un file nell'albero, poi clicca Spiega. Scegli il tuo livello e il riassunto umano o tecnico.",
+    "gettingStartedBody": "Accedi, crea un progetto, poi porta codice in uno dei tre modi: trascina un singolo file sorgente (.js, .ts, .py, .java, .go, .rs, .sql e oltre 20 altri), carica uno ZIP di una cartella o importa una repository pubblica da GitHub. Seleziona un file nell'albero, poi clicca Spiega. Scegli il tuo livello e il riassunto umano o tecnico.",
     "byokTitle": "Porta la tua chiave AI",
     "byokBody": "In Impostazioni → Provider AI, incolla una chiave per OpenAI, Anthropic, Google Gemini o OpenRouter. Le chiavi sono cifrate con AES-256-GCM lato server e decifrate solo per inoltrare la tua richiesta — non vengono mai restituite al browser.",
     "localTitle": "Modalità locale (Ollama / LM Studio)",
