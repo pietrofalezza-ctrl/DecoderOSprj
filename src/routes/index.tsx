@@ -36,21 +36,21 @@ import {
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Decoder — Read and audit AI-generated code, in any language" },
+      { title: "Decoder — AI code analysis & AI-generated code review" },
       {
         name: "description",
         content:
-          "Open-source reader for AI-generated code. Audit Copilot, Cursor and Claude Code output with your own provider key (BYOK) or a fully local model.",
+          "Open-source AI code analysis. Audit AI-generated code from Copilot, Cursor and Claude with BYOK cloud or local models, plus static and malware checks.",
       },
-      { property: "og:title", content: "Decoder — Read and audit AI-generated code" },
+      { property: "og:title", content: "Decoder — AI code analysis & AI-generated code review" },
       {
         property: "og:description",
         content:
-          "Open-source reader for AI-generated code. BYOK cloud or fully local with Ollama / LM Studio.",
+          "Open-source AI code analysis. Review AI-generated code, run static & malware checks, chat with your repo. BYOK cloud or fully local with Ollama / LM Studio.",
       },
-      { property: "og:url", content: "https://decoderdev.lovable.app/" },
+      { property: "og:url", content: "https://decoderead.dev/" },
     ],
-    links: [{ rel: "canonical", href: "https://decoderdev.lovable.app/" }],
+    links: [{ rel: "canonical", href: "https://decoderead.dev/" }],
     scripts: [
       {
         type: "application/ld+json",
@@ -59,11 +59,13 @@ export const Route = createFileRoute("/")({
           "@type": "SoftwareApplication",
           name: "Decoder",
           description:
-            "Open-source code understanding for the AI era — read, review and audit AI-generated code.",
+            "Open-source AI code analysis tool. Review AI-generated code, run static and malware checks, chat with your repository.",
           applicationCategory: "DeveloperApplication",
           operatingSystem: "Web, Linux, macOS, Windows",
-          url: "https://decoderdev.lovable.app",
+          url: "https://decoderead.dev",
           license: "https://opensource.org/licenses/MIT",
+          keywords:
+            "AI code analysis, AI code review, AI-generated code, static code analysis, malware analysis",
           offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
         }),
       },

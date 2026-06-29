@@ -11,6 +11,12 @@ import { HistoryTimeline, type HistoryActivity } from "@/components/HistoryTimel
 import { listAccountAnalysisHistory } from "@/lib/analysis-history.functions";
 
 export const Route = createFileRoute("/_authenticated/history")({
+  head: () => ({
+    meta: [
+      { title: "History — Decoder" },
+      { name: "robots", content: "noindex, nofollow" },
+    ],
+  }),
   component: AccountHistoryPage,
 });
 

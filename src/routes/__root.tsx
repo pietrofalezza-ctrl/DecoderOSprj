@@ -78,25 +78,25 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
       { name: "google-site-verification", content: "ZHAVRPzDMGmSkmKztM_yUoh6HielZflTNui7dGN0bQg" },
-      { title: "Decoder — Understand AI-generated code, in any language" },
+      { title: "Decoder — AI code analysis & AI-generated code review" },
       {
         name: "description",
         content:
-          "Open-source code understanding for the AI era. Read and audit code from Copilot, Cursor and Claude Code. BYOK cloud or fully local.",
+          "Open-source AI code analysis: review AI-generated code from Copilot, Cursor and Claude, run static & malware checks, and chat with your repo. BYOK or local.",
       },
       { property: "og:site_name", content: "Decoder" },
-      { property: "og:title", content: "Decoder — Understand AI-generated code, in any language" },
+      { property: "og:title", content: "Decoder — AI code analysis & AI-generated code review" },
       {
         property: "og:description",
         content:
-          "Open-source code understanding for the AI era. BYOK cloud or fully local with Ollama / LM Studio.",
+          "Open-source AI code analysis. Review AI-generated code, run static & malware checks, chat with your repo. BYOK cloud or fully local with Ollama / LM Studio.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:title", content: "Decoder — Understand AI-generated code, in any language" },
+      { name: "twitter:title", content: "Decoder — AI code analysis & AI-generated code review" },
       {
         name: "twitter:description",
-        content: "Open-source code understanding for the AI era. BYOK cloud or fully local.",
+        content: "Open-source AI code analysis. Review AI-generated code with BYOK cloud or local models.",
       },
       {
         property: "og:image",
@@ -130,7 +130,9 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
           name: "Decoder",
           url: "https://decoderead.dev",
           description:
-            "Open-source code understanding for the AI era — read, review and audit AI-generated code.",
+            "Open-source AI code analysis — review AI-generated code, run static and malware checks, and chat with your repository in any language.",
+          keywords:
+            "AI code analysis, AI code review, AI-generated code, static code analysis, malware analysis, code understanding",
         }),
       },
     ],
