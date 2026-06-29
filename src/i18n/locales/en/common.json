@@ -47,14 +47,15 @@
       "title": "Single file, ZIP archive, or Git URL",
       "body": "No setup required. Decoder accepts any of the three input modes below — pick what fits the moment.",
       "fileTitle": "Single file",
-      "fileBody": "Drop one .js, .ts, .py, .java, .go, .rs, .sql, … (20+ languages).",
+      "fileBody": "Drop one code file. Decoder opens it right away, even if you don't know what's inside.",
       "zipTitle": "ZIP archive",
-      "zipBody": "Upload a whole folder; structure and paths are preserved.",
+      "zipBody": "Upload a zipped folder. The project structure is preserved.",
       "urlTitle": "Git repository URL",
-      "urlBody": "Paste any public GitHub or GitLab repository link.",
-      "freeBadge": "Free · no key",
-      "byokBadge": "BYOK · your key"
+      "urlBody": "Paste a link to a public GitHub or GitLab project. No login required.",
+      "languagesNote": "Recognises 20+ languages (JavaScript, TypeScript, Python, Java, Go, Rust, SQL and more).",
+      "pricingNote": "Uploading is always free for all three inputs. Static and malware scans run without any key. The AI features (explanations, AI-origin, code chat) need your own provider key (BYOK) or a local model."
     },
+
     "heroBadgeOpen": "Personal project · Open source",
     "heroBadgePrivacy": "BYOK or local inference",
     "heroBadgeAiEra": "Public code and prompts",

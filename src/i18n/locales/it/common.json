@@ -45,16 +45,17 @@
     "inputs": {
       "kicker": "Cosa puoi caricare",
       "title": "Singolo file, archivio ZIP o URL Git",
-      "body": "Nessuna configurazione richiesta. Decoder accetta una qualsiasi delle tre modalità di input qui sotto.",
+      "body": "Nessuna configurazione richiesta. Decoder accetta una qualsiasi delle tre modalità qui sotto.",
       "fileTitle": "Singolo file",
-      "fileBody": "Trascina un .js, .ts, .py, .java, .go, .rs, .sql, … (20+ linguaggi).",
+      "fileBody": "Trascina un file di codice. Decoder lo apre subito, anche se non sai cosa contiene.",
       "zipTitle": "Archivio ZIP",
-      "zipBody": "Carica un'intera cartella; struttura e percorsi sono preservati.",
+      "zipBody": "Carica una cartella zippata. La struttura del progetto viene conservata.",
       "urlTitle": "URL repository Git",
-      "urlBody": "Incolla il link di un repository pubblico GitHub o GitLab.",
-      "freeBadge": "Gratis · senza chiave",
-      "byokBadge": "BYOK · chiave tua"
+      "urlBody": "Incolla il link di un progetto pubblico su GitHub o GitLab. Nessun login richiesto.",
+      "languagesNote": "Riconosce oltre 20 linguaggi (JavaScript, TypeScript, Python, Java, Go, Rust, SQL e altri).",
+      "pricingNote": "Caricare è sempre gratuito su tutti e tre i tipi. Le scansioni statica e antimalware funzionano senza alcuna chiave. Le funzioni AI (spiegazioni, AI-origin, chat sul codice) richiedono una tua chiave (BYOK) o un modello locale."
     },
+
     "heroBadgeOpen": "Progetto personale · Open source",
     "heroBadgePrivacy": "BYOK o inferenza locale",
     "heroBadgeAiEra": "Codice e prompt pubblici",

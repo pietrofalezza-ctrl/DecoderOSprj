@@ -1,66 +1,48 @@
-# EU Privacy & AI SEO Content Expansion
+# Fix misleading "Gratis · senza chiave" copy + plain-language pass on the inputs section
 
-Create a set of long-form SEO documentation pages aimed at European users, focused on the intersection of **AI code analysis, data privacy, and EU regulation** (GDPR + EU AI Act), with explicit geo-targeting for **Milan, Verona and Northern Italy**. Each page ships in EN / IT / ZH using the existing locale-routing pattern and is wired into the sitemap, internal links, and structured data.
+## Why it's wrong today
 
-## New routes
+Hai ragione. Sulle tre card di input (Singolo file · ZIP · URL Git) compaiono badge "GRATIS · SENZA CHIAVE" e "BYOK · CHIAVE TUA". Il messaggio è fuorviante: la gratuità non dipende dal **tipo di upload**, ma dal **tipo di analisi**.
 
-All under `src/routes/docs.*` to match existing SEO doc pattern (`docs.comparison-coderabbit`, `docs.ai-code-review-tools-byok`, `docs.open-source-ai-code-review`).
+In realtà:
+- **Caricare è sempre gratis** (file, ZIP, URL Git — tutti uguali).
+- **Analisi statica e antimalware** non richiedono chiavi, su tutti e tre i tipi di upload.
+- **Spiegazioni AI, AI-origin e chat sul codice** richiedono BYOK o un modello locale, su tutti e tre i tipi di upload.
 
-1. **`docs.eu-ai-act-code-analysis.tsx`** — "EU AI Act compliance for AI code analysis tools"
-   - What the AI Act says about general-purpose AI, transparency, code-related risk tiers
-   - How BYOK + local inference reduce compliance surface
-   - Checklist for European dev teams
+Il badge "BYOK" sulla card URL Git è proprio sbagliato (le scansioni statica/antimalware girano gratis anche su un repo).
 
-2. **`docs.gdpr-ai-code-review.tsx`** — "GDPR-compliant AI code review: data residency & source code as personal data"
-   - Source code as potential personal data (author identifiers, secrets, comments)
-   - Data residency, sub-processors, DPA implications
-   - Decoder's posture (encrypted BYOK, no training, ephemeral ZIP processing)
+## What changes
 
-3. **`docs.privacy-first-ai-europe.tsx`** — "Privacy-first AI tools in Europe: a 2026 buyer's guide"
-   - Why EU teams pick BYOK / open source / local inference
-   - Comparison table: typical SaaS AI vs Decoder approach
-   - Links to EU AI projects (Mistral, Aleph Alpha, Silo AI, etc.) as ecosystem context
+### 1. Inputs section in `src/routes/index.tsx`
+- Rimuovo i badge per-card (`freeBadge` / `byokBadge`).
+- Aggiungo una **singola riga esplicativa sotto i tre cards** che chiarisce su quale asse è la gratuità:
+  - IT: "Caricare è sempre gratuito su tutti e tre i tipi. Le analisi statica e antimalware funzionano senza chiavi. Le funzioni AI (spiegazioni, AI-origin, chat sul codice) richiedono una tua chiave (BYOK) o un modello locale."
+  - EN: "Uploading is always free for all three inputs. Static and malware checks run without any key. The AI features (explanations, AI-origin, chat) need your own provider key (BYOK) or a local model."
+  - ZH: equivalent.
+- Riscrivo i body delle card in linguaggio non tecnico, niente elenco di estensioni nel corpo (sposto i 20+ linguaggi in un sottotitolo neutro):
+  - IT — "Singolo file": "Trascina un file di codice singolo. Decoder lo apre subito, anche se non sai cosa contiene."
+  - IT — "Archivio ZIP": "Carica una cartella zippata. Decoder conserva la struttura del progetto."
+  - IT — "URL repository Git": "Incolla il link di un progetto pubblico su GitHub o GitLab. Niente login richiesto."
+- Le stesse rese in EN/ZH con tono accessibile e coerente con T&C e privacy policy (stesso lessico: "tua chiave", "modello locale", "scansione statica", "antimalware").
 
-4. **`docs.ai-code-review-milano-nord-italia.tsx`** — Geo-targeted landing
-   - "AI code review per team di sviluppo a Milano, Verona e Nord Italia"
-   - Italian-first copy with EN/ZH translations
-   - Local schema: mentions Milan/Verona/Padua/Bologna/Turin tech hubs, fintech & manufacturing 4.0 angle
-   - LocalBusiness-style framing (without faking a physical address — uses `Organization` + `areaServed` schema)
+### 2. i18n strings — `src/i18n/locales/{en,it,zh}/common.json`
+- Sostituisco `landing.inputs.freeBadge` / `byokBadge` con una nuova chiave `landing.inputs.pricingNote` (la riga unica esplicativa).
+- Aggiorno `fileBody` / `zipBody` / `urlBody` con i nuovi copy semplificati.
+- Aggiungo `landing.inputs.languagesNote` per "Riconosce oltre 20 linguaggi" come riga sussidiaria sotto le card, in modo da non perdere il segnale di copertura.
 
-## i18n
+### 3. Coerenza con T&C e Privacy
+- Allineo il vocabolario a quello già usato in `/terms` e `/privacy`: "tua chiave (BYOK)", "inferenza locale", "scansione statica", "scansione antimalware". Non introduco termini nuovi che non compaiono già nei documenti legali.
 
-Each page reads strings from `src/i18n/locales/{en,it,zh}/docs.json` (new namespace section per page). Italian copy is primary for the Milan/Nord Italia page; EN and ZH are faithful translations but keep the geographic emphasis.
+## What does NOT change
 
-## SEO wiring per page
+- Nessuna logica di business, nessun gate di funzionalità, nessuna modifica a auth/database.
+- Solo testo nel landing + i18n. Niente nuovi route, niente nuove dipendenze.
 
-Following the existing `head-meta` convention:
-- `head()` with route-specific `title`, `description`, `og:title`, `og:description`, `og:url`, `og:type: article`
-- Leaf-only `<link rel="canonical">` to `https://decoderead.dev/docs/<slug>`
-- JSON-LD: `Article` + `FAQPage` + `BreadcrumbList`; geo page also adds `Organization` with `areaServed: ["Milano","Verona","Lombardia","Veneto","Italia"]`
-- `hreflang` alternates (en, it, zh, x-default) via `links`
+## Files touched
 
-## Sitemap & internal linking
+- `src/routes/index.tsx` — rimozione badge per-card, aggiunta riga esplicativa sotto la griglia.
+- `src/i18n/locales/it/common.json`
+- `src/i18n/locales/en/common.json`
+- `src/i18n/locales/zh/common.json`
 
-- Add the 4 new URLs to `public/sitemap.xml` with current `lastmod`
-- Update `public/llms.txt` to reference the new guides
-- Add a "Related guides" block on each existing docs page (`comparison-coderabbit`, `ai-code-review-tools-byok`, `open-source-ai-code-review`) linking to the new EU/privacy/Italia pages and vice versa
-- Add a compact "EU privacy & compliance" link cluster in the landing page footer area
-
-## Keywords targeted
-
-Primary: *EU AI Act code review*, *GDPR AI code analysis*, *privacy-first AI Europe*, *AI code review Milano*, *strumenti AI revisione codice Italia*, *BYOK AI Europa*. Long-tail variants per page (volume realistic for KDI <30, matching the strategy from prior SEO work).
-
-## Out of scope
-
-- No backend/schema changes
-- No new tracking, no actual geolocation features
-- Not creating a separate domain or subdomain for `.it` — single canonical domain with hreflang
-
-## Files touched (estimate)
-
-- 4 new route files under `src/routes/`
-- 3 locale JSON updates (`en/docs.json`, `it/docs.json`, `zh/docs.json`)
-- `public/sitemap.xml`, `public/llms.txt`
-- 3 existing docs routes — append "Related guides" block
-
-Confirm and I'll build.
+Confermi e procedo.

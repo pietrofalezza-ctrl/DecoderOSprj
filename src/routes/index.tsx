@@ -410,22 +410,16 @@ function Landing() {
                 icon: <FileCode2 className="h-5 w-5" />,
                 title: t("landing.inputs.fileTitle"),
                 body: t("landing.inputs.fileBody"),
-                badge: t("landing.inputs.freeBadge"),
-                badgeTone: "free" as const,
               },
               {
                 icon: <FileArchive className="h-5 w-5" />,
                 title: t("landing.inputs.zipTitle"),
                 body: t("landing.inputs.zipBody"),
-                badge: t("landing.inputs.freeBadge"),
-                badgeTone: "free" as const,
               },
               {
                 icon: <Link2 className="h-5 w-5" />,
                 title: t("landing.inputs.urlTitle"),
                 body: t("landing.inputs.urlBody"),
-                badge: t("landing.inputs.byokBadge"),
-                badgeTone: "byok" as const,
               },
             ].map((item, i) => (
               <li
@@ -442,18 +436,16 @@ function Landing() {
                 </div>
                 <h3 className="font-display text-lg font-medium">{item.title}</h3>
                 <p className="text-sm text-muted-foreground">{item.body}</p>
-                <span
-                  className={`mt-auto inline-flex w-fit items-center gap-1.5 border px-2 py-1 font-mono text-[10px] uppercase tracking-[0.18em] ${
-                    item.badgeTone === "free"
-                      ? "border-primary/40 text-primary"
-                      : "border-border text-muted-foreground"
-                  }`}
-                >
-                  {item.badge}
-                </span>
               </li>
             ))}
           </ul>
+          <p className="mt-6 text-xs text-muted-foreground/80 sm:text-sm">
+            {t("landing.inputs.languagesNote")}
+          </p>
+          <p className="mt-3 rounded-md border border-border bg-card/60 p-4 text-sm text-muted-foreground">
+            {t("landing.inputs.pricingNote")}
+          </p>
+
         </div>
       </section>
 

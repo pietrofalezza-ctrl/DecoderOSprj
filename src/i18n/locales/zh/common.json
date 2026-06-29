@@ -47,14 +47,15 @@
       "title": "单个文件、ZIP 压缩包或 Git 链接",
       "body": "无需任何配置。Decoder 支持下方三种输入方式中的任意一种。",
       "fileTitle": "单个文件",
-      "fileBody": "拖入 .js、.ts、.py、.java、.go、.rs、.sql 等(20+ 种语言)。",
+      "fileBody": "拖入一个代码文件。Decoder 会立即打开,即使你不清楚里面是什么。",
       "zipTitle": "ZIP 压缩包",
-      "zipBody": "上传整个文件夹,保留目录结构与路径。",
+      "zipBody": "上传一个压缩文件夹,项目结构会被完整保留。",
       "urlTitle": "Git 仓库链接",
-      "urlBody": "粘贴任意公开的 GitHub 或 GitLab 仓库链接。",
-      "freeBadge": "免费 · 无需密钥",
-      "byokBadge": "BYOK · 自带密钥"
+      "urlBody": "粘贴任意公开的 GitHub 或 GitLab 项目链接,无需登录。",
+      "languagesNote": "识别 20+ 种语言(JavaScript、TypeScript、Python、Java、Go、Rust、SQL 等)。",
+      "pricingNote": "三种上传方式都始终免费。静态分析与恶意代码扫描无需任何密钥。AI 功能(解释、AI 来源识别、代码对话)需要你自己的提供方密钥(BYOK)或本地模型。"
     },
+
     "heroBadgeOpen": "个人项目 · 开源",
     "heroBadgePrivacy": "BYOK 或本地推理",
     "heroBadgeAiEra": "公开的代码与提示词",
