@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { KNOWLEDGE_ENTRIES, getLocale } from "@/knowledge/registry";
 import type { KnowledgeLang, KnowledgeType } from "@/knowledge/types";
+import { KnowledgeTopNav } from "@/components/knowledge/KnowledgeTopNav";
 
 const TYPE_LABEL: Record<KnowledgeType, { title: string; intro: string }> = {
   capability: {
@@ -48,8 +49,12 @@ export function KnowledgeList({
   }, [q, lang, lockedType]);
 
   return (
+    <>
+      <KnowledgeTopNav />
     <div className="mx-auto max-w-6xl px-4 py-10">
       <nav aria-label="Breadcrumb" className="mb-4 text-sm text-muted-foreground">
+        <Link to="/" className="hover:text-foreground">Home</Link>
+        <span className="mx-2">/</span>
         <Link to="/knowledge" className="hover:text-foreground">
           Knowledge Hub
         </Link>
@@ -99,5 +104,6 @@ export function KnowledgeList({
         <p className="mt-8 text-center text-muted-foreground">No entries match your search.</p>
       )}
     </div>
+    </>
   );
 }

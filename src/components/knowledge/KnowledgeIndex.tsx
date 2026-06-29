@@ -16,6 +16,7 @@ import {
   getLocale,
 } from "@/knowledge/registry";
 import type { KnowledgeLang, KnowledgeType } from "@/knowledge/types";
+import { KnowledgeTopNav } from "@/components/knowledge/KnowledgeTopNav";
 
 const TYPES: ("all" | KnowledgeType)[] = [
   "all",
@@ -53,6 +54,8 @@ export function KnowledgeIndex({ lang }: { lang: KnowledgeLang }) {
   }, [q, type, category, lang]);
 
   return (
+    <>
+      <KnowledgeTopNav />
     <div className="mx-auto max-w-6xl px-4 py-10">
       <header className="mb-8">
         <p className="text-sm font-medium uppercase tracking-wide text-primary">
@@ -158,5 +161,6 @@ export function KnowledgeIndex({ lang }: { lang: KnowledgeLang }) {
         </ul>
       )}
     </div>
+    </>
   );
 }

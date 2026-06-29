@@ -17,6 +17,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { getLocale, getRelatedEntries } from "@/knowledge/registry";
+import { KnowledgeTopNav } from "@/components/knowledge/KnowledgeTopNav";
 import type { KnowledgeEntry, KnowledgeLang, KnowledgeLevel } from "@/knowledge/types";
 import { KNOWLEDGE_LEVELS } from "@/knowledge/types";
 
@@ -54,8 +55,12 @@ export function KnowledgeContent({
   const related = getRelatedEntries(entry.slug);
 
   return (
+    <>
+      <KnowledgeTopNav />
     <article className="mx-auto max-w-3xl px-4 py-10">
       <nav aria-label="Breadcrumb" className="mb-4 text-sm text-muted-foreground">
+        <Link to="/" className="hover:text-foreground">Home</Link>
+        <span className="mx-2">/</span>
         <Link to="/knowledge" className="hover:text-foreground">
           Knowledge Hub
         </Link>
@@ -187,6 +192,7 @@ export function KnowledgeContent({
         </Button>
       </div>
     </article>
+    </>
   );
 }
 
