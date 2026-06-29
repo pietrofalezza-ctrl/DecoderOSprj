@@ -41,7 +41,7 @@
   },
   "landing": {
     "hero": "越来越多的代码由 <1>AI</1> 编写。Decoder 帮助你<2>阅读它</2>。",
-    "heroSubtitle": "Decoder 是一个个人学习项目,开源(MIT)且免费。可使用你自己的 API 密钥(BYOK)或本地推理模式。",
+    "heroSubtitle": "开源 AI 代码分析(MIT)。静态代码与恶意软件检测无需任何 API 密钥即可运行,支持 20+ 种语言 — 自带密钥(BYOK)或本地推理以获得 AI 解读、仓库聊天与持久化历史。",
     "heroBadgeOpen": "个人项目 · 开源",
     "heroBadgePrivacy": "BYOK 或本地推理",
     "heroBadgeAiEra": "公开的代码与提示词",
