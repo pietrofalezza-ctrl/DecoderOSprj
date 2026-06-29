@@ -226,7 +226,7 @@ function ProjectPage() {
 
   return (
     <AppShell>
-      <div className="mx-auto max-w-7xl px-6 py-10 space-y-8">
+      <div className="mx-auto w-full max-w-7xl px-4 py-6 sm:px-6 sm:py-10 space-y-8">
         <header className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
           <div className="space-y-3">
             <div className="space-y-1">
@@ -260,7 +260,7 @@ function ProjectPage() {
                 onValueChange={(v) => modeMut.mutate(v as AnalysisMode)}
                 disabled={modeMut.isPending}
               >
-                <SelectTrigger className="mt-1 h-9 w-56">
+                <SelectTrigger className="mt-1 h-9 w-full sm:w-56">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -388,7 +388,8 @@ function ProjectPage() {
                   <YAxis
                     dataKey="name"
                     type="category"
-                    width={120}
+                    width={90}
+                    tick={{ fontSize: 11 }}
                     tickLine={false}
                     axisLine={false}
                   />
@@ -428,7 +429,8 @@ function ProjectPage() {
                   <YAxis
                     dataKey="label"
                     type="category"
-                    width={170}
+                    width={110}
+                    tick={{ fontSize: 11 }}
                     tickLine={false}
                     axisLine={false}
                   />

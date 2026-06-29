@@ -140,7 +140,7 @@ export function AppShell({ children }: { children: ReactNode }) {
           </TooltipProvider>
         </div>
       </header>
-      <main className="flex-1">{children}</main>
+      <main className="flex-1 overflow-x-hidden">{children}</main>
       <footer className="border-t border-border/60 bg-background/60">
         <div className="mx-auto flex max-w-6xl flex-col items-start justify-between gap-3 px-6 py-5 text-[11px] text-muted-foreground md:flex-row md:items-center">
           <p className="max-w-3xl leading-relaxed">{t("footer.disclaimer")}</p>
