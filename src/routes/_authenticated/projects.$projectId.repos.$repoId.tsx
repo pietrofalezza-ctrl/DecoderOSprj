@@ -1111,12 +1111,14 @@ function WorkspacePage() {
                         onSelect={(f) => {
                           setSelectedFileId(f.id);
                           setSelectedFolderPath(null);
+                          if (isMobile) setMobilePane("code");
                         }}
                         onSelectFolder={
                           llmEnabled
                             ? (p) => {
                                 setSelectedFolderPath(p);
                                 setSelectedFileId(null);
+                                if (isMobile) setMobilePane("insights");
                               }
                             : undefined
                         }
