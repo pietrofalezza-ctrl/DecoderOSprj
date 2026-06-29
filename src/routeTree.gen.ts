@@ -14,7 +14,6 @@ import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as OpenSourceRouteImport } from './routes/open-source'
 import { Route as ManifestoRouteImport } from './routes/manifesto'
-import { Route as KnowledgeRouteImport } from './routes/knowledge'
 import { Route as InstallRouteImport } from './routes/install'
 import { Route as DocsRouteImport } from './routes/docs'
 import { Route as DataFlowRouteImport } from './routes/data-flow'
@@ -82,11 +81,6 @@ const ManifestoRoute = ManifestoRouteImport.update({
   path: '/manifesto',
   getParentRoute: () => rootRouteImport,
 } as any)
-const KnowledgeRoute = KnowledgeRouteImport.update({
-  id: '/knowledge',
-  path: '/knowledge',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const InstallRoute = InstallRouteImport.update({
   id: '/install',
   path: '/install',
@@ -132,14 +126,14 @@ const IndexRoute = IndexRouteImport.update({
   getParentRoute: () => rootRouteImport,
 } as any)
 const KnowledgeIndexRoute = KnowledgeIndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => KnowledgeRoute,
+  id: '/knowledge/',
+  path: '/knowledge/',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const KnowledgeSlugRoute = KnowledgeSlugRouteImport.update({
-  id: '/$slug',
-  path: '/$slug',
-  getParentRoute: () => KnowledgeRoute,
+  id: '/knowledge/$slug',
+  path: '/knowledge/$slug',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const DocsStaticCodeAnalysisNoApiKeyRoute =
   DocsStaticCodeAnalysisNoApiKeyRouteImport.update({
@@ -322,7 +316,6 @@ export interface FileRoutesByFullPath {
   '/data-flow': typeof DataFlowRoute
   '/docs': typeof DocsRouteWithChildren
   '/install': typeof InstallRoute
-  '/knowledge': typeof KnowledgeRouteWithChildren
   '/manifesto': typeof ManifestoRoute
   '/open-source': typeof OpenSourceRoute
   '/privacy': typeof PrivacyRoute
@@ -418,7 +411,6 @@ export interface FileRoutesById {
   '/data-flow': typeof DataFlowRoute
   '/docs': typeof DocsRouteWithChildren
   '/install': typeof InstallRoute
-  '/knowledge': typeof KnowledgeRouteWithChildren
   '/manifesto': typeof ManifestoRoute
   '/open-source': typeof OpenSourceRoute
   '/privacy': typeof PrivacyRoute
@@ -468,7 +460,6 @@ export interface FileRouteTypes {
     | '/data-flow'
     | '/docs'
     | '/install'
-    | '/knowledge'
     | '/manifesto'
     | '/open-source'
     | '/privacy'
@@ -563,7 +554,6 @@ export interface FileRouteTypes {
     | '/data-flow'
     | '/docs'
     | '/install'
-    | '/knowledge'
     | '/manifesto'
     | '/open-source'
     | '/privacy'
@@ -613,12 +603,13 @@ export interface RootRouteChildren {
   DataFlowRoute: typeof DataFlowRoute
   DocsRoute: typeof DocsRouteWithChildren
   InstallRoute: typeof InstallRoute
-  KnowledgeRoute: typeof KnowledgeRouteWithChildren
   ManifestoRoute: typeof ManifestoRoute
   OpenSourceRoute: typeof OpenSourceRoute
   PrivacyRoute: typeof PrivacyRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
   TermsRoute: typeof TermsRoute
+  KnowledgeSlugRoute: typeof KnowledgeSlugRoute
+  KnowledgeIndexRoute: typeof KnowledgeIndexRoute
   ApiPublicHooksCleanupStaleRepositoriesRoute: typeof ApiPublicHooksCleanupStaleRepositoriesRoute
   LovableEmailQueueProcessRoute: typeof LovableEmailQueueProcessRoute
 }
@@ -658,13 +649,6 @@ declare module '@tanstack/react-router' {
       path: '/manifesto'
       fullPath: '/manifesto'
       preLoaderRoute: typeof ManifestoRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/knowledge': {
-      id: '/knowledge'
-      path: '/knowledge'
-      fullPath: '/knowledge'
-      preLoaderRoute: typeof KnowledgeRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/install': {
@@ -732,17 +716,17 @@ declare module '@tanstack/react-router' {
     }
     '/knowledge/': {
       id: '/knowledge/'
-      path: '/'
+      path: '/knowledge'
       fullPath: '/knowledge/'
       preLoaderRoute: typeof KnowledgeIndexRouteImport
-      parentRoute: typeof KnowledgeRoute
+      parentRoute: typeof rootRouteImport
     }
     '/knowledge/$slug': {
       id: '/knowledge/$slug'
-      path: '/$slug'
+      path: '/knowledge/$slug'
       fullPath: '/knowledge/$slug'
       preLoaderRoute: typeof KnowledgeSlugRouteImport
-      parentRoute: typeof KnowledgeRoute
+      parentRoute: typeof rootRouteImport
     }
     '/docs/static-code-analysis-no-api-key': {
       id: '/docs/static-code-analysis-no-api-key'
@@ -1058,20 +1042,6 @@ const DocsRouteChildren: DocsRouteChildren = {
 
 const DocsRouteWithChildren = DocsRoute._addFileChildren(DocsRouteChildren)
 
-interface KnowledgeRouteChildren {
-  KnowledgeSlugRoute: typeof KnowledgeSlugRoute
-  KnowledgeIndexRoute: typeof KnowledgeIndexRoute
-}
-
-const KnowledgeRouteChildren: KnowledgeRouteChildren = {
-  KnowledgeSlugRoute: KnowledgeSlugRoute,
-  KnowledgeIndexRoute: KnowledgeIndexRoute,
-}
-
-const KnowledgeRouteWithChildren = KnowledgeRoute._addFileChildren(
-  KnowledgeRouteChildren,
-)
-
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
@@ -1082,12 +1052,13 @@ const rootRouteChildren: RootRouteChildren = {
   DataFlowRoute: DataFlowRoute,
   DocsRoute: DocsRouteWithChildren,
   InstallRoute: InstallRoute,
-  KnowledgeRoute: KnowledgeRouteWithChildren,
   ManifestoRoute: ManifestoRoute,
   OpenSourceRoute: OpenSourceRoute,
   PrivacyRoute: PrivacyRoute,
   ResetPasswordRoute: ResetPasswordRoute,
   TermsRoute: TermsRoute,
+  KnowledgeSlugRoute: KnowledgeSlugRoute,
+  KnowledgeIndexRoute: KnowledgeIndexRoute,
   ApiPublicHooksCleanupStaleRepositoriesRoute:
     ApiPublicHooksCleanupStaleRepositoriesRoute,
   LovableEmailQueueProcessRoute: LovableEmailQueueProcessRoute,

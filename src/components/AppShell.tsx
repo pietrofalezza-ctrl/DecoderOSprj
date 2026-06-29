@@ -59,6 +59,17 @@ export function AppShell({ children }: { children: ReactNode }) {
             size="default"
             className="hidden text-sm font-medium sm:inline-flex"
           >
+            <Link to="/knowledge">
+              <BookOpen className="mr-2 h-5 w-5" />
+              Knowledge
+            </Link>
+          </Button>
+          <Button
+            asChild
+            variant="ghost"
+            size="default"
+            className="hidden text-sm font-medium sm:inline-flex"
+          >
             <Link to="/docs">
               <BookOpen className="mr-2 h-5 w-5" />
               {t("nav.docs")}
