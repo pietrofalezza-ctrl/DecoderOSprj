@@ -1131,9 +1131,16 @@ function WorkspacePage() {
                 </div>
               </ScrollArea>
             </div>
-          </ResizablePanel>
-          <ResizableHandle />
-          <ResizablePanel defaultSize={46} minSize={20}>
+          </WorkspacePanel>
+          <WorkspaceHandle isMobile={isMobile} />
+          <WorkspacePanel
+            isMobile={isMobile}
+            paneKey="code"
+            activePane={mobilePane}
+            defaultSize={46}
+            minSize={20}
+          >
+
             <div className="h-full">
               {selectedFolderPath ? (
                 <div className="flex h-full items-center justify-center p-6">
