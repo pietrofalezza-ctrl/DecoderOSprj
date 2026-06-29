@@ -69,6 +69,20 @@ const RAW_ENTRIES: KnowledgeEntry[] = [
   dockerfileFormat,
 ];
 
+export const KNOWLEDGE_ENTRIES: KnowledgeEntry[] = RAW_ENTRIES.map((entry) => {
+  const overlay = KNOWLEDGE_TRANSLATIONS[entry.slug];
+  if (!overlay) return entry;
+  return {
+    ...entry,
+    i18n: {
+      ...entry.i18n,
+      ...(overlay.it ? { it: overlay.it } : {}),
+      ...(overlay.zh ? { zh: overlay.zh } : {}),
+    },
+  };
+});
+
+
 export const KNOWLEDGE_BY_SLUG: Record<string, KnowledgeEntry> = Object.fromEntries(
   KNOWLEDGE_ENTRIES.map((e) => [e.slug, e]),
 );
