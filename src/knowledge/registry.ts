@@ -34,7 +34,7 @@ import { javascriptFormat } from "./entries/javascript-format";
 import { javaFormat } from "./entries/java-format";
 import { dockerfileFormat } from "./entries/dockerfile-format";
 
-export const KNOWLEDGE_ENTRIES: KnowledgeEntry[] = [
+const RAW_ENTRIES: KnowledgeEntry[] = [
   staticMalwareAnalysis,
   byok,
   repositoryAnalysis,
