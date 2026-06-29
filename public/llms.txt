@@ -1,8 +1,8 @@
 # Decoder
 
-> Open-source code understanding for the AI era. Read, review and audit code written by Copilot, Cursor, Claude Code and your team. BYOK cloud or fully local with Ollama / LM Studio.
+> Open-source code understanding for the AI era. Read, review and audit code written by Copilot, Cursor, Claude Code and your team. BYOK cloud or fully local with Ollama / LM Studio. Privacy-first for EU teams under GDPR and the EU AI Act.
 
-Decoder is a non-profit, open-source project that helps developers, students and teams make sense of AI-generated code. It runs against your own provider keys (OpenAI, Anthropic, Google, OpenRouter) or fully locally via Ollama and LM Studio. No vendor lock-in, no telemetry, MIT licensed.
+Decoder is a non-profit, open-source project that helps developers, students and teams make sense of AI-generated code. It runs against your own provider keys (OpenAI, Anthropic, Google, OpenRouter) or fully locally via Ollama and LM Studio. No vendor lock-in, MIT licensed.
 
 ## Pages
 
@@ -10,6 +10,13 @@ Decoder is a non-profit, open-source project that helps developers, students and
 - [Manifesto](/manifesto): Principles — open source, privacy-first, BYOK, local-first, multilingual.
 - [Documentation](/docs): How to use Decoder — BYOK cloud, local Ollama/LM Studio, security and ownership.
 - [How to review AI-generated code](/docs/how-to-review-ai-code): Guide to auditing code produced by Copilot, Cursor, Claude Code and other AI tools.
+- [Decoder vs CodeRabbit vs Greptile](/docs/comparison-coderabbit): Full comparison of AI code-review tools.
+- [AI code review tools with BYOK](/docs/ai-code-review-tools-byok): Cost control, key sovereignty, BYOK-first tools.
+- [Open-source AI code review](/docs/open-source-ai-code-review): MIT-licensed, local inference, zero egress.
+- [EU AI Act and AI code analysis](/docs/eu-ai-act-code-analysis): Compliance guide for European engineering teams (EN / IT / ZH).
+- [GDPR-compliant AI code review](/docs/gdpr-ai-code-review): Source code as personal data, data residency, DPA (EN / IT / ZH).
+- [Privacy-first AI in Europe — 2026 guide](/docs/privacy-first-ai-europe): EU AI ecosystem, BYOK and local inference (EN / IT / ZH).
+- [AI code review a Milano e Nord Italia](/docs/ai-code-review-milano-nord-italia): Geo-targeted Italian guide for Milan, Verona, Padova, Bologna, Torino.
 - [Open source](/open-source): License, contributing, repository.
 - [Contributors](/contributors): Live list of contributors and merged pull requests from GitHub.
 - [Terms](/terms): MIT License, permitted uses, trademark restrictions, disclaimer.
