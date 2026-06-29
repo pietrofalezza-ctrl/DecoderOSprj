@@ -41,7 +41,14 @@ export function AppShell({ children }: { children: ReactNode }) {
 
   return (
     <div className="flex min-h-screen flex-col bg-background">
-      <header className="flex h-16 items-center justify-between border-b border-border px-3 sm:px-4">
+      <header
+        className="flex h-16 items-center justify-between border-b border-border px-3 sm:px-4"
+        style={{
+          paddingTop: "env(safe-area-inset-top)",
+          paddingLeft: "max(0.75rem, env(safe-area-inset-left))",
+          paddingRight: "max(0.75rem, env(safe-area-inset-right))",
+        }}
+      >
         <Link to="/dashboard" aria-label={t("brand.name")} className="shrink-0">
           <Logo />
         </Link>
