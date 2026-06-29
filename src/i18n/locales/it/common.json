@@ -20,7 +20,19 @@
     "manifesto": "Manifesto",
     "account": "Account",
     "signedInAs": "Connesso come",
-    "apiKeys": "Chiavi API"
+    "apiKeys": "Chiavi API",
+    "history": "Storico"
+  },
+  "history": {
+    "accountTitle": "Storico delle tue analisi",
+    "accountSubtitle": "Tutte le analisi LLM e statiche eseguite, su ogni progetto.",
+    "repoTitle": "Storico repository",
+    "repoSubtitle": "Tutte le analisi e chat persistite per questo repository.",
+    "backToWorkspace": "Torna al workspace",
+    "empty": "Nessuna analisi salvata. Esegui un'esplicazione, qualità, sicurezza o una chat dal workspace.",
+    "loadMore": "Carica altre",
+    "filterKind": "Tipo",
+    "allKinds": "Tutti i tipi"
   },
   "languages": {
     "en": "English",
@@ -516,6 +528,15 @@
       "aggregatePending": "Analisi completata. Generazione della sintesi cartella…",
       "emptyHint": "Premi \"Analizza tutta la cartella\" per iniziare.",
       "noFindings": "Nessun finding strutturato per questo file."
+    },
+    "folderChat": {
+      "tab": "Chat",
+      "needsProvider": "La chat sulla cartella richiede un provider cloud configurato con la tua chiave BYOK.",
+      "emptyHint": "Fai una domanda sui file di questa cartella. Il modello vede solo i file di questa cartella.",
+      "placeholder": "Chiedi qualcosa su questa cartella — architettura, rischi, refactor…",
+      "thinking": "Sto pensando…",
+      "hint": "Ctrl/⌘+Invio per inviare. Vengono usati il tuo tono e il tuo livello.",
+      "saved": "Conversazione salvata nello storico."
     },
     "fix": {
       "tab": "Fix",
