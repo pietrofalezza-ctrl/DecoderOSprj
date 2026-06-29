@@ -80,6 +80,18 @@ function AdminPage() {
           </p>
         </header>
 
+        <section className="rounded-lg border border-border bg-card p-5">
+          <h2 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
+            Knowledge Engine
+          </h2>
+          <p className="mt-1 text-xs text-muted-foreground">
+            Editorial workspace for the Knowledge Hub: AI-suggested opportunities, draft review, multilingual publishing.
+          </p>
+          <Button asChild size="sm" className="mt-3">
+            <a href="/admin/knowledge">Open Knowledge admin</a>
+          </Button>
+        </section>
+
         <section className="space-y-3 rounded-lg border border-border bg-card p-5">
           <div className="flex items-start justify-between gap-3">
             <div>
