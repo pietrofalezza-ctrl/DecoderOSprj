@@ -18,6 +18,13 @@ import {
   Rocket,
   AlertTriangle,
   Check,
+  ShieldOff,
+  FileCode2,
+  Bug,
+  Bot,
+  History,
+  Languages,
+  Gift,
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -31,11 +38,18 @@ import {
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Progress } from "@/components/ui/progress";
+import { Badge } from "@/components/ui/badge";
 import { recordOnboardingCompletion } from "@/lib/onboarding.functions";
 import { ONBOARDING_TERMS_VERSION } from "@/lib/onboarding";
 import { getErrorMessage } from "@/lib/errors";
 
-const TOTAL_STEPS = 9;
+// Step ordering: insertion of new "sFree" step between welcome (s1) and modes (s2)
+// keeps existing i18n keys (s1..s9) untouched.
+const STEP_KEYS = ["s1", "sFree", "s2", "s3", "s4", "s5", "s6", "s7", "s8", "s9"] as const;
+const TOTAL_STEPS = STEP_KEYS.length;
+const ACK_STEP_INDEX = STEP_KEYS.indexOf("s8") + 1; // 1-based
+const FINAL_STEP_INDEX = STEP_KEYS.indexOf("s9") + 1;
+
 const ACK_KEYS = ["cost", "providers", "authorized", "review", "terms"] as const;
 type AckKey = (typeof ACK_KEYS)[number];
 
@@ -59,21 +73,21 @@ export function OnboardingDialog({
     terms: false,
   });
 
+  const stepKey = STEP_KEYS[step - 1];
   const allChecked = useMemo(() => ACK_KEYS.every((k) => checks[k]), [checks]);
-  const subtitle = t(`onboarding.steps.s${step}.subtitle`, { defaultValue: "" });
+  const subtitle = t(`onboarding.steps.${stepKey}.subtitle`, { defaultValue: "" });
 
   const completeMut = useMutation({
     mutationFn: () => record({ data: { language: i18n.language } }),
     onSuccess: async () => {
       await qc.invalidateQueries({ queryKey: ["onboarding-status"] });
-      setStep(9);
+      setStep(FINAL_STEP_INDEX);
     },
     onError: (e) => toast.error(getErrorMessage(e, t("errors.generic"))),
   });
 
   const close = () => {
     onOpenChange(false);
-    // reset after a tick so reopen starts fresh once completed
     setTimeout(() => {
       setStep(1);
       setChecks({ cost: false, providers: false, authorized: false, review: false, terms: false });
@@ -89,11 +103,12 @@ export function OnboardingDialog({
     else navigate({ to: "/dashboard" });
   };
 
+  const skipToAck = () => setStep(ACK_STEP_INDEX);
+
   return (
     <Dialog
       open={open}
       onOpenChange={(v) => {
-        // allow closing only when step 9 (after ack) — earlier steps still dismissable but will re-open next login
         if (!v && !completeMut.isPending) close();
       }}
     >
@@ -104,22 +119,28 @@ export function OnboardingDialog({
             {t("onboarding.stepLabel", { current: step, total: TOTAL_STEPS })}
           </div>
           <Progress value={(step / TOTAL_STEPS) * 100} className="mt-2 h-1.5" />
-          <DialogTitle className="mt-4 text-xl">{t(`onboarding.steps.s${step}.title`)}</DialogTitle>
+          <DialogTitle className="mt-4 text-xl">
+            {t(`onboarding.steps.${stepKey}.title`)}
+          </DialogTitle>
           <DialogDescription className={subtitle ? "text-sm" : "sr-only"}>
             {subtitle || t("onboarding.versionLabel", { version: ONBOARDING_TERMS_VERSION })}
           </DialogDescription>
         </DialogHeader>
 
-        <div className="mt-4 min-h-[260px]">
-          {step === 1 && <StepWelcome />}
-          {step === 2 && <StepModes />}
-          {step === 3 && <StepProvider />}
-          {step === 4 && <StepImport />}
-          {step === 5 && <StepAnalysis />}
-          {step === 6 && <StepReader />}
-          {step === 7 && <StepReview />}
-          {step === 8 && <StepAck checks={checks} setChecks={setChecks} />}
-          {step === 9 && <StepStart onGo={goto} />}
+        <div
+          key={stepKey}
+          className="mt-4 min-h-[260px] animate-in fade-in slide-in-from-bottom-2 duration-300"
+        >
+          {stepKey === "s1" && <StepWelcome />}
+          {stepKey === "sFree" && <StepFree />}
+          {stepKey === "s2" && <StepModes />}
+          {stepKey === "s3" && <StepProvider onSkip={skipToAck} />}
+          {stepKey === "s4" && <StepImport />}
+          {stepKey === "s5" && <StepAnalysis />}
+          {stepKey === "s6" && <StepReader />}
+          {stepKey === "s7" && <StepReview />}
+          {stepKey === "s8" && <StepAck checks={checks} setChecks={setChecks} />}
+          {stepKey === "s9" && <StepStart onGo={goto} />}
         </div>
 
         <div className="mt-6 flex items-center justify-between gap-2 border-t border-border pt-4">
@@ -127,13 +148,15 @@ export function OnboardingDialog({
             {t("onboarding.versionLabel", { version: ONBOARDING_TERMS_VERSION })}
           </div>
           <div className="flex gap-2">
-            {step > 1 && step < 9 && (
+            {step > 1 && step < FINAL_STEP_INDEX && (
               <Button variant="ghost" onClick={back} disabled={completeMut.isPending}>
                 {t("onboarding.back")}
               </Button>
             )}
-            {step < 8 && <Button onClick={next}>{t("onboarding.continue")}</Button>}
-            {step === 8 && (
+            {step < ACK_STEP_INDEX && (
+              <Button onClick={next}>{t("onboarding.continue")}</Button>
+            )}
+            {step === ACK_STEP_INDEX && (
               <Button
                 onClick={() => completeMut.mutate()}
                 disabled={!allChecked || completeMut.isPending}
@@ -141,7 +164,9 @@ export function OnboardingDialog({
                 {completeMut.isPending ? t("onboarding.saving") : t("onboarding.finish")}
               </Button>
             )}
-            {step === 9 && <Button onClick={close}>{t("onboarding.close")}</Button>}
+            {step === FINAL_STEP_INDEX && (
+              <Button onClick={close}>{t("onboarding.close")}</Button>
+            )}
           </div>
         </div>
       </DialogContent>
@@ -155,9 +180,79 @@ function StepWelcome() {
   const { t } = useTranslation();
   return (
     <div className="space-y-4">
-      <div className="flex items-start gap-3 rounded-lg border border-border bg-card p-4">
-        <Sparkles className="mt-0.5 h-5 w-5 shrink-0 text-primary" />
-        <p className="text-sm leading-relaxed text-foreground">{t("onboarding.steps.s1.body")}</p>
+      <div className="relative overflow-hidden rounded-xl border border-primary/30 bg-gradient-to-br from-primary/10 via-primary/5 to-transparent p-5">
+        <div className="flex items-start gap-3">
+          <div className="rounded-lg bg-primary/15 p-2 text-primary">
+            <Sparkles className="h-5 w-5" />
+          </div>
+          <p className="text-sm leading-relaxed text-foreground">
+            {t("onboarding.steps.s1.body")}
+          </p>
+        </div>
+        <div className="mt-4 flex flex-wrap gap-2">
+          <Badge variant="secondary" className="border-emerald-500/30 bg-emerald-500/10 text-emerald-700 dark:text-emerald-300">
+            <Gift className="mr-1 h-3 w-3" />
+            {t("onboarding.welcomeBadges.free")}
+          </Badge>
+          <Badge variant="secondary" className="border-primary/30 bg-primary/10 text-primary">
+            <ShieldOff className="mr-1 h-3 w-3" />
+            {t("onboarding.welcomeBadges.noKey")}
+          </Badge>
+          <Badge variant="secondary" className="border-border bg-muted">
+            <ShieldCheck className="mr-1 h-3 w-3" />
+            {t("onboarding.welcomeBadges.privacy")}
+          </Badge>
+        </div>
+      </div>
+      <div className="grid grid-cols-3 gap-2 text-center">
+        {(["languages", "formats", "modes"] as const).map((k) => (
+          <div key={k} className="rounded-md border border-border bg-card p-3">
+            <div className="text-sm font-semibold text-foreground">
+              {t(`onboarding.welcomeStats.${k}`)}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function StepFree() {
+  const { t } = useTranslation();
+  const items: { id: string; icon: React.ReactNode; tone: string }[] = [
+    { id: "static", icon: <FileCode2 className="h-4 w-4" />, tone: "text-blue-500" },
+    { id: "malware", icon: <Bug className="h-4 w-4" />, tone: "text-red-500" },
+    { id: "aiOrigin", icon: <Bot className="h-4 w-4" />, tone: "text-purple-500" },
+    { id: "upload", icon: <Upload className="h-4 w-4" />, tone: "text-emerald-500" },
+    { id: "history", icon: <History className="h-4 w-4" />, tone: "text-amber-500" },
+    { id: "i18n", icon: <Languages className="h-4 w-4" />, tone: "text-cyan-500" },
+  ];
+  return (
+    <div className="space-y-3">
+      <div className="grid gap-2 sm:grid-cols-2">
+        {items.map((it) => (
+          <div
+            key={it.id}
+            className="group flex items-start gap-3 rounded-lg border border-border bg-card p-3 transition hover:border-primary/40 hover:bg-primary/5"
+          >
+            <div className={`mt-0.5 shrink-0 rounded-md bg-muted p-1.5 ${it.tone}`}>
+              {it.icon}
+            </div>
+            <div className="min-w-0 flex-1">
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="text-sm font-semibold">
+                  {t(`onboarding.steps.sFree.items.${it.id}.title`)}
+                </span>
+                <Badge variant="outline" className="border-emerald-500/40 bg-emerald-500/10 text-[10px] text-emerald-700 dark:text-emerald-300">
+                  {t("onboarding.steps.sFree.badge")}
+                </Badge>
+              </div>
+              <p className="mt-1 text-xs text-muted-foreground">
+                {t(`onboarding.steps.sFree.items.${it.id}.body`)}
+              </p>
+            </div>
+          </div>
+        ))}
       </div>
     </div>
   );
@@ -247,7 +342,7 @@ const PROVIDERS = [
   { id: "openrouter", local: false },
 ] as const;
 
-function StepProvider() {
+function StepProvider({ onSkip }: { onSkip: () => void }) {
   const { t } = useTranslation();
   return (
     <div className="space-y-4">
@@ -277,7 +372,15 @@ function StepProvider() {
           <span>{t("onboarding.steps.s3.warning")}</span>
         </div>
       </div>
-      <p className="text-xs text-muted-foreground">{t("onboarding.steps.s3.configureLater")}</p>
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <p className="text-xs text-muted-foreground">
+          {t("onboarding.steps.s3.configureLater")}
+        </p>
+        <Button size="sm" variant="outline" onClick={onSkip}>
+          <ShieldOff className="mr-1.5 h-3.5 w-3.5" />
+          {t("onboarding.steps.s9.cta.noKey")}
+        </Button>
+      </div>
     </div>
   );
 }
@@ -448,7 +551,10 @@ function StepStart({ onGo }: { onGo: (to: "/dashboard" | "/settings") => void })
         </div>
       </div>
       <div className="flex flex-wrap gap-2">
-        <Button onClick={() => onGo("/dashboard")}>{t("onboarding.steps.s9.cta.demo")}</Button>
+        <Button onClick={() => onGo("/dashboard")}>
+          <ShieldOff className="mr-1.5 h-3.5 w-3.5" />
+          {t("onboarding.steps.s9.cta.noKey")}
+        </Button>
         <Button variant="outline" onClick={() => onGo("/settings")}>
           {t("onboarding.steps.s9.cta.provider")}
         </Button>
