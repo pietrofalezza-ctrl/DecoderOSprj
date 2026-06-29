@@ -21,6 +21,9 @@ import {
   Monitor,
   Smartphone,
   Apple,
+  FileCode2,
+  FileArchive,
+  Link2,
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -375,6 +378,73 @@ function Landing() {
               </div>
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* Inputs strip — what you can drop in */}
+      <section id="inputs" className="border-t border-border bg-background">
+        <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 md:py-16">
+          <div className="max-w-2xl">
+            <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-primary">
+              {t("landing.inputs.kicker")}
+            </p>
+            <h2 className="mt-2 font-display text-2xl font-medium tracking-tight sm:text-3xl md:text-4xl">
+              {t("landing.inputs.title")}
+            </h2>
+            <p className="mt-3 text-sm text-muted-foreground sm:text-base">
+              {t("landing.inputs.body")}
+            </p>
+          </div>
+          <ul className="mt-8 grid gap-4 sm:grid-cols-3">
+            {[
+              {
+                icon: <FileCode2 className="h-5 w-5" />,
+                title: t("landing.inputs.fileTitle"),
+                body: t("landing.inputs.fileBody"),
+                badge: t("landing.inputs.freeBadge"),
+                badgeTone: "free" as const,
+              },
+              {
+                icon: <FileArchive className="h-5 w-5" />,
+                title: t("landing.inputs.zipTitle"),
+                body: t("landing.inputs.zipBody"),
+                badge: t("landing.inputs.freeBadge"),
+                badgeTone: "free" as const,
+              },
+              {
+                icon: <Link2 className="h-5 w-5" />,
+                title: t("landing.inputs.urlTitle"),
+                body: t("landing.inputs.urlBody"),
+                badge: t("landing.inputs.byokBadge"),
+                badgeTone: "byok" as const,
+              },
+            ].map((item, i) => (
+              <li
+                key={item.title}
+                className="flex flex-col gap-3 border border-border bg-card p-5"
+              >
+                <div className="flex items-center justify-between">
+                  <span className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-border text-primary">
+                    {item.icon}
+                  </span>
+                  <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground/70">
+                    0{i + 1}
+                  </span>
+                </div>
+                <h3 className="font-display text-lg font-medium">{item.title}</h3>
+                <p className="text-sm text-muted-foreground">{item.body}</p>
+                <span
+                  className={`mt-auto inline-flex w-fit items-center gap-1.5 border px-2 py-1 font-mono text-[10px] uppercase tracking-[0.18em] ${
+                    item.badgeTone === "free"
+                      ? "border-primary/40 text-primary"
+                      : "border-border text-muted-foreground"
+                  }`}
+                >
+                  {item.badge}
+                </span>
+              </li>
+            ))}
+          </ul>
         </div>
       </section>
 

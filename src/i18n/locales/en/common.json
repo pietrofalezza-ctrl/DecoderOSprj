@@ -41,7 +41,20 @@
   },
   "landing": {
     "hero": "A growing share of code is written by <1>AI</1>. Decoder helps you <2>read it</2>.",
-    "heroSubtitle": "Open-source AI code analysis (MIT). Static code & malware checks run with no API key in 20+ languages — add your own key (BYOK) or run fully local for AI explanations, repo chat and persistent history.",
+    "heroSubtitle": "Open-source AI code analysis (MIT). Drop a single file, a ZIP or a public Git URL. Static & malware checks run free in 20+ languages — add your own key (BYOK) or run local for AI explanations, repo chat and persistent history.",
+    "inputs": {
+      "kicker": "What you can drop in",
+      "title": "Single file, ZIP archive, or Git URL",
+      "body": "No setup required. Decoder accepts any of the three input modes below — pick what fits the moment.",
+      "fileTitle": "Single file",
+      "fileBody": "Drop one .js, .ts, .py, .java, .go, .rs, .sql, … (20+ languages).",
+      "zipTitle": "ZIP archive",
+      "zipBody": "Upload a whole folder; structure and paths are preserved.",
+      "urlTitle": "Git repository URL",
+      "urlBody": "Paste any public GitHub or GitLab repository link.",
+      "freeBadge": "Free · no key",
+      "byokBadge": "BYOK · your key"
+    },
     "heroBadgeOpen": "Personal project · Open source",
     "heroBadgePrivacy": "BYOK or local inference",
     "heroBadgeAiEra": "Public code and prompts",

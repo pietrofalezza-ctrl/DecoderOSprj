@@ -1,48 +1,53 @@
-# Diagnostica scan AI-origin + chiarezza formati
 
-## Cos'è successo
+## Goal
+1. Make it explicit on the homepage that Decoder accepts **single files** (not only ZIP archives).
+2. Rationalize the landing page layout so the value proposition, supported inputs, and free-vs-BYOK split are visually clearer on first visit (desktop + mobile).
 
-Lo screenshot "Sampled 0 of 84" non è un bug di conteggio: lo scanner **ha provato** a campionare 30 file (cap costo) sugli 84 file di codice riconosciuti, ma **tutte le 30 chiamate LLM sono fallite** → `results = []`, `sampled_count = 0`. Il backend già raccoglie gli errori in `errors[]` ma il pannello UI (`AiOriginPanel.tsx`) li ignora e mostra solo "No code files were scoreable", che è fuorviante.
+## Scope
+Only `src/routes/index.tsx` (landing) + i18n strings in `src/i18n/locales/{en,it,zh}/common.json`. No backend/business logic changes.
 
-Cause tipiche per fallimento totale:
-- BYOK key del provider selezionato scaduta / rate-limited / invalid → ogni chiamata 401/429
-- Modello indisponibile per quella key (es. `gpt-5` su una key tier-1)
-- Network/timeout
+## Changes
 
-L'AI-origin scan **richiede per design un LLM** (è la cifra del prodotto vs. uno static-only), quindi BYOK o endpoint locale sono obbligatori — niente fallback "free".
+### 1. Hero — sharper one-line promise
+- Replace the current dense hero subhead with a 2-line structure:
+  - **Line 1 (promise):** "AI code analysis for unknown code — paste, drop a file, or upload a repo."
+  - **Line 2 (proof):** "Static + malware scan run free. AI explainer & chat unlock with your own key (BYOK)."
+- Keep the existing CTA pair (Start free / See how it works) but standardize size and add a thin "No signup for static scan" microcopy under the buttons.
 
-## Fix proposto (scoped a UI/UX, non logica)
+### 2. New "What you can drop in" strip (right under hero)
+A single horizontal strip with 3 input modes shown as equal cards, replacing the current scattered mentions:
+- **Single file** — `.js .ts .py .java .go .rs .sql …` (20+) — *new, currently missing*
+- **ZIP archive** — full folder with structure preserved
+- **Git repo URL** — public GitHub/GitLab link
 
-### 1. `src/components/AiOriginPanel.tsx`
-Quando `sampled_count === 0` e `errors.length > 0`:
-- Mostrare un alert rosso "Lo scan non è andato a buon fine" con:
-  - il primo `errors[0].message` (es. "401 Unauthorized")
-  - hint: "Verifica la BYOK key in Settings → AI Providers, o cambia provider"
-  - bottone "Open Settings"
-- Quando `sampled_count > 0` ma `errors.length > 0`, aggiungere un piccolo badge "N file failed" cliccabile che espande i path falliti.
+Each card: icon + label + one-line example. This is the visual fix for "manca l'aspetto dei singoli file".
 
-### 2. Esplicitare i formati supportati
+### 3. Rationalize section order
+Current order has install-PWA, features, FAQ, contributors scattered. Reorder for funnel clarity:
+1. Hero
+2. "What you can drop in" (new strip)
+3. "What you get" — 4 analysis modes (Static · Malware · AI-origin · Chat) with the free/BYOK badge clearly on each
+4. Live demo / screenshot block (existing)
+5. Supported languages chip cloud (compact, replaces the long list)
+6. Install on your device (PWA)
+7. FAQ
+8. Contributors
+9. Footer
 
-**A. Tooltip + sotto-label sul bottone "Upload ZIP"** in `projects.$projectId.index.tsx`:
-> "ZIP archive · estrae e analizza 20+ linguaggi (JS/TS, Python, Java, Rust, Go, C/C++, C#, Ruby, PHP, Kotlin, Swift, SQL, Vue, Svelte, Lua, Dart, Scala, …)"
+### 4. Branding clarity
+- Single H1 (currently fine, just tighten copy).
+- Consistent badge component for "Free" vs "BYOK" used everywhere modes are mentioned (hero, modes section, FAQ) so the distinction is instantly readable.
+- Reduce gradient/glow density on mobile (the hero currently feels heavy at 375px) by lowering blur opacity below `sm:`.
 
-**B. Mini-helper riga sotto il blocco upload**, con icona info:
-> "Carichi qualsiasi cartella zippata. Static analysis e malware scan funzionano senza API key; AI-origin e chat richiedono BYOK o endpoint locale."
+### 5. i18n
+Add keys for the new strip + microcopy in `en`, `it`, `zh`. No key removals.
 
-**C. Aggiornare il copy in homepage** (`src/routes/index.tsx`) nella sezione "Install Decoder / Get started": una bullet line in più
-> "Supporta ZIP di repo polyglot — JS/TS, Python, Java, Rust, Go, C/C++, C#, Ruby, PHP, Kotlin, Swift, SQL, e altri 10+ linguaggi."
+## Out of scope
+- No new routes, no backend, no auth, no actual single-file upload pipeline changes (the projects flow already accepts single files via the same dropzone — this is purely making it visible on the landing).
+- No new design system tokens; reuse existing semantic tokens.
+- No SEO rescan in this turn (copy changes are minor; titles/descriptions stay).
 
-E aggiornare le 3 stringhe i18n corrispondenti in `en/it/zh/common.json`.
-
-### 3. (opzionale, consigliato) Aumentare visibilità del problema sul dashboard repo
-In `projects.$projectId.repos.$repoId.tsx`, dopo il bottone "Run AI-origin scan", mostrare l'ultimo errore della history se presente (`last_error` dal record `analysis_activities`).
-
-## Cosa NON tocco
-- Logica di scoring, parsing, cache LLM, prompt → invariati.
-- Lista `CODE_EXTS` (già 20+ estensioni — è coerente col copy).
-- BYOK gating, RLS, encryption → invariati.
-
-## Risultato atteso
-Quando l'utente rifà lo scan e qualcosa va storto vedrà il motivo (key invalida, rate limit, ecc.) invece di "No code files were scoreable". E il fatto che si possa caricare di tutto, non solo JS/TS, sarà esplicito sia in landing che nella pagina di upload.
-
-Procedo?
+## Verification
+- Visual check at 375px and 1280px via the running preview.
+- Confirm `<main>` landmark and single H1 remain.
+- Confirm all three locales render without missing keys.

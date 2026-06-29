@@ -41,7 +41,20 @@
   },
   "landing": {
     "hero": "Una parte crescente del codice è scritta dall'<1>IA</1>. Decoder aiuta a <2>leggerlo</2>.",
-    "heroSubtitle": "Analisi del codice AI open source (MIT). Le verifiche statiche e antimalware girano senza alcuna chiave API in oltre 20 linguaggi — aggiungi la tua chiave (BYOK) o usa l'inferenza locale per spiegazioni AI, chat sul repository e storico persistente.",
+    "heroSubtitle": "Analisi del codice AI open source (MIT). Carica un singolo file, uno ZIP o un URL Git pubblico. Controlli statici e antimalware gratuiti in oltre 20 linguaggi — aggiungi la tua chiave (BYOK) o usa l'inferenza locale per spiegazioni AI, chat sul repository e storico persistente.",
+    "inputs": {
+      "kicker": "Cosa puoi caricare",
+      "title": "Singolo file, archivio ZIP o URL Git",
+      "body": "Nessuna configurazione richiesta. Decoder accetta una qualsiasi delle tre modalità di input qui sotto.",
+      "fileTitle": "Singolo file",
+      "fileBody": "Trascina un .js, .ts, .py, .java, .go, .rs, .sql, … (20+ linguaggi).",
+      "zipTitle": "Archivio ZIP",
+      "zipBody": "Carica un'intera cartella; struttura e percorsi sono preservati.",
+      "urlTitle": "URL repository Git",
+      "urlBody": "Incolla il link di un repository pubblico GitHub o GitLab.",
+      "freeBadge": "Gratis · senza chiave",
+      "byokBadge": "BYOK · chiave tua"
+    },
     "heroBadgeOpen": "Progetto personale · Open source",
     "heroBadgePrivacy": "BYOK o inferenza locale",
     "heroBadgeAiEra": "Codice e prompt pubblici",
