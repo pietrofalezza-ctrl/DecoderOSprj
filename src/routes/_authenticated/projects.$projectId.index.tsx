@@ -274,7 +274,7 @@ function ProjectPage() {
             </div>
             <div className="flex flex-wrap justify-end gap-2">
               <input ref={fileRef} type="file" accept=".zip" hidden onChange={onFile} />
-              <Button variant="outline" onClick={onPick} disabled={uploading}>
+              <Button variant="outline" onClick={onPick} disabled={uploading} title={t("project.uploadZipHint")}>
                 <Upload className="mr-2 h-4 w-4" />
                 {uploading ? t("project.uploading") : t("project.uploadZip")}
               </Button>
@@ -323,6 +323,9 @@ function ProjectPage() {
                 </DialogContent>
               </Dialog>
             </div>
+            <p className="mt-1 text-right text-[11px] text-muted-foreground sm:max-w-md sm:ml-auto">
+              {t("project.uploadZipHint")}
+            </p>
           </div>
         </header>
 

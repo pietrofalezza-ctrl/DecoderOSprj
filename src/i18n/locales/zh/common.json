@@ -424,6 +424,7 @@
       "search_query": "搜索"
     },
     "uploadZip": "上传 ZIP",
+    "uploadZipHint": "任意压缩文件夹。自动识别 20+ 种语言(JS/TS、Python、Java、Rust、Go、C/C++、C#、Ruby、PHP、Kotlin、Swift、SQL、Vue、Svelte、Lua、Dart、Scala 等)。静态扫描和恶意代码扫描无需 API 密钥;AI 来源与对话需要 BYOK 或本地端点。",
     "uploading": "上传中…",
     "noRepos": "暂无仓库。上传 ZIP 或从 GitHub 导入以开始。",
     "openRepo": "打开",
@@ -651,7 +652,11 @@
     "unsampledNote": "为控制成本,有 {{count}} 个额外代码文件未被扫描。",
     "noResults": "无可评分的代码文件。",
     "fileEmpty": "在此文件上运行 AI 来源分析以查看分数。",
-    "configureKey": "配置 API 密钥"
+    "configureKey": "配置 API 密钥",
+    "scanFailedTitle": "扫描未完成",
+    "scanFailedIntro": "全部 {{count}} 个采样文件均失败。最常见原因是 BYOK 密钥无效或被限流,或所选模型该密钥无权访问。",
+    "scanFailedHint": "请在 设置 → AI 提供商 中检查 BYOK 密钥,尝试其他模型或更换提供商。",
+    "partialErrors": "{{count}} 个文件在扫描中失败并被跳过。"
   },
   "proficiency": {
     "nontech": "非技术读者",

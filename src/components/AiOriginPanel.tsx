@@ -87,6 +87,42 @@ export function AiOriginPanel({
 
   if (!result) return null;
 
+  // Total scan failure: every sampled file errored (BYOK invalid, rate limit, network, etc.)
+  if (result.sampled_count === 0 && result.errors.length > 0) {
+    const first = result.errors[0];
+    return (
+      <div className="flex flex-col items-start gap-3 p-6">
+        <div className="flex items-center gap-2">
+          <AlertTriangle className="h-5 w-5 text-destructive" />
+          <h3 className="text-base font-semibold">{t("aiOrigin.scanFailedTitle")}</h3>
+        </div>
+        <div className="w-full space-y-2 rounded-md border border-destructive/40 bg-destructive/5 p-3">
+          <p className="text-xs font-medium text-destructive">
+            {t("aiOrigin.scanFailedIntro", { count: result.errors.length })}
+          </p>
+          <p className="font-mono text-[11px] text-muted-foreground break-all">
+            {first.path}: {first.message}
+          </p>
+          <p className="text-[11px] text-muted-foreground">{t("aiOrigin.scanFailedHint")}</p>
+        </div>
+        <div className="flex gap-2">
+          <Button asChild size="sm" variant="secondary">
+            <Link to="/settings" hash="byok">
+              <KeyRound className="mr-2 h-4 w-4" />
+              {t("aiOrigin.configureKey")}
+            </Link>
+          </Button>
+          {canRun && (
+            <Button size="sm" onClick={onRun} disabled={isRunning}>
+              {t("aiOrigin.rerun")}
+            </Button>
+          )}
+        </div>
+      </div>
+    );
+  }
+
+
   const bucketLabel = t(`aiOrigin.bucket.${result.bucket}`);
   const colorCls = bucketColorClass(result.bucket);
 
@@ -135,6 +171,11 @@ export function AiOriginPanel({
         {result.unsampled_count > 0 && (
           <p className="text-[11px] text-muted-foreground">
             {t("aiOrigin.unsampledNote", { count: result.unsampled_count })}
+          </p>
+        )}
+        {result.errors.length > 0 && (
+          <p className="text-[11px] text-amber-600 dark:text-amber-400">
+            {t("aiOrigin.partialErrors", { count: result.errors.length })}
           </p>
         )}
         <p className="flex items-start gap-1.5 text-[11px] text-amber-600 dark:text-amber-400">

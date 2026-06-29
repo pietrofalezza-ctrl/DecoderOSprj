@@ -424,6 +424,7 @@
       "search_query": "Search"
     },
     "uploadZip": "Upload ZIP",
+    "uploadZipHint": "Any zipped folder. Auto-detects 20+ languages (JS/TS, Python, Java, Rust, Go, C/C++, C#, Ruby, PHP, Kotlin, Swift, SQL, Vue, Svelte, Lua, Dart, Scala, …). Static scan and malware scan run without an API key; AI-origin and chat need BYOK or a local endpoint.",
     "uploading": "Uploading…",
     "noRepos": "No repositories yet. Upload a ZIP or import from GitHub to get started.",
     "openRepo": "Open",
@@ -651,7 +652,11 @@
     "unsampledNote": "{{count}} additional code files were not scanned to control cost.",
     "noResults": "No code files were scoreable.",
     "fileEmpty": "Run the AI-origin analysis on this file to see a score.",
-    "configureKey": "Configure an API key"
+    "configureKey": "Configure an API key",
+    "scanFailedTitle": "Scan didn't complete",
+    "scanFailedIntro": "All {{count}} sampled files failed. The most common cause is an invalid or rate-limited BYOK key, or a model your key can't access.",
+    "scanFailedHint": "Check your BYOK key in Settings → AI Providers, try a different model, or switch provider.",
+    "partialErrors": "{{count}} file(s) failed during the scan and were skipped."
   },
   "proficiency": {
     "nontech": "Non-technical reader",

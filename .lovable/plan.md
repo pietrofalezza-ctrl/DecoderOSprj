@@ -1,58 +1,48 @@
-# Possono le chiavi essere rubate dal database?
+# Diagnostica scan AI-origin + chiarezza formati
 
-## Risposta breve
-**No, non in chiaro.** Le BYOK API key sono cifrate prima di toccare il database, e nessuno (né tu, né un altro utente, né chi leggesse un dump del DB) può decifrarle senza il segreto server `DECODER_ENCRYPTION_KEY` che vive solo nell'ambiente delle server functions.
+## Cos'è successo
 
-## Come sono protette oggi
+Lo screenshot "Sampled 0 of 84" non è un bug di conteggio: lo scanner **ha provato** a campionare 30 file (cap costo) sugli 84 file di codice riconosciuti, ma **tutte le 30 chiamate LLM sono fallite** → `results = []`, `sampled_count = 0`. Il backend già raccoglie gli errori in `errors[]` ma il pannello UI (`AiOriginPanel.tsx`) li ignora e mostra solo "No code files were scoreable", che è fuorviante.
 
-1. **Cifratura at-rest** — `src/lib/crypto.server.ts` usa **AES-256-GCM** con IV random a 12 byte e auth tag. La chiave a 32 byte è derivata via SHA-256 da `DECODER_ENCRYPTION_KEY` (secret Lovable Cloud, mai esposto al client né al bundle browser).
-2. **Cifratura prima dell'insert** — `credentials.functions.ts` cifra `api_key` in una server function; il plaintext non lascia mai il server.
-3. **RLS attiva** su `user_ai_credentials` con policy `auth.uid() = owner_id` per SELECT/INSERT/UPDATE/DELETE: un utente non può vedere righe di altri utenti.
-4. **Service role isolato** — `SUPABASE_SERVICE_ROLE_KEY` server-only, mai nel bundle.
-5. **Vista "safe"** `user_ai_credentials_safe` che espone solo `provider`, `key_hint`, `updated_at` (no `encrypted_key`).
-6. **Cloud key sicure** — `LOVABLE_API_KEY`, `SUPABASE_SERVICE_ROLE_KEY`, `DECODER_ENCRYPTION_KEY` solo in `process.env` server, accessibili solo dentro `.handler()` di server functions.
+Cause tipiche per fallimento totale:
+- BYOK key del provider selezionato scaduta / rate-limited / invalid → ogni chiamata 401/429
+- Modello indisponibile per quella key (es. `gpt-5` su una key tier-1)
+- Network/timeout
 
-## Falla residua trovata (media gravità)
+L'AI-origin scan **richiede per design un LLM** (è la cifra del prodotto vs. uno static-only), quindi BYOK o endpoint locale sono obbligatori — niente fallback "free".
 
-Controllando lo stato reale del DB:
+## Fix proposto (scoped a UI/UX, non logica)
 
-```
-has_table_privilege('authenticated','user_ai_credentials','SELECT') = TRUE
-```
+### 1. `src/components/AiOriginPanel.tsx`
+Quando `sampled_count === 0` e `errors.length > 0`:
+- Mostrare un alert rosso "Lo scan non è andato a buon fine" con:
+  - il primo `errors[0].message` (es. "401 Unauthorized")
+  - hint: "Verifica la BYOK key in Settings → AI Providers, o cambia provider"
+  - bottone "Open Settings"
+- Quando `sampled_count > 0` ma `errors.length > 0`, aggiungere un piccolo badge "N file failed" cliccabile che espande i path falliti.
 
-La migration del 7 giugno aveva tolto `SELECT` ad `authenticated` (per forzare l'uso della vista safe), ma una migration successiva del 29 giugno ha **ri-aggiunto la policy SELECT** per sbloccare il salvataggio della key, e il GRANT è tornato attivo. Risultato: un utente autenticato, via Data API, può leggere la propria colonna `encrypted_key` (solo la sua, RLS regge).
+### 2. Esplicitare i formati supportati
 
-**Impatto reale**: basso. L'utente vedrebbe solo ciphertext della *propria* key, che già conosce in chiaro (l'ha inserita lui). Nessun altro utente è esposto. Ma viola il principio "il ciphertext non esce mai dal server" → se domani la encryption key venisse compromessa e qualcuno avesse anche un dump cliente, sarebbe banale decifrare.
+**A. Tooltip + sotto-label sul bottone "Upload ZIP"** in `projects.$projectId.index.tsx`:
+> "ZIP archive · estrae e analizza 20+ linguaggi (JS/TS, Python, Java, Rust, Go, C/C++, C#, Ruby, PHP, Kotlin, Swift, SQL, Vue, Svelte, Lua, Dart, Scala, …)"
 
-## Vettori che ho verificato e che sono OK
+**B. Mini-helper riga sotto il blocco upload**, con icona info:
+> "Carichi qualsiasi cartella zippata. Static analysis e malware scan funzionano senza API key; AI-origin e chat richiedono BYOK o endpoint locale."
 
-- Cross-tenant leak via RLS → bloccato (policy `auth.uid() = owner_id`).
-- SQL injection → tutte le query usano Supabase client / parametri.
-- Bundle leak del service key → no, `client.server.ts` è import-protected.
-- Endpoint server pubblici senza auth → tutte le funzioni sensibili usano `requireSupabaseAuth`; webhook (`/api/public/process-email-queue`) verificano il caller.
-- Storage `repositories` → bucket privato, accessi via signed URL nelle server functions.
-- Admin reads su progetti utente → non implementate (nessun admin può vedere repo altrui).
+**C. Aggiornare il copy in homepage** (`src/routes/index.tsx`) nella sezione "Install Decoder / Get started": una bullet line in più
+> "Supporta ZIP di repo polyglot — JS/TS, Python, Java, Rust, Go, C/C++, C#, Ruby, PHP, Kotlin, Swift, SQL, e altri 10+ linguaggi."
 
-## Fix proposto (1 migration)
+E aggiornare le 3 stringhe i18n corrispondenti in `en/it/zh/common.json`.
 
-```sql
--- Revoke ridondante: la safe view è il canale di lettura
-REVOKE SELECT ON public.user_ai_credentials FROM authenticated;
-DROP POLICY IF EXISTS "own creds select" ON public.user_ai_credentials;
+### 3. (opzionale, consigliato) Aumentare visibilità del problema sul dashboard repo
+In `projects.$projectId.repos.$repoId.tsx`, dopo il bottone "Run AI-origin scan", mostrare l'ultimo errore della history se presente (`last_error` dal record `analysis_activities`).
 
--- Mantieni INSERT/UPDATE/DELETE (servono al salvataggio)
--- Il salvataggio funziona perché la server function usa service_role o non legge back la riga
-```
+## Cosa NON tocco
+- Logica di scoring, parsing, cache LLM, prompt → invariati.
+- Lista `CODE_EXTS` (già 20+ estensioni — è coerente col copy).
+- BYOK gating, RLS, encryption → invariati.
 
-E adeguo `credentials.functions.ts` perché l'`upsert` non faccia `.select()` di ritorno (oppure passi via `supabaseAdmin` lato server, dato che siamo già dentro una server function autenticata che ha già validato `owner_id`).
+## Risultato atteso
+Quando l'utente rifà lo scan e qualcosa va storto vedrà il motivo (key invalida, rate limit, ecc.) invece di "No code files were scoreable". E il fatto che si possa caricare di tutto, non solo JS/TS, sarà esplicito sia in landing che nella pagina di upload.
 
-## Cosa fare lato operativo (consigli, non codice)
-
-- **Ruota** `DECODER_ENCRYPTION_KEY` se sospetti compromessi (richiede re-encrypt di tutte le righe — posso scriverti la routine se vuoi).
-- Tieni `SUPABASE_SERVICE_ROLE_KEY` e `DECODER_ENCRYPTION_KEY` non visibili nei log.
-- Considera in futuro: spostare l'encryption key in un KMS esterno (AWS KMS / GCP KMS) invece che in una env var.
-
-## Rating sicurezza attuale: **A− (8.5/10)**
-Dopo il fix sopra: **A (9/10)**. Per arrivare ad A+ servirebbe KMS esterno + audit log su lettura credentials.
-
-Confermi che procedo col fix (revoke SELECT + adeguamento upsert)?
+Procedo?
