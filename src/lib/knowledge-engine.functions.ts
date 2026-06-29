@@ -132,7 +132,7 @@ export const upsertEntry = createServerFn({ method: "POST" })
       id: z.string().uuid().optional(),
       slug: z.string().min(2).max(120),
       type: z.string(),
-      status: z.enum(["draft", "in_review", "published", "archived"]),
+      status: z.enum(["ai_draft", "in_review", "published", "archived"]),
       lang_default: z.string().default("en"),
       tags: z.array(z.string()).default([]),
       related_slugs: z.array(z.string()).default([]),
