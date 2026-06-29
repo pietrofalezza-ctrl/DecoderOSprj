@@ -160,6 +160,16 @@ function Landing() {
                     <Github className="h-4 w-4" />
                     GitHub
                   </a>
+                  <div className="mt-4 border-t border-border pt-4">
+                    <Link
+                      to="/auth"
+                      onClick={() => setMenuOpen(false)}
+                      className="inline-flex w-full items-center justify-center gap-2 rounded-md bg-primary px-4 py-3 text-sm font-medium text-primary-foreground hover:opacity-90"
+                    >
+                      {t("landing.ctaStart")}
+                      <ArrowRight className="h-4 w-4" />
+                    </Link>
+                  </div>
                 </nav>
               </SheetContent>
             </Sheet>
