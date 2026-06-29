@@ -12,6 +12,10 @@ async function assertAdmin(userId: string) {
   if (!data) throw new Error("Forbidden");
 }
 
+type EntryStatus = "ai_draft" | "in_review" | "published" | "archived";
+type EntryType = "capability" | "concept" | "integration" | "format" | "case_study" | "guide";
+type OppStatus = "open" | "accepted" | "dismissed" | "converted";
+
 async function audit(
   actor: string,
   action: string,
@@ -23,7 +27,7 @@ async function audit(
     action,
     entry_id: payload.entry_id ?? null,
     opportunity_id: payload.opportunity_id ?? null,
-    diff: (payload.diff ?? {}) as Record<string, unknown>,
+    diff: (payload.diff ?? {}) as never,
   });
 }
 
