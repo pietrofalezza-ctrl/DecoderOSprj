@@ -126,7 +126,7 @@ function AdminPage() {
               </p>
             </div>
             <Button asChild size="sm">
-              <a href="/api/public/disavow" download="disavow.txt">
+              <a href="/disavow.txt" download="disavow.txt">
                 <Download className="mr-1.5 h-3.5 w-3.5" />
                 Download disavow.txt
               </a>
