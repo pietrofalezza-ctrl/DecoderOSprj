@@ -753,7 +753,7 @@
     "title": "文档",
     "intro": "Decoder 把源代码转化为可读的知识。可使用页眉中的切换器以你偏好的语言阅读本页。",
     "gettingStartedTitle": "快速开始",
-    "gettingStartedBody": "登录、创建项目、上传 ZIP 或导入公开的 GitHub 仓库,在文件树中选择文件,然后点击「解释」。选择你的水平以及通俗或技术摘要。",
+    "gettingStartedBody": "登录、创建项目,然后通过三种方式之一引入代码:拖入单个源代码文件(.js、.ts、.py、.java、.go、.rs、.sql 等 20+ 种),上传文件夹的 ZIP 压缩包,或导入任意公开 GitHub 仓库。在文件树中选择文件,然后点击「解释」。选择你的水平以及通俗或技术摘要。",
     "byokTitle": "自带 AI 密钥",
     "byokBody": "在「设置 → AI 提供商」中粘贴 OpenAI、Anthropic、Google Gemini 或 OpenRouter 的密钥。密钥在服务器端通过 AES-256-GCM 加密,仅在转发你的请求时解密 —— 永远不会返回到浏览器。",
     "localTitle": "本地模式(Ollama / LM Studio)",
