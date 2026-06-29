@@ -11,5 +11,6 @@ Decoder is a non-profit, open-source project that helps developers, students and
 - [Documentation](/docs): How to use Decoder — BYOK cloud, local Ollama/LM Studio, security and ownership.
 - [How to review AI-generated code](/docs/how-to-review-ai-code): Guide to auditing code produced by Copilot, Cursor, Claude Code and other AI tools.
 - [Open source](/open-source): License, contributing, repository.
+- [Contributors](/contributors): Live list of contributors and merged pull requests from GitHub.
 - [Terms](/terms): MIT License, permitted uses, trademark restrictions, disclaimer.
 - [Privacy](/privacy): What data is stored, how it is protected, GDPR notes.

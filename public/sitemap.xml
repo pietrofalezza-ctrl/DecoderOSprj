@@ -3,6 +3,7 @@
   <url><loc>https://decoderead.dev/</loc><changefreq>weekly</changefreq><priority>1.0</priority></url>
   <url><loc>https://decoderead.dev/auth</loc><changefreq>yearly</changefreq><priority>0.3</priority></url>
   <url><loc>https://decoderead.dev/manifesto</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://decoderead.dev/contributors</loc><changefreq>daily</changefreq><priority>0.7</priority></url>
   <url><loc>https://decoderead.dev/open-source</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://decoderead.dev/docs</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://decoderead.dev/docs/how-to-review-ai-code</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>

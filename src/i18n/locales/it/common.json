@@ -41,7 +41,7 @@
   },
   "landing": {
     "hero": "Una parte crescente del codice è scritta dall'<1>IA</1>. Decoder aiuta a <2>leggerlo</2>.",
-    "heroSubtitle": "Decoder è un progetto personale di studio, open source (MIT) e gratuito. Funziona con la tua chiave API (BYOK) oppure in modalità di inferenza locale.",
+    "heroSubtitle": "Analisi del codice AI open source (MIT). Le verifiche statiche e antimalware girano senza alcuna chiave API in oltre 20 linguaggi — aggiungi la tua chiave (BYOK) o usa l'inferenza locale per spiegazioni AI, chat sul repository e storico persistente.",
     "heroBadgeOpen": "Progetto personale · Open source",
     "heroBadgePrivacy": "BYOK o inferenza locale",
     "heroBadgeAiEra": "Codice e prompt pubblici",
