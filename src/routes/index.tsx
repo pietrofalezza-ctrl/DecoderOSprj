@@ -104,8 +104,16 @@ function Landing() {
   return (
     <div className="min-h-screen bg-background text-foreground">
       {/* Header */}
-      <header className="sticky top-0 z-30 border-b border-border/60 bg-background sm:bg-background/80 sm:backdrop-blur">
-        <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-2 px-4 sm:px-6">
+      <header
+        className="sticky top-0 z-30 border-b border-border/60 bg-background sm:bg-background/80 sm:backdrop-blur"
+        style={{ paddingTop: "env(safe-area-inset-top)" }}
+      >
+        <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-2 px-4 sm:px-6"
+          style={{
+            paddingLeft: "max(1rem, env(safe-area-inset-left))",
+            paddingRight: "max(1rem, env(safe-area-inset-right))",
+          }}
+        >
           <Link to="/" aria-label={t("brand.name")} className="shrink-0">
             <Logo />
           </Link>
