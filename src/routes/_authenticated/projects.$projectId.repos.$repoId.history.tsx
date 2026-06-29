@@ -13,6 +13,12 @@ import { listRepositoryAnalysisHistory } from "@/lib/analysis-history.functions"
 export const Route = createFileRoute(
   "/_authenticated/projects/$projectId/repos/$repoId/history",
 )({
+  head: () => ({
+    meta: [
+      { title: "Repository history — Decoder" },
+      { name: "robots", content: "noindex, nofollow" },
+    ],
+  }),
   component: RepoHistoryPage,
 });
 
