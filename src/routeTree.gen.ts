@@ -14,6 +14,7 @@ import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as OpenSourceRouteImport } from './routes/open-source'
 import { Route as ManifestoRouteImport } from './routes/manifesto'
+import { Route as KnowledgeRouteImport } from './routes/knowledge'
 import { Route as InstallRouteImport } from './routes/install'
 import { Route as DocsRouteImport } from './routes/docs'
 import { Route as DataFlowRouteImport } from './routes/data-flow'
@@ -23,6 +24,8 @@ import { Route as ContactRouteImport } from './routes/contact'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as KnowledgeIndexRouteImport } from './routes/knowledge.index'
+import { Route as KnowledgeSlugRouteImport } from './routes/knowledge.$slug'
 import { Route as DocsStaticCodeAnalysisNoApiKeyRouteImport } from './routes/docs.static-code-analysis-no-api-key'
 import { Route as DocsSecureCodeReviewByokRouteImport } from './routes/docs.secure-code-review-byok'
 import { Route as DocsPrivacyFirstAiEuropeRouteImport } from './routes/docs.privacy-first-ai-europe'
@@ -79,6 +82,11 @@ const ManifestoRoute = ManifestoRouteImport.update({
   path: '/manifesto',
   getParentRoute: () => rootRouteImport,
 } as any)
+const KnowledgeRoute = KnowledgeRouteImport.update({
+  id: '/knowledge',
+  path: '/knowledge',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const InstallRoute = InstallRouteImport.update({
   id: '/install',
   path: '/install',
@@ -122,6 +130,16 @@ const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
+} as any)
+const KnowledgeIndexRoute = KnowledgeIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => KnowledgeRoute,
+} as any)
+const KnowledgeSlugRoute = KnowledgeSlugRouteImport.update({
+  id: '/$slug',
+  path: '/$slug',
+  getParentRoute: () => KnowledgeRoute,
 } as any)
 const DocsStaticCodeAnalysisNoApiKeyRoute =
   DocsStaticCodeAnalysisNoApiKeyRouteImport.update({
@@ -304,6 +322,7 @@ export interface FileRoutesByFullPath {
   '/data-flow': typeof DataFlowRoute
   '/docs': typeof DocsRouteWithChildren
   '/install': typeof InstallRoute
+  '/knowledge': typeof KnowledgeRouteWithChildren
   '/manifesto': typeof ManifestoRoute
   '/open-source': typeof OpenSourceRoute
   '/privacy': typeof PrivacyRoute
@@ -327,6 +346,8 @@ export interface FileRoutesByFullPath {
   '/docs/privacy-first-ai-europe': typeof DocsPrivacyFirstAiEuropeRoute
   '/docs/secure-code-review-byok': typeof DocsSecureCodeReviewByokRoute
   '/docs/static-code-analysis-no-api-key': typeof DocsStaticCodeAnalysisNoApiKeyRoute
+  '/knowledge/$slug': typeof KnowledgeSlugRoute
+  '/knowledge/': typeof KnowledgeIndexRoute
   '/projects/$projectId': typeof AuthenticatedProjectsProjectIdRouteWithChildren
   '/docs/it/ai-privacy-first-europa': typeof DocsItAiPrivacyFirstEuropaRoute
   '/docs/it/eu-ai-act-analisi-codice': typeof DocsItEuAiActAnalisiCodiceRoute
@@ -372,6 +393,8 @@ export interface FileRoutesByTo {
   '/docs/privacy-first-ai-europe': typeof DocsPrivacyFirstAiEuropeRoute
   '/docs/secure-code-review-byok': typeof DocsSecureCodeReviewByokRoute
   '/docs/static-code-analysis-no-api-key': typeof DocsStaticCodeAnalysisNoApiKeyRoute
+  '/knowledge/$slug': typeof KnowledgeSlugRoute
+  '/knowledge': typeof KnowledgeIndexRoute
   '/docs/it/ai-privacy-first-europa': typeof DocsItAiPrivacyFirstEuropaRoute
   '/docs/it/eu-ai-act-analisi-codice': typeof DocsItEuAiActAnalisiCodiceRoute
   '/docs/it/gdpr-revisione-codice-ai': typeof DocsItGdprRevisioneCodiceAiRoute
@@ -395,6 +418,7 @@ export interface FileRoutesById {
   '/data-flow': typeof DataFlowRoute
   '/docs': typeof DocsRouteWithChildren
   '/install': typeof InstallRoute
+  '/knowledge': typeof KnowledgeRouteWithChildren
   '/manifesto': typeof ManifestoRoute
   '/open-source': typeof OpenSourceRoute
   '/privacy': typeof PrivacyRoute
@@ -418,6 +442,8 @@ export interface FileRoutesById {
   '/docs/privacy-first-ai-europe': typeof DocsPrivacyFirstAiEuropeRoute
   '/docs/secure-code-review-byok': typeof DocsSecureCodeReviewByokRoute
   '/docs/static-code-analysis-no-api-key': typeof DocsStaticCodeAnalysisNoApiKeyRoute
+  '/knowledge/$slug': typeof KnowledgeSlugRoute
+  '/knowledge/': typeof KnowledgeIndexRoute
   '/_authenticated/projects/$projectId': typeof AuthenticatedProjectsProjectIdRouteWithChildren
   '/docs/it/ai-privacy-first-europa': typeof DocsItAiPrivacyFirstEuropaRoute
   '/docs/it/eu-ai-act-analisi-codice': typeof DocsItEuAiActAnalisiCodiceRoute
@@ -442,6 +468,7 @@ export interface FileRouteTypes {
     | '/data-flow'
     | '/docs'
     | '/install'
+    | '/knowledge'
     | '/manifesto'
     | '/open-source'
     | '/privacy'
@@ -465,6 +492,8 @@ export interface FileRouteTypes {
     | '/docs/privacy-first-ai-europe'
     | '/docs/secure-code-review-byok'
     | '/docs/static-code-analysis-no-api-key'
+    | '/knowledge/$slug'
+    | '/knowledge/'
     | '/projects/$projectId'
     | '/docs/it/ai-privacy-first-europa'
     | '/docs/it/eu-ai-act-analisi-codice'
@@ -510,6 +539,8 @@ export interface FileRouteTypes {
     | '/docs/privacy-first-ai-europe'
     | '/docs/secure-code-review-byok'
     | '/docs/static-code-analysis-no-api-key'
+    | '/knowledge/$slug'
+    | '/knowledge'
     | '/docs/it/ai-privacy-first-europa'
     | '/docs/it/eu-ai-act-analisi-codice'
     | '/docs/it/gdpr-revisione-codice-ai'
@@ -532,6 +563,7 @@ export interface FileRouteTypes {
     | '/data-flow'
     | '/docs'
     | '/install'
+    | '/knowledge'
     | '/manifesto'
     | '/open-source'
     | '/privacy'
@@ -555,6 +587,8 @@ export interface FileRouteTypes {
     | '/docs/privacy-first-ai-europe'
     | '/docs/secure-code-review-byok'
     | '/docs/static-code-analysis-no-api-key'
+    | '/knowledge/$slug'
+    | '/knowledge/'
     | '/_authenticated/projects/$projectId'
     | '/docs/it/ai-privacy-first-europa'
     | '/docs/it/eu-ai-act-analisi-codice'
@@ -579,6 +613,7 @@ export interface RootRouteChildren {
   DataFlowRoute: typeof DataFlowRoute
   DocsRoute: typeof DocsRouteWithChildren
   InstallRoute: typeof InstallRoute
+  KnowledgeRoute: typeof KnowledgeRouteWithChildren
   ManifestoRoute: typeof ManifestoRoute
   OpenSourceRoute: typeof OpenSourceRoute
   PrivacyRoute: typeof PrivacyRoute
@@ -623,6 +658,13 @@ declare module '@tanstack/react-router' {
       path: '/manifesto'
       fullPath: '/manifesto'
       preLoaderRoute: typeof ManifestoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/knowledge': {
+      id: '/knowledge'
+      path: '/knowledge'
+      fullPath: '/knowledge'
+      preLoaderRoute: typeof KnowledgeRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/install': {
@@ -687,6 +729,20 @@ declare module '@tanstack/react-router' {
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/knowledge/': {
+      id: '/knowledge/'
+      path: '/'
+      fullPath: '/knowledge/'
+      preLoaderRoute: typeof KnowledgeIndexRouteImport
+      parentRoute: typeof KnowledgeRoute
+    }
+    '/knowledge/$slug': {
+      id: '/knowledge/$slug'
+      path: '/$slug'
+      fullPath: '/knowledge/$slug'
+      preLoaderRoute: typeof KnowledgeSlugRouteImport
+      parentRoute: typeof KnowledgeRoute
     }
     '/docs/static-code-analysis-no-api-key': {
       id: '/docs/static-code-analysis-no-api-key'
@@ -1002,6 +1058,20 @@ const DocsRouteChildren: DocsRouteChildren = {
 
 const DocsRouteWithChildren = DocsRoute._addFileChildren(DocsRouteChildren)
 
+interface KnowledgeRouteChildren {
+  KnowledgeSlugRoute: typeof KnowledgeSlugRoute
+  KnowledgeIndexRoute: typeof KnowledgeIndexRoute
+}
+
+const KnowledgeRouteChildren: KnowledgeRouteChildren = {
+  KnowledgeSlugRoute: KnowledgeSlugRoute,
+  KnowledgeIndexRoute: KnowledgeIndexRoute,
+}
+
+const KnowledgeRouteWithChildren = KnowledgeRoute._addFileChildren(
+  KnowledgeRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
@@ -1012,6 +1082,7 @@ const rootRouteChildren: RootRouteChildren = {
   DataFlowRoute: DataFlowRoute,
   DocsRoute: DocsRouteWithChildren,
   InstallRoute: InstallRoute,
+  KnowledgeRoute: KnowledgeRouteWithChildren,
   ManifestoRoute: ManifestoRoute,
   OpenSourceRoute: OpenSourceRoute,
   PrivacyRoute: PrivacyRoute,

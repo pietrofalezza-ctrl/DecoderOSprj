@@ -7,7 +7,7 @@ import type { KnowledgeLang } from "@/knowledge/types";
 
 const URL = "https://decoderead.dev/knowledge";
 
-export const Route = createFileRoute("/knowledge")({
+export const Route = createFileRoute("/knowledge/")({
   component: KnowledgeHubIndex,
   head: () => ({
     meta: [
