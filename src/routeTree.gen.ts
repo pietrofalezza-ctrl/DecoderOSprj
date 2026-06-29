@@ -23,6 +23,8 @@ import { Route as ContactRouteImport } from './routes/contact'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as KnowledgeIndexRouteImport } from './routes/knowledge.index'
+import { Route as KnowledgeSlugRouteImport } from './routes/knowledge.$slug'
 import { Route as DocsStaticCodeAnalysisNoApiKeyRouteImport } from './routes/docs.static-code-analysis-no-api-key'
 import { Route as DocsSecureCodeReviewByokRouteImport } from './routes/docs.secure-code-review-byok'
 import { Route as DocsPrivacyFirstAiEuropeRouteImport } from './routes/docs.privacy-first-ai-europe'
@@ -121,6 +123,16 @@ const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const KnowledgeIndexRoute = KnowledgeIndexRouteImport.update({
+  id: '/knowledge/',
+  path: '/knowledge/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const KnowledgeSlugRoute = KnowledgeSlugRouteImport.update({
+  id: '/knowledge/$slug',
+  path: '/knowledge/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DocsStaticCodeAnalysisNoApiKeyRoute =
@@ -327,6 +339,8 @@ export interface FileRoutesByFullPath {
   '/docs/privacy-first-ai-europe': typeof DocsPrivacyFirstAiEuropeRoute
   '/docs/secure-code-review-byok': typeof DocsSecureCodeReviewByokRoute
   '/docs/static-code-analysis-no-api-key': typeof DocsStaticCodeAnalysisNoApiKeyRoute
+  '/knowledge/$slug': typeof KnowledgeSlugRoute
+  '/knowledge/': typeof KnowledgeIndexRoute
   '/projects/$projectId': typeof AuthenticatedProjectsProjectIdRouteWithChildren
   '/docs/it/ai-privacy-first-europa': typeof DocsItAiPrivacyFirstEuropaRoute
   '/docs/it/eu-ai-act-analisi-codice': typeof DocsItEuAiActAnalisiCodiceRoute
@@ -372,6 +386,8 @@ export interface FileRoutesByTo {
   '/docs/privacy-first-ai-europe': typeof DocsPrivacyFirstAiEuropeRoute
   '/docs/secure-code-review-byok': typeof DocsSecureCodeReviewByokRoute
   '/docs/static-code-analysis-no-api-key': typeof DocsStaticCodeAnalysisNoApiKeyRoute
+  '/knowledge/$slug': typeof KnowledgeSlugRoute
+  '/knowledge': typeof KnowledgeIndexRoute
   '/docs/it/ai-privacy-first-europa': typeof DocsItAiPrivacyFirstEuropaRoute
   '/docs/it/eu-ai-act-analisi-codice': typeof DocsItEuAiActAnalisiCodiceRoute
   '/docs/it/gdpr-revisione-codice-ai': typeof DocsItGdprRevisioneCodiceAiRoute
@@ -418,6 +434,8 @@ export interface FileRoutesById {
   '/docs/privacy-first-ai-europe': typeof DocsPrivacyFirstAiEuropeRoute
   '/docs/secure-code-review-byok': typeof DocsSecureCodeReviewByokRoute
   '/docs/static-code-analysis-no-api-key': typeof DocsStaticCodeAnalysisNoApiKeyRoute
+  '/knowledge/$slug': typeof KnowledgeSlugRoute
+  '/knowledge/': typeof KnowledgeIndexRoute
   '/_authenticated/projects/$projectId': typeof AuthenticatedProjectsProjectIdRouteWithChildren
   '/docs/it/ai-privacy-first-europa': typeof DocsItAiPrivacyFirstEuropaRoute
   '/docs/it/eu-ai-act-analisi-codice': typeof DocsItEuAiActAnalisiCodiceRoute
@@ -465,6 +483,8 @@ export interface FileRouteTypes {
     | '/docs/privacy-first-ai-europe'
     | '/docs/secure-code-review-byok'
     | '/docs/static-code-analysis-no-api-key'
+    | '/knowledge/$slug'
+    | '/knowledge/'
     | '/projects/$projectId'
     | '/docs/it/ai-privacy-first-europa'
     | '/docs/it/eu-ai-act-analisi-codice'
@@ -510,6 +530,8 @@ export interface FileRouteTypes {
     | '/docs/privacy-first-ai-europe'
     | '/docs/secure-code-review-byok'
     | '/docs/static-code-analysis-no-api-key'
+    | '/knowledge/$slug'
+    | '/knowledge'
     | '/docs/it/ai-privacy-first-europa'
     | '/docs/it/eu-ai-act-analisi-codice'
     | '/docs/it/gdpr-revisione-codice-ai'
@@ -555,6 +577,8 @@ export interface FileRouteTypes {
     | '/docs/privacy-first-ai-europe'
     | '/docs/secure-code-review-byok'
     | '/docs/static-code-analysis-no-api-key'
+    | '/knowledge/$slug'
+    | '/knowledge/'
     | '/_authenticated/projects/$projectId'
     | '/docs/it/ai-privacy-first-europa'
     | '/docs/it/eu-ai-act-analisi-codice'
@@ -584,6 +608,8 @@ export interface RootRouteChildren {
   PrivacyRoute: typeof PrivacyRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
   TermsRoute: typeof TermsRoute
+  KnowledgeSlugRoute: typeof KnowledgeSlugRoute
+  KnowledgeIndexRoute: typeof KnowledgeIndexRoute
   ApiPublicHooksCleanupStaleRepositoriesRoute: typeof ApiPublicHooksCleanupStaleRepositoriesRoute
   LovableEmailQueueProcessRoute: typeof LovableEmailQueueProcessRoute
 }
@@ -686,6 +712,20 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/knowledge/': {
+      id: '/knowledge/'
+      path: '/knowledge'
+      fullPath: '/knowledge/'
+      preLoaderRoute: typeof KnowledgeIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/knowledge/$slug': {
+      id: '/knowledge/$slug'
+      path: '/knowledge/$slug'
+      fullPath: '/knowledge/$slug'
+      preLoaderRoute: typeof KnowledgeSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/docs/static-code-analysis-no-api-key': {
@@ -1017,6 +1057,8 @@ const rootRouteChildren: RootRouteChildren = {
   PrivacyRoute: PrivacyRoute,
   ResetPasswordRoute: ResetPasswordRoute,
   TermsRoute: TermsRoute,
+  KnowledgeSlugRoute: KnowledgeSlugRoute,
+  KnowledgeIndexRoute: KnowledgeIndexRoute,
   ApiPublicHooksCleanupStaleRepositoriesRoute:
     ApiPublicHooksCleanupStaleRepositoriesRoute,
   LovableEmailQueueProcessRoute: LovableEmailQueueProcessRoute,
@@ -1024,13 +1066,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}

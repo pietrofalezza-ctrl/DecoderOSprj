@@ -180,6 +180,7 @@ function Landing() {
   const showInstallBtn = !installed;
 
   const nav = [
+    { label: "Knowledge", to: "/knowledge" as const },
     { label: t("landing.nav.docs"), to: "/docs" as const },
     { label: t("landing.nav.openSource"), to: "/open-source" as const },
     { label: t("landing.nav.manifesto"), to: "/manifesto" as const },
