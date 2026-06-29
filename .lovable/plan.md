@@ -1,46 +1,37 @@
 ## Problem
 
-On 375px screens the landing page (`/`) scrolls horizontally (~34px overflow) and sections look clipped or stacked under the sticky header. Playwright audit confirmed:
+On mobile (375px) the repo workspace at `/projects/$projectId/repos/$repoId` renders three resizable horizontal panels side-by-side (File tree 20% + Code 46% + Insights 34%). At 375px each panel collapses to ~50–130px wide, causing the clipped/overlapping UI in the screenshot: file names show "robo…", "pub…", code wraps one token per line, and the Insight panel buttons get truncated ("Esegui analisi su qu…").
 
-- `docW = 409` vs `winW = 375` → the page itself is wider than the viewport.
-- Root cause: `HeroIllustration` uses `max-w-sm` (384px) inside a `px-4` container (available width ≈ 343px). Since the hero grid has no explicit `grid-cols-1` on mobile, the illustration's natural width forces every sibling column to 384px, which is why the eyebrow chips ("PERSONAL PROJECT · OPEN SOURCE"), the providers row ("04. OPENROUTER"), and the hero copy all clip on the right.
-- Landing header right cluster (`LangSwitcher + ThemeToggle + PublicHeaderAuthSlot "Get started" + Menu`) is wider than the available header space, pushing the row out and contributing to the overflow.
-- The sticky header uses `bg-background/80 backdrop-blur`; on scroll, text bleeds visibly through the translucent bar, which reads as "sections overlap".
-- The "AI SOURCE → DECODER → YOU" flow diagram (`landing-bits.tsx`) keeps three boxes + two arrows in a single row at 343px, so labels squeeze together.
-
-Other public routes (`/docs`, `/manifesto`, `/terms`, `/privacy`, `/data-flow`) use the same minimal public header pattern and inherit the same right-cluster crowding, but no horizontal overflow.
+The horizontal `ResizablePanelGroup` has no mobile fallback, so even though the AppShell header is mobile-friendly, the workspace body is not.
 
 ## Scope
 
-Frontend / presentation only. No backend or copy changes.
+Frontend / presentation only. No business logic, no data flow, no copy changes. File: `src/routes/_authenticated/projects.$projectId.repos.$repoId.tsx` (the wrapper around the three panels, lines ~943–1735).
 
 ## Changes
 
-1. **Stop the hero from blowing out width** — `src/routes/index.tsx`
-   - Add `grid-cols-1` to the hero grid so mobile is explicitly single-column with `minmax(0,1fr)`.
-   - Wrap text column with `min-w-0` so flex/grid children can shrink.
-   - Constrain `HeroIllustration` wrapper to `max-w-[min(384px,100%)]` (or `w-full max-w-sm` + `min-w-0` on parent) so it never exceeds the viewport.
+1. **Mobile detection** — reuse the existing `useIsMobile()` hook from `src/hooks/use-mobile.tsx` (already used elsewhere) to branch the layout below the `md` breakpoint.
 
-2. **Tighten the eyebrow / providers rows** — `src/routes/index.tsx`
-   - Add `min-w-0` and allow wrapping; reduce mobile font-size or letter-spacing so chips fit at 343px.
-   - Ensure no single chip uses `whitespace-nowrap` that exceeds the row.
+2. **Desktop (≥ md)** — keep the current `ResizablePanelGroup` 3-column layout unchanged.
 
-3. **Fix the public header on mobile** — `src/routes/index.tsx`, and the same pattern in `src/routes/docs.tsx`, `manifesto.tsx`, `terms.tsx`, `privacy.tsx`, `data-flow.tsx`, `cookies.tsx`, `open-source.tsx`, `contact.tsx`, `reset-password.tsx` where applicable
-   - Hide `PublicHeaderAuthSlot` CTA below `sm:` (move "Get started" into the hamburger sheet as the primary action) OR render it as an icon-only button on mobile.
-   - Keep `LangSwitcher` and `ThemeToggle` visible; ensure the row uses `gap-1` + `shrink-0` for action buttons and `min-w-0 truncate` for the logo wordmark.
+3. **Mobile (< md)** — replace the resizable group with a stacked single-column layout driven by a small segmented control at the top:
+   - Segmented tabs: `Files · Code · Insights` (icons + label, sticky just under the AppShell header).
+   - Only the selected pane renders full-width (`w-full`, no fixed panel sizes), so the code viewer and insight panel each get the full 375px and stop clipping.
+   - Default tab = `Code` when a file is selected, otherwise `Files`.
+   - Selecting a file in the `Files` tab auto-switches to `Code`.
+   - Triggering an analysis / folder action auto-switches to `Insights` (mirrors what desktop does visually with the third column).
 
-4. **Make the sticky header opaque on mobile** — `src/routes/index.tsx`
-   - Replace `bg-background/80 backdrop-blur` with `bg-background sm:bg-background/80 sm:backdrop-blur` so mobile gets a solid bar (no bleed-through under the header).
+4. **Inner panel tweaks for narrow widths**
+   - `FileTree` container: add `min-w-0` and let rows truncate with `truncate` instead of clipping; remove the inherited 20% width assumption on mobile.
+   - `CodeViewer` wrapper: keep horizontal scroll for long lines (no forced wrap), but ensure the surrounding flex parents use `min-w-0` so the viewer takes full viewport width.
+   - `InsightPanel` action buttons ("Run analysis…", "Configure AI provider", "Add an API key"): allow `whitespace-normal` and `text-left` on mobile so multi-line labels don't get cropped; ensure CTA chips wrap to a second line instead of overflowing.
 
-5. **Stack the flow diagram on small screens** — `src/components/landing/landing-bits.tsx`
-   - Switch the `flex items-center justify-between` row to `flex-col gap-3 sm:flex-row sm:items-center sm:justify-between`, and rotate the arrow glyphs 90° on mobile so the diagram reads top-to-bottom at 375px without crowding.
-
-6. **Verification**
-   - Re-run the Playwright overflow audit at 375px: target `docW === winW` and the overflowing-elements list empty.
-   - Capture full-height mobile screenshots for `/`, `/docs`, `/manifesto`, `/terms`, `/privacy`, `/data-flow` and confirm no horizontal scroll, header opacity correct, and the diagram stacks cleanly.
+5. **Verification**
+   - Playwright at 375×800 against `/projects/.../repos/...` (using injected Supabase session): confirm `docW === winW === 375`, no horizontal scroll, each of the three tabs shows its pane full-width, and no truncated CTAs.
+   - Spot-check at 768px (tablet) that the desktop 3-panel layout is restored.
 
 ## Out of scope
 
-- AppShell (authenticated) routes — already optimized in a prior pass.
-- Copy / i18n / typography redesign.
-- Tablet (`md:`) breakpoint tuning beyond what's needed to keep existing desktop layout intact.
+- Resizing behaviour on tablet/desktop, panel default sizes, copy, i18n.
+- Public landing routes (already optimized in the previous mobile pass).
+- AppShell header (already mobile-friendly).
