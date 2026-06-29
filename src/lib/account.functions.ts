@@ -11,6 +11,7 @@ export const exportMyData = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
     const sb = context.supabase;
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const [profile, projects, repos, files, explanations, creds, endpoints] = await Promise.all([
       sb.from("profiles").select("*").eq("id", context.userId).maybeSingle(),
       sb.from("projects").select("*"),
@@ -21,7 +22,10 @@ export const exportMyData = createServerFn({ method: "POST" })
         .select(
           "id, file_id, provider, model, language, explanation_type, proficiency, created_at, content",
         ),
-      sb.from("user_ai_credentials_safe").select("provider, key_hint, created_at, updated_at"),
+      supabaseAdmin
+        .from("user_ai_credentials")
+        .select("provider, key_hint, created_at, updated_at")
+        .eq("owner_id", context.userId),
       sb
         .from("user_local_endpoints")
         .select("kind, base_url, default_model, created_at, updated_at"),
