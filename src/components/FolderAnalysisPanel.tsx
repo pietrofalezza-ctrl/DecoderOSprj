@@ -423,6 +423,21 @@ export function FolderAnalysisPanel({
             </div>
           </div>
         </TabsContent>
+
+        <TabsContent
+          forceMount
+          value="chat"
+          className="m-0 flex-1 overflow-hidden data-[state=inactive]:hidden"
+        >
+          <FolderChatPanel
+            repoId={repoId}
+            folderPath={folderPath}
+            providerValue={providerValue}
+            proficiency={proficiency}
+            explanationType={explanationType}
+            uiLanguage={language}
+          />
+        </TabsContent>
       </Tabs>
     </div>
   );
