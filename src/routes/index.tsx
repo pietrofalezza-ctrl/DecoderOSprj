@@ -179,8 +179,8 @@ function Landing() {
 
       {/* Hero — editorial */}
       <section className="relative">
-        <div className="mx-auto grid max-w-6xl gap-10 px-4 py-12 sm:px-6 md:grid-cols-12 md:gap-16 md:py-28">
-          <div className="md:col-span-7 space-y-8">
+        <div className="mx-auto grid max-w-6xl grid-cols-1 gap-10 px-4 py-12 sm:px-6 md:grid-cols-12 md:gap-16 md:py-28">
+          <div className="md:col-span-7 space-y-8 min-w-0">
             <div className="flex flex-wrap gap-6 text-[10px] uppercase tracking-[0.2em] text-muted-foreground font-mono">
               <span className="border-b border-border pb-1">Case Study 01</span>
               <span className="border-b border-border pb-1">{t("landing.heroBadgeOpen")}</span>
