@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url><loc>https://decoderead.dev/</loc><lastmod>2026-06-29</lastmod><changefreq>weekly</changefreq><priority>1.0</priority></url>
-  <url><loc>https://decoderead.dev/auth</loc><changefreq>yearly</changefreq><priority>0.3</priority></url>
-  <url><loc>https://decoderead.dev/install</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
-  <url><loc>https://decoderead.dev/manifesto</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://decoderead.dev/contributors</loc><changefreq>daily</changefreq><priority>0.7</priority></url>
-  <url><loc>https://decoderead.dev/open-source</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://decoderead.dev/docs</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://decoderead.dev/docs/how-to-review-ai-code</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://decoderead.dev/docs/comparison-coderabbit</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://decoderead.dev/docs/ai-code-review-tools-byok</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://decoderead.dev/docs/open-source-ai-code-review</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://decoderead.dev/auth</loc><lastmod>2026-06-29</lastmod><changefreq>yearly</changefreq><priority>0.3</priority></url>
+  <url><loc>https://decoderead.dev/install</loc><lastmod>2026-06-29</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://decoderead.dev/manifesto</loc><lastmod>2026-06-29</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://decoderead.dev/contributors</loc><lastmod>2026-06-29</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+  <url><loc>https://decoderead.dev/open-source</loc><lastmod>2026-06-29</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://decoderead.dev/docs</loc><lastmod>2026-06-29</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://decoderead.dev/docs/how-to-review-ai-code</loc><lastmod>2026-06-29</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://decoderead.dev/docs/comparison-coderabbit</loc><lastmod>2026-06-29</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://decoderead.dev/docs/ai-code-review-tools-byok</loc><lastmod>2026-06-29</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://decoderead.dev/docs/open-source-ai-code-review</loc><lastmod>2026-06-29</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
   <url>
     <loc>https://decoderead.dev/docs/eu-ai-act-code-analysis</loc>
     <lastmod>2026-06-29</lastmod><changefreq>monthly</changefreq><priority>0.8</priority>
@@ -53,9 +53,9 @@
     <xhtml:link rel="alternate" hreflang="it" href="https://decoderead.dev/docs/ai-code-review-milano-nord-italia"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://decoderead.dev/docs/ai-code-review-milano-nord-italia"/>
   </url>
-  <url><loc>https://decoderead.dev/data-flow</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
-  <url><loc>https://decoderead.dev/contact</loc><changefreq>yearly</changefreq><priority>0.4</priority></url>
-  <url><loc>https://decoderead.dev/terms</loc><changefreq>monthly</changefreq><priority>0.5</priority></url>
-  <url><loc>https://decoderead.dev/privacy</loc><changefreq>monthly</changefreq><priority>0.5</priority></url>
-  <url><loc>https://decoderead.dev/cookies</loc><changefreq>yearly</changefreq><priority>0.3</priority></url>
+  <url><loc>https://decoderead.dev/data-flow</loc><lastmod>2026-06-29</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://decoderead.dev/contact</loc><lastmod>2026-06-29</lastmod><changefreq>yearly</changefreq><priority>0.4</priority></url>
+  <url><loc>https://decoderead.dev/terms</loc><lastmod>2026-06-29</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://decoderead.dev/privacy</loc><lastmod>2026-06-29</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://decoderead.dev/cookies</loc><lastmod>2026-06-29</lastmod><changefreq>yearly</changefreq><priority>0.3</priority></url>
 </urlset>
