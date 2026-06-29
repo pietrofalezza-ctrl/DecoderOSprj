@@ -424,6 +424,7 @@
       "search_query": "Ricerca"
     },
     "uploadZip": "Carica ZIP",
+    "uploadZipHint": "Qualsiasi cartella zippata. Rileva automaticamente 20+ linguaggi (JS/TS, Python, Java, Rust, Go, C/C++, C#, Ruby, PHP, Kotlin, Swift, SQL, Vue, Svelte, Lua, Dart, Scala, …). Static scan e malware scan funzionano senza API key; AI-origin e chat richiedono BYOK o endpoint locale.",
     "uploading": "Caricamento…",
     "noRepos": "Nessuna repository. Carica uno ZIP o importa da GitHub per iniziare.",
     "openRepo": "Apri",
