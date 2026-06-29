@@ -11,6 +11,26 @@ import { chatWithCode } from "./entries/chat-with-code";
 import { zipAnalysis } from "./entries/zip-analysis";
 import { powershellAnalysis } from "./entries/powershell-analysis";
 import { binaryAnalysis } from "./entries/binary-analysis";
+import { severityScoring } from "./entries/severity-scoring";
+import { cweMapping } from "./entries/cwe-mapping";
+import { yaraRules } from "./entries/yara-rules";
+import { obfuscationDetection } from "./entries/obfuscation-detection";
+import { secretDetection } from "./entries/secret-detection";
+import { dependencyAnalysis } from "./entries/dependency-analysis";
+import { sast } from "./entries/sast";
+import { supplyChainSecurity } from "./entries/supply-chain-security";
+import { euAiAct } from "./entries/eu-ai-act";
+import { gdprCompliance } from "./entries/gdpr-compliance";
+import { lockbitCaseStudy } from "./entries/lockbit-case-study";
+import { githubIntegration } from "./entries/github-integration";
+import { lmStudio } from "./entries/lm-studio";
+import { anthropicClaude } from "./entries/anthropic-claude";
+import { openaiGpt } from "./entries/openai-gpt";
+import { googleGemini } from "./entries/google-gemini";
+import { pythonFormat } from "./entries/python-format";
+import { javascriptFormat } from "./entries/javascript-format";
+import { javaFormat } from "./entries/java-format";
+import { dockerfileFormat } from "./entries/dockerfile-format";
 
 export const KNOWLEDGE_ENTRIES: KnowledgeEntry[] = [
   staticMalwareAnalysis,
@@ -25,6 +45,26 @@ export const KNOWLEDGE_ENTRIES: KnowledgeEntry[] = [
   zipAnalysis,
   powershellAnalysis,
   binaryAnalysis,
+  severityScoring,
+  cweMapping,
+  yaraRules,
+  obfuscationDetection,
+  secretDetection,
+  dependencyAnalysis,
+  sast,
+  supplyChainSecurity,
+  euAiAct,
+  gdprCompliance,
+  lockbitCaseStudy,
+  githubIntegration,
+  lmStudio,
+  anthropicClaude,
+  openaiGpt,
+  googleGemini,
+  pythonFormat,
+  javascriptFormat,
+  javaFormat,
+  dockerfileFormat,
 ];
 
 export const KNOWLEDGE_BY_SLUG: Record<string, KnowledgeEntry> = Object.fromEntries(
