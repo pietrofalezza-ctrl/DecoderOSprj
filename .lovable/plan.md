@@ -1,27 +1,54 @@
-## Cosa significa il finding
+## Goal
+Harden maintenance cron endpoints, add operator visibility, and give admins a guided rotation flow.
 
-L'endpoint `/api/public/hooks/cleanup-stale-repositories` (chiamato ogni notte da pg_cron per cancellare repository più vecchie di 60 giorni e senza attività recente) si "autentica" confrontando l'header `apikey` con la **anon key di Supabase**. Quella chiave è pubblica per design: è dentro il bundle JS del browser (`VITE_SUPABASE_PUBLISHABLE_KEY`). Chiunque apra il DevTools può copiarla e chiamare:
+## 1. E2E/CI test for cleanup auth
+- Add `src/routes/api/public/hooks/__tests__/cleanup-stale-repositories.test.ts` (vitest) that imports the route handler and asserts:
+  - No `Authorization` header → 401
+  - `Authorization: Bearer wrong` → 401
+  - `Authorization: Bearer <CLEANUP_CRON_SECRET>` (env stubbed) → 200 with stats JSON
+  - Length-mismatched bearer is rejected without throwing (timing-safe path)
+- Mock `@/integrations/supabase/client.server` so no real DB call happens.
+- The test runs under the existing `bunx vitest run` pipeline (no new CI wiring needed).
 
-```
-POST https://decoderead.dev/api/public/hooks/cleanup-stale-repositories
-apikey: <anon key>
-```
+## 2. Server-side audit log for cleanup runs
+- New table `public.maintenance_audit_log` via migration:
+  - `job_name text`, `started_at timestamptz`, `finished_at timestamptz`, `status text` (`ok`/`error`), `stats jsonb` (scanned/deleted/files/objects), `error text`, `request_id text`.
+  - GRANT `SELECT` to `authenticated` (RLS gates it), `ALL` to `service_role`.
+  - RLS: only `public.has_role(auth.uid(), 'admin')` may SELECT; no INSERT/UPDATE/DELETE for clients (writes go through service role).
+- Modify `cleanup-stale-repositories.ts` to insert one row per run (success or failure) using `supabaseAdmin`, capturing a generated `request_id` and returning it in the response.
 
-…facendo partire la cancellazione admin (storage + righe DB) su **tutti** i repository degli utenti. È un endpoint distruttivo protetto da una chiave pubblica → severità error.
+## 3. Admin UI: audit log + credentials status + rotation wizard
+- New protected route `src/routes/_authenticated/admin.tsx` gated by `has_role('admin')` server check (redirect to `/` otherwise).
+- Sections:
+  - **Maintenance audit log** — table of last 50 runs from `maintenance_audit_log`, with timestamps, status, repos removed, and `request_id`. Backed by `listMaintenanceAudit` server fn (admin-only via `has_role` check).
+  - **Rotate cleanup secret** — button + confirmation dialog. Calls `rotateCleanupCronSecret` server fn that:
+    1. Verifies caller is admin.
+    2. Generates 48-char random secret server-side.
+    3. Updates `CLEANUP_CRON_SECRET` via Lovable secret store (note: requires manual `secrets--update_secret` flow — see Open question).
+    4. Reschedules `cron.unschedule` + `cron.schedule` with the new bearer.
+    5. Logs the rotation into `maintenance_audit_log` (`job_name='rotate-cleanup-secret'`).
 
-## Fix
+## 4. Credentials status panel in Settings
+- Extend `src/routes/_authenticated/settings.tsx` with a new "Credentials status" card:
+  - For each supported provider, show: configured (Yes/No), key hint, last updated.
+  - If `listProviders` throws or returns empty when the user expects a key, show a clear warning: *"Una chiave risulta salvata ma non è leggibile — contatta il supporto o reinseriscila."*
+  - Add a server fn `getCredentialsStatus` returning `{ provider, configured, key_hint, updated_at, readable }[]` so the UI can distinguish "missing" from "unreadable" (e.g. decryption probe failure).
 
-1. **Nuovo secret** `CLEANUP_CRON_SECRET` (32+ char random, **senza** prefisso `VITE_`, mai esposto al browser) generato via `generate_secret`.
-2. **`src/routes/api/public/hooks/cleanup-stale-repositories.ts`**: sostituire il check sull'header `apikey` con un check `Authorization: Bearer ${process.env.CLEANUP_CRON_SECRET}`, in confronto timing-safe. Risposta 401 generica.
-3. **pg_cron job `cleanup-stale-repositories`**: unschedule + reschedule con header `Authorization: Bearer <secret>` invece di `apikey`. SQL inserito via `supabase--insert` (non migration, contiene il secret).
-4. Marcare il finding `cleanup_anon_key_auth` come fixed.
+## 5. Apply same protection schema to all maintenance cron endpoints
+- Inventory: today only `cleanup-stale-repositories` and the email-queue processor under `/api/public/hooks/*`. Audit each handler and ensure:
+  - Reads a dedicated `*_CRON_SECRET` (no `VITE_` prefix, never the anon key).
+  - Uses `timingSafeEqual` bearer comparison.
+  - Writes a `maintenance_audit_log` row.
+- Email-queue processor: introduce `EMAIL_QUEUE_CRON_SECRET` if it currently uses the anon key, and reschedule its pg_cron with the new bearer.
 
-## Bug separato — chiave OpenRouter non più visibile per fajov59464@fixscal.com
+## Technical notes
+- `pg_cron` rescheduling done via `supabase--insert` SQL (`cron.unschedule` + `cron.schedule`) inside the rotation server fn — runs with service role.
+- `maintenance_audit_log` writes use `supabaseAdmin` so they bypass RLS; reads use the user-scoped client and rely on the RLS policy + `has_role` check.
+- All admin server fns verify `has_role(context.userId, 'admin')` before touching admin data, matching the pattern in existing privileged fns.
 
-Verificato in DB: la chiave c'è (provider `openrouter`, hint `sk-o…624a`, creata 2026-06-07). Non è stata persa.
+## Open question
+The Lovable secret store can't be mutated from runtime server code — `CLEANUP_CRON_SECRET` rotation needs the `secrets--update_secret` tool, which prompts the user. Two options for the "rotation wizard":
+- **(A)** UI generates+displays a new secret, admin pastes it into the secret-rotation prompt, then clicks "Reschedule cron" which sends the new value to the rescheduler. Fully guided, no secret persisted in DB.
+- **(B)** Store the active cron secret in a new admin-only table (`cron_secrets`), rotate purely server-side, and have the cron endpoint compare against the DB value instead of `process.env`. Single-click rotation but adds a DB-hosted secret.
 
-Causa: la vista `user_ai_credentials_safe` è una vista normale, quindi quando il client autenticato la legge Postgres controlla i permessi sulla **tabella base** `user_ai_credentials`. Nel giro di hardening precedente abbiamo revocato `SELECT` su quella tabella ai ruoli `authenticated`/`anon`, quindi la query della UI ora restituisce 0 righe (o permission denied) e il pannello Settings sembra "vuoto".
-
-Fix: in `src/lib/credentials.functions.ts` cambiare `listProviders` per usare `supabaseAdmin` filtrando per `owner_id = context.userId` (come già fanno `saveProviderKey` / `deleteProviderKey`), proiettando solo `provider, key_hint, updated_at`. Nessun cambio di schema, nessuna riconcessione di `SELECT` sulla tabella base. Stesso modello per `account.functions.ts` se necessario per coerenza.
-
-Risultato: l'utente rivedrà la sua chiave OpenRouter elencata in Settings → Providers senza riconfigurarla.
+Which do you prefer? I'll default to **(A)** unless you say otherwise.
