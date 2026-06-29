@@ -44,8 +44,11 @@ const WRONG_SECRET = "test-secret-value-WRONG-9876";
 
 async function invoke(authHeader?: string): Promise<Response> {
   const { Route } = await import("../cleanup-stale-repositories");
-  const handler = (Route.options as { server: { handlers: { POST: (ctx: { request: Request }) => Promise<Response> } } })
-    .server.handlers.POST;
+  const handler = (
+    Route.options as unknown as {
+      server: { handlers: { POST: (ctx: { request: Request }) => Promise<Response> } };
+    }
+  ).server.handlers.POST;
   const headers: Record<string, string> = { "content-type": "application/json" };
   if (authHeader !== undefined) headers.authorization = authHeader;
   const request = new Request("http://test/api/public/hooks/cleanup-stale-repositories", {

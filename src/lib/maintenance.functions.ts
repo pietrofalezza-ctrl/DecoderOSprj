@@ -64,16 +64,16 @@ export const rescheduleMaintenanceCron = createServerFn({ method: "POST" })
   body := '{}'::jsonb
 );`;
 
-    // Unschedule (ignore if not present), then reschedule.
-    await supabaseAdmin.rpc("exec_sql" as never, {} as never).catch(() => null);
-    // We need to run two SQL statements. Use the maintenance-only RPC if it
-    // exists; otherwise rely on the service-role-only `cron.*` functions via
-    // PostgREST is not possible, so we use a dedicated SECURITY DEFINER fn.
-    const { error } = await supabaseAdmin.rpc("admin_reschedule_cron" as never, {
-      _job_name: data.job,
-      _schedule: schedule,
-      _command: command,
-    } as never);
+    // Re-schedule via a service-role-only SECURITY DEFINER fn that wraps
+    // cron.unschedule + cron.schedule (PostgREST can't call cron.* directly).
+    const { error } = await supabaseAdmin.rpc(
+      "admin_reschedule_cron" as never,
+      {
+        _job_name: data.job,
+        _schedule: schedule,
+        _command: command,
+      } as never,
+    );
     if (error) throw new Error(error.message);
 
     // Audit the rotation event (no secret material logged).
