@@ -651,7 +651,11 @@
     "unsampledNote": "{{count}} ulteriori file di codice non sono stati analizzati per contenere i costi.",
     "noResults": "Nessun file di codice analizzabile.",
     "fileEmpty": "Esegui l'analisi origine-AI su questo file per vedere un punteggio.",
-    "configureKey": "Configura una chiave API"
+    "configureKey": "Configura una chiave API",
+    "scanFailedTitle": "Scansione non completata",
+    "scanFailedIntro": "Tutti i {{count}} file campionati hanno fallito. La causa più comune è una chiave BYOK non valida o sotto rate-limit, oppure un modello a cui la chiave non ha accesso.",
+    "scanFailedHint": "Controlla la chiave BYOK in Impostazioni → AI Providers, prova un altro modello o cambia provider.",
+    "partialErrors": "{{count}} file hanno fallito durante la scansione e sono stati saltati."
   },
   "proficiency": {
     "nontech": "Lettore non tecnico",
