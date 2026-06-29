@@ -529,6 +529,15 @@
       "emptyHint": "Press \"Analyze whole folder\" to start.",
       "noFindings": "No structured findings for this file."
     },
+    "folderChat": {
+      "tab": "Chat",
+      "needsProvider": "Folder chat requires a cloud provider with your BYOK API key.",
+      "emptyHint": "Ask anything about the files in this folder. The model only sees this folder.",
+      "placeholder": "Ask about this folder — architecture, risks, refactors…",
+      "thinking": "Thinking…",
+      "hint": "Ctrl/⌘+Enter to send. Your tone of voice and proficiency are applied.",
+      "saved": "Conversation saved to history."
+    },
     "fix": {
       "tab": "Fix",
       "generate": "Generate patch for this file",
