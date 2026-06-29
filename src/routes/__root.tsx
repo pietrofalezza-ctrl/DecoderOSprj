@@ -76,8 +76,14 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
   head: () => ({
     meta: [
       { charSet: "utf-8" },
-      { name: "viewport", content: "width=device-width, initial-scale=1" },
+      { name: "viewport", content: "width=device-width, initial-scale=1, viewport-fit=cover" },
       { name: "google-site-verification", content: "ZHAVRPzDMGmSkmKztM_yUoh6HielZflTNui7dGN0bQg" },
+      { name: "theme-color", content: "#0F172A" },
+      { name: "apple-mobile-web-app-capable", content: "yes" },
+      { name: "mobile-web-app-capable", content: "yes" },
+      { name: "apple-mobile-web-app-title", content: "Decoder" },
+      { name: "apple-mobile-web-app-status-bar-style", content: "black-translucent" },
+      { name: "application-name", content: "Decoder" },
       { title: "Decoder — AI code analysis & AI-generated code review" },
       {
         name: "description",
@@ -128,11 +134,15 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
           "@context": "https://schema.org",
           "@type": "WebSite",
           name: "Decoder",
+          alternateName: ["Decoder dev", "decoderead", "Decoder AI code analysis"],
           url: "https://decoderead.dev",
           description:
             "Open-source AI code analysis — review AI-generated code, run static and malware checks, and chat with your repository in any language.",
           keywords:
             "AI code analysis, AI code review, AI-generated code, static code analysis, malware analysis, code understanding",
+          sameAs: [
+            "https://github.com/decoderead",
+          ],
         }),
       },
     ],

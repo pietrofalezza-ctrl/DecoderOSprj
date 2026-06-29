@@ -49,6 +49,20 @@
     "ctaSignIn": "登录",
     "ctaGithub": "在 GitHub 上查看",
     "providersStrip": "支持你偏好的提供商",
+    "install": {
+      "kicker": "安装为应用",
+      "title": "从主屏幕启动 Decoder",
+      "body": "这是一个 Web 应用 — 无需应用商店、无需下载。将 Decoder 添加到设备,即可获得一键全屏体验。",
+      "ctaInstall": "安装应用",
+      "ctaScroll": "如何安装",
+      "desktopTitle": "桌面端",
+      "desktopBody": "Chrome、Edge 或 Brave — 点击地址栏中的安装图标。",
+      "iosTitle": "iOS Safari",
+      "iosBody": "点击「分享」→「添加到主屏幕」。",
+      "androidTitle": "Android",
+      "androidBody": "Chrome 菜单(⋮)→「安装应用」。",
+      "installedBadge": "已安装"
+    },
     "nav": {
       "features": "功能",
       "howItWorks": "工作流程",

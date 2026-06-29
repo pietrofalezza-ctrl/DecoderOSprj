@@ -49,6 +49,20 @@
     "ctaSignIn": "Accedi",
     "ctaGithub": "Vedi su GitHub",
     "providersStrip": "Funziona con i provider che preferisci",
+    "install": {
+      "kicker": "Installa come app",
+      "title": "Avvia Decoder dalla tua home screen",
+      "body": "È una web app — niente app store, niente download. Aggiungi Decoder al tuo dispositivo per un'esperienza a schermo intero in un tap.",
+      "ctaInstall": "Installa app",
+      "ctaScroll": "Come installarla",
+      "desktopTitle": "Desktop",
+      "desktopBody": "Chrome, Edge o Brave — clicca l'icona di installazione nella barra degli indirizzi.",
+      "iosTitle": "iOS Safari",
+      "iosBody": "Tocca Condividi → Aggiungi a Home.",
+      "androidTitle": "Android",
+      "androidBody": "Menu di Chrome (⋮) → Installa app.",
+      "installedBadge": "Installata"
+    },
     "nav": {
       "features": "Funzionalità",
       "howItWorks": "Come funziona",
