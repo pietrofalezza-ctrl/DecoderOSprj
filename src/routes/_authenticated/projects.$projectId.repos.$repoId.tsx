@@ -945,6 +945,7 @@ function WorkspacePage() {
   const runFromSelection = (kind: "explain" | "summarize" | "comment" | "quality" | "security") => {
     if (!selection) return;
     setUseSelection(true);
+    if (isMobile) setMobilePane("insights");
     if (kind === "explain" || kind === "summarize" || kind === "comment") {
       setMainTab("summary");
       setSummarySub(kind === "comment" || kind === "summarize" ? "human" : "technical");
