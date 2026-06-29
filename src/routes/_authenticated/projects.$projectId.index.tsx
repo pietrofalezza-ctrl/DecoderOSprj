@@ -101,19 +101,61 @@ function ProjectPage() {
     onError: (e) => toast.error(getErrorMessage(e, t("errors.generic"))),
   });
 
+  const MAX_BYTES = 25 * 1024 * 1024;
+  const SUPPORTED_EXTS = useMemo(
+    () =>
+      new Set([
+        "zip",
+        "js","jsx","ts","tsx","mjs","cjs",
+        "py","java","go","rs",
+        "c","cc","cpp","h","hpp",
+        "cs","rb","php","kt","kts","swift",
+        "sql","sh","bash","ps1",
+        "html","css","scss","sass","less",
+        "json","yml","yaml","toml","xml","md","txt",
+        "vue","svelte","dart","scala","lua","r","pl","ex","exs","clj","hs","ml","fs",
+      ]),
+    [],
+  );
+  const acceptAttr = useMemo(
+    () => Array.from(SUPPORTED_EXTS).map((e) => `.${e}`).join(","),
+    [SUPPORTED_EXTS],
+  );
+
   const upMut = useMutation({
     mutationFn: async (file: File) => {
-      const buf = new Uint8Array(await file.arrayBuffer());
+      if (file.size > MAX_BYTES) {
+        throw new Error(t("project.fileTooLarge"));
+      }
+      const ext = (file.name.split(".").pop() ?? "").toLowerCase();
+      if (!SUPPORTED_EXTS.has(ext)) {
+        throw new Error(t("project.unsupportedExtension"));
+      }
+
+      let zipBytes: Uint8Array;
+      let repoName: string;
+      if (ext === "zip") {
+        zipBytes = new Uint8Array(await file.arrayBuffer());
+        repoName = file.name.replace(/\.zip$/i, "");
+      } else {
+        const { zipSync, strToU8 } = await import("fflate");
+        const raw = new Uint8Array(await file.arrayBuffer());
+        // Wrap the single file in a zip so the existing pipeline handles it.
+        zipBytes = zipSync({ [file.name]: raw }, { level: 6 });
+        repoName = file.name.replace(/\.[^.]+$/, "") || file.name;
+        void strToU8; // keep tree-shake honest
+      }
+
       let binary = "";
       const chunk = 0x8000;
-      for (let i = 0; i < buf.length; i += chunk) {
-        binary += String.fromCharCode.apply(null, Array.from(buf.subarray(i, i + chunk)));
+      for (let i = 0; i < zipBytes.length; i += chunk) {
+        binary += String.fromCharCode.apply(null, Array.from(zipBytes.subarray(i, i + chunk)));
       }
       const b64 = btoa(binary);
       return upload({
         data: {
           project_id: projectId,
-          name: file.name.replace(/\.zip$/i, ""),
+          name: repoName,
           zip_base64: b64,
         },
       });
