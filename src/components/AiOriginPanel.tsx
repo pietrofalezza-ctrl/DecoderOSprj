@@ -173,6 +173,11 @@ export function AiOriginPanel({
             {t("aiOrigin.unsampledNote", { count: result.unsampled_count })}
           </p>
         )}
+        {result.errors.length > 0 && (
+          <p className="text-[11px] text-amber-600 dark:text-amber-400">
+            {t("aiOrigin.partialErrors", { count: result.errors.length })}
+          </p>
+        )}
         <p className="flex items-start gap-1.5 text-[11px] text-amber-600 dark:text-amber-400">
           <AlertTriangle className="mt-0.5 h-3 w-3 shrink-0" />
           {t("aiOrigin.disclaimer")}
@@ -204,11 +209,6 @@ export function AiOriginPanel({
           )}
         </ul>
       </ScrollArea>
-        {result.errors.length > 0 && (
-          <p className="text-[11px] text-amber-600 dark:text-amber-400">
-            {t("aiOrigin.partialErrors", { count: result.errors.length })}
-          </p>
-        )}
-      </div>
+    </div>
   );
 }
