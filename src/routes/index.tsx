@@ -777,6 +777,14 @@ function Landing() {
           </h2>
           <div className="mt-8 space-y-6">
             <div>
+              <h3 className="text-base font-semibold">Can I upload just one file?</h3>
+              <p className="mt-2 text-sm text-muted-foreground">
+                Yes. Decoder accepts a single source file (<code>.js</code>, <code>.ts</code>, <code>.py</code>,{" "}
+                <code>.java</code>, <code>.go</code>, <code>.rs</code>, <code>.sql</code> and 20+ more), a ZIP archive
+                of a folder, or a public GitHub repository URL. No setup is required.
+              </p>
+            </div>
+            <div>
               <h3 className="text-base font-semibold">Do I need an API key to use Decoder?</h3>
               <p className="mt-2 text-sm text-muted-foreground">
                 No. Static code analysis and malware scanning run fully offline on the server with no API key. A BYOK
