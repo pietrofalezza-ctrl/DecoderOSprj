@@ -23,6 +23,7 @@ import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as DocsHowToReviewAiCodeRouteImport } from './routes/docs.how-to-review-ai-code'
+import { Route as DocsComparisonCoderabbitRouteImport } from './routes/docs.comparison-coderabbit'
 import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated/settings'
 import { Route as AuthenticatedHistoryRouteImport } from './routes/_authenticated/history'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
@@ -103,6 +104,12 @@ const DocsHowToReviewAiCodeRoute = DocsHowToReviewAiCodeRouteImport.update({
   path: '/how-to-review-ai-code',
   getParentRoute: () => DocsRoute,
 } as any)
+const DocsComparisonCoderabbitRoute =
+  DocsComparisonCoderabbitRouteImport.update({
+    id: '/comparison-coderabbit',
+    path: '/comparison-coderabbit',
+    getParentRoute: () => DocsRoute,
+  } as any)
 const AuthenticatedSettingsRoute = AuthenticatedSettingsRouteImport.update({
   id: '/settings',
   path: '/settings',
@@ -177,6 +184,7 @@ export interface FileRoutesByFullPath {
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/history': typeof AuthenticatedHistoryRoute
   '/settings': typeof AuthenticatedSettingsRoute
+  '/docs/comparison-coderabbit': typeof DocsComparisonCoderabbitRoute
   '/docs/how-to-review-ai-code': typeof DocsHowToReviewAiCodeRoute
   '/projects/$projectId': typeof AuthenticatedProjectsProjectIdRouteWithChildren
   '/api/public/hooks/cleanup-stale-repositories': typeof ApiPublicHooksCleanupStaleRepositoriesRoute
@@ -202,6 +210,7 @@ export interface FileRoutesByTo {
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/history': typeof AuthenticatedHistoryRoute
   '/settings': typeof AuthenticatedSettingsRoute
+  '/docs/comparison-coderabbit': typeof DocsComparisonCoderabbitRoute
   '/docs/how-to-review-ai-code': typeof DocsHowToReviewAiCodeRoute
   '/api/public/hooks/cleanup-stale-repositories': typeof ApiPublicHooksCleanupStaleRepositoriesRoute
   '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
@@ -228,6 +237,7 @@ export interface FileRoutesById {
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/history': typeof AuthenticatedHistoryRoute
   '/_authenticated/settings': typeof AuthenticatedSettingsRoute
+  '/docs/comparison-coderabbit': typeof DocsComparisonCoderabbitRoute
   '/docs/how-to-review-ai-code': typeof DocsHowToReviewAiCodeRoute
   '/_authenticated/projects/$projectId': typeof AuthenticatedProjectsProjectIdRouteWithChildren
   '/api/public/hooks/cleanup-stale-repositories': typeof ApiPublicHooksCleanupStaleRepositoriesRoute
@@ -255,6 +265,7 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/history'
     | '/settings'
+    | '/docs/comparison-coderabbit'
     | '/docs/how-to-review-ai-code'
     | '/projects/$projectId'
     | '/api/public/hooks/cleanup-stale-repositories'
@@ -280,6 +291,7 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/history'
     | '/settings'
+    | '/docs/comparison-coderabbit'
     | '/docs/how-to-review-ai-code'
     | '/api/public/hooks/cleanup-stale-repositories'
     | '/lovable/email/queue/process'
@@ -305,6 +317,7 @@ export interface FileRouteTypes {
     | '/_authenticated/dashboard'
     | '/_authenticated/history'
     | '/_authenticated/settings'
+    | '/docs/comparison-coderabbit'
     | '/docs/how-to-review-ai-code'
     | '/_authenticated/projects/$projectId'
     | '/api/public/hooks/cleanup-stale-repositories'
@@ -430,6 +443,13 @@ declare module '@tanstack/react-router' {
       path: '/how-to-review-ai-code'
       fullPath: '/docs/how-to-review-ai-code'
       preLoaderRoute: typeof DocsHowToReviewAiCodeRouteImport
+      parentRoute: typeof DocsRoute
+    }
+    '/docs/comparison-coderabbit': {
+      id: '/docs/comparison-coderabbit'
+      path: '/comparison-coderabbit'
+      fullPath: '/docs/comparison-coderabbit'
+      preLoaderRoute: typeof DocsComparisonCoderabbitRouteImport
       parentRoute: typeof DocsRoute
     }
     '/_authenticated/settings': {
@@ -559,10 +579,12 @@ const AuthenticatedRouteRouteWithChildren =
   AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
 
 interface DocsRouteChildren {
+  DocsComparisonCoderabbitRoute: typeof DocsComparisonCoderabbitRoute
   DocsHowToReviewAiCodeRoute: typeof DocsHowToReviewAiCodeRoute
 }
 
 const DocsRouteChildren: DocsRouteChildren = {
+  DocsComparisonCoderabbitRoute: DocsComparisonCoderabbitRoute,
   DocsHowToReviewAiCodeRoute: DocsHowToReviewAiCodeRoute,
 }
 
