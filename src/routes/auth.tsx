@@ -12,7 +12,9 @@ import { Label } from "@/components/ui/label";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { LangSwitcher } from "@/components/LangSwitcher";
 import { Logo } from "@/components/Logo";
+import { InstagramLink } from "@/components/InstagramLink";
 import { supabase } from "@/integrations/supabase/client";
+
 import { lovable } from "@/integrations/lovable/index";
 import { getErrorMessage } from "@/lib/errors";
 
@@ -386,6 +388,10 @@ function AuthPage() {
           </div>
         </div>
       </main>
+      <footer className="border-t border-border/60 px-6 py-4 text-center text-xs text-muted-foreground">
+        <InstagramLink />
+      </footer>
     </div>
   );
 }
+
