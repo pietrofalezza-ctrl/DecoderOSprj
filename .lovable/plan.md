@@ -1,73 +1,75 @@
-CONSEGNA: Primo post di lancio Instagram per Decoder
 
-1. Format consigliato
-   Carosello 6 slide (1080×1080 o 1080×1350 verticale). Il carosello tende a performare meglio del post singolo sul target dev/tech perché permette di educare in più step. La prima slide deve essere un "pattern interrupt": domanda diretta, senza logo pesante.
+# India + Sri Lanka SEO expansion
 
-2. Post principale (caption)
+Goal: build traction from India and Sri Lanka by shipping localized, geo-targeted, and topically-relevant SEO pages, plus wiring the i18n and infrastructure to support Hindi (hi) and Tamil (ta).
 
-Il tuo codice è sempre più scritto dall'IA. Ma lo stai leggendo davvero?
+## Scope (12 new pages)
 
-Decoder è lo strumento open source che ti aiuta a capire il codice — prima che un bug, una dipendenza o uno snippet "AI-generated" ti sorprenda.
+### English pages (region-focused, 6)
+1. `/docs/ai-code-review-india` — regional hub. Angle: BYOK saves cost, works with any provider, no vendor lock-in.
+2. `/docs/dpdp-act-ai-code-analysis` — India's Digital Personal Data Protection Act 2023 compliance angle (parallel to existing GDPR page).
+3. `/docs/ai-code-review-outsourcing` — auditing AI-generated code from outsourcing vendors / agencies.
+4. `/docs/ai-code-review-bangalore` — geo page (Bangalore/Bengaluru IT hub).
+5. `/docs/ai-code-review-hyderabad-chennai` — geo page (Hyderabad + Chennai IT corridors).
+6. `/docs/ai-code-review-sri-lanka-colombo` — Sri Lanka + Colombo tech scene, DPA 2022 mention.
 
-Cosa puoi fare gratis:
-→ Caricare un singolo file, uno ZIP o un URL Git
-→ Analisi statica su 20+ linguaggi (JavaScript, TypeScript, Python, Go, Rust, SQL...)
-→ Scan malware e rilevamento minacce come LockBit 3.0
-→ Usare le funzioni AI con la tua chiave (BYOK) o in locale
-→ Chiedere al codice in chat e tenere uno storico delle analisi
+### Hindi pages (3, `/docs/hi.*`)
+7. `/docs/hi/ai-code-review-bharat` — Hindi hub, BYOK + costo basso.
+8. `/docs/hi/dpdp-act-code-analysis` — DPDP Act in Hindi.
+9. `/docs/hi/open-source-ai-code-review` — free/OSS angle in Hindi.
 
-Nessuna chiave API? Funziona comunque per tutti i controlli statici e di sicurezza.
+### Tamil pages (3, `/docs/ta.*`)
+10. `/docs/ta/ai-code-review-chennai` — Tamil, Chennai focus.
+11. `/docs/ta/dpdp-act-code-analysis` — DPDP in Tamil.
+12. `/docs/ta/open-source-ai-code-review` — OSS angle in Tamil.
 
-Open source · MIT · Made in Italy
-Link in bio 🔗
+## Content angles per page
 
-#Decoder #OpenSource #AI #CodeReview #DevTools #AIcoding #DeveloperTools #Coding #AIcode #CodeSecurity #BYOK #Privacy #GDPR #MilanTech #ItalianTech #DevCommunity #AIAct #SoftwareEngineering #Programmazione #Sviluppatori #CodeAnalysis #MalwareScan #CleanCode #AIawareness
+- **BYOK / low cost**: emphasize free static + malware scan (no key required), and that BYOK means devs pay $0 platform fee — only their own model usage. Compare vs SaaS AI reviewers charging per seat in USD.
+- **Outsourcing**: audit AI-generated code from vendors, detect Copilot/Cursor/Claude patterns, ensure IP hygiene before delivery.
+- **DPDP Act**: local-first / BYOK means data never leaves the developer's machine (or their chosen provider), aligning with data-minimization obligations. Not legal advice.
+- **Geo pages**: name the local IT hubs, universities, dev communities; hreflang + region-appropriate schema.
 
-3. Carosello 6 slide — copy per slide
+## Technical work
 
-Slide 1 — Hook (domanda + logo piccolo)
-"Il tuo codice è scritto da un'IA. 
-Lo stai leggendo davvero?"
-Decoder — leggi il codice insieme all'IA.
+### i18n
+- Add `hi` and `ta` to `SUPPORTED_LANGUAGES` in `src/i18n/index.ts`.
+- Create `src/i18n/locales/hi/common.json` and `src/i18n/locales/ta/common.json` — start as copies of `en` and translate only the strings shown on the new pages + shared nav/footer (full app translation is out of scope for this pass; existing text falls back to English via i18next).
+- Add hi/ta to `LangSwitcher`.
 
-Slide 2 — Input
-"Carica qualsiasi cosa"
-✓ Singolo file
-✓ Archivio ZIP
-✓ URL Git pubblico
-Zero configurazione. 20+ linguaggi supportati.
+### Head/SEO per page
+- Each page: unique `title`, `description`, `og:*`, self-referencing `canonical` and `og:url`.
+- **hreflang links** on the region-hub pages linking EN ↔ HI ↔ TA counterparts + `x-default`.
+- JSON-LD: `Article` + `FAQPage` + `BreadcrumbList`. Geo pages add `Place` / `areaServed` on an inline Organization mention.
+- Extend `Organization` schema in `__root.tsx` `areaServed` (currently Northern Italy) to also include India and Sri Lanka.
 
-Slide 3 — Gratis senza API key
-"Controlli statici e sicurezza, subito"
-→ Analisi statica (SAST)
-→ Scan malware / LockBit 3.0
-→ Rilevamento AI-origin
-Nessuna chiave richiesta.
+### Sitemap
+- Add all 12 new routes to `src/routes/sitemap[.]xml.ts`. Include `<xhtml:link rel="alternate" hreflang="…">` blocks in the sitemap for the hreflang clusters (upgrade the `urlset` xmlns to include xhtml).
 
-Slide 4 — AI con il tuo controllo
-"AI con chiave tua, o in locale"
-→ BYOK (OpenRouter, OpenAI, Anthropic, Ollama...)
-→ Nessuna chiave salvata in chiaro
-→ Privacy-first e GDPR-friendly
+### Robots
+- No changes required.
 
-Slide 5 — Chatta e tieni storico
-"Chiedi al tuo codice"
-→ Spiegazioni AI su file o intero progetto
-→ Chat persistente per sessione
-→ Storico analisi tra i dispositivi
+## Design & UX
 
-Slide 6 — CTA + trust
-"Open source · MIT · Made in Italy"
-Provalo gratis. Link in bio.
+- Reuse existing docs page shell (see `docs.eu-ai-act-code-analysis.tsx`, `docs.ai-code-review-milano-nord-italia.tsx` as templates) — same header, breadcrumb, TOC, FAQ accordion.
+- No new components. No new colors/fonts. Mobile-first (already covered by existing shell).
+- Internal linking: each new page links to `/docs`, `/knowledge`, `/manifesto`, and 2–3 sibling India/SL pages. Add a small "India & Sri Lanka" cluster block on `/docs/index` (or `docs.tsx`) linking the 6 EN pages.
 
-4. Prossimi passi su cui approviamo
-   - Selezionare il tono della slide 1 (tecnico/ironico/diretto)
-   - Generare le 6 immagini del carosello (formato 1080×1350) in stile Decoder con il nuovo logo
-   - Salvare copy e asset in /marketing/social/launch-instagram/
+## Out of scope (call out explicitly)
 
-5. Note tecniche per il virale
-   - Hook nei primi 90 caratteri
-   - 3 emoji nella caption, nessuna in eccesso
-   - Hashtag mix: 5 italiani (es. #AI, #Sviluppatori, #Programmazione), 5 tecnici internazionali, 5 nicchia (BYOK, AIAct, CodeReview)
-   - CTA "salva questo post" opzionale per aumentare il reach
-   - Consigliato di postare martedì o giovedì pomeriggio per il tech audience
+- Full app translation into Hindi/Tamil — only nav, footer, hero snippets, and the new pages get localized copy. Rest falls back to English.
+- Paid promotion, backlink outreach, Product Hunt / Reddit posts for these markets.
+- Currency/pricing UI changes (Decoder is free; no INR/LKR pricing needed).
+
+## Deliverables checklist
+
+- [ ] 12 new route files
+- [ ] `hi` + `ta` locales added, `LangSwitcher` updated
+- [ ] `Organization.areaServed` extended to include IN + LK
+- [ ] Sitemap updated with hreflang alternates
+- [ ] "India & Sri Lanka" link cluster on `/docs`
+- [ ] Build passes; run existing SEO scan after ship
+
+## Realistic outcome
+
+New geo/language pages typically take 2–4 months to gain traction in Google. Expect the DPDP + outsourcing angles to rank fastest (low competition, clear intent); geo pages are slower but sticky. Hindi/Tamil SERPs have less English-language competition, so even modest content can rank if hreflang is set correctly.
