@@ -58,9 +58,15 @@ import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/
 import { Route as DocsZhPrivacyFirstAiEuropeRouteImport } from './routes/docs.zh.privacy-first-ai-europe'
 import { Route as DocsZhGdprAiCodeReviewRouteImport } from './routes/docs.zh.gdpr-ai-code-review'
 import { Route as DocsZhEuAiActCodeAnalysisRouteImport } from './routes/docs.zh.eu-ai-act-code-analysis'
+import { Route as DocsTaOpenSourceAiCodeReviewRouteImport } from './routes/docs.ta.open-source-ai-code-review'
+import { Route as DocsTaDpdpActCodeAnalysisRouteImport } from './routes/docs.ta.dpdp-act-code-analysis'
+import { Route as DocsTaAiCodeReviewChennaiRouteImport } from './routes/docs.ta.ai-code-review-chennai'
 import { Route as DocsItGdprRevisioneCodiceAiRouteImport } from './routes/docs.it.gdpr-revisione-codice-ai'
 import { Route as DocsItEuAiActAnalisiCodiceRouteImport } from './routes/docs.it.eu-ai-act-analisi-codice'
 import { Route as DocsItAiPrivacyFirstEuropaRouteImport } from './routes/docs.it.ai-privacy-first-europa'
+import { Route as DocsHiOpenSourceAiCodeReviewRouteImport } from './routes/docs.hi.open-source-ai-code-review'
+import { Route as DocsHiDpdpActCodeAnalysisRouteImport } from './routes/docs.hi.dpdp-act-code-analysis'
+import { Route as DocsHiAiCodeReviewBharatRouteImport } from './routes/docs.hi.ai-code-review-bharat'
 import { Route as AuthenticatedProjectsProjectIdRouteImport } from './routes/_authenticated/projects.$projectId'
 import { Route as AuthenticatedAdminKnowledgeRouteImport } from './routes/_authenticated/admin.knowledge'
 import { Route as AuthenticatedAdminConsentsRouteImport } from './routes/_authenticated/admin.consents'
@@ -336,6 +342,24 @@ const DocsZhEuAiActCodeAnalysisRoute =
     path: '/zh/eu-ai-act-code-analysis',
     getParentRoute: () => DocsRoute,
   } as any)
+const DocsTaOpenSourceAiCodeReviewRoute =
+  DocsTaOpenSourceAiCodeReviewRouteImport.update({
+    id: '/ta/open-source-ai-code-review',
+    path: '/ta/open-source-ai-code-review',
+    getParentRoute: () => DocsRoute,
+  } as any)
+const DocsTaDpdpActCodeAnalysisRoute =
+  DocsTaDpdpActCodeAnalysisRouteImport.update({
+    id: '/ta/dpdp-act-code-analysis',
+    path: '/ta/dpdp-act-code-analysis',
+    getParentRoute: () => DocsRoute,
+  } as any)
+const DocsTaAiCodeReviewChennaiRoute =
+  DocsTaAiCodeReviewChennaiRouteImport.update({
+    id: '/ta/ai-code-review-chennai',
+    path: '/ta/ai-code-review-chennai',
+    getParentRoute: () => DocsRoute,
+  } as any)
 const DocsItGdprRevisioneCodiceAiRoute =
   DocsItGdprRevisioneCodiceAiRouteImport.update({
     id: '/it/gdpr-revisione-codice-ai',
@@ -352,6 +376,24 @@ const DocsItAiPrivacyFirstEuropaRoute =
   DocsItAiPrivacyFirstEuropaRouteImport.update({
     id: '/it/ai-privacy-first-europa',
     path: '/it/ai-privacy-first-europa',
+    getParentRoute: () => DocsRoute,
+  } as any)
+const DocsHiOpenSourceAiCodeReviewRoute =
+  DocsHiOpenSourceAiCodeReviewRouteImport.update({
+    id: '/hi/open-source-ai-code-review',
+    path: '/hi/open-source-ai-code-review',
+    getParentRoute: () => DocsRoute,
+  } as any)
+const DocsHiDpdpActCodeAnalysisRoute =
+  DocsHiDpdpActCodeAnalysisRouteImport.update({
+    id: '/hi/dpdp-act-code-analysis',
+    path: '/hi/dpdp-act-code-analysis',
+    getParentRoute: () => DocsRoute,
+  } as any)
+const DocsHiAiCodeReviewBharatRoute =
+  DocsHiAiCodeReviewBharatRouteImport.update({
+    id: '/hi/ai-code-review-bharat',
+    path: '/hi/ai-code-review-bharat',
     getParentRoute: () => DocsRoute,
   } as any)
 const AuthenticatedProjectsProjectIdRoute =
@@ -481,9 +523,15 @@ export interface FileRoutesByFullPath {
   '/admin/consents': typeof AuthenticatedAdminConsentsRoute
   '/admin/knowledge': typeof AuthenticatedAdminKnowledgeRouteWithChildren
   '/projects/$projectId': typeof AuthenticatedProjectsProjectIdRouteWithChildren
+  '/docs/hi/ai-code-review-bharat': typeof DocsHiAiCodeReviewBharatRoute
+  '/docs/hi/dpdp-act-code-analysis': typeof DocsHiDpdpActCodeAnalysisRoute
+  '/docs/hi/open-source-ai-code-review': typeof DocsHiOpenSourceAiCodeReviewRoute
   '/docs/it/ai-privacy-first-europa': typeof DocsItAiPrivacyFirstEuropaRoute
   '/docs/it/eu-ai-act-analisi-codice': typeof DocsItEuAiActAnalisiCodiceRoute
   '/docs/it/gdpr-revisione-codice-ai': typeof DocsItGdprRevisioneCodiceAiRoute
+  '/docs/ta/ai-code-review-chennai': typeof DocsTaAiCodeReviewChennaiRoute
+  '/docs/ta/dpdp-act-code-analysis': typeof DocsTaDpdpActCodeAnalysisRoute
+  '/docs/ta/open-source-ai-code-review': typeof DocsTaOpenSourceAiCodeReviewRoute
   '/docs/zh/eu-ai-act-code-analysis': typeof DocsZhEuAiActCodeAnalysisRoute
   '/docs/zh/gdpr-ai-code-review': typeof DocsZhGdprAiCodeReviewRoute
   '/docs/zh/privacy-first-ai-europe': typeof DocsZhPrivacyFirstAiEuropeRoute
@@ -545,9 +593,15 @@ export interface FileRoutesByTo {
   '/knowledge/integrations': typeof KnowledgeIntegrationsRoute
   '/knowledge': typeof KnowledgeIndexRoute
   '/admin/consents': typeof AuthenticatedAdminConsentsRoute
+  '/docs/hi/ai-code-review-bharat': typeof DocsHiAiCodeReviewBharatRoute
+  '/docs/hi/dpdp-act-code-analysis': typeof DocsHiDpdpActCodeAnalysisRoute
+  '/docs/hi/open-source-ai-code-review': typeof DocsHiOpenSourceAiCodeReviewRoute
   '/docs/it/ai-privacy-first-europa': typeof DocsItAiPrivacyFirstEuropaRoute
   '/docs/it/eu-ai-act-analisi-codice': typeof DocsItEuAiActAnalisiCodiceRoute
   '/docs/it/gdpr-revisione-codice-ai': typeof DocsItGdprRevisioneCodiceAiRoute
+  '/docs/ta/ai-code-review-chennai': typeof DocsTaAiCodeReviewChennaiRoute
+  '/docs/ta/dpdp-act-code-analysis': typeof DocsTaDpdpActCodeAnalysisRoute
+  '/docs/ta/open-source-ai-code-review': typeof DocsTaOpenSourceAiCodeReviewRoute
   '/docs/zh/eu-ai-act-code-analysis': typeof DocsZhEuAiActCodeAnalysisRoute
   '/docs/zh/gdpr-ai-code-review': typeof DocsZhGdprAiCodeReviewRoute
   '/docs/zh/privacy-first-ai-europe': typeof DocsZhPrivacyFirstAiEuropeRoute
@@ -613,9 +667,15 @@ export interface FileRoutesById {
   '/_authenticated/admin/consents': typeof AuthenticatedAdminConsentsRoute
   '/_authenticated/admin/knowledge': typeof AuthenticatedAdminKnowledgeRouteWithChildren
   '/_authenticated/projects/$projectId': typeof AuthenticatedProjectsProjectIdRouteWithChildren
+  '/docs/hi/ai-code-review-bharat': typeof DocsHiAiCodeReviewBharatRoute
+  '/docs/hi/dpdp-act-code-analysis': typeof DocsHiDpdpActCodeAnalysisRoute
+  '/docs/hi/open-source-ai-code-review': typeof DocsHiOpenSourceAiCodeReviewRoute
   '/docs/it/ai-privacy-first-europa': typeof DocsItAiPrivacyFirstEuropaRoute
   '/docs/it/eu-ai-act-analisi-codice': typeof DocsItEuAiActAnalisiCodiceRoute
   '/docs/it/gdpr-revisione-codice-ai': typeof DocsItGdprRevisioneCodiceAiRoute
+  '/docs/ta/ai-code-review-chennai': typeof DocsTaAiCodeReviewChennaiRoute
+  '/docs/ta/dpdp-act-code-analysis': typeof DocsTaDpdpActCodeAnalysisRoute
+  '/docs/ta/open-source-ai-code-review': typeof DocsTaOpenSourceAiCodeReviewRoute
   '/docs/zh/eu-ai-act-code-analysis': typeof DocsZhEuAiActCodeAnalysisRoute
   '/docs/zh/gdpr-ai-code-review': typeof DocsZhGdprAiCodeReviewRoute
   '/docs/zh/privacy-first-ai-europe': typeof DocsZhPrivacyFirstAiEuropeRoute
@@ -681,9 +741,15 @@ export interface FileRouteTypes {
     | '/admin/consents'
     | '/admin/knowledge'
     | '/projects/$projectId'
+    | '/docs/hi/ai-code-review-bharat'
+    | '/docs/hi/dpdp-act-code-analysis'
+    | '/docs/hi/open-source-ai-code-review'
     | '/docs/it/ai-privacy-first-europa'
     | '/docs/it/eu-ai-act-analisi-codice'
     | '/docs/it/gdpr-revisione-codice-ai'
+    | '/docs/ta/ai-code-review-chennai'
+    | '/docs/ta/dpdp-act-code-analysis'
+    | '/docs/ta/open-source-ai-code-review'
     | '/docs/zh/eu-ai-act-code-analysis'
     | '/docs/zh/gdpr-ai-code-review'
     | '/docs/zh/privacy-first-ai-europe'
@@ -745,9 +811,15 @@ export interface FileRouteTypes {
     | '/knowledge/integrations'
     | '/knowledge'
     | '/admin/consents'
+    | '/docs/hi/ai-code-review-bharat'
+    | '/docs/hi/dpdp-act-code-analysis'
+    | '/docs/hi/open-source-ai-code-review'
     | '/docs/it/ai-privacy-first-europa'
     | '/docs/it/eu-ai-act-analisi-codice'
     | '/docs/it/gdpr-revisione-codice-ai'
+    | '/docs/ta/ai-code-review-chennai'
+    | '/docs/ta/dpdp-act-code-analysis'
+    | '/docs/ta/open-source-ai-code-review'
     | '/docs/zh/eu-ai-act-code-analysis'
     | '/docs/zh/gdpr-ai-code-review'
     | '/docs/zh/privacy-first-ai-europe'
@@ -812,9 +884,15 @@ export interface FileRouteTypes {
     | '/_authenticated/admin/consents'
     | '/_authenticated/admin/knowledge'
     | '/_authenticated/projects/$projectId'
+    | '/docs/hi/ai-code-review-bharat'
+    | '/docs/hi/dpdp-act-code-analysis'
+    | '/docs/hi/open-source-ai-code-review'
     | '/docs/it/ai-privacy-first-europa'
     | '/docs/it/eu-ai-act-analisi-codice'
     | '/docs/it/gdpr-revisione-codice-ai'
+    | '/docs/ta/ai-code-review-chennai'
+    | '/docs/ta/dpdp-act-code-analysis'
+    | '/docs/ta/open-source-ai-code-review'
     | '/docs/zh/eu-ai-act-code-analysis'
     | '/docs/zh/gdpr-ai-code-review'
     | '/docs/zh/privacy-first-ai-europe'
@@ -1202,6 +1280,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DocsZhEuAiActCodeAnalysisRouteImport
       parentRoute: typeof DocsRoute
     }
+    '/docs/ta/open-source-ai-code-review': {
+      id: '/docs/ta/open-source-ai-code-review'
+      path: '/ta/open-source-ai-code-review'
+      fullPath: '/docs/ta/open-source-ai-code-review'
+      preLoaderRoute: typeof DocsTaOpenSourceAiCodeReviewRouteImport
+      parentRoute: typeof DocsRoute
+    }
+    '/docs/ta/dpdp-act-code-analysis': {
+      id: '/docs/ta/dpdp-act-code-analysis'
+      path: '/ta/dpdp-act-code-analysis'
+      fullPath: '/docs/ta/dpdp-act-code-analysis'
+      preLoaderRoute: typeof DocsTaDpdpActCodeAnalysisRouteImport
+      parentRoute: typeof DocsRoute
+    }
+    '/docs/ta/ai-code-review-chennai': {
+      id: '/docs/ta/ai-code-review-chennai'
+      path: '/ta/ai-code-review-chennai'
+      fullPath: '/docs/ta/ai-code-review-chennai'
+      preLoaderRoute: typeof DocsTaAiCodeReviewChennaiRouteImport
+      parentRoute: typeof DocsRoute
+    }
     '/docs/it/gdpr-revisione-codice-ai': {
       id: '/docs/it/gdpr-revisione-codice-ai'
       path: '/it/gdpr-revisione-codice-ai'
@@ -1221,6 +1320,27 @@ declare module '@tanstack/react-router' {
       path: '/it/ai-privacy-first-europa'
       fullPath: '/docs/it/ai-privacy-first-europa'
       preLoaderRoute: typeof DocsItAiPrivacyFirstEuropaRouteImport
+      parentRoute: typeof DocsRoute
+    }
+    '/docs/hi/open-source-ai-code-review': {
+      id: '/docs/hi/open-source-ai-code-review'
+      path: '/hi/open-source-ai-code-review'
+      fullPath: '/docs/hi/open-source-ai-code-review'
+      preLoaderRoute: typeof DocsHiOpenSourceAiCodeReviewRouteImport
+      parentRoute: typeof DocsRoute
+    }
+    '/docs/hi/dpdp-act-code-analysis': {
+      id: '/docs/hi/dpdp-act-code-analysis'
+      path: '/hi/dpdp-act-code-analysis'
+      fullPath: '/docs/hi/dpdp-act-code-analysis'
+      preLoaderRoute: typeof DocsHiDpdpActCodeAnalysisRouteImport
+      parentRoute: typeof DocsRoute
+    }
+    '/docs/hi/ai-code-review-bharat': {
+      id: '/docs/hi/ai-code-review-bharat'
+      path: '/hi/ai-code-review-bharat'
+      fullPath: '/docs/hi/ai-code-review-bharat'
+      preLoaderRoute: typeof DocsHiAiCodeReviewBharatRouteImport
       parentRoute: typeof DocsRoute
     }
     '/_authenticated/projects/$projectId': {
@@ -1442,9 +1562,15 @@ interface DocsRouteChildren {
   DocsPrivacyFirstAiEuropeRoute: typeof DocsPrivacyFirstAiEuropeRoute
   DocsSecureCodeReviewByokRoute: typeof DocsSecureCodeReviewByokRoute
   DocsStaticCodeAnalysisNoApiKeyRoute: typeof DocsStaticCodeAnalysisNoApiKeyRoute
+  DocsHiAiCodeReviewBharatRoute: typeof DocsHiAiCodeReviewBharatRoute
+  DocsHiDpdpActCodeAnalysisRoute: typeof DocsHiDpdpActCodeAnalysisRoute
+  DocsHiOpenSourceAiCodeReviewRoute: typeof DocsHiOpenSourceAiCodeReviewRoute
   DocsItAiPrivacyFirstEuropaRoute: typeof DocsItAiPrivacyFirstEuropaRoute
   DocsItEuAiActAnalisiCodiceRoute: typeof DocsItEuAiActAnalisiCodiceRoute
   DocsItGdprRevisioneCodiceAiRoute: typeof DocsItGdprRevisioneCodiceAiRoute
+  DocsTaAiCodeReviewChennaiRoute: typeof DocsTaAiCodeReviewChennaiRoute
+  DocsTaDpdpActCodeAnalysisRoute: typeof DocsTaDpdpActCodeAnalysisRoute
+  DocsTaOpenSourceAiCodeReviewRoute: typeof DocsTaOpenSourceAiCodeReviewRoute
   DocsZhEuAiActCodeAnalysisRoute: typeof DocsZhEuAiActCodeAnalysisRoute
   DocsZhGdprAiCodeReviewRoute: typeof DocsZhGdprAiCodeReviewRoute
   DocsZhPrivacyFirstAiEuropeRoute: typeof DocsZhPrivacyFirstAiEuropeRoute
@@ -1472,9 +1598,15 @@ const DocsRouteChildren: DocsRouteChildren = {
   DocsPrivacyFirstAiEuropeRoute: DocsPrivacyFirstAiEuropeRoute,
   DocsSecureCodeReviewByokRoute: DocsSecureCodeReviewByokRoute,
   DocsStaticCodeAnalysisNoApiKeyRoute: DocsStaticCodeAnalysisNoApiKeyRoute,
+  DocsHiAiCodeReviewBharatRoute: DocsHiAiCodeReviewBharatRoute,
+  DocsHiDpdpActCodeAnalysisRoute: DocsHiDpdpActCodeAnalysisRoute,
+  DocsHiOpenSourceAiCodeReviewRoute: DocsHiOpenSourceAiCodeReviewRoute,
   DocsItAiPrivacyFirstEuropaRoute: DocsItAiPrivacyFirstEuropaRoute,
   DocsItEuAiActAnalisiCodiceRoute: DocsItEuAiActAnalisiCodiceRoute,
   DocsItGdprRevisioneCodiceAiRoute: DocsItGdprRevisioneCodiceAiRoute,
+  DocsTaAiCodeReviewChennaiRoute: DocsTaAiCodeReviewChennaiRoute,
+  DocsTaDpdpActCodeAnalysisRoute: DocsTaDpdpActCodeAnalysisRoute,
+  DocsTaOpenSourceAiCodeReviewRoute: DocsTaOpenSourceAiCodeReviewRoute,
   DocsZhEuAiActCodeAnalysisRoute: DocsZhEuAiActCodeAnalysisRoute,
   DocsZhGdprAiCodeReviewRoute: DocsZhGdprAiCodeReviewRoute,
   DocsZhPrivacyFirstAiEuropeRoute: DocsZhPrivacyFirstAiEuropeRoute,
