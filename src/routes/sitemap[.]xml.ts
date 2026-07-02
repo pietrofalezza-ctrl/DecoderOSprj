@@ -78,12 +78,46 @@ const STATIC_ENTRIES: SitemapEntry[] = [
   },
   { path: "/docs/it/ai-privacy-first-europa", changefreq: "monthly", priority: "0.7" },
   { path: "/docs/zh/privacy-first-ai-europe", changefreq: "monthly", priority: "0.7" },
+  // India & Sri Lanka cluster
+  {
+    path: "/docs/ai-code-review-india",
+    changefreq: "monthly",
+    priority: "0.8",
+    alternates: [
+      { hreflang: "en", href: `${BASE_URL}/docs/ai-code-review-india` },
+      { hreflang: "hi", href: `${BASE_URL}/docs/hi/ai-code-review-bharat` },
+      { hreflang: "ta", href: `${BASE_URL}/docs/ta/ai-code-review-chennai` },
+      { hreflang: "x-default", href: `${BASE_URL}/docs/ai-code-review-india` },
+    ],
+  },
+  {
+    path: "/docs/dpdp-act-ai-code-analysis",
+    changefreq: "monthly",
+    priority: "0.8",
+    alternates: [
+      { hreflang: "en", href: `${BASE_URL}/docs/dpdp-act-ai-code-analysis` },
+      { hreflang: "hi", href: `${BASE_URL}/docs/hi/dpdp-act-code-analysis` },
+      { hreflang: "ta", href: `${BASE_URL}/docs/ta/dpdp-act-code-analysis` },
+      { hreflang: "x-default", href: `${BASE_URL}/docs/dpdp-act-ai-code-analysis` },
+    ],
+  },
+  { path: "/docs/ai-code-review-outsourcing", changefreq: "monthly", priority: "0.7" },
+  { path: "/docs/ai-code-review-bangalore", changefreq: "monthly", priority: "0.7" },
+  { path: "/docs/ai-code-review-hyderabad-chennai", changefreq: "monthly", priority: "0.7" },
+  { path: "/docs/ai-code-review-sri-lanka-colombo", changefreq: "monthly", priority: "0.7" },
+  { path: "/docs/hi/ai-code-review-bharat", changefreq: "monthly", priority: "0.7" },
+  { path: "/docs/hi/dpdp-act-code-analysis", changefreq: "monthly", priority: "0.7" },
+  { path: "/docs/hi/open-source-ai-code-review", changefreq: "monthly", priority: "0.7" },
+  { path: "/docs/ta/ai-code-review-chennai", changefreq: "monthly", priority: "0.7" },
+  { path: "/docs/ta/dpdp-act-code-analysis", changefreq: "monthly", priority: "0.7" },
+  { path: "/docs/ta/open-source-ai-code-review", changefreq: "monthly", priority: "0.7" },
   { path: "/knowledge", changefreq: "weekly", priority: "0.9" },
   { path: "/knowledge/capabilities", changefreq: "weekly", priority: "0.8" },
   { path: "/knowledge/concepts", changefreq: "weekly", priority: "0.8" },
   { path: "/knowledge/integrations", changefreq: "weekly", priority: "0.8" },
   { path: "/knowledge/formats", changefreq: "weekly", priority: "0.8" },
 ];
+
 
 export const Route = createFileRoute("/sitemap.xml")({
   server: {
