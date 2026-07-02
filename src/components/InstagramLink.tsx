@@ -33,7 +33,8 @@ export function InstagramLink({
       aria-label="Instagram"
     >
       <InstagramIcon />
-      {showLabel && <span>Instagram</span>}
+      {showLabel && <span>{t("footer.instagram")}</span>}
     </a>
+
   );
 }
