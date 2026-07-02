@@ -118,7 +118,8 @@ function Page() {
 
       <footer className="border-t border-border px-6 py-6 text-center text-xs text-muted-foreground">
         Decoder — AI சகாப்தத்திற்கான ஓப்பன்-சோர்ஸ் கோட் புரிதல்.
-      </footer>
+      
+        <div className="mt-2"><InstagramLink /></div></footer>
     </div>
   );
 }

@@ -118,7 +118,8 @@ function Page() {
 
       <footer className="border-t border-border px-6 py-6 text-center text-xs text-muted-foreground">
         Decoder — AI युग के लिए ओपन-सोर्स कोड समझ।
-      </footer>
+      
+        <div className="mt-2"><InstagramLink /></div></footer>
     </div>
   );
 }

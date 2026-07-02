@@ -197,7 +197,8 @@ function Page() {
 
       <footer className="border-t border-border px-6 py-6 text-center text-xs text-muted-foreground">
         Decoder — open-source code understanding for the AI era.
-      </footer>
+      
+        <div className="mt-2"><InstagramLink /></div></footer>
     </div>
   );
 }
