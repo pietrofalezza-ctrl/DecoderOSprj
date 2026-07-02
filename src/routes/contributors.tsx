@@ -208,9 +208,19 @@ function ContributorsPage() {
             <Github className="h-4 w-4" />
             Open the repository on GitHub
           </a>
+          <a
+            href={t("common.instagramUrl")}
+            target="_blank"
+            rel="noreferrer"
+            className="ml-4 inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground"
+          >
+            <InstagramIcon className="h-4 w-4" />
+            Follow on Instagram
+          </a>
           <p className="mt-3 font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground/70">
             Last refreshed {new Date(data.fetchedAt).toLocaleString()}
           </p>
+
         </div>
       </main>
     </div>
