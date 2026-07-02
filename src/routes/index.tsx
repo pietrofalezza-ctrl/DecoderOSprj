@@ -35,7 +35,9 @@ import {
 import { LangSwitcher } from "@/components/LangSwitcher";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { Logo } from "@/components/Logo";
+import { InstagramLink } from "@/components/InstagramLink";
 import { PublicHeaderAuthSlot } from "@/components/PublicHeaderAuthSlot";
+
 import { usePwaInstall } from "@/hooks/use-pwa-install";
 
 export const Route = createFileRoute("/")({
