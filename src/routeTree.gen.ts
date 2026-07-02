@@ -38,13 +38,19 @@ import { Route as DocsHowToReviewAiCodeRouteImport } from './routes/docs.how-to-
 import { Route as DocsGdprAiCodeReviewRouteImport } from './routes/docs.gdpr-ai-code-review'
 import { Route as DocsFreeMalwareScannerSourceCodeRouteImport } from './routes/docs.free-malware-scanner-source-code'
 import { Route as DocsEuAiActCodeAnalysisRouteImport } from './routes/docs.eu-ai-act-code-analysis'
+import { Route as DocsDpdpActAiCodeAnalysisRouteImport } from './routes/docs.dpdp-act-ai-code-analysis'
 import { Route as DocsDetectAiGeneratedCodeRouteImport } from './routes/docs.detect-ai-generated-code'
 import { Route as DocsComparisonGreptileRouteImport } from './routes/docs.comparison-greptile'
 import { Route as DocsComparisonCoderabbitRouteImport } from './routes/docs.comparison-coderabbit'
 import { Route as DocsChatWithYourCodebaseRouteImport } from './routes/docs.chat-with-your-codebase'
 import { Route as DocsAiCodeReviewVsHumanRouteImport } from './routes/docs.ai-code-review-vs-human'
 import { Route as DocsAiCodeReviewToolsByokRouteImport } from './routes/docs.ai-code-review-tools-byok'
+import { Route as DocsAiCodeReviewSriLankaColomboRouteImport } from './routes/docs.ai-code-review-sri-lanka-colombo'
+import { Route as DocsAiCodeReviewOutsourcingRouteImport } from './routes/docs.ai-code-review-outsourcing'
 import { Route as DocsAiCodeReviewMilanoNordItaliaRouteImport } from './routes/docs.ai-code-review-milano-nord-italia'
+import { Route as DocsAiCodeReviewIndiaRouteImport } from './routes/docs.ai-code-review-india'
+import { Route as DocsAiCodeReviewHyderabadChennaiRouteImport } from './routes/docs.ai-code-review-hyderabad-chennai'
+import { Route as DocsAiCodeReviewBangaloreRouteImport } from './routes/docs.ai-code-review-bangalore'
 import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated/settings'
 import { Route as AuthenticatedHistoryRouteImport } from './routes/_authenticated/history'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
@@ -218,6 +224,12 @@ const DocsEuAiActCodeAnalysisRoute = DocsEuAiActCodeAnalysisRouteImport.update({
   path: '/eu-ai-act-code-analysis',
   getParentRoute: () => DocsRoute,
 } as any)
+const DocsDpdpActAiCodeAnalysisRoute =
+  DocsDpdpActAiCodeAnalysisRouteImport.update({
+    id: '/dpdp-act-ai-code-analysis',
+    path: '/dpdp-act-ai-code-analysis',
+    getParentRoute: () => DocsRoute,
+  } as any)
 const DocsDetectAiGeneratedCodeRoute =
   DocsDetectAiGeneratedCodeRouteImport.update({
     id: '/detect-ai-generated-code',
@@ -252,10 +264,39 @@ const DocsAiCodeReviewToolsByokRoute =
     path: '/ai-code-review-tools-byok',
     getParentRoute: () => DocsRoute,
   } as any)
+const DocsAiCodeReviewSriLankaColomboRoute =
+  DocsAiCodeReviewSriLankaColomboRouteImport.update({
+    id: '/ai-code-review-sri-lanka-colombo',
+    path: '/ai-code-review-sri-lanka-colombo',
+    getParentRoute: () => DocsRoute,
+  } as any)
+const DocsAiCodeReviewOutsourcingRoute =
+  DocsAiCodeReviewOutsourcingRouteImport.update({
+    id: '/ai-code-review-outsourcing',
+    path: '/ai-code-review-outsourcing',
+    getParentRoute: () => DocsRoute,
+  } as any)
 const DocsAiCodeReviewMilanoNordItaliaRoute =
   DocsAiCodeReviewMilanoNordItaliaRouteImport.update({
     id: '/ai-code-review-milano-nord-italia',
     path: '/ai-code-review-milano-nord-italia',
+    getParentRoute: () => DocsRoute,
+  } as any)
+const DocsAiCodeReviewIndiaRoute = DocsAiCodeReviewIndiaRouteImport.update({
+  id: '/ai-code-review-india',
+  path: '/ai-code-review-india',
+  getParentRoute: () => DocsRoute,
+} as any)
+const DocsAiCodeReviewHyderabadChennaiRoute =
+  DocsAiCodeReviewHyderabadChennaiRouteImport.update({
+    id: '/ai-code-review-hyderabad-chennai',
+    path: '/ai-code-review-hyderabad-chennai',
+    getParentRoute: () => DocsRoute,
+  } as any)
+const DocsAiCodeReviewBangaloreRoute =
+  DocsAiCodeReviewBangaloreRouteImport.update({
+    id: '/ai-code-review-bangalore',
+    path: '/ai-code-review-bangalore',
     getParentRoute: () => DocsRoute,
   } as any)
 const AuthenticatedSettingsRoute = AuthenticatedSettingsRouteImport.update({
@@ -410,13 +451,19 @@ export interface FileRoutesByFullPath {
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/history': typeof AuthenticatedHistoryRoute
   '/settings': typeof AuthenticatedSettingsRoute
+  '/docs/ai-code-review-bangalore': typeof DocsAiCodeReviewBangaloreRoute
+  '/docs/ai-code-review-hyderabad-chennai': typeof DocsAiCodeReviewHyderabadChennaiRoute
+  '/docs/ai-code-review-india': typeof DocsAiCodeReviewIndiaRoute
   '/docs/ai-code-review-milano-nord-italia': typeof DocsAiCodeReviewMilanoNordItaliaRoute
+  '/docs/ai-code-review-outsourcing': typeof DocsAiCodeReviewOutsourcingRoute
+  '/docs/ai-code-review-sri-lanka-colombo': typeof DocsAiCodeReviewSriLankaColomboRoute
   '/docs/ai-code-review-tools-byok': typeof DocsAiCodeReviewToolsByokRoute
   '/docs/ai-code-review-vs-human': typeof DocsAiCodeReviewVsHumanRoute
   '/docs/chat-with-your-codebase': typeof DocsChatWithYourCodebaseRoute
   '/docs/comparison-coderabbit': typeof DocsComparisonCoderabbitRoute
   '/docs/comparison-greptile': typeof DocsComparisonGreptileRoute
   '/docs/detect-ai-generated-code': typeof DocsDetectAiGeneratedCodeRoute
+  '/docs/dpdp-act-ai-code-analysis': typeof DocsDpdpActAiCodeAnalysisRoute
   '/docs/eu-ai-act-code-analysis': typeof DocsEuAiActCodeAnalysisRoute
   '/docs/free-malware-scanner-source-code': typeof DocsFreeMalwareScannerSourceCodeRoute
   '/docs/gdpr-ai-code-review': typeof DocsGdprAiCodeReviewRoute
@@ -470,13 +517,19 @@ export interface FileRoutesByTo {
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/history': typeof AuthenticatedHistoryRoute
   '/settings': typeof AuthenticatedSettingsRoute
+  '/docs/ai-code-review-bangalore': typeof DocsAiCodeReviewBangaloreRoute
+  '/docs/ai-code-review-hyderabad-chennai': typeof DocsAiCodeReviewHyderabadChennaiRoute
+  '/docs/ai-code-review-india': typeof DocsAiCodeReviewIndiaRoute
   '/docs/ai-code-review-milano-nord-italia': typeof DocsAiCodeReviewMilanoNordItaliaRoute
+  '/docs/ai-code-review-outsourcing': typeof DocsAiCodeReviewOutsourcingRoute
+  '/docs/ai-code-review-sri-lanka-colombo': typeof DocsAiCodeReviewSriLankaColomboRoute
   '/docs/ai-code-review-tools-byok': typeof DocsAiCodeReviewToolsByokRoute
   '/docs/ai-code-review-vs-human': typeof DocsAiCodeReviewVsHumanRoute
   '/docs/chat-with-your-codebase': typeof DocsChatWithYourCodebaseRoute
   '/docs/comparison-coderabbit': typeof DocsComparisonCoderabbitRoute
   '/docs/comparison-greptile': typeof DocsComparisonGreptileRoute
   '/docs/detect-ai-generated-code': typeof DocsDetectAiGeneratedCodeRoute
+  '/docs/dpdp-act-ai-code-analysis': typeof DocsDpdpActAiCodeAnalysisRoute
   '/docs/eu-ai-act-code-analysis': typeof DocsEuAiActCodeAnalysisRoute
   '/docs/free-malware-scanner-source-code': typeof DocsFreeMalwareScannerSourceCodeRoute
   '/docs/gdpr-ai-code-review': typeof DocsGdprAiCodeReviewRoute
@@ -530,13 +583,19 @@ export interface FileRoutesById {
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/history': typeof AuthenticatedHistoryRoute
   '/_authenticated/settings': typeof AuthenticatedSettingsRoute
+  '/docs/ai-code-review-bangalore': typeof DocsAiCodeReviewBangaloreRoute
+  '/docs/ai-code-review-hyderabad-chennai': typeof DocsAiCodeReviewHyderabadChennaiRoute
+  '/docs/ai-code-review-india': typeof DocsAiCodeReviewIndiaRoute
   '/docs/ai-code-review-milano-nord-italia': typeof DocsAiCodeReviewMilanoNordItaliaRoute
+  '/docs/ai-code-review-outsourcing': typeof DocsAiCodeReviewOutsourcingRoute
+  '/docs/ai-code-review-sri-lanka-colombo': typeof DocsAiCodeReviewSriLankaColomboRoute
   '/docs/ai-code-review-tools-byok': typeof DocsAiCodeReviewToolsByokRoute
   '/docs/ai-code-review-vs-human': typeof DocsAiCodeReviewVsHumanRoute
   '/docs/chat-with-your-codebase': typeof DocsChatWithYourCodebaseRoute
   '/docs/comparison-coderabbit': typeof DocsComparisonCoderabbitRoute
   '/docs/comparison-greptile': typeof DocsComparisonGreptileRoute
   '/docs/detect-ai-generated-code': typeof DocsDetectAiGeneratedCodeRoute
+  '/docs/dpdp-act-ai-code-analysis': typeof DocsDpdpActAiCodeAnalysisRoute
   '/docs/eu-ai-act-code-analysis': typeof DocsEuAiActCodeAnalysisRoute
   '/docs/free-malware-scanner-source-code': typeof DocsFreeMalwareScannerSourceCodeRoute
   '/docs/gdpr-ai-code-review': typeof DocsGdprAiCodeReviewRoute
@@ -592,13 +651,19 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/history'
     | '/settings'
+    | '/docs/ai-code-review-bangalore'
+    | '/docs/ai-code-review-hyderabad-chennai'
+    | '/docs/ai-code-review-india'
     | '/docs/ai-code-review-milano-nord-italia'
+    | '/docs/ai-code-review-outsourcing'
+    | '/docs/ai-code-review-sri-lanka-colombo'
     | '/docs/ai-code-review-tools-byok'
     | '/docs/ai-code-review-vs-human'
     | '/docs/chat-with-your-codebase'
     | '/docs/comparison-coderabbit'
     | '/docs/comparison-greptile'
     | '/docs/detect-ai-generated-code'
+    | '/docs/dpdp-act-ai-code-analysis'
     | '/docs/eu-ai-act-code-analysis'
     | '/docs/free-malware-scanner-source-code'
     | '/docs/gdpr-ai-code-review'
@@ -652,13 +717,19 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/history'
     | '/settings'
+    | '/docs/ai-code-review-bangalore'
+    | '/docs/ai-code-review-hyderabad-chennai'
+    | '/docs/ai-code-review-india'
     | '/docs/ai-code-review-milano-nord-italia'
+    | '/docs/ai-code-review-outsourcing'
+    | '/docs/ai-code-review-sri-lanka-colombo'
     | '/docs/ai-code-review-tools-byok'
     | '/docs/ai-code-review-vs-human'
     | '/docs/chat-with-your-codebase'
     | '/docs/comparison-coderabbit'
     | '/docs/comparison-greptile'
     | '/docs/detect-ai-generated-code'
+    | '/docs/dpdp-act-ai-code-analysis'
     | '/docs/eu-ai-act-code-analysis'
     | '/docs/free-malware-scanner-source-code'
     | '/docs/gdpr-ai-code-review'
@@ -711,13 +782,19 @@ export interface FileRouteTypes {
     | '/_authenticated/dashboard'
     | '/_authenticated/history'
     | '/_authenticated/settings'
+    | '/docs/ai-code-review-bangalore'
+    | '/docs/ai-code-review-hyderabad-chennai'
+    | '/docs/ai-code-review-india'
     | '/docs/ai-code-review-milano-nord-italia'
+    | '/docs/ai-code-review-outsourcing'
+    | '/docs/ai-code-review-sri-lanka-colombo'
     | '/docs/ai-code-review-tools-byok'
     | '/docs/ai-code-review-vs-human'
     | '/docs/chat-with-your-codebase'
     | '/docs/comparison-coderabbit'
     | '/docs/comparison-greptile'
     | '/docs/detect-ai-generated-code'
+    | '/docs/dpdp-act-ai-code-analysis'
     | '/docs/eu-ai-act-code-analysis'
     | '/docs/free-malware-scanner-source-code'
     | '/docs/gdpr-ai-code-review'
@@ -985,6 +1062,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DocsEuAiActCodeAnalysisRouteImport
       parentRoute: typeof DocsRoute
     }
+    '/docs/dpdp-act-ai-code-analysis': {
+      id: '/docs/dpdp-act-ai-code-analysis'
+      path: '/dpdp-act-ai-code-analysis'
+      fullPath: '/docs/dpdp-act-ai-code-analysis'
+      preLoaderRoute: typeof DocsDpdpActAiCodeAnalysisRouteImport
+      parentRoute: typeof DocsRoute
+    }
     '/docs/detect-ai-generated-code': {
       id: '/docs/detect-ai-generated-code'
       path: '/detect-ai-generated-code'
@@ -1027,11 +1111,46 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DocsAiCodeReviewToolsByokRouteImport
       parentRoute: typeof DocsRoute
     }
+    '/docs/ai-code-review-sri-lanka-colombo': {
+      id: '/docs/ai-code-review-sri-lanka-colombo'
+      path: '/ai-code-review-sri-lanka-colombo'
+      fullPath: '/docs/ai-code-review-sri-lanka-colombo'
+      preLoaderRoute: typeof DocsAiCodeReviewSriLankaColomboRouteImport
+      parentRoute: typeof DocsRoute
+    }
+    '/docs/ai-code-review-outsourcing': {
+      id: '/docs/ai-code-review-outsourcing'
+      path: '/ai-code-review-outsourcing'
+      fullPath: '/docs/ai-code-review-outsourcing'
+      preLoaderRoute: typeof DocsAiCodeReviewOutsourcingRouteImport
+      parentRoute: typeof DocsRoute
+    }
     '/docs/ai-code-review-milano-nord-italia': {
       id: '/docs/ai-code-review-milano-nord-italia'
       path: '/ai-code-review-milano-nord-italia'
       fullPath: '/docs/ai-code-review-milano-nord-italia'
       preLoaderRoute: typeof DocsAiCodeReviewMilanoNordItaliaRouteImport
+      parentRoute: typeof DocsRoute
+    }
+    '/docs/ai-code-review-india': {
+      id: '/docs/ai-code-review-india'
+      path: '/ai-code-review-india'
+      fullPath: '/docs/ai-code-review-india'
+      preLoaderRoute: typeof DocsAiCodeReviewIndiaRouteImport
+      parentRoute: typeof DocsRoute
+    }
+    '/docs/ai-code-review-hyderabad-chennai': {
+      id: '/docs/ai-code-review-hyderabad-chennai'
+      path: '/ai-code-review-hyderabad-chennai'
+      fullPath: '/docs/ai-code-review-hyderabad-chennai'
+      preLoaderRoute: typeof DocsAiCodeReviewHyderabadChennaiRouteImport
+      parentRoute: typeof DocsRoute
+    }
+    '/docs/ai-code-review-bangalore': {
+      id: '/docs/ai-code-review-bangalore'
+      path: '/ai-code-review-bangalore'
+      fullPath: '/docs/ai-code-review-bangalore'
+      preLoaderRoute: typeof DocsAiCodeReviewBangaloreRouteImport
       parentRoute: typeof DocsRoute
     }
     '/_authenticated/settings': {
@@ -1302,13 +1421,19 @@ const AuthenticatedRouteRouteWithChildren =
   AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
 
 interface DocsRouteChildren {
+  DocsAiCodeReviewBangaloreRoute: typeof DocsAiCodeReviewBangaloreRoute
+  DocsAiCodeReviewHyderabadChennaiRoute: typeof DocsAiCodeReviewHyderabadChennaiRoute
+  DocsAiCodeReviewIndiaRoute: typeof DocsAiCodeReviewIndiaRoute
   DocsAiCodeReviewMilanoNordItaliaRoute: typeof DocsAiCodeReviewMilanoNordItaliaRoute
+  DocsAiCodeReviewOutsourcingRoute: typeof DocsAiCodeReviewOutsourcingRoute
+  DocsAiCodeReviewSriLankaColomboRoute: typeof DocsAiCodeReviewSriLankaColomboRoute
   DocsAiCodeReviewToolsByokRoute: typeof DocsAiCodeReviewToolsByokRoute
   DocsAiCodeReviewVsHumanRoute: typeof DocsAiCodeReviewVsHumanRoute
   DocsChatWithYourCodebaseRoute: typeof DocsChatWithYourCodebaseRoute
   DocsComparisonCoderabbitRoute: typeof DocsComparisonCoderabbitRoute
   DocsComparisonGreptileRoute: typeof DocsComparisonGreptileRoute
   DocsDetectAiGeneratedCodeRoute: typeof DocsDetectAiGeneratedCodeRoute
+  DocsDpdpActAiCodeAnalysisRoute: typeof DocsDpdpActAiCodeAnalysisRoute
   DocsEuAiActCodeAnalysisRoute: typeof DocsEuAiActCodeAnalysisRoute
   DocsFreeMalwareScannerSourceCodeRoute: typeof DocsFreeMalwareScannerSourceCodeRoute
   DocsGdprAiCodeReviewRoute: typeof DocsGdprAiCodeReviewRoute
@@ -1326,13 +1451,19 @@ interface DocsRouteChildren {
 }
 
 const DocsRouteChildren: DocsRouteChildren = {
+  DocsAiCodeReviewBangaloreRoute: DocsAiCodeReviewBangaloreRoute,
+  DocsAiCodeReviewHyderabadChennaiRoute: DocsAiCodeReviewHyderabadChennaiRoute,
+  DocsAiCodeReviewIndiaRoute: DocsAiCodeReviewIndiaRoute,
   DocsAiCodeReviewMilanoNordItaliaRoute: DocsAiCodeReviewMilanoNordItaliaRoute,
+  DocsAiCodeReviewOutsourcingRoute: DocsAiCodeReviewOutsourcingRoute,
+  DocsAiCodeReviewSriLankaColomboRoute: DocsAiCodeReviewSriLankaColomboRoute,
   DocsAiCodeReviewToolsByokRoute: DocsAiCodeReviewToolsByokRoute,
   DocsAiCodeReviewVsHumanRoute: DocsAiCodeReviewVsHumanRoute,
   DocsChatWithYourCodebaseRoute: DocsChatWithYourCodebaseRoute,
   DocsComparisonCoderabbitRoute: DocsComparisonCoderabbitRoute,
   DocsComparisonGreptileRoute: DocsComparisonGreptileRoute,
   DocsDetectAiGeneratedCodeRoute: DocsDetectAiGeneratedCodeRoute,
+  DocsDpdpActAiCodeAnalysisRoute: DocsDpdpActAiCodeAnalysisRoute,
   DocsEuAiActCodeAnalysisRoute: DocsEuAiActCodeAnalysisRoute,
   DocsFreeMalwareScannerSourceCodeRoute: DocsFreeMalwareScannerSourceCodeRoute,
   DocsGdprAiCodeReviewRoute: DocsGdprAiCodeReviewRoute,
