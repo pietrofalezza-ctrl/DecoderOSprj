@@ -4,6 +4,7 @@ import { ArrowLeft, Lock, FileText, Globe, BookOpen, ShieldCheck } from "lucide-
 import { LangSwitcher } from "@/components/LangSwitcher";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { Logo } from "@/components/Logo";
+import { InstagramLink } from "@/components/InstagramLink";
 import { PublicHeaderAuthSlot } from "@/components/PublicHeaderAuthSlot";
 
 const TITLE = "GDPR 合规的 AI 代码审查 — 数据驻留与源代码作为个人数据";

@@ -4,6 +4,7 @@ import { ArrowLeft, ShieldCheck, BookOpen, Coins } from "lucide-react";
 import { LangSwitcher } from "@/components/LangSwitcher";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { Logo } from "@/components/Logo";
+import { InstagramLink } from "@/components/InstagramLink";
 import { PublicHeaderAuthSlot } from "@/components/PublicHeaderAuthSlot";
 
 const TITLE = "भारत में AI कोड रिव्यू — ओपन-सोर्स, BYOK और कम लागत";

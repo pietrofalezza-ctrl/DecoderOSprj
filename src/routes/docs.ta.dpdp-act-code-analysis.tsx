@@ -4,6 +4,7 @@ import { ArrowLeft, ShieldCheck, BookOpen, Scale } from "lucide-react";
 import { LangSwitcher } from "@/components/LangSwitcher";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { Logo } from "@/components/Logo";
+import { InstagramLink } from "@/components/InstagramLink";
 import { PublicHeaderAuthSlot } from "@/components/PublicHeaderAuthSlot";
 
 const TITLE = "DPDP சட்டம் 2023 & AI கோட் பகுப்பாய்வு — இந்திய குழுக்களுக்கான வழிகாட்டி";

@@ -4,6 +4,7 @@ import { ArrowLeft, ShieldCheck, BookOpen, Users, FileCheck } from "lucide-react
 import { LangSwitcher } from "@/components/LangSwitcher";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { Logo } from "@/components/Logo";
+import { InstagramLink } from "@/components/InstagramLink";
 import { PublicHeaderAuthSlot } from "@/components/PublicHeaderAuthSlot";
 
 const TITLE = "Auditing outsourced AI-generated code — a checklist for buyers and vendors";

@@ -4,6 +4,7 @@ import { ArrowLeft, Github, BookOpen, ShieldCheck } from "lucide-react";
 import { LangSwitcher } from "@/components/LangSwitcher";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { Logo } from "@/components/Logo";
+import { InstagramLink } from "@/components/InstagramLink";
 import { PublicHeaderAuthSlot } from "@/components/PublicHeaderAuthSlot";
 
 const TITLE = "ஓப்பன்-சோர்ஸ் AI கோட் ரிவியூ — MIT, BYOK மற்றும் லோக்கல்";

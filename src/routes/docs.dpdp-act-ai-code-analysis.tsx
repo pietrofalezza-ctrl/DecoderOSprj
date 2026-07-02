@@ -4,6 +4,7 @@ import { ArrowLeft, ShieldCheck, BookOpen, Scale, Lock } from "lucide-react";
 import { LangSwitcher } from "@/components/LangSwitcher";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { Logo } from "@/components/Logo";
+import { InstagramLink } from "@/components/InstagramLink";
 import { PublicHeaderAuthSlot } from "@/components/PublicHeaderAuthSlot";
 
 const TITLE = "DPDP Act 2023 & AI code analysis — a practical guide for Indian teams";

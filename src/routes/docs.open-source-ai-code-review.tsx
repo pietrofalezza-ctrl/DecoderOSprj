@@ -4,6 +4,7 @@ import { ArrowLeft, Cpu, GitBranch, ShieldCheck, GitCompare, BookOpen, Terminal 
 import { LangSwitcher } from "@/components/LangSwitcher";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { Logo } from "@/components/Logo";
+import { InstagramLink } from "@/components/InstagramLink";
 import { PublicHeaderAuthSlot } from "@/components/PublicHeaderAuthSlot";
 
 const TITLE = "Open-source AI code review — local inference, BYOK, zero egress";

@@ -4,6 +4,7 @@ import { ArrowLeft, MapPin, BookOpen, Coins, ShieldCheck } from "lucide-react";
 import { LangSwitcher } from "@/components/LangSwitcher";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { Logo } from "@/components/Logo";
+import { InstagramLink } from "@/components/InstagramLink";
 import { PublicHeaderAuthSlot } from "@/components/PublicHeaderAuthSlot";
 
 const TITLE = "சென்னையில் AI கோட் ரிவியூ — ஓப்பன்-சோர்ஸ், BYOK, குறைந்த செலவு";

@@ -4,6 +4,7 @@ import { ArrowLeft, Lock, FileText, Globe, BookOpen, ShieldCheck } from "lucide-
 import { LangSwitcher } from "@/components/LangSwitcher";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { Logo } from "@/components/Logo";
+import { InstagramLink } from "@/components/InstagramLink";
 import { PublicHeaderAuthSlot } from "@/components/PublicHeaderAuthSlot";
 
 const TITLE = "GDPR-compliant AI code review — data residency and source code as personal data";

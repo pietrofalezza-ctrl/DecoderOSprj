@@ -4,6 +4,7 @@ import { ArrowLeft, MapPin, Building2, ShieldCheck, BookOpen, Factory } from "lu
 import { LangSwitcher } from "@/components/LangSwitcher";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { Logo } from "@/components/Logo";
+import { InstagramLink } from "@/components/InstagramLink";
 import { PublicHeaderAuthSlot } from "@/components/PublicHeaderAuthSlot";
 
 const TITLE = "AI code review a Milano, Verona e nel Nord Italia — strumenti privacy-first";

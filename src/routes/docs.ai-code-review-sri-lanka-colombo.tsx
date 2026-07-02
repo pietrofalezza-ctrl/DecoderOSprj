@@ -4,6 +4,7 @@ import { ArrowLeft, MapPin, BookOpen, ShieldCheck } from "lucide-react";
 import { LangSwitcher } from "@/components/LangSwitcher";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { Logo } from "@/components/Logo";
+import { InstagramLink } from "@/components/InstagramLink";
 import { PublicHeaderAuthSlot } from "@/components/PublicHeaderAuthSlot";
 
 const TITLE = "AI code review in Sri Lanka & Colombo — open-source and PDPA-aligned";

@@ -4,6 +4,7 @@ import { ArrowLeft, KeyRound, Cpu, ShieldCheck, GitCompare, Wallet, BookOpen, Lo
 import { LangSwitcher } from "@/components/LangSwitcher";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { Logo } from "@/components/Logo";
+import { InstagramLink } from "@/components/InstagramLink";
 import { PublicHeaderAuthSlot } from "@/components/PublicHeaderAuthSlot";
 
 const TITLE = "Greptile alternative — Decoder vs Greptile (open source, BYOK, local AI)";

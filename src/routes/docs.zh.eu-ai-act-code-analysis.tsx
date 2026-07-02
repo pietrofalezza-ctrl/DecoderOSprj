@@ -4,6 +4,7 @@ import { ArrowLeft, Scale, ShieldCheck, ClipboardCheck, BookOpen, AlertTriangle 
 import { LangSwitcher } from "@/components/LangSwitcher";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { Logo } from "@/components/Logo";
+import { InstagramLink } from "@/components/InstagramLink";
 import { PublicHeaderAuthSlot } from "@/components/PublicHeaderAuthSlot";
 
 const TITLE = "欧盟 AI 法案与 AI 代码分析 — 欧洲开发团队合规指南";

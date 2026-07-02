@@ -4,6 +4,7 @@ import { ArrowLeft, ShieldCheck, Flag, Users, BookOpen, GitCompare } from "lucid
 import { LangSwitcher } from "@/components/LangSwitcher";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { Logo } from "@/components/Logo";
+import { InstagramLink } from "@/components/InstagramLink";
 import { PublicHeaderAuthSlot } from "@/components/PublicHeaderAuthSlot";
 
 const TITLE = "Privacy-first AI in Europe — 2026 buyer's guide for engineering teams";

@@ -4,6 +4,7 @@ import { ArrowLeft, ShieldCheck, BookOpen, Scale } from "lucide-react";
 import { LangSwitcher } from "@/components/LangSwitcher";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { Logo } from "@/components/Logo";
+import { InstagramLink } from "@/components/InstagramLink";
 import { PublicHeaderAuthSlot } from "@/components/PublicHeaderAuthSlot";
 
 const TITLE = "DPDP अधिनियम 2023 और AI कोड विश्लेषण — भारतीय टीमों के लिए गाइड";

@@ -4,6 +4,7 @@ import { ArrowLeft, KeyRound, Cpu, Wallet, ShieldCheck, GitCompare, BookOpen } f
 import { LangSwitcher } from "@/components/LangSwitcher";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { Logo } from "@/components/Logo";
+import { InstagramLink } from "@/components/InstagramLink";
 import { PublicHeaderAuthSlot } from "@/components/PublicHeaderAuthSlot";
 
 const TITLE = "AI code review tools with BYOK — Decoder vs CodeRabbit & Greptile";

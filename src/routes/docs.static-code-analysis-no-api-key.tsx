@@ -4,6 +4,7 @@ import { ArrowLeft, ShieldCheck, Search, BookOpen, Cpu, Terminal, GitCompare } f
 import { LangSwitcher } from "@/components/LangSwitcher";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { Logo } from "@/components/Logo";
+import { InstagramLink } from "@/components/InstagramLink";
 import { PublicHeaderAuthSlot } from "@/components/PublicHeaderAuthSlot";
 
 const TITLE = "Static code analysis without an API key — Decoder";

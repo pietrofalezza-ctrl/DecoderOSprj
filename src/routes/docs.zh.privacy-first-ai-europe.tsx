@@ -4,6 +4,7 @@ import { ArrowLeft, ShieldCheck, Flag, Users, BookOpen, GitCompare } from "lucid
 import { LangSwitcher } from "@/components/LangSwitcher";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { Logo } from "@/components/Logo";
+import { InstagramLink } from "@/components/InstagramLink";
 import { PublicHeaderAuthSlot } from "@/components/PublicHeaderAuthSlot";
 
 const TITLE = "欧洲隐私优先 AI — 2026 工程团队选型指南";
