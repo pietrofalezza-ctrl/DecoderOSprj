@@ -4,9 +4,11 @@ import { Download, Monitor, Apple, Smartphone, ArrowLeft } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Logo } from "@/components/Logo";
+import { InstagramLink } from "@/components/InstagramLink";
 import { LangSwitcher } from "@/components/LangSwitcher";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { usePwaInstall } from "@/hooks/use-pwa-install";
+
 
 export const Route = createFileRoute("/install")({
   head: () => ({
@@ -125,6 +127,23 @@ function InstallPage() {
           ))}
         </ul>
       </main>
+
+      <footer className="border-t border-border/60 px-6 py-8 text-center text-xs text-muted-foreground md:text-left">
+        <div className="mx-auto flex max-w-3xl flex-col items-center justify-between gap-3 md:flex-row">
+          <Logo />
+          <nav className="flex flex-wrap justify-center gap-5">
+            <Link to="/" className="hover:text-foreground">
+              {t("landing.nav.home")}
+            </Link>
+            <Link to="/docs" className="hover:text-foreground">
+              {t("landing.nav.docs")}
+            </Link>
+            <InstagramLink />
+          </nav>
+          <span>{t("footer.ownership")}</span>
+        </div>
+      </footer>
     </div>
   );
 }
+
