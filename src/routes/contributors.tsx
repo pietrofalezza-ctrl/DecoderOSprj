@@ -1,9 +1,12 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useSuspenseQuery, queryOptions } from "@tanstack/react-query";
+import { useTranslation } from "react-i18next";
 import { ArrowLeft, Github, GitMerge } from "lucide-react";
 
 import { getContributors } from "@/lib/contributors.functions";
 import { Logo } from "@/components/Logo";
+import { InstagramIcon } from "@/components/InstagramLink";
+
 
 const contributorsQuery = queryOptions({
   queryKey: ["contributors"],
@@ -39,8 +42,10 @@ export const Route = createFileRoute("/contributors")({
 
 function ContributorsPage() {
   const { data } = useSuspenseQuery(contributorsQuery);
+  const { t } = useTranslation();
 
   return (
+
     <div className="min-h-screen bg-background text-foreground">
       <header
         className="sticky top-0 z-30 border-b border-border/60 bg-background sm:bg-background/80 sm:backdrop-blur"
