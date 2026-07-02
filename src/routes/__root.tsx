@@ -125,7 +125,9 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
             "AI code analysis, AI code review, AI-generated code, static code analysis, malware analysis, code understanding",
           sameAs: [
             "https://github.com/decoderead",
+            "https://www.instagram.com/decoderead.dev",
           ],
+
         }),
       },
     ],
