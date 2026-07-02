@@ -508,7 +508,17 @@ function Landing() {
                 <ChevronRight className="h-3 w-3" />
               </Link>
             ))}
+            <a
+              href={t("common.instagramUrl")}
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex items-center gap-1.5 border border-border bg-background px-3 py-2 text-sm hover:border-primary hover:text-foreground"
+            >
+              <InstagramIcon className="h-3.5 w-3.5" />
+              Instagram
+            </a>
           </div>
+
         </div>
       </section>
 
