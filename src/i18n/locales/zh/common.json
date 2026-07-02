@@ -8,7 +8,9 @@
     "home": "首页",
     "tryAgain": "重试",
     "goToDashboard": "前往工作台",
-    "repoUrl": "https://github.com/pietrofalezza-ctrl/DecoderOSprj"
+    "repoUrl": "https://github.com/pietrofalezza-ctrl/DecoderOSprj",
+    "instagramUrl": "https://www.instagram.com/decoderead.dev"
+
   },
   "nav": {
     "dashboard": "工作台",
@@ -1170,8 +1172,10 @@
     "disclaimer": "Decoder 是一个开源教育性代码理解案例研究。它不是经认证的安全审计工具、法律/合规工具或生产决策系统。AI 生成的输出可能不准确，必须由具备资质的人员进行审查。",
     "privacy": "隐私",
     "cookies": "Cookie",
-    "dataFlow": "数据流"
+    "dataFlow": "数据流",
+    "instagram": "Instagram"
   },
+
   "cookies": {
     "kicker": "Cookie 政策",
     "title": "Cookie 与本地存储",

@@ -8,7 +8,9 @@
     "home": "Home",
     "tryAgain": "Riprova",
     "goToDashboard": "Vai alla dashboard",
-    "repoUrl": "https://github.com/pietrofalezza-ctrl/DecoderOSprj"
+    "repoUrl": "https://github.com/pietrofalezza-ctrl/DecoderOSprj",
+    "instagramUrl": "https://www.instagram.com/decoderead.dev"
+
   },
   "nav": {
     "dashboard": "Dashboard",
@@ -1170,8 +1172,10 @@
     "disclaimer": "Decoder è un case study open source e didattico per la comprensione del codice. Non è uno strumento di audit di sicurezza certificato, consulenza legale/compliance o decisione produttiva. Gli output generati dall'AI possono essere inaccurati e devono essere verificati da una persona qualificata.",
     "privacy": "Privacy",
     "cookies": "Cookie",
-    "dataFlow": "Flusso dati"
+    "dataFlow": "Flusso dati",
+    "instagram": "Instagram"
   },
+
   "cookies": {
     "kicker": "Cookie Policy",
     "title": "Cookie e archiviazione locale",
