@@ -37,7 +37,9 @@
   "languages": {
     "en": "English",
     "it": "Italiano",
-    "zh": "简体中文"
+    "zh": "简体中文",
+    "hi": "हिन्दी",
+    "ta": "தமிழ்"
   },
   "landing": {
     "hero": "越来越多的代码由 <1>AI</1> 编写。Decoder 帮助你<2>阅读它</2>。",
@@ -995,12 +997,30 @@
         "subtitle": "以下功能开箱即用，无需任何 AI 服务商或 LLM。",
         "badge": "无需 API 密钥",
         "items": {
-          "static": { "title": "静态代码分析", "body": "20+ 种语言：复杂度、坏味道、反模式。" },
-          "malware": { "title": "恶意软件与勒索软件扫描", "body": "启发式模式，包括 LockBit 风格特征。" },
-          "aiOrigin": { "title": "AI 来源检测器", "body": "对 AI 生成代码的启发式信号。" },
-          "upload": { "title": "ZIP 与单文件", "body": "上传压缩包或粘贴单个文件。" },
-          "history": { "title": "分析历史", "body": "每次运行都会保存，跨会话可重新打开。" },
-          "i18n": { "title": "多语言与语气", "body": "EN / IT / ZH 与读者级别调节。" }
+          "static": {
+            "title": "静态代码分析",
+            "body": "20+ 种语言：复杂度、坏味道、反模式。"
+          },
+          "malware": {
+            "title": "恶意软件与勒索软件扫描",
+            "body": "启发式模式，包括 LockBit 风格特征。"
+          },
+          "aiOrigin": {
+            "title": "AI 来源检测器",
+            "body": "对 AI 生成代码的启发式信号。"
+          },
+          "upload": {
+            "title": "ZIP 与单文件",
+            "body": "上传压缩包或粘贴单个文件。"
+          },
+          "history": {
+            "title": "分析历史",
+            "body": "每次运行都会保存，跨会话可重新打开。"
+          },
+          "i18n": {
+            "title": "多语言与语气",
+            "body": "EN / IT / ZH 与读者级别调节。"
+          }
         }
       }
     },

@@ -37,7 +37,9 @@
   "languages": {
     "en": "English",
     "it": "Italiano",
-    "zh": "简体中文"
+    "zh": "简体中文",
+    "hi": "हिन्दी",
+    "ta": "தமிழ்"
   },
   "landing": {
     "hero": "Una parte crescente del codice è scritta dall'<1>IA</1>. Decoder aiuta a <2>leggerlo</2>.",
@@ -995,12 +997,30 @@
         "subtitle": "Queste funzioni sono attive subito, senza alcun provider AI o LLM.",
         "badge": "Nessuna API key",
         "items": {
-          "static": { "title": "Analisi statica del codice", "body": "20+ linguaggi: complessità, smell, anti-pattern." },
-          "malware": { "title": "Scan malware e ransomware", "body": "Pattern euristici, inclusi marker stile LockBit." },
-          "aiOrigin": { "title": "AI-origin detector", "body": "Segnali euristici sul codice generato dall'AI." },
-          "upload": { "title": "ZIP e file singolo", "body": "Carica un archivio o incolla un singolo file." },
-          "history": { "title": "Storico analisi", "body": "Ogni esecuzione è salvata e riapribile tra le sessioni." },
-          "i18n": { "title": "Multilingua e tone of voice", "body": "EN / IT / ZH e livello del lettore." }
+          "static": {
+            "title": "Analisi statica del codice",
+            "body": "20+ linguaggi: complessità, smell, anti-pattern."
+          },
+          "malware": {
+            "title": "Scan malware e ransomware",
+            "body": "Pattern euristici, inclusi marker stile LockBit."
+          },
+          "aiOrigin": {
+            "title": "AI-origin detector",
+            "body": "Segnali euristici sul codice generato dall'AI."
+          },
+          "upload": {
+            "title": "ZIP e file singolo",
+            "body": "Carica un archivio o incolla un singolo file."
+          },
+          "history": {
+            "title": "Storico analisi",
+            "body": "Ogni esecuzione è salvata e riapribile tra le sessioni."
+          },
+          "i18n": {
+            "title": "Multilingua e tone of voice",
+            "body": "EN / IT / ZH e livello del lettore."
+          }
         }
       }
     },
