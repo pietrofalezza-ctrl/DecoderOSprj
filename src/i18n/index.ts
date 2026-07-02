@@ -4,8 +4,10 @@ import { initReactI18next } from "react-i18next";
 import en from "./locales/en/common.json";
 import it from "./locales/it/common.json";
 import zh from "./locales/zh/common.json";
+import hi from "./locales/hi/common.json";
+import ta from "./locales/ta/common.json";
 
-export const SUPPORTED_LANGUAGES = ["en", "it", "zh"] as const;
+export const SUPPORTED_LANGUAGES = ["en", "it", "zh", "hi", "ta"] as const;
 export type SupportedLanguage = (typeof SUPPORTED_LANGUAGES)[number];
 
 export const LANG_STORAGE_KEY = "decoder.lang";
@@ -19,6 +21,8 @@ if (!i18n.isInitialized) {
       en: { common: en },
       it: { common: it },
       zh: { common: zh },
+      hi: { common: hi },
+      ta: { common: ta },
     },
     lng: "en",
     fallbackLng: "en",
