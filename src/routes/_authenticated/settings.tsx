@@ -221,9 +221,9 @@ function SettingsPage() {
             Credentials status
           </h2>
           <p className="text-xs text-muted-foreground">
-            Stato delle chiavi memorizzate per il tuo account. Una chiave non leggibile è
-            ancora presente nel database ma non è decifrabile (es. chiave di cifratura
-            ruotata): reinseriscila per ripristinarla.
+            Stato delle chiavi memorizzate per il tuo account. Una chiave non leggibile è ancora
+            presente nel database ma non è decifrabile (es. chiave di cifratura ruotata):
+            reinseriscila per ripristinarla.
           </p>
           <div className="space-y-2">
             {(credStatus.data?.providers ?? []).map((c) => (
@@ -233,9 +233,7 @@ function SettingsPage() {
               >
                 <div className="flex items-center gap-3">
                   <span className="font-medium">{t(`settings.providers.${c.provider}`)}</span>
-                  {!c.configured && (
-                    <span className="text-muted-foreground">Nessuna chiave</span>
-                  )}
+                  {!c.configured && <span className="text-muted-foreground">Nessuna chiave</span>}
                   {c.configured && c.readable && (
                     <span className="text-emerald-600 dark:text-emerald-400">
                       Configurata · {c.key_hint ?? "••••"}
@@ -288,7 +286,8 @@ function SettingsPage() {
                       void requireAck(async () => {
                         try {
                           await saveKey({ data: { provider: p, api_key: key } });
-                          qc.invalidateQueries({ queryKey: ["providers"] }); qc.invalidateQueries({ queryKey: ["credentials-status"] });
+                          qc.invalidateQueries({ queryKey: ["providers"] });
+                          qc.invalidateQueries({ queryKey: ["credentials-status"] });
                           toast.success(t("settings.saved"));
                         } catch (e) {
                           toast.error(getErrorMessage(e, t("errors.generic")));
@@ -300,7 +299,8 @@ function SettingsPage() {
                   }
                   onRemove={async () => {
                     await removeKey({ data: { provider: p } });
-                    qc.invalidateQueries({ queryKey: ["providers"] }); qc.invalidateQueries({ queryKey: ["credentials-status"] });
+                    qc.invalidateQueries({ queryKey: ["providers"] });
+                    qc.invalidateQueries({ queryKey: ["credentials-status"] });
                   }}
                 />
               );
@@ -328,12 +328,14 @@ function SettingsPage() {
                     await saveEndpoint({
                       data: { kind, base_url, default_model: default_model || undefined },
                     });
-                    qc.invalidateQueries({ queryKey: ["providers"] }); qc.invalidateQueries({ queryKey: ["credentials-status"] });
+                    qc.invalidateQueries({ queryKey: ["providers"] });
+                    qc.invalidateQueries({ queryKey: ["credentials-status"] });
                     toast.success(t("settings.saved"));
                   }}
                   onRemove={async () => {
                     await removeEndpoint({ data: { kind } });
-                    qc.invalidateQueries({ queryKey: ["providers"] }); qc.invalidateQueries({ queryKey: ["credentials-status"] });
+                    qc.invalidateQueries({ queryKey: ["providers"] });
+                    qc.invalidateQueries({ queryKey: ["credentials-status"] });
                   }}
                 />
               );

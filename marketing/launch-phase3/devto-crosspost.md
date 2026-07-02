@@ -29,6 +29,7 @@ I wanted something that could do a real first-pass review without phoning home.
 The first real design decision was whether to host a model myself or go BYOK (bring your own key).
 
 Running a hosted model means:
+
 - Handling API keys server-side
 - Storing or proxying code snippets
 - Building a billing system
@@ -73,6 +74,7 @@ I refactored the UI to make this explicit. The static report is always generated
 The code analysis engine started with JavaScript and Python. Getting to 20+ languages (Java, Kotlin, Go, Rust, C/C++, C#, Swift, Scala, Ruby, Shell, PowerShell, Perl, Lua, Dart, HTML, CSS, SQL, YAML, JSON and more) was mostly a question of writing per-language rule sets.
 
 Rule-based analysis isn't glamorous. It misses things that a proper AST parser or a trained model would catch. But it's:
+
 - Fast (runs in the browser, no server round-trip)
 - Deterministic (same input, same output, every time)
 - Auditable (the rules are readable source code)

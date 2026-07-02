@@ -4,6 +4,7 @@ import { ArrowLeft, ShieldCheck, BookOpen, Scale } from "lucide-react";
 import { LangSwitcher } from "@/components/LangSwitcher";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { Logo } from "@/components/Logo";
+import { InstagramLink } from "@/components/InstagramLink";
 import { PublicHeaderAuthSlot } from "@/components/PublicHeaderAuthSlot";
 
 const TITLE = "DPDP சட்டம் 2023 & AI கோட் பகுப்பாய்வு — இந்திய குழுக்களுக்கான வழிகாட்டி";
@@ -25,9 +26,21 @@ export const Route = createFileRoute("/docs/ta/dpdp-act-code-analysis")({
     links: [
       { rel: "canonical", href: URL },
       { rel: "alternate", hrefLang: "ta", href: URL },
-      { rel: "alternate", hrefLang: "en", href: "https://decoderead.dev/docs/dpdp-act-ai-code-analysis" },
-      { rel: "alternate", hrefLang: "hi", href: "https://decoderead.dev/docs/hi/dpdp-act-code-analysis" },
-      { rel: "alternate", hrefLang: "x-default", href: "https://decoderead.dev/docs/dpdp-act-ai-code-analysis" },
+      {
+        rel: "alternate",
+        hrefLang: "en",
+        href: "https://decoderead.dev/docs/dpdp-act-ai-code-analysis",
+      },
+      {
+        rel: "alternate",
+        hrefLang: "hi",
+        href: "https://decoderead.dev/docs/hi/dpdp-act-code-analysis",
+      },
+      {
+        rel: "alternate",
+        hrefLang: "x-default",
+        href: "https://decoderead.dev/docs/dpdp-act-ai-code-analysis",
+      },
     ],
     scripts: [
       {
@@ -51,11 +64,21 @@ export const Route = createFileRoute("/docs/ta/dpdp-act-code-analysis")({
   component: Page,
 });
 
-function Section({ icon, title, children }: { icon: React.ReactNode; title: string; children: React.ReactNode }) {
+function Section({
+  icon,
+  title,
+  children,
+}: {
+  icon: React.ReactNode;
+  title: string;
+  children: React.ReactNode;
+}) {
   return (
     <section className="mt-12">
       <div className="mb-3 flex items-center gap-3">
-        <span className="inline-flex h-9 w-9 items-center justify-center rounded-md border border-border bg-card text-primary">{icon}</span>
+        <span className="inline-flex h-9 w-9 items-center justify-center rounded-md border border-border bg-card text-primary">
+          {icon}
+        </span>
         <h2 className="font-display text-2xl font-medium tracking-tight">{title}</h2>
       </div>
       <div className="prose prose-sm max-w-none text-muted-foreground prose-headings:text-foreground prose-strong:text-foreground prose-li:marker:text-muted-foreground">
@@ -69,7 +92,9 @@ function Page() {
   return (
     <div className="min-h-screen bg-background text-foreground">
       <header className="sticky top-0 z-30 flex h-14 items-center justify-between border-b border-border/60 bg-background/80 px-6 backdrop-blur">
-        <Link to="/" aria-label="Decoder"><Logo /></Link>
+        <Link to="/" aria-label="Decoder">
+          <Logo />
+        </Link>
         <div className="flex items-center gap-1">
           <ThemeToggle />
           <LangSwitcher />
@@ -78,7 +103,10 @@ function Page() {
       </header>
 
       <main className="mx-auto max-w-3xl px-4 py-12 sm:px-6 md:py-16" lang="ta">
-        <Link to="/docs" className="inline-flex items-center gap-2 text-xs text-muted-foreground hover:text-foreground">
+        <Link
+          to="/docs"
+          className="inline-flex items-center gap-2 text-xs text-muted-foreground hover:text-foreground"
+        >
           <ArrowLeft className="h-3 w-3" /> ஆவணத்திற்குத் திரும்பு
         </Link>
 
@@ -86,19 +114,32 @@ function Page() {
           DPDP சட்டம் & AI கோட் பகுப்பாய்வு
         </h1>
         <p className="mt-4 text-lg text-muted-foreground">
-          இந்தியாவின் DPDP சட்டம் 2023 மென்பொருள் குழுக்கள் தனிப்பட்ட தரவை எவ்வாறு கையாள வேண்டும் என்பதை
-          மறுவரையறை செய்கிறது — சோர்ஸ் கோட், லாக்குகள் மற்றும் சோதனை ஃபிக்ஸ்சர்களுக்குள் நுழையும் தரவு உட்பட.
+          இந்தியாவின் DPDP சட்டம் 2023 மென்பொருள் குழுக்கள் தனிப்பட்ட தரவை எவ்வாறு கையாள வேண்டும்
+          என்பதை மறுவரையறை செய்கிறது — சோர்ஸ் கோட், லாக்குகள் மற்றும் சோதனை ஃபிக்ஸ்சர்களுக்குள்
+          நுழையும் தரவு உட்பட.
         </p>
 
-        <Section icon={<Scale className="h-5 w-5" />} title="கோட் ரிவியூவிற்கான மூன்று DPDP கொள்கைகள்">
+        <Section
+          icon={<Scale className="h-5 w-5" />}
+          title="கோட் ரிவியூவிற்கான மூன்று DPDP கொள்கைகள்"
+        >
           <ul>
-            <li><strong>தரவு குறைப்பு</strong> — தேவையானதை மட்டும் செயலாக்குங்கள்.</li>
-            <li><strong>நோக்க வரம்பு</strong> — Decoder உங்கள் கோட்டில் மாதிரிகளை பயிற்றுவிக்காது.</li>
-            <li><strong>சேமிப்பு வரம்பு</strong> — பதிவேற்றங்கள் தற்காலிகமானவை.</li>
+            <li>
+              <strong>தரவு குறைப்பு</strong> — தேவையானதை மட்டும் செயலாக்குங்கள்.
+            </li>
+            <li>
+              <strong>நோக்க வரம்பு</strong> — Decoder உங்கள் கோட்டில் மாதிரிகளை பயிற்றுவிக்காது.
+            </li>
+            <li>
+              <strong>சேமிப்பு வரம்பு</strong> — பதிவேற்றங்கள் தற்காலிகமானவை.
+            </li>
           </ul>
         </Section>
 
-        <Section icon={<ShieldCheck className="h-5 w-5" />} title="Decoder வடிவமைப்பால் எப்படி இணக்கமானது">
+        <Section
+          icon={<ShieldCheck className="h-5 w-5" />}
+          title="Decoder வடிவமைப்பால் எப்படி இணக்கமானது"
+        >
           <ul>
             <li>BYOK நற்சான்றிதழ்கள் AES-256-GCM மூலம் என்க்ரிப்ட் செய்யப்பட்டவை.</li>
             <li>Ollama மற்றும் LM Studio மூலம் லோக்கல் மாதிரி ஆதரவு.</li>
@@ -109,15 +150,28 @@ function Page() {
 
         <Section icon={<BookOpen className="h-5 w-5" />} title="தொடர்புடையது">
           <ul>
-            <li><Link to="/docs/ta/ai-code-review-chennai" className="text-foreground underline">சென்னையில் AI கோட் ரிவியூ</Link></li>
-            <li><Link to="/docs/dpdp-act-ai-code-analysis" className="text-foreground underline">English version</Link></li>
+            <li>
+              <Link to="/docs/ta/ai-code-review-chennai" className="text-foreground underline">
+                சென்னையில் AI கோட் ரிவியூ
+              </Link>
+            </li>
+            <li>
+              <Link to="/docs/dpdp-act-ai-code-analysis" className="text-foreground underline">
+                English version
+              </Link>
+            </li>
           </ul>
-          <p className="mt-4 text-xs">இது சட்ட ஆலோசனை அல்ல. முறையான DPIA-க்கு உங்கள் DPO உடன் கலந்தாலோசிக்கவும்.</p>
+          <p className="mt-4 text-xs">
+            இது சட்ட ஆலோசனை அல்ல. முறையான DPIA-க்கு உங்கள் DPO உடன் கலந்தாலோசிக்கவும்.
+          </p>
         </Section>
       </main>
 
       <footer className="border-t border-border px-6 py-6 text-center text-xs text-muted-foreground">
         Decoder — AI சகாப்தத்திற்கான ஓப்பன்-சோர்ஸ் கோட் புரிதல்.
+        <div className="mt-2">
+          <InstagramLink />
+        </div>
       </footer>
     </div>
   );

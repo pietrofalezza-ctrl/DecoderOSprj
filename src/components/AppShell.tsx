@@ -1,7 +1,15 @@
 import { Link, useNavigate } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
-import { LogOut, Settings, LayoutDashboard, BookOpen, ChevronDown, Github, History } from "lucide-react";
+import {
+  LogOut,
+  Settings,
+  LayoutDashboard,
+  BookOpen,
+  ChevronDown,
+  Github,
+  History,
+} from "lucide-react";
 import type { ReactNode } from "react";
 
 import { Button } from "@/components/ui/button";

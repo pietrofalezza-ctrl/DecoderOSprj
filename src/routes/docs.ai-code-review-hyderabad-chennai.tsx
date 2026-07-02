@@ -4,6 +4,7 @@ import { ArrowLeft, MapPin, BookOpen, Building2 } from "lucide-react";
 import { LangSwitcher } from "@/components/LangSwitcher";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { Logo } from "@/components/Logo";
+import { InstagramLink } from "@/components/InstagramLink";
 import { PublicHeaderAuthSlot } from "@/components/PublicHeaderAuthSlot";
 
 const TITLE = "AI code review in Hyderabad & Chennai — southern India's IT corridors";
@@ -27,7 +28,11 @@ export const Route = createFileRoute("/docs/ai-code-review-hyderabad-chennai")({
     meta: [
       { title: TITLE },
       { name: "description", content: DESC },
-      { name: "keywords", content: "ai code review hyderabad, ai code review chennai, hitec city, tidel park, gachibowli, omr, southern india developer tools, byok code review" },
+      {
+        name: "keywords",
+        content:
+          "ai code review hyderabad, ai code review chennai, hitec city, tidel park, gachibowli, omr, southern india developer tools, byok code review",
+      },
       { property: "og:title", content: TITLE },
       { property: "og:description", content: DESC },
       { property: "og:type", content: "article" },
@@ -38,7 +43,11 @@ export const Route = createFileRoute("/docs/ai-code-review-hyderabad-chennai")({
       { rel: "canonical", href: URL },
       { rel: "alternate", hrefLang: "en", href: URL },
       { rel: "alternate", hrefLang: "en-IN", href: URL },
-      { rel: "alternate", hrefLang: "ta", href: "https://decoderead.dev/docs/ta/ai-code-review-chennai" },
+      {
+        rel: "alternate",
+        hrefLang: "ta",
+        href: "https://decoderead.dev/docs/ta/ai-code-review-chennai",
+      },
       { rel: "alternate", hrefLang: "x-default", href: URL },
     ],
     scripts: [
@@ -78,7 +87,11 @@ export const Route = createFileRoute("/docs/ai-code-review-hyderabad-chennai")({
         children: JSON.stringify({
           "@context": "https://schema.org",
           "@type": "FAQPage",
-          mainEntity: FAQ.map((f) => ({ "@type": "Question", name: f.q, acceptedAnswer: { "@type": "Answer", text: f.a } })),
+          mainEntity: FAQ.map((f) => ({
+            "@type": "Question",
+            name: f.q,
+            acceptedAnswer: { "@type": "Answer", text: f.a },
+          })),
         }),
       },
     ],
@@ -86,11 +99,21 @@ export const Route = createFileRoute("/docs/ai-code-review-hyderabad-chennai")({
   component: Page,
 });
 
-function Section({ icon, title, children }: { icon: React.ReactNode; title: string; children: React.ReactNode }) {
+function Section({
+  icon,
+  title,
+  children,
+}: {
+  icon: React.ReactNode;
+  title: string;
+  children: React.ReactNode;
+}) {
   return (
     <section className="mt-12">
       <div className="mb-3 flex items-center gap-3">
-        <span className="inline-flex h-9 w-9 items-center justify-center rounded-md border border-border bg-card text-primary">{icon}</span>
+        <span className="inline-flex h-9 w-9 items-center justify-center rounded-md border border-border bg-card text-primary">
+          {icon}
+        </span>
         <h2 className="font-display text-2xl font-medium tracking-tight">{title}</h2>
       </div>
       <div className="prose prose-sm max-w-none text-muted-foreground prose-headings:text-foreground prose-strong:text-foreground prose-li:marker:text-muted-foreground">
@@ -104,7 +127,9 @@ function Page() {
   return (
     <div className="min-h-screen bg-background text-foreground">
       <header className="sticky top-0 z-30 flex h-14 items-center justify-between border-b border-border/60 bg-background/80 px-6 backdrop-blur">
-        <Link to="/" aria-label="Decoder"><Logo /></Link>
+        <Link to="/" aria-label="Decoder">
+          <Logo />
+        </Link>
         <div className="flex items-center gap-1">
           <ThemeToggle />
           <LangSwitcher />
@@ -113,7 +138,10 @@ function Page() {
       </header>
 
       <main className="mx-auto max-w-3xl px-4 py-12 sm:px-6 md:py-16">
-        <Link to="/docs" className="inline-flex items-center gap-2 text-xs text-muted-foreground hover:text-foreground">
+        <Link
+          to="/docs"
+          className="inline-flex items-center gap-2 text-xs text-muted-foreground hover:text-foreground"
+        >
           <ArrowLeft className="h-3 w-3" /> Back to documentation
         </Link>
 
@@ -121,33 +149,59 @@ function Page() {
           AI code review in Hyderabad &amp; Chennai
         </h1>
         <p className="mt-4 text-lg text-muted-foreground">
-          Hyderabad's HITEC City and Chennai's OMR IT corridor are two of southern India's largest concentrations of
-          software engineering. Both host massive captive centres, service providers and a fast-growing product-startup
-          scene. Decoder is the open-source, BYOK-friendly AI review layer built for that mix.
+          Hyderabad's HITEC City and Chennai's OMR IT corridor are two of southern India's largest
+          concentrations of software engineering. Both host massive captive centres, service
+          providers and a fast-growing product-startup scene. Decoder is the open-source,
+          BYOK-friendly AI review layer built for that mix.
         </p>
 
-        <Section icon={<MapPin className="h-5 w-5" />} title="Hyderabad — HITEC City, Gachibowli, Madhapur">
+        <Section
+          icon={<MapPin className="h-5 w-5" />}
+          title="Hyderabad — HITEC City, Gachibowli, Madhapur"
+        >
           <p>
-            Home to product engineering centres for global tech companies and a strong SaaS ecosystem. Common Decoder
-            uses here: DPDP-aligned analysis with BYOK on Anthropic or Gemini, and local inference for regulated
-            verticals.
+            Home to product engineering centres for global tech companies and a strong SaaS
+            ecosystem. Common Decoder uses here: DPDP-aligned analysis with BYOK on Anthropic or
+            Gemini, and local inference for regulated verticals.
           </p>
         </Section>
 
-        <Section icon={<MapPin className="h-5 w-5" />} title="Chennai — OMR, Tidel Park, Sholinganallur">
+        <Section
+          icon={<MapPin className="h-5 w-5" />}
+          title="Chennai — OMR, Tidel Park, Sholinganallur"
+        >
           <p>
-            Chennai is India's second-largest software exporter and a hub for BFSI, automotive-tech and healthcare
-            engineering. Service providers on OMR use Decoder to audit AI-code deliveries before hand-off; product teams
-            use it as a cheap, private review pass.
+            Chennai is India's second-largest software exporter and a hub for BFSI, automotive-tech
+            and healthcare engineering. Service providers on OMR use Decoder to audit AI-code
+            deliveries before hand-off; product teams use it as a cheap, private review pass.
           </p>
         </Section>
 
         <Section icon={<Building2 className="h-5 w-5" />} title="Related">
           <ul>
-            <li><Link to="/docs/ai-code-review-india" className="text-foreground underline">AI code review in India (main)</Link></li>
-            <li><Link to="/docs/ai-code-review-bangalore" className="text-foreground underline">Bangalore</Link></li>
-            <li><Link to="/docs/ai-code-review-sri-lanka-colombo" className="text-foreground underline">Sri Lanka &amp; Colombo</Link></li>
-            <li><Link to="/docs/ai-code-review-outsourcing" className="text-foreground underline">Auditing outsourced code</Link></li>
+            <li>
+              <Link to="/docs/ai-code-review-india" className="text-foreground underline">
+                AI code review in India (main)
+              </Link>
+            </li>
+            <li>
+              <Link to="/docs/ai-code-review-bangalore" className="text-foreground underline">
+                Bangalore
+              </Link>
+            </li>
+            <li>
+              <Link
+                to="/docs/ai-code-review-sri-lanka-colombo"
+                className="text-foreground underline"
+              >
+                Sri Lanka &amp; Colombo
+              </Link>
+            </li>
+            <li>
+              <Link to="/docs/ai-code-review-outsourcing" className="text-foreground underline">
+                Auditing outsourced code
+              </Link>
+            </li>
           </ul>
         </Section>
 
@@ -165,6 +219,9 @@ function Page() {
 
       <footer className="border-t border-border px-6 py-6 text-center text-xs text-muted-foreground">
         Decoder — open-source code understanding for the AI era.
+        <div className="mt-2">
+          <InstagramLink />
+        </div>
       </footer>
     </div>
   );

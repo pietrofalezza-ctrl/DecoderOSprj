@@ -17,20 +17,33 @@ export const binaryAnalysis: KnowledgeEntry = {
       byLevel: {
         dev: {
           whatItIs: "PE header and section parsing combined with entropy and IoC matching.",
-          whyUseful: "Most static malware verdicts come from structure, not bytes. Surfacing imports and packed sections fast accelerates triage.",
-          howDecoderImplements: "Custom PE parser → section metadata + entropy → import table extraction → IoC and string matchers → normalised report.",
+          whyUseful:
+            "Most static malware verdicts come from structure, not bytes. Surfacing imports and packed sections fast accelerates triage.",
+          howDecoderImplements:
+            "Custom PE parser → section metadata + entropy → import table extraction → IoC and string matchers → normalised report.",
           whenToUse: "Untrusted executables, dropped artefacts, suspicious attachments.",
           whenNotToUse: "Runtime behaviour analysis — that needs a sandbox.",
-          practicalExample: "A dropper with a packed `.text` (entropy 7.85), Win32 imports (`VirtualAlloc`, `CreateProcessW`) and an encoded PowerShell stage embedded in `.rdata`.",
+          practicalExample:
+            "A dropper with a packed `.text` (entropy 7.85), Win32 imports (`VirtualAlloc`, `CreateProcessW`) and an encoded PowerShell stage embedded in `.rdata`.",
         },
       },
       faq: [
-        { q: "What binary formats are supported?", a: "Windows PE today. ELF and Mach-O are on the roadmap." },
+        {
+          q: "What binary formats are supported?",
+          a: "Windows PE today. ELF and Mach-O are on the roadmap.",
+        },
         { q: "Is the binary executed?", a: "No. Only parsed and inspected." },
       ],
       glossary: [
-        { term: "PE", definition: "Portable Executable — the Windows binary format for .exe/.dll." },
-        { term: "Import table", definition: "List of external functions a binary calls — often a strong behavioural hint." },
+        {
+          term: "PE",
+          definition: "Portable Executable — the Windows binary format for .exe/.dll.",
+        },
+        {
+          term: "Import table",
+          definition:
+            "List of external functions a binary calls — often a strong behavioural hint.",
+        },
       ],
       cta: { label: "Analyse a binary", href: "/dashboard" },
     },

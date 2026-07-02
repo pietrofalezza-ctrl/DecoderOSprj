@@ -35,7 +35,9 @@ import {
 import { LangSwitcher } from "@/components/LangSwitcher";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { Logo } from "@/components/Logo";
+import { InstagramIcon, InstagramLink } from "@/components/InstagramLink";
 import { PublicHeaderAuthSlot } from "@/components/PublicHeaderAuthSlot";
+
 import { usePwaInstall } from "@/hooks/use-pwa-install";
 
 export const Route = createFileRoute("/")({
@@ -285,6 +287,17 @@ function Landing() {
                     <Github className="h-4 w-4" />
                     GitHub
                   </a>
+                  <a
+                    href={t("common.instagramUrl")}
+                    target="_blank"
+                    rel="noreferrer"
+                    onClick={() => setMenuOpen(false)}
+                    className="inline-flex items-center gap-2 rounded-md px-3 py-3 hover:bg-accent"
+                  >
+                    <InstagramIcon className="h-4 w-4" />
+                    Instagram
+                  </a>
+
                   <div className="mt-4 border-t border-border pt-4">
                     <Link
                       to="/auth"
@@ -372,10 +385,7 @@ function Landing() {
           </div>
           <ul className="mt-8 grid gap-4 sm:grid-cols-3">
             {inputs.map((item, i) => (
-              <li
-                key={item.title}
-                className="flex flex-col gap-3 border border-border bg-card p-5"
-              >
+              <li key={item.title} className="flex flex-col gap-3 border border-border bg-card p-5">
                 <div className="flex items-center justify-between">
                   <span className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-border text-primary">
                     {item.icon}
@@ -472,9 +482,7 @@ function Landing() {
             <h2 className="mt-2 font-display text-xl font-medium tracking-tight sm:text-2xl">
               {t("landing.learnMore.title")}
             </h2>
-            <p className="mt-2 text-sm text-muted-foreground">
-              {t("landing.learnMore.body")}
-            </p>
+            <p className="mt-2 text-sm text-muted-foreground">{t("landing.learnMore.body")}</p>
           </div>
           <div className="mt-6 flex flex-wrap gap-2">
             {[
@@ -493,6 +501,15 @@ function Landing() {
                 <ChevronRight className="h-3 w-3" />
               </Link>
             ))}
+            <a
+              href={t("common.instagramUrl")}
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex items-center gap-1.5 border border-border bg-background px-3 py-2 text-sm hover:border-primary hover:text-foreground"
+            >
+              <InstagramIcon className="h-3.5 w-3.5" />
+              Instagram
+            </a>
           </div>
         </div>
       </section>
@@ -529,9 +546,11 @@ function Landing() {
               >
                 GitHub
               </a>
+              <InstagramLink />
             </nav>
             <span>{t("footer.ownership")}</span>
           </div>
+
           <p className="mt-6 border-t border-border/40 pt-6 text-center text-[11px] leading-relaxed text-muted-foreground/80 md:text-left">
             {t("footer.disclaimer")}
           </p>

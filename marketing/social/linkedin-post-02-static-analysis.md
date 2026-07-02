@@ -2,11 +2,12 @@
 
 **Pubblicare da:** profilo founder + pagina Decoder
 **Quando:** sera del rilascio o mattina successiva (9–11 CET)
-**Asset suggerito:** screenshot allegato (triage statico del builder LockBit 3.0 in modalità *Static-only* — decisione BLOCK, RISK 75/100)
+**Asset suggerito:** screenshot allegato (triage statico del builder LockBit 3.0 in modalità _Static-only_ — decisione BLOCK, RISK 75/100)
 **Link:** https://decoderead.dev
 **Tag:** @Gabriele Tita (autore della PR — sostituire con l'handle reale al momento del post)
 
 **Note operative**
+
 - Ringraziare Gabriele Tita nel corpo del post e taggarlo.
 - Il sample LockBit 3.0 è citato a scopo **didattico e difensivo**: nessun binario distribuito, solo screenshot dell'output del triage.
 - Riferimenti pubblici al leak del builder LockBit 3.0 (settembre 2022): BleepingComputer, vx-underground — citarli nei commenti se serve approfondire.
@@ -26,8 +27,8 @@ Cosa cambia:
 • Tutto **pubblicato dalla repo GitHub** e già live sul deploy.
 
 **Use case reale** (screenshot in allegato): triage statico del **builder leakato di LockBit 3.0** — il sample di ransomware più analizzato degli ultimi anni (leak pubblico del 2022, fonti: BleepingComputer, vx-underground). Decoder lo apre in modalità Static-only e in pochi secondi segnala:
-→ *Suspicious high-entropy region* (102 finestre con entropia ≥ 7.2)
-→ *High control-byte ratio* (66.5%)
+→ _Suspicious high-entropy region_ (102 finestre con entropia ≥ 7.2)
+→ _High control-byte ratio_ (66.5%)
 → **DECISION: BLOCK — RISK 75/100**
 
 Senza eseguire il binario. Senza spedire un byte a un LLM.
@@ -54,8 +55,8 @@ What's new:
 • Shipped from the **public GitHub repo** and already live in production.
 
 **Real use case** (screenshot attached): static triage of the **leaked LockBit 3.0 builder** — one of the most studied ransomware samples of the last few years (2022 public leak, refs: BleepingComputer, vx-underground). Decoder opens it in Static-only mode and within seconds flags:
-→ *Suspicious high-entropy region* (102 windows with entropy ≥ 7.2)
-→ *High control-byte ratio* (66.5%)
+→ _Suspicious high-entropy region_ (102 windows with entropy ≥ 7.2)
+→ _High control-byte ratio_ (66.5%)
 → **DECISION: BLOCK — RISK 75/100**
 
 Binary never executed. Not a single byte sent to an LLM.

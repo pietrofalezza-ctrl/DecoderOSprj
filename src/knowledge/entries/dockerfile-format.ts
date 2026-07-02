@@ -17,11 +17,14 @@ export const dockerfileFormat: KnowledgeEntry = {
       byLevel: {
         dev: {
           whatItIs: "Static analysis tuned to Dockerfile directives.",
-          whyUseful: "Container security starts at the build — bad bases and root users are the most common issues.",
-          howDecoderImplements: "Rules over FROM, RUN, USER, ADD, COPY, ENV; entropy on env values to flag baked secrets.",
+          whyUseful:
+            "Container security starts at the build — bad bases and root users are the most common issues.",
+          howDecoderImplements:
+            "Rules over FROM, RUN, USER, ADD, COPY, ENV; entropy on env values to flag baked secrets.",
           whenToUse: "Every container image review.",
           whenNotToUse: "Runtime container scanning — pair with a registry scanner.",
-          practicalExample: "FROM ubuntu:latest + missing USER directive + ENV API_KEY=... → three findings stacked.",
+          practicalExample:
+            "FROM ubuntu:latest + missing USER directive + ENV API_KEY=... → three findings stacked.",
         },
       },
       faq: [

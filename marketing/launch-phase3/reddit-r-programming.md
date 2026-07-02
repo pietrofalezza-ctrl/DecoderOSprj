@@ -23,6 +23,7 @@ Entropy sliding-window analysis, control-byte ratio, magic-byte validation, embe
 We tested it on the leaked LockBit 3.0 builder (2022, publicly documented on BleepingComputer / vx-underground). It returned RISK 75/100 / BLOCK in static-only mode — no binary execution, no model call. That feature was contributed by **Gabriele Tita**.
 
 **AI features (BYOK)**
+
 - Chat with your code (file or diff context)
 - Natural-language explanation of static reports
 - AI-origin detection heuristics

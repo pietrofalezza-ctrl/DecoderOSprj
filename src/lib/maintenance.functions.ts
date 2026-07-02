@@ -20,7 +20,9 @@ export const listMaintenanceAudit = createServerFn({ method: "GET" })
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data, error } = await supabaseAdmin
       .from("maintenance_audit_log")
-      .select("id, job_name, request_id, status, started_at, finished_at, duration_ms, stats, error")
+      .select(
+        "id, job_name, request_id, status, started_at, finished_at, duration_ms, stats, error",
+      )
       .order("started_at", { ascending: false })
       .limit(50);
     if (error) throw error;
@@ -51,9 +53,7 @@ export const rescheduleMaintenanceCron = createServerFn({ method: "POST" })
       schedule = "0 3 * * *";
     }
     if (!secret) {
-      throw new Error(
-        "Secret env var is empty. Update the secret in Lovable Cloud, then retry.",
-      );
+      throw new Error("Secret env var is empty. Update the secret in Lovable Cloud, then retry.");
     }
 
     // pg_cron lives in the cron schema; use a SQL escape for the bearer.

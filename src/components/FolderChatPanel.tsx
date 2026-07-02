@@ -8,10 +8,7 @@ import { MessageSquare, SendHorizontal, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Textarea } from "@/components/ui/textarea";
-import {
-  listFolderChatSession,
-  sendFolderChatMessage,
-} from "@/lib/folder-chat.functions";
+import { listFolderChatSession, sendFolderChatMessage } from "@/lib/folder-chat.functions";
 import type { PersistedChatMessage } from "@/lib/chat-history";
 import { getErrorMessage } from "@/lib/errors";
 import type { Proficiency } from "@/lib/prompt";
@@ -41,9 +38,7 @@ export function FolderChatPanel({
   const scrollRef = useRef<HTMLDivElement>(null);
 
   const isCloud = providerValue.startsWith("cloud:");
-  const provider: CloudProvider | null = isCloud
-    ? (providerValue.slice(6) as CloudProvider)
-    : null;
+  const provider: CloudProvider | null = isCloud ? (providerValue.slice(6) as CloudProvider) : null;
 
   const sessionQ = useQuery({
     queryKey: ["folder-chat-session", repoId, folderPath],
@@ -151,9 +146,7 @@ export function FolderChatPanel({
             <SendHorizontal className="h-4 w-4" />
           </Button>
         </div>
-        <p className="mt-1 text-[10px] text-muted-foreground">
-          {t("workspace.folderChat.hint")}
-        </p>
+        <p className="mt-1 text-[10px] text-muted-foreground">{t("workspace.folderChat.hint")}</p>
       </div>
     </div>
   );

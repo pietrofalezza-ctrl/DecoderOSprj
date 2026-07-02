@@ -41,8 +41,7 @@ function OpportunitiesPage() {
   });
 
   const updateMut = useMutation({
-    mutationFn: (v: { id: string; status: "accepted" | "dismissed" }) =>
-      update({ data: v }),
+    mutationFn: (v: { id: string; status: "accepted" | "dismissed" }) => update({ data: v }),
     onSuccess: () => qc.invalidateQueries({ queryKey: ["knowledge-opps"] }),
     onError: (e) => toast.error(getErrorMessage(e, "Failed")),
   });
@@ -101,7 +100,9 @@ function OpportunitiesPage() {
           {(r.keywords ?? []).length > 0 && (
             <div className="flex flex-wrap gap-1">
               {(r.keywords ?? []).map((k) => (
-                <span key={k} className="rounded bg-muted px-1.5 py-0.5 text-[10px]">{k}</span>
+                <span key={k} className="rounded bg-muted px-1.5 py-0.5 text-[10px]">
+                  {k}
+                </span>
               ))}
             </div>
           )}

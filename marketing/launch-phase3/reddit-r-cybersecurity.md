@@ -39,6 +39,7 @@ RISK:      75 / 100
 ```
 
 Findings breakdown:
+
 - The 102 high-entropy windows are consistent with a packed or encrypted payload section.
 - 66.5% control-byte ratio is well above the ~15–20% typical of source or script files.
 - Magic mismatch suggests the declared extension doesn't match the actual binary format.

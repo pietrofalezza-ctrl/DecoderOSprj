@@ -1,6 +1,7 @@
 # LinkedIn — Decoder Community Update (LockBit 3.0 case study)
 
 > Publishing notes
+>
 > - Author: Decoder team (Lovable)
 > - Asset attaccato al post: il carosello `marketing/social/carousel-community-update/static_slide_{1..6}.png` (6 slide, 1080×1350).
 > - Lo screenshot reale del triage LockBit 3.0 è incorporato nella slide 5 — non va caricato come immagine separata.

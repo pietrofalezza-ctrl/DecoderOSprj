@@ -1,9 +1,19 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowLeft, KeyRound, Cpu, ShieldCheck, GitCompare, Wallet, BookOpen, Lock } from "lucide-react";
+import {
+  ArrowLeft,
+  KeyRound,
+  Cpu,
+  ShieldCheck,
+  GitCompare,
+  Wallet,
+  BookOpen,
+  Lock,
+} from "lucide-react";
 
 import { LangSwitcher } from "@/components/LangSwitcher";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { Logo } from "@/components/Logo";
+import { InstagramLink } from "@/components/InstagramLink";
 import { PublicHeaderAuthSlot } from "@/components/PublicHeaderAuthSlot";
 
 const TITLE = "Greptile alternative — Decoder vs Greptile (open source, BYOK, local AI)";
@@ -126,14 +136,46 @@ function ComparisonPage() {
                 </tr>
               </thead>
               <tbody className="text-muted-foreground [&_td]:px-3 [&_td]:py-2 [&_tr]:border-t [&_tr]:border-border">
-                <tr><td className="text-foreground">License</td><td>MIT, open source</td><td>Closed source SaaS</td></tr>
-                <tr><td className="text-foreground">Pricing</td><td>Free — pay only your model</td><td>Per-seat subscription</td></tr>
-                <tr><td className="text-foreground">Model choice</td><td>BYOK or local (Ollama / LM Studio)</td><td>Vendor-selected</td></tr>
-                <tr><td className="text-foreground">Local-only mode</td><td>Yes — zero egress</td><td>No — cloud only</td></tr>
-                <tr><td className="text-foreground">Where your code is indexed</td><td>Your machine or your provider</td><td>Greptile&apos;s cloud</td></tr>
-                <tr><td className="text-foreground">Static + malware scan</td><td>Built-in, no key required</td><td>AI-only</td></tr>
-                <tr><td className="text-foreground">Single file uploads</td><td>Yes (zip or single file)</td><td>PR / repo-based</td></tr>
-                <tr><td className="text-foreground">Self-hostable</td><td>Yes — fork &amp; deploy</td><td>No</td></tr>
+                <tr>
+                  <td className="text-foreground">License</td>
+                  <td>MIT, open source</td>
+                  <td>Closed source SaaS</td>
+                </tr>
+                <tr>
+                  <td className="text-foreground">Pricing</td>
+                  <td>Free — pay only your model</td>
+                  <td>Per-seat subscription</td>
+                </tr>
+                <tr>
+                  <td className="text-foreground">Model choice</td>
+                  <td>BYOK or local (Ollama / LM Studio)</td>
+                  <td>Vendor-selected</td>
+                </tr>
+                <tr>
+                  <td className="text-foreground">Local-only mode</td>
+                  <td>Yes — zero egress</td>
+                  <td>No — cloud only</td>
+                </tr>
+                <tr>
+                  <td className="text-foreground">Where your code is indexed</td>
+                  <td>Your machine or your provider</td>
+                  <td>Greptile&apos;s cloud</td>
+                </tr>
+                <tr>
+                  <td className="text-foreground">Static + malware scan</td>
+                  <td>Built-in, no key required</td>
+                  <td>AI-only</td>
+                </tr>
+                <tr>
+                  <td className="text-foreground">Single file uploads</td>
+                  <td>Yes (zip or single file)</td>
+                  <td>PR / repo-based</td>
+                </tr>
+                <tr>
+                  <td className="text-foreground">Self-hostable</td>
+                  <td>Yes — fork &amp; deploy</td>
+                  <td>No</td>
+                </tr>
               </tbody>
             </table>
           </div>
@@ -167,7 +209,10 @@ function ComparisonPage() {
           </p>
         </Section>
 
-        <Section icon={<ShieldCheck className="h-5 w-5" />} title="Static + malware checks, without a key">
+        <Section
+          icon={<ShieldCheck className="h-5 w-5" />}
+          title="Static + malware checks, without a key"
+        >
           <p>
             Before any AI call, Decoder runs deterministic checks: a static-pattern scan across 20+
             languages and a malware/IOC signature pass (the same flow that surfaced LockBit 3.0
@@ -204,11 +249,21 @@ function ComparisonPage() {
 
         <Section icon={<BookOpen className="h-5 w-5" />} title="When Decoder wins">
           <ul>
-            <li>You need code <strong>never to leave your machine</strong>.</li>
-            <li>You want to <strong>pick the model</strong> per review and pay metered.</li>
-            <li>You want <strong>static + malware</strong> checks alongside the AI explanation.</li>
-            <li>You want to review <strong>a single file</strong>, not just a PR.</li>
-            <li>You want an <strong>open-source</strong> tool you can fork, audit and self-host.</li>
+            <li>
+              You need code <strong>never to leave your machine</strong>.
+            </li>
+            <li>
+              You want to <strong>pick the model</strong> per review and pay metered.
+            </li>
+            <li>
+              You want <strong>static + malware</strong> checks alongside the AI explanation.
+            </li>
+            <li>
+              You want to review <strong>a single file</strong>, not just a PR.
+            </li>
+            <li>
+              You want an <strong>open-source</strong> tool you can fork, audit and self-host.
+            </li>
           </ul>
         </Section>
 
@@ -235,6 +290,9 @@ function ComparisonPage() {
 
       <footer className="border-t border-border px-6 py-6 text-center text-xs text-muted-foreground">
         Decoder — open-source code understanding for the AI era.
+        <div className="mt-2">
+          <InstagramLink />
+        </div>
       </footer>
     </div>
   );

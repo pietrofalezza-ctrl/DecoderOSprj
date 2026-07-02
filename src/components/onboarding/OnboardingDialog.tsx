@@ -153,9 +153,7 @@ export function OnboardingDialog({
                 {t("onboarding.back")}
               </Button>
             )}
-            {step < ACK_STEP_INDEX && (
-              <Button onClick={next}>{t("onboarding.continue")}</Button>
-            )}
+            {step < ACK_STEP_INDEX && <Button onClick={next}>{t("onboarding.continue")}</Button>}
             {step === ACK_STEP_INDEX && (
               <Button
                 onClick={() => completeMut.mutate()}
@@ -164,9 +162,7 @@ export function OnboardingDialog({
                 {completeMut.isPending ? t("onboarding.saving") : t("onboarding.finish")}
               </Button>
             )}
-            {step === FINAL_STEP_INDEX && (
-              <Button onClick={close}>{t("onboarding.close")}</Button>
-            )}
+            {step === FINAL_STEP_INDEX && <Button onClick={close}>{t("onboarding.close")}</Button>}
           </div>
         </div>
       </DialogContent>
@@ -185,12 +181,13 @@ function StepWelcome() {
           <div className="rounded-lg bg-primary/15 p-2 text-primary">
             <Sparkles className="h-5 w-5" />
           </div>
-          <p className="text-sm leading-relaxed text-foreground">
-            {t("onboarding.steps.s1.body")}
-          </p>
+          <p className="text-sm leading-relaxed text-foreground">{t("onboarding.steps.s1.body")}</p>
         </div>
         <div className="mt-4 flex flex-wrap gap-2">
-          <Badge variant="secondary" className="border-emerald-500/30 bg-emerald-500/10 text-emerald-700 dark:text-emerald-300">
+          <Badge
+            variant="secondary"
+            className="border-emerald-500/30 bg-emerald-500/10 text-emerald-700 dark:text-emerald-300"
+          >
             <Gift className="mr-1 h-3 w-3" />
             {t("onboarding.welcomeBadges.free")}
           </Badge>
@@ -235,15 +232,16 @@ function StepFree() {
             key={it.id}
             className="group flex items-start gap-3 rounded-lg border border-border bg-card p-3 transition hover:border-primary/40 hover:bg-primary/5"
           >
-            <div className={`mt-0.5 shrink-0 rounded-md bg-muted p-1.5 ${it.tone}`}>
-              {it.icon}
-            </div>
+            <div className={`mt-0.5 shrink-0 rounded-md bg-muted p-1.5 ${it.tone}`}>{it.icon}</div>
             <div className="min-w-0 flex-1">
               <div className="flex flex-wrap items-center gap-2">
                 <span className="text-sm font-semibold">
                   {t(`onboarding.steps.sFree.items.${it.id}.title`)}
                 </span>
-                <Badge variant="outline" className="border-emerald-500/40 bg-emerald-500/10 text-[10px] text-emerald-700 dark:text-emerald-300">
+                <Badge
+                  variant="outline"
+                  className="border-emerald-500/40 bg-emerald-500/10 text-[10px] text-emerald-700 dark:text-emerald-300"
+                >
                   {t("onboarding.steps.sFree.badge")}
                 </Badge>
               </div>
@@ -373,9 +371,7 @@ function StepProvider({ onSkip }: { onSkip: () => void }) {
         </div>
       </div>
       <div className="flex flex-wrap items-center justify-between gap-2">
-        <p className="text-xs text-muted-foreground">
-          {t("onboarding.steps.s3.configureLater")}
-        </p>
+        <p className="text-xs text-muted-foreground">{t("onboarding.steps.s3.configureLater")}</p>
         <Button size="sm" variant="outline" onClick={onSkip}>
           <ShieldOff className="mr-1.5 h-3.5 w-3.5" />
           {t("onboarding.steps.s9.cta.noKey")}

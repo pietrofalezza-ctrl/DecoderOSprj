@@ -17,11 +17,14 @@ export const javaFormat: KnowledgeEntry = {
       byLevel: {
         dev: {
           whatItIs: "Static rules tuned for Java idioms.",
-          whyUseful: "Catches SQLi via JDBC concatenation, unsafe deserialisation (ObjectInputStream), hardcoded creds.",
-          howDecoderImplements: "Pattern + AST-lite analysis, plus pom.xml / build.gradle dependency parsing.",
+          whyUseful:
+            "Catches SQLi via JDBC concatenation, unsafe deserialisation (ObjectInputStream), hardcoded creds.",
+          howDecoderImplements:
+            "Pattern + AST-lite analysis, plus pom.xml / build.gradle dependency parsing.",
           whenToUse: "Enterprise codebases, Spring services, Android backends.",
           whenNotToUse: "Bytecode-level analysis — bring a dedicated tool.",
-          practicalExample: "String SQL concat in a JDBC PreparedStatement misuse is flagged CWE-89.",
+          practicalExample:
+            "String SQL concat in a JDBC PreparedStatement misuse is flagged CWE-89.",
         },
       },
       faq: [
@@ -29,7 +32,10 @@ export const javaFormat: KnowledgeEntry = {
         { q: "Kotlin?", a: ".kt support is on the roadmap." },
       ],
       glossary: [
-        { term: "JDBC", definition: "Java Database Connectivity — common SQLi vector when misused." },
+        {
+          term: "JDBC",
+          definition: "Java Database Connectivity — common SQLi vector when misused.",
+        },
       ],
       cta: { label: "Scan a Java project", href: "/" },
     },

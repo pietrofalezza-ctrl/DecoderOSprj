@@ -10,9 +10,7 @@ import { Button } from "@/components/ui/button";
 import { HistoryTimeline, type HistoryActivity } from "@/components/HistoryTimeline";
 import { listRepositoryAnalysisHistory } from "@/lib/analysis-history.functions";
 
-export const Route = createFileRoute(
-  "/_authenticated/projects/$projectId/repos/$repoId/history",
-)({
+export const Route = createFileRoute("/_authenticated/projects/$projectId/repos/$repoId/history")({
   head: () => ({
     meta: [
       { title: "Repository history — Decoder" },

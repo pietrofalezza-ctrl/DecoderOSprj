@@ -101,7 +101,8 @@ export const getContributors = createServerFn({ method: "GET" }).handler(
       return data;
     } catch (err) {
       console.error("[contributors] github fetch failed", err);
-      if (cache) return { ...cache.data, warning: "GitHub temporarily unavailable — showing cached data." };
+      if (cache)
+        return { ...cache.data, warning: "GitHub temporarily unavailable — showing cached data." };
       return {
         repo: repoMeta,
         contributors: [],

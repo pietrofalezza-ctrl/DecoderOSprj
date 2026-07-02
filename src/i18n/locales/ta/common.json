@@ -1,4 +1,11 @@
 {
+  "common": {
+    "repoUrl": "https://github.com/pietrofalezza-ctrl/DecoderOSprj",
+    "instagramUrl": "https://www.instagram.com/decoderead.dev"
+  },
+  "footer": {
+    "instagram": "Instagram"
+  },
   "languages": {
     "en": "English",
     "it": "Italiano",

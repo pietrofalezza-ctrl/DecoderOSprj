@@ -83,7 +83,9 @@ function Card({ title, data }: { title: string; data: Record<string, number> }) 
   const total = Object.values(data).reduce((a, b) => a + b, 0);
   return (
     <div className="rounded-lg border border-border bg-card p-5">
-      <h3 className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">{title}</h3>
+      <h3 className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+        {title}
+      </h3>
       <p className="mt-2 text-2xl font-semibold">{total}</p>
       <ul className="mt-2 space-y-1 text-xs text-muted-foreground">
         {Object.entries(data).map(([k, v]) => (

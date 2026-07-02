@@ -4,6 +4,7 @@ import { ArrowLeft, KeyRound, Cpu, ShieldCheck, GitCompare, Wallet, BookOpen } f
 import { LangSwitcher } from "@/components/LangSwitcher";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { Logo } from "@/components/Logo";
+import { InstagramLink } from "@/components/InstagramLink";
 import { PublicHeaderAuthSlot } from "@/components/PublicHeaderAuthSlot";
 
 const TITLE = "Decoder vs CodeRabbit & Greptile — open-source AI code review tools compared";
@@ -16,7 +17,11 @@ export const Route = createFileRoute("/docs/comparison-coderabbit")({
     meta: [
       { title: TITLE },
       { name: "description", content: DESC },
-      { name: "keywords", content: "ai code review tools, coderabbit alternative, greptile alternative, open source code review, byok code review, local llm code review" },
+      {
+        name: "keywords",
+        content:
+          "ai code review tools, coderabbit alternative, greptile alternative, open source code review, byok code review, local llm code review",
+      },
       { property: "og:title", content: TITLE },
       { property: "og:description", content: DESC },
       { property: "og:type", content: "article" },
@@ -93,11 +98,10 @@ function ComparisonPage() {
           Decoder vs CodeRabbit vs Greptile
         </h1>
         <p className="mt-4 text-lg text-muted-foreground">
-          The AI code review space is dominated by SaaS products like{" "}
-          <strong>CodeRabbit</strong> and <strong>Greptile</strong>: hosted, opinionated, and
-          billed per seat. Decoder takes a different angle — open source, bring-your-own-key, and
-          able to run fully offline against a local model. Here&apos;s an honest, side-by-side look
-          at the trade-offs.
+          The AI code review space is dominated by SaaS products like <strong>CodeRabbit</strong>{" "}
+          and <strong>Greptile</strong>: hosted, opinionated, and billed per seat. Decoder takes a
+          different angle — open source, bring-your-own-key, and able to run fully offline against a
+          local model. Here&apos;s an honest, side-by-side look at the trade-offs.
         </p>
 
         <Section icon={<GitCompare className="h-5 w-5" />} title="At a glance">
@@ -112,28 +116,68 @@ function ComparisonPage() {
                 </tr>
               </thead>
               <tbody className="text-muted-foreground [&_td]:px-3 [&_td]:py-2 [&_tr]:border-t [&_tr]:border-border">
-                <tr><td className="text-foreground">License</td><td>MIT, open source</td><td>Closed source SaaS</td><td>Closed source SaaS</td></tr>
-                <tr><td className="text-foreground">Pricing</td><td>Free — pay only your model</td><td>Per-seat subscription</td><td>Per-seat subscription</td></tr>
-                <tr><td className="text-foreground">Model choice</td><td>BYOK or local (Ollama / LM Studio)</td><td>Vendor-selected</td><td>Vendor-selected</td></tr>
-                <tr><td className="text-foreground">Local-only mode</td><td>Yes</td><td>No</td><td>No</td></tr>
-                <tr><td className="text-foreground">Code leaves your machine</td><td>Only if you choose a cloud key</td><td>Always</td><td>Always</td></tr>
-                <tr><td className="text-foreground">Static + malware scan</td><td>Built-in, no key required</td><td>AI-only</td><td>AI-only</td></tr>
-                <tr><td className="text-foreground">Single file uploads</td><td>Yes (zip or single file)</td><td>PR-based</td><td>PR-based</td></tr>
+                <tr>
+                  <td className="text-foreground">License</td>
+                  <td>MIT, open source</td>
+                  <td>Closed source SaaS</td>
+                  <td>Closed source SaaS</td>
+                </tr>
+                <tr>
+                  <td className="text-foreground">Pricing</td>
+                  <td>Free — pay only your model</td>
+                  <td>Per-seat subscription</td>
+                  <td>Per-seat subscription</td>
+                </tr>
+                <tr>
+                  <td className="text-foreground">Model choice</td>
+                  <td>BYOK or local (Ollama / LM Studio)</td>
+                  <td>Vendor-selected</td>
+                  <td>Vendor-selected</td>
+                </tr>
+                <tr>
+                  <td className="text-foreground">Local-only mode</td>
+                  <td>Yes</td>
+                  <td>No</td>
+                  <td>No</td>
+                </tr>
+                <tr>
+                  <td className="text-foreground">Code leaves your machine</td>
+                  <td>Only if you choose a cloud key</td>
+                  <td>Always</td>
+                  <td>Always</td>
+                </tr>
+                <tr>
+                  <td className="text-foreground">Static + malware scan</td>
+                  <td>Built-in, no key required</td>
+                  <td>AI-only</td>
+                  <td>AI-only</td>
+                </tr>
+                <tr>
+                  <td className="text-foreground">Single file uploads</td>
+                  <td>Yes (zip or single file)</td>
+                  <td>PR-based</td>
+                  <td>PR-based</td>
+                </tr>
               </tbody>
             </table>
           </div>
         </Section>
 
-        <Section icon={<KeyRound className="h-5 w-5" />} title="BYOK: you own the model relationship">
+        <Section
+          icon={<KeyRound className="h-5 w-5" />}
+          title="BYOK: you own the model relationship"
+        >
           <p>
-            CodeRabbit and Greptile resell inference: you pay them, they pay the model provider,
-            and you get whatever model they picked. Decoder is <strong>bring-your-own-key</strong>:
+            CodeRabbit and Greptile resell inference: you pay them, they pay the model provider, and
+            you get whatever model they picked. Decoder is <strong>bring-your-own-key</strong>:
             paste an OpenAI, Anthropic, Google or OpenRouter key and the request goes straight to
             that provider on your account. Three practical consequences:
           </p>
           <ul>
             <li>You pay the raw API price — no markup, no seat tax.</li>
-            <li>You pick the model per task — a cheap one for triage, a frontier one for hard reviews.</li>
+            <li>
+              You pick the model per task — a cheap one for triage, a frontier one for hard reviews.
+            </li>
             <li>Your code lands in the model provider you already audited, not a fourth party.</li>
           </ul>
         </Section>
@@ -147,7 +191,10 @@ function ComparisonPage() {
           </p>
         </Section>
 
-        <Section icon={<ShieldCheck className="h-5 w-5" />} title="Static + malware scan, without a key">
+        <Section
+          icon={<ShieldCheck className="h-5 w-5" />}
+          title="Static + malware scan, without a key"
+        >
           <p>
             Before any AI call, Decoder runs deterministic checks: a static-pattern scan across 20+
             languages and a malware/IOC signature pass (the same flow that surfaced LockBit 3.0
@@ -158,17 +205,15 @@ function ComparisonPage() {
         </Section>
 
         <Section icon={<Wallet className="h-5 w-5" />} title="Cost model in the real world">
-          <p>
-            For a 10-person team running ~200 PRs/month:
-          </p>
+          <p>For a 10-person team running ~200 PRs/month:</p>
           <ul>
             <li>
               <strong>CodeRabbit / Greptile:</strong> ~$150–300/month in seat fees, billed whether
               you reviewed 5 PRs or 500.
             </li>
             <li>
-              <strong>Decoder + OpenRouter key:</strong> typically $5–25/month in metered API
-              spend, scaling with how much you actually used it.
+              <strong>Decoder + OpenRouter key:</strong> typically $5–25/month in metered API spend,
+              scaling with how much you actually used it.
             </li>
             <li>
               <strong>Decoder + local Llama 3.1 / Qwen Coder:</strong> $0 in API spend, only your
@@ -177,10 +222,18 @@ function ComparisonPage() {
           </ul>
         </Section>
 
-        <Section icon={<GitCompare className="h-5 w-5" />} title="When CodeRabbit or Greptile is the right call">
-          <p>This guide isn&apos;t a hit piece. They&apos;re solid products and there are cases where they win:</p>
+        <Section
+          icon={<GitCompare className="h-5 w-5" />}
+          title="When CodeRabbit or Greptile is the right call"
+        >
+          <p>
+            This guide isn&apos;t a hit piece. They&apos;re solid products and there are cases where
+            they win:
+          </p>
           <ul>
-            <li>You want GitHub PR comments authored by a bot, fully managed, with zero install.</li>
+            <li>
+              You want GitHub PR comments authored by a bot, fully managed, with zero install.
+            </li>
             <li>You don&apos;t want to manage an API key or a local model.</li>
             <li>Per-seat billing through procurement is easier than usage-based API spend.</li>
           </ul>
@@ -188,17 +241,33 @@ function ComparisonPage() {
 
         <Section icon={<BookOpen className="h-5 w-5" />} title="When Decoder wins">
           <ul>
-            <li>You need code <strong>never to leave your machine</strong> (regulated, IP-sensitive, classified).</li>
-            <li>You want to <strong>pick the model</strong> per review and pay metered.</li>
-            <li>You want <strong>static + malware</strong> checks alongside the AI explanation.</li>
-            <li>You want the option to read <strong>a single file</strong>, not just a PR.</li>
-            <li>You want an <strong>open-source</strong> tool you can fork, audit and self-host.</li>
+            <li>
+              You need code <strong>never to leave your machine</strong> (regulated, IP-sensitive,
+              classified).
+            </li>
+            <li>
+              You want to <strong>pick the model</strong> per review and pay metered.
+            </li>
+            <li>
+              You want <strong>static + malware</strong> checks alongside the AI explanation.
+            </li>
+            <li>
+              You want the option to read <strong>a single file</strong>, not just a PR.
+            </li>
+            <li>
+              You want an <strong>open-source</strong> tool you can fork, audit and self-host.
+            </li>
           </ul>
           <p>
             Try it on a file in under a minute — see the{" "}
-            <Link to="/docs" className="text-foreground underline">documentation</Link> or read the{" "}
-            <Link to="/manifesto" className="text-foreground underline">manifesto</Link> for the
-            principles behind the project.
+            <Link to="/docs" className="text-foreground underline">
+              documentation
+            </Link>{" "}
+            or read the{" "}
+            <Link to="/manifesto" className="text-foreground underline">
+              manifesto
+            </Link>{" "}
+            for the principles behind the project.
           </p>
         </Section>
 
@@ -225,6 +294,9 @@ function ComparisonPage() {
 
       <footer className="border-t border-border px-6 py-6 text-center text-xs text-muted-foreground">
         Decoder — open-source code understanding for the AI era.
+        <div className="mt-2">
+          <InstagramLink />
+        </div>
       </footer>
     </div>
   );

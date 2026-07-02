@@ -9,7 +9,7 @@
 
 `BYOK code review: static analysis + malware triage + AI chat`
 
-*(58 chars)*
+_(58 chars)_
 
 ---
 
@@ -22,6 +22,7 @@ Decoder is an open-source, non-profit tool to read, explain and audit code — i
 **AI features are opt-in and BYOK**: bring your own key for OpenAI, Anthropic, Google Gemini or OpenRouter — or connect a local Ollama / LM Studio instance. Keys stay in your browser session, nothing is stored server-side.
 
 **What you can do:**
+
 - Run a static triage on any source file or binary in seconds
 - Chat with a file or diff in plain language
 - Get a natural-language explanation of the static report

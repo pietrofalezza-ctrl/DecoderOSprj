@@ -93,21 +93,59 @@ function DocsPage() {
         <section className="mt-16 border-t border-border pt-10">
           <h2 className="text-2xl font-semibold">India &amp; Sri Lanka</h2>
           <p className="mt-2 text-sm text-muted-foreground">
-            Regional guides for developers in Bharat, tuned for DPDP Act 2023 compliance and BYOK cost efficiency.
+            Regional guides for developers in Bharat, tuned for DPDP Act 2023 compliance and BYOK
+            cost efficiency.
           </p>
           <ul className="mt-4 grid gap-2 text-sm sm:grid-cols-2">
-            <li><Link to="/docs/ai-code-review-india" className="text-foreground underline">AI code review in India</Link></li>
-            <li><Link to="/docs/dpdp-act-ai-code-analysis" className="text-foreground underline">DPDP Act &amp; AI code analysis</Link></li>
-            <li><Link to="/docs/ai-code-review-outsourcing" className="text-foreground underline">Auditing outsourced code</Link></li>
-            <li><Link to="/docs/ai-code-review-bangalore" className="text-foreground underline">Bangalore edition</Link></li>
-            <li><Link to="/docs/ai-code-review-hyderabad-chennai" className="text-foreground underline">Hyderabad &amp; Chennai</Link></li>
-            <li><Link to="/docs/ai-code-review-sri-lanka-colombo" className="text-foreground underline">Sri Lanka / Colombo</Link></li>
-            <li><Link to="/docs/hi/ai-code-review-bharat" className="text-foreground underline">हिन्दी: भारत में AI कोड रिव्यू</Link></li>
-            <li><Link to="/docs/ta/ai-code-review-chennai" className="text-foreground underline">தமிழ்: சென்னையில் AI கோட் ரிவியூ</Link></li>
+            <li>
+              <Link to="/docs/ai-code-review-india" className="text-foreground underline">
+                AI code review in India
+              </Link>
+            </li>
+            <li>
+              <Link to="/docs/dpdp-act-ai-code-analysis" className="text-foreground underline">
+                DPDP Act &amp; AI code analysis
+              </Link>
+            </li>
+            <li>
+              <Link to="/docs/ai-code-review-outsourcing" className="text-foreground underline">
+                Auditing outsourced code
+              </Link>
+            </li>
+            <li>
+              <Link to="/docs/ai-code-review-bangalore" className="text-foreground underline">
+                Bangalore edition
+              </Link>
+            </li>
+            <li>
+              <Link
+                to="/docs/ai-code-review-hyderabad-chennai"
+                className="text-foreground underline"
+              >
+                Hyderabad &amp; Chennai
+              </Link>
+            </li>
+            <li>
+              <Link
+                to="/docs/ai-code-review-sri-lanka-colombo"
+                className="text-foreground underline"
+              >
+                Sri Lanka / Colombo
+              </Link>
+            </li>
+            <li>
+              <Link to="/docs/hi/ai-code-review-bharat" className="text-foreground underline">
+                हिन्दी: भारत में AI कोड रिव्यू
+              </Link>
+            </li>
+            <li>
+              <Link to="/docs/ta/ai-code-review-chennai" className="text-foreground underline">
+                தமிழ்: சென்னையில் AI கோட் ரிவியூ
+              </Link>
+            </li>
           </ul>
         </section>
       </main>
-
 
       <footer className="border-t border-border px-6 py-6 text-center text-xs text-muted-foreground">
         {t("footer.ownership")}

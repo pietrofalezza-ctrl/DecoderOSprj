@@ -59,10 +59,10 @@ function AdminPage() {
         <div className="mx-auto max-w-2xl p-6 text-center">
           <ShieldCheck className="mx-auto h-10 w-10 text-muted-foreground" />
           <h1 className="mt-3 text-lg font-semibold">Admin only</h1>
-          <p className="mt-1 text-sm text-muted-foreground">
-            You don't have access to this area.
-          </p>
-          <Button className="mt-4" onClick={() => navigate({ to: "/" })}>Go home</Button>
+          <p className="mt-1 text-sm text-muted-foreground">You don't have access to this area.</p>
+          <Button className="mt-4" onClick={() => navigate({ to: "/" })}>
+            Go home
+          </Button>
         </div>
       </AppShell>
     );
@@ -85,7 +85,8 @@ function AdminPage() {
             Knowledge Engine
           </h2>
           <p className="mt-1 text-xs text-muted-foreground">
-            Editorial workspace for the Knowledge Hub: AI-suggested opportunities, draft review, multilingual publishing.
+            Editorial workspace for the Knowledge Hub: AI-suggested opportunities, draft review,
+            multilingual publishing.
           </p>
           <Button asChild size="sm" className="mt-3">
             <a href="/admin/knowledge">Open Knowledge admin</a>
@@ -97,9 +98,9 @@ function AdminPage() {
             Compliance · Consent records
           </h2>
           <p className="mt-1 text-xs text-muted-foreground">
-            Read-only audit log of BYOK and onboarding acknowledgements (terms version,
-            language, IP, user-agent). Filter, search and export to CSV for GDPR /
-            authority requests. Every export is itself audited below.
+            Read-only audit log of BYOK and onboarding acknowledgements (terms version, language,
+            IP, user-agent). Filter, search and export to CSV for GDPR / authority requests. Every
+            export is itself audited below.
           </p>
           <Button asChild size="sm" className="mt-3">
             <a href="/admin/consents">Open consent records</a>
@@ -113,19 +114,15 @@ function AdminPage() {
                 Rotate CLEANUP_CRON_SECRET
               </h2>
               <p className="mt-1 text-xs text-muted-foreground">
-                1. Open Lovable Cloud → Backend → Secrets and update
-                {" "}<code className="rounded bg-muted px-1">CLEANUP_CRON_SECRET</code>{" "}
-                with a fresh random value (48+ chars).
+                1. Open Lovable Cloud → Backend → Secrets and update{" "}
+                <code className="rounded bg-muted px-1">CLEANUP_CRON_SECRET</code> with a fresh
+                random value (48+ chars).
                 <br />
-                2. Click <em>Reschedule now</em> — the cron job will be re-registered with
-                the new bearer (the secret value never leaves the backend).
+                2. Click <em>Reschedule now</em> — the cron job will be re-registered with the new
+                bearer (the secret value never leaves the backend).
               </p>
             </div>
-            <Button
-              onClick={() => rotateMut.mutate()}
-              disabled={rotateMut.isPending}
-              size="sm"
-            >
+            <Button onClick={() => rotateMut.mutate()} disabled={rotateMut.isPending} size="sm">
               <RotateCw className="mr-1.5 h-3.5 w-3.5" />
               {rotateMut.isPending ? "Rescheduling…" : "Reschedule now"}
             </Button>
@@ -138,9 +135,8 @@ function AdminPage() {
           </h2>
           <p className="text-xs text-muted-foreground">
             The disavow file lives inside the project at{" "}
-            <code className="rounded bg-muted px-1">marketing/disavow.txt</code>{" "}
-            (not exposed publicly). Download it from the Lovable file explorer, then
-            upload it manually to{" "}
+            <code className="rounded bg-muted px-1">marketing/disavow.txt</code> (not exposed
+            publicly). Download it from the Lovable file explorer, then upload it manually to{" "}
             <a
               href="https://search.google.com/search-console/disavow-links"
               target="_blank"
@@ -148,8 +144,8 @@ function AdminPage() {
               className="underline"
             >
               Google Search Console
-            </a>
-            {" "}to tell Google to ignore the low-quality/PBN backlinks detected by Semrush.
+            </a>{" "}
+            to tell Google to ignore the low-quality/PBN backlinks detected by Semrush.
           </p>
         </section>
 

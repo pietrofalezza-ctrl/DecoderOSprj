@@ -1,7 +1,4 @@
-import {
-  normalizeChatMessages,
-  type PersistedChatMessage,
-} from "@/lib/chat-history";
+import { normalizeChatMessages, type PersistedChatMessage } from "@/lib/chat-history";
 import type { Proficiency } from "@/lib/prompt";
 
 export type FolderChatExplanationType = "human" | "technical";
@@ -47,8 +44,7 @@ const PROFICIENCY_HINT: Record<Proficiency, string> = {
     "The reader is a senior engineer. Be terse and information-dense; flag trade-offs and edge cases.",
   architect:
     "The reader is a software architect. Emphasize boundaries, coupling, data flow, and risk.",
-  cto:
-    "The reader is a CTO. Lead with risks, cost, scalability, and strategic implications; keep prose short.",
+  cto: "The reader is a CTO. Lead with risks, cost, scalability, and strategic implications; keep prose short.",
 };
 
 export function folderChatSessionTitle(firstMessage: string): string {
@@ -86,7 +82,9 @@ export function buildFolderChatPrompt(input: FolderChatPromptInput): {
     const excerpt = clampExcerpt(f.excerpt ?? "", maxExcerpt);
     const block = `### ${f.path}${f.language ? ` (${f.language})` : ""}\n\`\`\`\n${excerpt}\n\`\`\``;
     if (total + block.length > maxTotal) {
-      fileChunks.push(`... [${input.files.length - fileChunks.length} more files omitted for length]`);
+      fileChunks.push(
+        `... [${input.files.length - fileChunks.length} more files omitted for length]`,
+      );
       break;
     }
     fileChunks.push(block);

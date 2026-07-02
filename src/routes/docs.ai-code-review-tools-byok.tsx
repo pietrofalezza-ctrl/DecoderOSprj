@@ -4,6 +4,7 @@ import { ArrowLeft, KeyRound, Cpu, Wallet, ShieldCheck, GitCompare, BookOpen } f
 import { LangSwitcher } from "@/components/LangSwitcher";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { Logo } from "@/components/Logo";
+import { InstagramLink } from "@/components/InstagramLink";
 import { PublicHeaderAuthSlot } from "@/components/PublicHeaderAuthSlot";
 
 const TITLE = "AI code review tools with BYOK — Decoder vs CodeRabbit & Greptile";
@@ -198,12 +199,42 @@ function ByokPage() {
                 </tr>
               </thead>
               <tbody className="text-muted-foreground [&_td]:px-3 [&_td]:py-2 [&_tr]:border-t [&_tr]:border-border">
-                <tr><td className="text-foreground">BYOK (cloud)</td><td>Yes — OpenAI, Anthropic, Google, OpenRouter</td><td>No</td><td>No</td></tr>
-                <tr><td className="text-foreground">Local inference</td><td>Yes — Ollama, LM Studio</td><td>No</td><td>No</td></tr>
-                <tr><td className="text-foreground">Pricing model</td><td>Free app + metered API spend</td><td>Per-seat subscription</td><td>Per-seat subscription</td></tr>
-                <tr><td className="text-foreground">Pick model per review</td><td>Yes</td><td>No</td><td>No</td></tr>
-                <tr><td className="text-foreground">Key storage</td><td>AES-256-GCM at rest, RLS scoped</td><td>n/a</td><td>n/a</td></tr>
-                <tr><td className="text-foreground">Static + malware (no key)</td><td>Built-in</td><td>No</td><td>No</td></tr>
+                <tr>
+                  <td className="text-foreground">BYOK (cloud)</td>
+                  <td>Yes — OpenAI, Anthropic, Google, OpenRouter</td>
+                  <td>No</td>
+                  <td>No</td>
+                </tr>
+                <tr>
+                  <td className="text-foreground">Local inference</td>
+                  <td>Yes — Ollama, LM Studio</td>
+                  <td>No</td>
+                  <td>No</td>
+                </tr>
+                <tr>
+                  <td className="text-foreground">Pricing model</td>
+                  <td>Free app + metered API spend</td>
+                  <td>Per-seat subscription</td>
+                  <td>Per-seat subscription</td>
+                </tr>
+                <tr>
+                  <td className="text-foreground">Pick model per review</td>
+                  <td>Yes</td>
+                  <td>No</td>
+                  <td>No</td>
+                </tr>
+                <tr>
+                  <td className="text-foreground">Key storage</td>
+                  <td>AES-256-GCM at rest, RLS scoped</td>
+                  <td>n/a</td>
+                  <td>n/a</td>
+                </tr>
+                <tr>
+                  <td className="text-foreground">Static + malware (no key)</td>
+                  <td>Built-in</td>
+                  <td>No</td>
+                  <td>No</td>
+                </tr>
               </tbody>
             </table>
           </div>
@@ -212,31 +243,50 @@ function ByokPage() {
         <Section icon={<Wallet className="h-5 w-5" />} title="What BYOK actually costs">
           <p>For a 10-developer team running ~200 PRs/month:</p>
           <ul>
-            <li><strong>Per-seat SaaS (CodeRabbit / Greptile):</strong> ~$150–$300/month regardless of usage.</li>
-            <li><strong>Decoder + OpenRouter key:</strong> typically $5–$25/month, metered.</li>
-            <li><strong>Decoder + local Qwen Coder / Llama 3.1:</strong> $0 in API spend.</li>
+            <li>
+              <strong>Per-seat SaaS (CodeRabbit / Greptile):</strong> ~$150–$300/month regardless of
+              usage.
+            </li>
+            <li>
+              <strong>Decoder + OpenRouter key:</strong> typically $5–$25/month, metered.
+            </li>
+            <li>
+              <strong>Decoder + local Qwen Coder / Llama 3.1:</strong> $0 in API spend.
+            </li>
           </ul>
         </Section>
 
         <Section icon={<Cpu className="h-5 w-5" />} title="Setting up BYOK in Decoder">
           <ol>
-            <li>Open <Link to="/settings" className="text-foreground underline">Settings → Credentials</Link>.</li>
-            <li>Pick a provider (OpenAI, Anthropic, Google, OpenRouter) or a local endpoint (Ollama, LM Studio).</li>
+            <li>
+              Open{" "}
+              <Link to="/settings" className="text-foreground underline">
+                Settings → Credentials
+              </Link>
+              .
+            </li>
+            <li>
+              Pick a provider (OpenAI, Anthropic, Google, OpenRouter) or a local endpoint (Ollama,
+              LM Studio).
+            </li>
             <li>Paste the key — it's encrypted with AES-256-GCM and never leaves your row.</li>
             <li>Run a review. The "Explain with AI" and Chat tabs now use your key directly.</li>
           </ol>
           <p>
-            Static and malware analysis already work without a key, so you can try Decoder end-to-end
-            before deciding which provider to wire up.
+            Static and malware analysis already work without a key, so you can try Decoder
+            end-to-end before deciding which provider to wire up.
           </p>
         </Section>
 
-        <Section icon={<ShieldCheck className="h-5 w-5" />} title="Why BYOK is safer for sensitive code">
+        <Section
+          icon={<ShieldCheck className="h-5 w-5" />}
+          title="Why BYOK is safer for sensitive code"
+        >
           <p>
             With BYOK, your code touches Decoder and one provider you already audited. No third
-            party in the middle, no shared inference pool, no opaque retention policy stacked on
-            top of the model provider's own. For fully air-gapped reviews, switch the same project
-            to a local Ollama model and zero bytes leave your machine.
+            party in the middle, no shared inference pool, no opaque retention policy stacked on top
+            of the model provider's own. For fully air-gapped reviews, switch the same project to a
+            local Ollama model and zero bytes leave your machine.
           </p>
         </Section>
 
@@ -269,7 +319,9 @@ function ByokPage() {
               </Link>
             </li>
             <li>
-              <Link to="/manifesto" className="text-foreground underline">The Decoder manifesto</Link>
+              <Link to="/manifesto" className="text-foreground underline">
+                The Decoder manifesto
+              </Link>
             </li>
           </ul>
         </Section>
@@ -277,6 +329,9 @@ function ByokPage() {
 
       <footer className="border-t border-border px-6 py-6 text-center text-xs text-muted-foreground">
         Decoder — open-source code understanding for the AI era.
+        <div className="mt-2">
+          <InstagramLink />
+        </div>
       </footer>
     </div>
   );

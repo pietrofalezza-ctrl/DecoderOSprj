@@ -122,7 +122,6 @@ export function AiOriginPanel({
     );
   }
 
-
   const bucketLabel = t(`aiOrigin.bucket.${result.bucket}`);
   const colorCls = bucketColorClass(result.bucket);
 

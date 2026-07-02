@@ -83,10 +83,10 @@ function AdminConsentsPage() {
         <div className="mx-auto max-w-2xl p-6 text-center">
           <ShieldCheck className="mx-auto h-10 w-10 text-muted-foreground" />
           <h1 className="mt-3 text-lg font-semibold">Admin only</h1>
-          <p className="mt-1 text-sm text-muted-foreground">
-            You don't have access to this area.
-          </p>
-          <Button className="mt-4" onClick={() => navigate({ to: "/" })}>Go home</Button>
+          <p className="mt-1 text-sm text-muted-foreground">You don't have access to this area.</p>
+          <Button className="mt-4" onClick={() => navigate({ to: "/" })}>
+            Go home
+          </Button>
         </div>
       </AppShell>
     );
@@ -102,8 +102,8 @@ function AdminConsentsPage() {
           <div>
             <h1 className="text-xl font-semibold">Consent records</h1>
             <p className="text-sm text-muted-foreground">
-              Audit log of every BYOK / onboarding acknowledgement, with versioned terms,
-              language, IP and user-agent. Read-only — for compliance and authority requests.
+              Audit log of every BYOK / onboarding acknowledgement, with versioned terms, language,
+              IP and user-agent. Read-only — for compliance and authority requests.
             </p>
           </div>
           <Button asChild variant="ghost" size="sm">
@@ -114,7 +114,9 @@ function AdminConsentsPage() {
         <section className="space-y-4 rounded-lg border border-border bg-card p-5">
           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
             <div className="space-y-1.5">
-              <Label htmlFor="search" className="text-xs">Search (email or user id)</Label>
+              <Label htmlFor="search" className="text-xs">
+                Search (email or user id)
+              </Label>
               <Input
                 id="search"
                 value={filters.search}
@@ -139,7 +141,9 @@ function AdminConsentsPage() {
               </Select>
             </div>
             <div className="space-y-1.5">
-              <Label htmlFor="from" className="text-xs">From</Label>
+              <Label htmlFor="from" className="text-xs">
+                From
+              </Label>
               <Input
                 id="from"
                 type="date"
@@ -148,7 +152,9 @@ function AdminConsentsPage() {
               />
             </div>
             <div className="space-y-1.5">
-              <Label htmlFor="to" className="text-xs">To</Label>
+              <Label htmlFor="to" className="text-xs">
+                To
+              </Label>
               <Input
                 id="to"
                 type="date"

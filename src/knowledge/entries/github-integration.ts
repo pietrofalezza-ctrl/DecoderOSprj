@@ -21,12 +21,16 @@ export const githubIntegration: KnowledgeEntry = {
           howDecoderImplements: "Enter the URL on the homepage, Decoder fetches and analyses.",
           whenToUse: "Auditing OSS, reviewing a PR you didn't write, exploring a new project.",
           whenNotToUse: "Private repos — use ZIP upload for those today.",
-          practicalExample: "Paste github.com/owner/repo, hit Analyse, get findings in under a minute.",
+          practicalExample:
+            "Paste github.com/owner/repo, hit Analyse, get findings in under a minute.",
         },
       },
       faq: [
         { q: "Private repos?", a: "Not yet — use ZIP upload. OAuth import is on the roadmap." },
-        { q: "How big can a repo be?", a: "Size limits apply to keep the scan responsive; very large monorepos may need partial uploads." },
+        {
+          q: "How big can a repo be?",
+          a: "Size limits apply to keep the scan responsive; very large monorepos may need partial uploads.",
+        },
       ],
       glossary: [
         { term: "Tarball", definition: "Compressed archive used to fetch a repo snapshot." },

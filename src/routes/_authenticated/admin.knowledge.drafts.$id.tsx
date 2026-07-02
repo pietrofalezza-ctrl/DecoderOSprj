@@ -80,8 +80,14 @@ function DraftEditor() {
           type: meta.type,
           status: status ?? meta.status,
           lang_default: "en",
-          tags: meta.tags.split(",").map((s) => s.trim()).filter(Boolean),
-          related_slugs: meta.related.split(",").map((s) => s.trim()).filter(Boolean),
+          tags: meta.tags
+            .split(",")
+            .map((s) => s.trim())
+            .filter(Boolean),
+          related_slugs: meta.related
+            .split(",")
+            .map((s) => s.trim())
+            .filter(Boolean),
           priority: 0,
         },
       });
@@ -118,7 +124,11 @@ function DraftEditor() {
   return (
     <div className="space-y-4">
       <div className="flex flex-wrap items-center gap-2">
-        <Button variant="ghost" size="sm" onClick={() => navigate({ to: "/admin/knowledge/drafts" })}>
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={() => navigate({ to: "/admin/knowledge/drafts" })}
+        >
           ← All drafts
         </Button>
         <span className="text-xs text-muted-foreground">/{meta.slug}</span>
@@ -139,7 +149,10 @@ function DraftEditor() {
         </label>
         <label className="space-y-1 text-xs sm:col-span-2">
           <span className="text-muted-foreground">Related slugs (comma-separated)</span>
-          <Input value={meta.related} onChange={(e) => setMeta({ ...meta, related: e.target.value })} />
+          <Input
+            value={meta.related}
+            onChange={(e) => setMeta({ ...meta, related: e.target.value })}
+          />
         </label>
       </section>
 
@@ -151,23 +164,40 @@ function DraftEditor() {
               type="button"
               onClick={() => setLang(l)}
               className={`rounded-md px-2 py-1 text-xs ${
-                lang === l ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:bg-muted"
+                lang === l
+                  ? "bg-primary text-primary-foreground"
+                  : "text-muted-foreground hover:bg-muted"
               }`}
             >
               {l.toUpperCase()}
             </button>
           ))}
           <span className="ml-auto flex gap-1">
-            <Button size="sm" variant="ghost" onClick={() => trMut.mutate("it")} disabled={trMut.isPending}>
+            <Button
+              size="sm"
+              variant="ghost"
+              onClick={() => trMut.mutate("it")}
+              disabled={trMut.isPending}
+            >
               <Languages className="mr-1 h-3.5 w-3.5" /> AI → IT
             </Button>
-            <Button size="sm" variant="ghost" onClick={() => trMut.mutate("zh")} disabled={trMut.isPending}>
+            <Button
+              size="sm"
+              variant="ghost"
+              onClick={() => trMut.mutate("zh")}
+              disabled={trMut.isPending}
+            >
               <Languages className="mr-1 h-3.5 w-3.5" /> AI → ZH
             </Button>
           </span>
         </div>
         <Input placeholder="Title" value={title} onChange={(e) => setTitle(e.target.value)} />
-        <Textarea placeholder="Summary" rows={2} value={summary} onChange={(e) => setSummary(e.target.value)} />
+        <Textarea
+          placeholder="Summary"
+          rows={2}
+          value={summary}
+          onChange={(e) => setSummary(e.target.value)}
+        />
         <Textarea
           placeholder="Body (Markdown)"
           rows={16}

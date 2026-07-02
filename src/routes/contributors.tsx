@@ -1,9 +1,11 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useSuspenseQuery, queryOptions } from "@tanstack/react-query";
+import { useTranslation } from "react-i18next";
 import { ArrowLeft, Github, GitMerge } from "lucide-react";
 
 import { getContributors } from "@/lib/contributors.functions";
 import { Logo } from "@/components/Logo";
+import { InstagramIcon } from "@/components/InstagramLink";
 
 const contributorsQuery = queryOptions({
   queryKey: ["contributors"],
@@ -27,8 +29,7 @@ export const Route = createFileRoute("/contributors")({
       },
       {
         property: "og:description",
-        content:
-          "Auto-updated list of Decoder contributors and merged pull requests on GitHub.",
+        content: "Auto-updated list of Decoder contributors and merged pull requests on GitHub.",
       },
       { property: "og:url", content: "https://decoderead.dev/contributors" },
     ],
@@ -39,6 +40,7 @@ export const Route = createFileRoute("/contributors")({
 
 function ContributorsPage() {
   const { data } = useSuspenseQuery(contributorsQuery);
+  const { t } = useTranslation();
 
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -154,9 +156,7 @@ function ContributorsPage() {
                     <div className="flex min-w-0 items-start gap-3">
                       <GitMerge className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
                       <div className="min-w-0">
-                        <p className="truncate font-medium group-hover:text-primary">
-                          {pr.title}
-                        </p>
+                        <p className="truncate font-medium group-hover:text-primary">{pr.title}</p>
                         <p className="mt-1 flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
                           <span className="font-mono">#{pr.number}</span>
                           {pr.author && (
@@ -202,6 +202,15 @@ function ContributorsPage() {
           >
             <Github className="h-4 w-4" />
             Open the repository on GitHub
+          </a>
+          <a
+            href={t("common.instagramUrl")}
+            target="_blank"
+            rel="noreferrer"
+            className="ml-4 inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground"
+          >
+            <InstagramIcon className="h-4 w-4" />
+            Follow on Instagram
           </a>
           <p className="mt-3 font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground/70">
             Last refreshed {new Date(data.fetchedAt).toLocaleString()}

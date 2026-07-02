@@ -18,18 +18,28 @@ export const secretDetection: KnowledgeEntry = {
         dev: {
           whatItIs: "Detector class that flags strings looking like credentials in source files.",
           whyUseful: "Stops .env values, OAuth tokens, or private keys from reaching git history.",
-          howDecoderImplements: "Provider regex catalog + Shannon entropy threshold + path heuristics (.env*, config/*).",
+          howDecoderImplements:
+            "Provider regex catalog + Shannon entropy threshold + path heuristics (.env*, config/*).",
           whenToUse: "Before committing, before publishing, and on every CI run.",
           whenNotToUse: "Test fixtures with obvious dummy keys — add a comment to suppress.",
           practicalExample: "An AKIA... string in src/config.ts is flagged Critical with CWE-798.",
         },
       },
       faq: [
-        { q: "False positives?", a: "Yes for high-entropy non-secrets (UUIDs, hashes). Use the severity filter to focus." },
-        { q: "Does it check git history?", a: "Decoder scans uploaded files only — pair with git-leaks for history scans." },
+        {
+          q: "False positives?",
+          a: "Yes for high-entropy non-secrets (UUIDs, hashes). Use the severity filter to focus.",
+        },
+        {
+          q: "Does it check git history?",
+          a: "Decoder scans uploaded files only — pair with git-leaks for history scans.",
+        },
       ],
       glossary: [
-        { term: "Entropy", definition: "Measure of randomness — high entropy suggests a real secret." },
+        {
+          term: "Entropy",
+          definition: "Measure of randomness — high entropy suggests a real secret.",
+        },
         { term: "CWE-798", definition: "Use of Hard-coded Credentials." },
       ],
       cta: { label: "Scan a project", href: "/" },

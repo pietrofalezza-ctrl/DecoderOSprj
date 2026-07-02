@@ -4,6 +4,7 @@ import { ArrowLeft, ShieldCheck, Search, BookOpen, Cpu, Terminal, GitCompare } f
 import { LangSwitcher } from "@/components/LangSwitcher";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { Logo } from "@/components/Logo";
+import { InstagramLink } from "@/components/InstagramLink";
 import { PublicHeaderAuthSlot } from "@/components/PublicHeaderAuthSlot";
 
 const TITLE = "Static code analysis without an API key — Decoder";
@@ -39,7 +40,11 @@ export const Route = createFileRoute("/docs/static-code-analysis-no-api-key")({
     meta: [
       { title: TITLE },
       { name: "description", content: DESC },
-      { name: "keywords", content: "static code analysis no api key, offline static analysis, free static code scanner, no account code analysis, keyless code review" },
+      {
+        name: "keywords",
+        content:
+          "static code analysis no api key, offline static analysis, free static code scanner, no account code analysis, keyless code review",
+      },
       { property: "og:title", content: TITLE },
       { property: "og:description", content: DESC },
       { property: "og:type", content: "article" },
@@ -86,7 +91,12 @@ export const Route = createFileRoute("/docs/static-code-analysis-no-api-key")({
           itemListElement: [
             { "@type": "ListItem", position: 1, name: "Home", item: "https://decoderead.dev/" },
             { "@type": "ListItem", position: 2, name: "Docs", item: "https://decoderead.dev/docs" },
-            { "@type": "ListItem", position: 3, name: "Static code analysis without API key", item: URL },
+            {
+              "@type": "ListItem",
+              position: 3,
+              name: "Static code analysis without API key",
+              item: URL,
+            },
           ],
         }),
       },
@@ -95,7 +105,15 @@ export const Route = createFileRoute("/docs/static-code-analysis-no-api-key")({
   component: StaticAnalysisPage,
 });
 
-function Section({ icon, title, children }: { icon: React.ReactNode; title: string; children: React.ReactNode }) {
+function Section({
+  icon,
+  title,
+  children,
+}: {
+  icon: React.ReactNode;
+  title: string;
+  children: React.ReactNode;
+}) {
   return (
     <section className="mt-12">
       <div className="mb-3 flex items-center gap-3">
@@ -115,7 +133,9 @@ function StaticAnalysisPage() {
   return (
     <div className="min-h-screen bg-background text-foreground">
       <header className="sticky top-0 z-30 flex h-14 items-center justify-between border-b border-border/60 bg-background/80 px-6 backdrop-blur">
-        <Link to="/" aria-label="Decoder"><Logo /></Link>
+        <Link to="/" aria-label="Decoder">
+          <Logo />
+        </Link>
         <div className="flex items-center gap-1">
           <ThemeToggle />
           <LangSwitcher />
@@ -124,7 +144,10 @@ function StaticAnalysisPage() {
       </header>
 
       <main className="mx-auto max-w-3xl px-4 py-12 sm:px-6 md:py-16">
-        <Link to="/docs" className="inline-flex items-center gap-2 text-xs text-muted-foreground hover:text-foreground">
+        <Link
+          to="/docs"
+          className="inline-flex items-center gap-2 text-xs text-muted-foreground hover:text-foreground"
+        >
           <ArrowLeft className="h-3 w-3" /> Back to docs
         </Link>
 
@@ -132,16 +155,15 @@ function StaticAnalysisPage() {
           Static code analysis without an API key
         </h1>
         <p className="mt-4 text-lg text-muted-foreground">
-          Most AI-powered code tools are gated behind an account and an API key before they show
-          you anything useful. Decoder flips that: <strong>static code analysis without an API key</strong>{" "}
-          is the default. Upload a file, get a full security and quality scan immediately — add a
-          key later if you want the AI explanation layer on top.
+          Most AI-powered code tools are gated behind an account and an API key before they show you
+          anything useful. Decoder flips that:{" "}
+          <strong>static code analysis without an API key</strong> is the default. Upload a file,
+          get a full security and quality scan immediately — add a key later if you want the AI
+          explanation layer on top.
         </p>
 
         <Section icon={<Search className="h-5 w-5" />} title="What runs with zero credentials">
-          <p>
-            The keyless pass covers two independent engines:
-          </p>
+          <p>The keyless pass covers two independent engines:</p>
           <ul>
             <li>
               <strong>Static pattern scan</strong> — deterministic rules across 20+ languages
@@ -154,12 +176,15 @@ function StaticAnalysisPage() {
             </li>
           </ul>
           <p>
-            Both engines run in the browser / server-side without phoning home. No data leaves
-            your machine during this step.
+            Both engines run in the browser / server-side without phoning home. No data leaves your
+            machine during this step.
           </p>
         </Section>
 
-        <Section icon={<ShieldCheck className="h-5 w-5" />} title="Static code analysis without API key — coverage">
+        <Section
+          icon={<ShieldCheck className="h-5 w-5" />}
+          title="Static code analysis without API key — coverage"
+        >
           <div className="not-prose overflow-x-auto rounded-lg border border-border">
             <table className="w-full text-sm">
               <thead className="bg-muted/40 text-foreground">
@@ -170,12 +195,36 @@ function StaticAnalysisPage() {
                 </tr>
               </thead>
               <tbody className="text-muted-foreground [&_td]:px-3 [&_td]:py-2 [&_tr]:border-t [&_tr]:border-border">
-                <tr><td className="text-foreground">SQL / command injection</td><td>✓ deterministic</td><td>+ explanation</td></tr>
-                <tr><td className="text-foreground">Hardcoded secrets</td><td>✓ deterministic</td><td>+ remediation advice</td></tr>
-                <tr><td className="text-foreground">Insecure crypto</td><td>✓ deterministic</td><td>+ safe alternative</td></tr>
-                <tr><td className="text-foreground">Malware / IOC match</td><td>✓ deterministic</td><td>+ payload analysis</td></tr>
-                <tr><td className="text-foreground">Logic / design review</td><td>—</td><td>✓ AI-only</td></tr>
-                <tr><td className="text-foreground">Chatting about findings</td><td>—</td><td>✓ AI-only</td></tr>
+                <tr>
+                  <td className="text-foreground">SQL / command injection</td>
+                  <td>✓ deterministic</td>
+                  <td>+ explanation</td>
+                </tr>
+                <tr>
+                  <td className="text-foreground">Hardcoded secrets</td>
+                  <td>✓ deterministic</td>
+                  <td>+ remediation advice</td>
+                </tr>
+                <tr>
+                  <td className="text-foreground">Insecure crypto</td>
+                  <td>✓ deterministic</td>
+                  <td>+ safe alternative</td>
+                </tr>
+                <tr>
+                  <td className="text-foreground">Malware / IOC match</td>
+                  <td>✓ deterministic</td>
+                  <td>+ payload analysis</td>
+                </tr>
+                <tr>
+                  <td className="text-foreground">Logic / design review</td>
+                  <td>—</td>
+                  <td>✓ AI-only</td>
+                </tr>
+                <tr>
+                  <td className="text-foreground">Chatting about findings</td>
+                  <td>—</td>
+                  <td>✓ AI-only</td>
+                </tr>
               </tbody>
             </table>
           </div>
@@ -183,25 +232,36 @@ function StaticAnalysisPage() {
 
         <Section icon={<Terminal className="h-5 w-5" />} title="Running the scan">
           <ol>
-            <li>Upload a single file or a ZIP archive from the dashboard. No sign-in required for a trial.</li>
-            <li>The <strong>Static</strong> and <strong>Malware</strong> tabs populate immediately.</li>
-            <li>Each finding links to the exact line, shows the rule that fired, and gives a severity level.</li>
-            <li>Optionally: add a BYOK or local-model key to unlock the <strong>Explain with AI</strong> panel for each finding.</li>
+            <li>
+              Upload a single file or a ZIP archive from the dashboard. No sign-in required for a
+              trial.
+            </li>
+            <li>
+              The <strong>Static</strong> and <strong>Malware</strong> tabs populate immediately.
+            </li>
+            <li>
+              Each finding links to the exact line, shows the rule that fired, and gives a severity
+              level.
+            </li>
+            <li>
+              Optionally: add a BYOK or local-model key to unlock the{" "}
+              <strong>Explain with AI</strong> panel for each finding.
+            </li>
           </ol>
         </Section>
 
         <Section icon={<Cpu className="h-5 w-5" />} title="Why deterministic first?">
           <p>
-            LLMs are powerful but non-deterministic — they can miss a known injection pattern 10%
-            of the time and explain an imaginary vulnerability the other 10%. Deterministic rules
-            don't hallucinate. For a known-bad pattern like <code>eval(req.body)</code> or
+            LLMs are powerful but non-deterministic — they can miss a known injection pattern 10% of
+            the time and explain an imaginary vulnerability the other 10%. Deterministic rules don't
+            hallucinate. For a known-bad pattern like <code>eval(req.body)</code> or
             <code>md5(password)</code>, a rule fires every time or never.
           </p>
           <p>
             Decoder's architecture runs the deterministic pass first, uses the findings as
-            <em>grounding context</em> for the AI call, and prevents the model from contradicting
-            a deterministic result. This is why BYOK adds explanation value without compromising
-            the correctness of the base scan.
+            <em>grounding context</em> for the AI call, and prevents the model from contradicting a
+            deterministic result. This is why BYOK adds explanation value without compromising the
+            correctness of the base scan.
           </p>
         </Section>
 
@@ -209,8 +269,8 @@ function StaticAnalysisPage() {
           <p>
             SonarQube and Semgrep are excellent enterprise tools but require server installs, CI
             plugins, or a SaaS account before you scan a single file. Decoder's keyless scan is
-            aimed at a different workflow: <em>quick, browser-based, zero-setup</em> analysis of
-            any file or zip without provisioning infrastructure.
+            aimed at a different workflow: <em>quick, browser-based, zero-setup</em> analysis of any
+            file or zip without provisioning infrastructure.
           </p>
           <p>
             For teams that already run Semgrep in CI, Decoder serves a complementary role: the
@@ -233,7 +293,10 @@ function StaticAnalysisPage() {
         <Section icon={<BookOpen className="h-5 w-5" />} title="Related guides">
           <ul>
             <li>
-              <Link to="/docs/free-malware-scanner-source-code" className="text-foreground underline">
+              <Link
+                to="/docs/free-malware-scanner-source-code"
+                className="text-foreground underline"
+              >
                 Free malware scanner for source code
               </Link>
             </li>
@@ -253,6 +316,9 @@ function StaticAnalysisPage() {
 
       <footer className="border-t border-border px-6 py-6 text-center text-xs text-muted-foreground">
         Decoder — open-source code understanding for the AI era.
+        <div className="mt-2">
+          <InstagramLink />
+        </div>
       </footer>
     </div>
   );

@@ -82,7 +82,6 @@ export const KNOWLEDGE_ENTRIES: KnowledgeEntry[] = RAW_ENTRIES.map((entry) => {
   };
 });
 
-
 export const KNOWLEDGE_BY_SLUG: Record<string, KnowledgeEntry> = Object.fromEntries(
   KNOWLEDGE_ENTRIES.map((e) => [e.slug, e]),
 );
@@ -116,10 +115,6 @@ export function getRelatedEntries(slug: string): KnowledgeEntry[] {
   return [...out].map((s) => KNOWLEDGE_BY_SLUG[s]).filter(Boolean);
 }
 
-export const KNOWLEDGE_CATEGORIES = [
-  ...new Set(KNOWLEDGE_ENTRIES.map((e) => e.category)),
-].sort();
+export const KNOWLEDGE_CATEGORIES = [...new Set(KNOWLEDGE_ENTRIES.map((e) => e.category))].sort();
 
-export const KNOWLEDGE_TAGS = [
-  ...new Set(KNOWLEDGE_ENTRIES.flatMap((e) => e.tags)),
-].sort();
+export const KNOWLEDGE_TAGS = [...new Set(KNOWLEDGE_ENTRIES.flatMap((e) => e.tags))].sort();

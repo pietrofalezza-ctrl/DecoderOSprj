@@ -123,9 +123,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
             "Open-source AI code analysis — review AI-generated code, run static and malware checks, and chat with your repository in any language.",
           keywords:
             "AI code analysis, AI code review, AI-generated code, static code analysis, malware analysis, code understanding",
-          sameAs: [
-            "https://github.com/decoderead",
-          ],
+          sameAs: ["https://github.com/decoderead", "https://www.instagram.com/decoderead.dev"],
         }),
       },
     ],

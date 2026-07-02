@@ -4,6 +4,7 @@ import { ArrowLeft, MapPin, BookOpen, Building2, Coins } from "lucide-react";
 import { LangSwitcher } from "@/components/LangSwitcher";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { Logo } from "@/components/Logo";
+import { InstagramLink } from "@/components/InstagramLink";
 import { PublicHeaderAuthSlot } from "@/components/PublicHeaderAuthSlot";
 
 const TITLE = "AI code review in Bangalore — open-source, BYOK, low-cost";
@@ -27,7 +28,11 @@ export const Route = createFileRoute("/docs/ai-code-review-bangalore")({
     meta: [
       { title: TITLE },
       { name: "description", content: DESC },
-      { name: "keywords", content: "ai code review bangalore, bengaluru ai tools, code analysis karnataka, byok code review india, open source developer tools bangalore" },
+      {
+        name: "keywords",
+        content:
+          "ai code review bangalore, bengaluru ai tools, code analysis karnataka, byok code review india, open source developer tools bangalore",
+      },
       { property: "og:title", content: TITLE },
       { property: "og:description", content: DESC },
       { property: "og:type", content: "article" },
@@ -76,7 +81,11 @@ export const Route = createFileRoute("/docs/ai-code-review-bangalore")({
         children: JSON.stringify({
           "@context": "https://schema.org",
           "@type": "FAQPage",
-          mainEntity: FAQ.map((f) => ({ "@type": "Question", name: f.q, acceptedAnswer: { "@type": "Answer", text: f.a } })),
+          mainEntity: FAQ.map((f) => ({
+            "@type": "Question",
+            name: f.q,
+            acceptedAnswer: { "@type": "Answer", text: f.a },
+          })),
         }),
       },
     ],
@@ -84,11 +93,21 @@ export const Route = createFileRoute("/docs/ai-code-review-bangalore")({
   component: Page,
 });
 
-function Section({ icon, title, children }: { icon: React.ReactNode; title: string; children: React.ReactNode }) {
+function Section({
+  icon,
+  title,
+  children,
+}: {
+  icon: React.ReactNode;
+  title: string;
+  children: React.ReactNode;
+}) {
   return (
     <section className="mt-12">
       <div className="mb-3 flex items-center gap-3">
-        <span className="inline-flex h-9 w-9 items-center justify-center rounded-md border border-border bg-card text-primary">{icon}</span>
+        <span className="inline-flex h-9 w-9 items-center justify-center rounded-md border border-border bg-card text-primary">
+          {icon}
+        </span>
         <h2 className="font-display text-2xl font-medium tracking-tight">{title}</h2>
       </div>
       <div className="prose prose-sm max-w-none text-muted-foreground prose-headings:text-foreground prose-strong:text-foreground prose-li:marker:text-muted-foreground">
@@ -102,7 +121,9 @@ function Page() {
   return (
     <div className="min-h-screen bg-background text-foreground">
       <header className="sticky top-0 z-30 flex h-14 items-center justify-between border-b border-border/60 bg-background/80 px-6 backdrop-blur">
-        <Link to="/" aria-label="Decoder"><Logo /></Link>
+        <Link to="/" aria-label="Decoder">
+          <Logo />
+        </Link>
         <div className="flex items-center gap-1">
           <ThemeToggle />
           <LangSwitcher />
@@ -111,7 +132,10 @@ function Page() {
       </header>
 
       <main className="mx-auto max-w-3xl px-4 py-12 sm:px-6 md:py-16">
-        <Link to="/docs" className="inline-flex items-center gap-2 text-xs text-muted-foreground hover:text-foreground">
+        <Link
+          to="/docs"
+          className="inline-flex items-center gap-2 text-xs text-muted-foreground hover:text-foreground"
+        >
           <ArrowLeft className="h-3 w-3" /> Back to documentation
         </Link>
 
@@ -119,35 +143,71 @@ function Page() {
           AI code review in Bangalore
         </h1>
         <p className="mt-4 text-lg text-muted-foreground">
-          Bangalore is India's largest concentration of software developers — and one of the world's largest. From
-          product startups in Koramangala to enterprise SaaS in Whitefield and service providers in Electronic City,
-          teams here ship huge amounts of AI-assisted code every day. Decoder gives every team a free, open-source,
-          BYOK-friendly review layer that scales with them.
+          Bangalore is India's largest concentration of software developers — and one of the world's
+          largest. From product startups in Koramangala to enterprise SaaS in Whitefield and service
+          providers in Electronic City, teams here ship huge amounts of AI-assisted code every day.
+          Decoder gives every team a free, open-source, BYOK-friendly review layer that scales with
+          them.
         </p>
 
-        <Section icon={<MapPin className="h-5 w-5" />} title="Where Decoder fits the Bangalore stack">
+        <Section
+          icon={<MapPin className="h-5 w-5" />}
+          title="Where Decoder fits the Bangalore stack"
+        >
           <ul>
-            <li><strong>Product startups</strong> — free static + malware scan on every PR before human review.</li>
-            <li><strong>Enterprise SaaS</strong> — BYOK on Anthropic or Gemini, DPDP-aligned, EU-hosted models if selling to Europe.</li>
-            <li><strong>Service providers &amp; agencies</strong> — audit AI-code deliveries for clients; attach reports to invoices.</li>
-            <li><strong>Educational programs (IIIT-B, IISc, bootcamps)</strong> — teach students to critique AI code, not just accept it.</li>
+            <li>
+              <strong>Product startups</strong> — free static + malware scan on every PR before
+              human review.
+            </li>
+            <li>
+              <strong>Enterprise SaaS</strong> — BYOK on Anthropic or Gemini, DPDP-aligned,
+              EU-hosted models if selling to Europe.
+            </li>
+            <li>
+              <strong>Service providers &amp; agencies</strong> — audit AI-code deliveries for
+              clients; attach reports to invoices.
+            </li>
+            <li>
+              <strong>Educational programs (IIIT-B, IISc, bootcamps)</strong> — teach students to
+              critique AI code, not just accept it.
+            </li>
           </ul>
         </Section>
 
         <Section icon={<Coins className="h-5 w-5" />} title="The Bangalore math">
           <p>
-            A typical 15-person team runs ₹4–5 lakh/year on a SaaS AI reviewer at USD per seat. With Decoder's BYOK
-            model you pay only your model usage (often under ₹1 lakh/year for the same volume), and you can drop that
-            to zero by running local models on a beefy Mac / workstation.
+            A typical 15-person team runs ₹4–5 lakh/year on a SaaS AI reviewer at USD per seat. With
+            Decoder's BYOK model you pay only your model usage (often under ₹1 lakh/year for the
+            same volume), and you can drop that to zero by running local models on a beefy Mac /
+            workstation.
           </p>
         </Section>
 
         <Section icon={<Building2 className="h-5 w-5" />} title="Related">
           <ul>
-            <li><Link to="/docs/ai-code-review-india" className="text-foreground underline">AI code review in India (main guide)</Link></li>
-            <li><Link to="/docs/ai-code-review-hyderabad-chennai" className="text-foreground underline">Hyderabad &amp; Chennai</Link></li>
-            <li><Link to="/docs/dpdp-act-ai-code-analysis" className="text-foreground underline">DPDP Act &amp; AI code analysis</Link></li>
-            <li><Link to="/docs/ai-code-review-outsourcing" className="text-foreground underline">Auditing outsourced AI code</Link></li>
+            <li>
+              <Link to="/docs/ai-code-review-india" className="text-foreground underline">
+                AI code review in India (main guide)
+              </Link>
+            </li>
+            <li>
+              <Link
+                to="/docs/ai-code-review-hyderabad-chennai"
+                className="text-foreground underline"
+              >
+                Hyderabad &amp; Chennai
+              </Link>
+            </li>
+            <li>
+              <Link to="/docs/dpdp-act-ai-code-analysis" className="text-foreground underline">
+                DPDP Act &amp; AI code analysis
+              </Link>
+            </li>
+            <li>
+              <Link to="/docs/ai-code-review-outsourcing" className="text-foreground underline">
+                Auditing outsourced AI code
+              </Link>
+            </li>
           </ul>
         </Section>
 
@@ -165,6 +225,9 @@ function Page() {
 
       <footer className="border-t border-border px-6 py-6 text-center text-xs text-muted-foreground">
         Decoder — open-source code understanding for the AI era.
+        <div className="mt-2">
+          <InstagramLink />
+        </div>
       </footer>
     </div>
   );

@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { LangSwitcher } from "@/components/LangSwitcher";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { Logo } from "@/components/Logo";
+import { InstagramLink } from "@/components/InstagramLink";
 import { PublicHeaderAuthSlot } from "@/components/PublicHeaderAuthSlot";
 
 export const Route = createFileRoute("/contact")({
@@ -134,6 +135,7 @@ function ContactPage() {
             <Link to="/docs" className="hover:text-foreground">
               {t("landing.nav.docs")}
             </Link>
+            <InstagramLink />
           </nav>
           <span>{t("footer.ownership")}</span>
         </div>

@@ -1,6 +1,17 @@
 import { Link } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
-import { Bot, FileBadge2, FileCode, Filter, History, MessageSquare, ScanSearch, ShieldAlert, Sparkles, Wrench } from "lucide-react";
+import {
+  Bot,
+  FileBadge2,
+  FileCode,
+  Filter,
+  History,
+  MessageSquare,
+  ScanSearch,
+  ShieldAlert,
+  Sparkles,
+  Wrench,
+} from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -57,10 +68,13 @@ export const HISTORY_KIND_OPTIONS = Object.keys(KIND_LABEL);
 
 function fmtDate(iso: string, locale: string): string {
   try {
-    return new Date(iso).toLocaleString(locale === "zh" ? "zh-CN" : locale === "it" ? "it-IT" : "en-US", {
-      dateStyle: "medium",
-      timeStyle: "short",
-    });
+    return new Date(iso).toLocaleString(
+      locale === "zh" ? "zh-CN" : locale === "it" ? "it-IT" : "en-US",
+      {
+        dateStyle: "medium",
+        timeStyle: "short",
+      },
+    );
   } catch {
     return iso;
   }
@@ -92,7 +106,9 @@ export function HistoryTimeline({
   loadingMore?: boolean;
   kind?: string;
   onKindChange?: (kind: string) => void;
-  buildFileHref?: (a: HistoryActivity) => { to: string; params?: Record<string, string>; search?: Record<string, string> } | null;
+  buildFileHref?: (
+    a: HistoryActivity,
+  ) => { to: string; params?: Record<string, string>; search?: Record<string, string> } | null;
 }) {
   const { t, i18n } = useTranslation();
   const locale = i18n.language;

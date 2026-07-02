@@ -19,8 +19,7 @@ export const Route = createFileRoute("/api/public/hooks/github-pr")({
 
         const sigHeader = request.headers.get("x-hub-signature-256") ?? "";
         const raw = await request.text();
-        const expected =
-          "sha256=" + createHmac("sha256", secret).update(raw).digest("hex");
+        const expected = "sha256=" + createHmac("sha256", secret).update(raw).digest("hex");
         const a = Buffer.from(sigHeader);
         const b = Buffer.from(expected);
         if (a.length !== b.length || !timingSafeEqual(a, b)) {
@@ -65,7 +64,10 @@ export const Route = createFileRoute("/api/public/hooks/github-pr")({
           title: `PR: ${pr.title}`,
           rationale: (pr.body ?? "").slice(0, 800),
           suggested_type: "capability",
-          suggested_slug: `pr-${pr.number}-${pr.title.toLowerCase().replace(/[^a-z0-9]+/g, "-").slice(0, 50)}`,
+          suggested_slug: `pr-${pr.number}-${pr.title
+            .toLowerCase()
+            .replace(/[^a-z0-9]+/g, "-")
+            .slice(0, 50)}`,
           keywords: [],
           status: "open",
           kind: "pr",

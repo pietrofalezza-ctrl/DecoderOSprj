@@ -16,20 +16,34 @@ export const openrouter: KnowledgeEntry = {
         "OpenRouter is a unified API in front of many model providers. With BYOK you get access to dozens of models in Decoder from a single key.",
       byLevel: {
         dev: {
-          whatItIs: "A model-routing API that exposes Claude, GPT, Gemini, Llama and others through one OpenAI-compatible interface.",
+          whatItIs:
+            "A model-routing API that exposes Claude, GPT, Gemini, Llama and others through one OpenAI-compatible interface.",
           whyUseful: "One key, one bill, many models. Switch model per task without re-wiring.",
-          howDecoderImplements: "Settings → Add OpenRouter key → choose model in the picker. Decoder retries with `Retry-After` on 429 rate limits.",
-          whenToUse: "When you want to compare models or use the right model for the task without juggling multiple provider accounts.",
-          whenNotToUse: "Strict privacy environments — code is sent through OpenRouter to the chosen upstream provider.",
-          practicalExample: "Use a fast cheap model for routine explain calls, then switch to Claude Opus for hard malware reasoning — same key.",
+          howDecoderImplements:
+            "Settings → Add OpenRouter key → choose model in the picker. Decoder retries with `Retry-After` on 429 rate limits.",
+          whenToUse:
+            "When you want to compare models or use the right model for the task without juggling multiple provider accounts.",
+          whenNotToUse:
+            "Strict privacy environments — code is sent through OpenRouter to the chosen upstream provider.",
+          practicalExample:
+            "Use a fast cheap model for routine explain calls, then switch to Claude Opus for hard malware reasoning — same key.",
         },
       },
       faq: [
-        { q: "Where do I get an OpenRouter key?", a: "Sign up at openrouter.ai and create a key in your account settings." },
-        { q: "What happens on rate limits?", a: "Decoder reads the `Retry-After` header and retries with backoff, then surfaces a clear error if the limit persists." },
+        {
+          q: "Where do I get an OpenRouter key?",
+          a: "Sign up at openrouter.ai and create a key in your account settings.",
+        },
+        {
+          q: "What happens on rate limits?",
+          a: "Decoder reads the `Retry-After` header and retries with backoff, then surfaces a clear error if the limit persists.",
+        },
       ],
       glossary: [
-        { term: "Rate limit", definition: "Cap a provider sets on requests-per-minute or tokens-per-minute." },
+        {
+          term: "Rate limit",
+          definition: "Cap a provider sets on requests-per-minute or tokens-per-minute.",
+        },
       ],
       cta: { label: "Add your OpenRouter key", href: "/settings" },
     },

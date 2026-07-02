@@ -57,10 +57,7 @@ async function queryConsents(input: z.infer<typeof filtersSchema>): Promise<{
     q = q.ilike("user_id", `%${input.search}%`);
   }
 
-  const { data, error, count } = await q.range(
-    input.offset,
-    input.offset + input.limit - 1,
-  );
+  const { data, error, count } = await q.range(input.offset, input.offset + input.limit - 1);
   if (error) throw error;
 
   const userIds = Array.from(new Set((data ?? []).map((r) => r.user_id)));
@@ -154,7 +151,12 @@ export const exportConsentsCsv = createServerFn({ method: "POST" })
       stats: {
         exported_by: context.userId,
         count: rows.length,
-        filters: { type: data.type, from: data.from, to: data.to, search: data.search ? "***" : null },
+        filters: {
+          type: data.type,
+          from: data.from,
+          to: data.to,
+          search: data.search ? "***" : null,
+        },
       },
     });
 
