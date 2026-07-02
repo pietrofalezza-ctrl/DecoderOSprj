@@ -333,8 +333,10 @@ function OpenSourcePage() {
             <a href={repo} target="_blank" rel="noreferrer" className="hover:text-foreground">
               GitHub
             </a>
+            <InstagramLink />
           </nav>
           <span>{t("footer.ownership")}</span>
+
         </div>
       </footer>
     </div>
