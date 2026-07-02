@@ -17,16 +17,22 @@ export const gdprCompliance: KnowledgeEntry = {
       byLevel: {
         cto: {
           whatItIs: "EU regulation on processing personal data of EU residents.",
-          whyUseful: "Defines lawful bases, data minimisation, residency, and breach notification obligations.",
-          howDecoderImplements: "No training on user code; BYOK isolates AI calls to your chosen provider; local inference keeps code on your machine.",
+          whyUseful:
+            "Defines lawful bases, data minimisation, residency, and breach notification obligations.",
+          howDecoderImplements:
+            "No training on user code; BYOK isolates AI calls to your chosen provider; local inference keeps code on your machine.",
           whenToUse: "Vendor due diligence, DPA negotiation, internal audit.",
           whenNotToUse: "Don't rely on this page for legal qualification — consult counsel.",
-          practicalExample: "A reviewer pastes a log fixture with emails: running locally via Ollama keeps everything on-device.",
+          practicalExample:
+            "A reviewer pastes a log fixture with emails: running locally via Ollama keeps everything on-device.",
         },
       },
       faq: [
         { q: "Is user code used for training?", a: "No. Decoder does not train on user code." },
-        { q: "Where are AI requests sent?", a: "To the provider tied to the key you configured, or nowhere with local inference." },
+        {
+          q: "Where are AI requests sent?",
+          a: "To the provider tied to the key you configured, or nowhere with local inference.",
+        },
       ],
       glossary: [
         { term: "DPA", definition: "Data Processing Agreement." },

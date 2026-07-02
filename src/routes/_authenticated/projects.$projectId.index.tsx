@@ -106,19 +106,64 @@ function ProjectPage() {
     () =>
       new Set([
         "zip",
-        "js","jsx","ts","tsx","mjs","cjs",
-        "py","java","go","rs",
-        "c","cc","cpp","h","hpp",
-        "cs","rb","php","kt","kts","swift",
-        "sql","sh","bash","ps1",
-        "html","css","scss","sass","less",
-        "json","yml","yaml","toml","xml","md","txt",
-        "vue","svelte","dart","scala","lua","r","pl","ex","exs","clj","hs","ml","fs",
+        "js",
+        "jsx",
+        "ts",
+        "tsx",
+        "mjs",
+        "cjs",
+        "py",
+        "java",
+        "go",
+        "rs",
+        "c",
+        "cc",
+        "cpp",
+        "h",
+        "hpp",
+        "cs",
+        "rb",
+        "php",
+        "kt",
+        "kts",
+        "swift",
+        "sql",
+        "sh",
+        "bash",
+        "ps1",
+        "html",
+        "css",
+        "scss",
+        "sass",
+        "less",
+        "json",
+        "yml",
+        "yaml",
+        "toml",
+        "xml",
+        "md",
+        "txt",
+        "vue",
+        "svelte",
+        "dart",
+        "scala",
+        "lua",
+        "r",
+        "pl",
+        "ex",
+        "exs",
+        "clj",
+        "hs",
+        "ml",
+        "fs",
       ]),
     [],
   );
   const acceptAttr = useMemo(
-    () => Array.from(SUPPORTED_EXTS).map((e) => `.${e}`).join(","),
+    () =>
+      Array.from(SUPPORTED_EXTS)
+        .map((e) => `.${e}`)
+        .join(","),
     [SUPPORTED_EXTS],
   );
 
@@ -316,7 +361,12 @@ function ProjectPage() {
             </div>
             <div className="flex flex-wrap justify-end gap-2">
               <input ref={fileRef} type="file" accept={acceptAttr} hidden onChange={onFile} />
-              <Button variant="outline" onClick={onPick} disabled={uploading} title={t("project.uploadZipHint")}>
+              <Button
+                variant="outline"
+                onClick={onPick}
+                disabled={uploading}
+                title={t("project.uploadZipHint")}
+              >
                 <Upload className="mr-2 h-4 w-4" />
                 {uploading ? t("project.uploading") : t("project.uploadZip")}
               </Button>
@@ -374,9 +424,10 @@ function ProjectPage() {
         <div className="flex items-start gap-3 rounded-lg border border-primary/30 bg-primary/5 p-3 text-xs sm:text-sm">
           <Sparkles className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
           <p className="text-muted-foreground">
-            <span className="font-medium text-foreground">New: Chat with your code.</span> Open a repository below,
-            pick a folder, then open the <strong className="text-foreground">Chat</strong> tab to ask questions about
-            the code. Conversations are persisted per repository.
+            <span className="font-medium text-foreground">New: Chat with your code.</span> Open a
+            repository below, pick a folder, then open the{" "}
+            <strong className="text-foreground">Chat</strong> tab to ask questions about the code.
+            Conversations are persisted per repository.
           </p>
         </div>
 

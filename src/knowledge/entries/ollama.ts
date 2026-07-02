@@ -18,18 +18,28 @@ export const ollama: KnowledgeEntry = {
         dev: {
           whatItIs: "A local model server exposing an OpenAI-compatible HTTP API.",
           whyUseful: "Zero-config private inference; one binary, many open-weight models.",
-          howDecoderImplements: "Settings → Local AI → base URL `http://localhost:11434/v1` → choose model (e.g. llama3.1, qwen2.5-coder).",
-          whenToUse: "Private code analysis, offline work, learning prompts without burning cloud tokens.",
-          whenNotToUse: "Frontier-quality reasoning on large diffs — cloud frontier models still lead.",
-          practicalExample: "`ollama pull qwen2.5-coder:7b` then point Decoder at the local URL and run Explain on a function.",
+          howDecoderImplements:
+            "Settings → Local AI → base URL `http://localhost:11434/v1` → choose model (e.g. llama3.1, qwen2.5-coder).",
+          whenToUse:
+            "Private code analysis, offline work, learning prompts without burning cloud tokens.",
+          whenNotToUse:
+            "Frontier-quality reasoning on large diffs — cloud frontier models still lead.",
+          practicalExample:
+            "`ollama pull qwen2.5-coder:7b` then point Decoder at the local URL and run Explain on a function.",
         },
       },
       faq: [
         { q: "Is Ollama free?", a: "Yes — it's open source and you run it yourself." },
-        { q: "Does Decoder send code to Ollama's servers?", a: "No. Ollama runs entirely on your machine." },
+        {
+          q: "Does Decoder send code to Ollama's servers?",
+          a: "No. Ollama runs entirely on your machine.",
+        },
       ],
       glossary: [
-        { term: "Open-weight model", definition: "An LLM whose weights are publicly downloadable and runnable locally." },
+        {
+          term: "Open-weight model",
+          definition: "An LLM whose weights are publicly downloadable and runnable locally.",
+        },
       ],
       cta: { label: "Wire Ollama in Settings", href: "/settings" },
     },

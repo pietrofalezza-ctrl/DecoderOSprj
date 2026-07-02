@@ -16,9 +16,11 @@ export const sast: KnowledgeEntry = {
         "SAST inspects source code to find security weaknesses before runtime. Decoder ships SAST as a free, no-key feature across 20+ languages.",
       byLevel: {
         dev: {
-          whatItIs: "Class of tooling that reasons about code structure to spot weaknesses pre-runtime.",
+          whatItIs:
+            "Class of tooling that reasons about code structure to spot weaknesses pre-runtime.",
           whyUseful: "Cheap, fast, repeatable — catches a huge class of bugs before they ship.",
-          howDecoderImplements: "Pattern-based rules with CWE mapping, language-aware parsing, and severity ranking.",
+          howDecoderImplements:
+            "Pattern-based rules with CWE mapping, language-aware parsing, and severity ranking.",
           whenToUse: "Every commit, every PR, every audit.",
           whenNotToUse: "For taint flow across services — that's DAST/IAST territory.",
           practicalExample: "A SQL string concatenation in a Java DAO is flagged CWE-89 / High.",
@@ -26,7 +28,10 @@ export const sast: KnowledgeEntry = {
       },
       faq: [
         { q: "SAST vs DAST?", a: "SAST reads code; DAST hits the running app." },
-        { q: "Does AI run by default?", a: "No — SAST runs without any key. AI is opt-in via BYOK." },
+        {
+          q: "Does AI run by default?",
+          a: "No — SAST runs without any key. AI is opt-in via BYOK.",
+        },
       ],
       glossary: [
         { term: "DAST", definition: "Dynamic Application Security Testing — runtime probing." },

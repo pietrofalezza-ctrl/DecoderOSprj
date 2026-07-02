@@ -78,7 +78,12 @@ export const Route = createFileRoute("/knowledge/$slug")({
             "@context": "https://schema.org",
             "@type": "BreadcrumbList",
             itemListElement: [
-              { "@type": "ListItem", position: 1, name: "Knowledge Hub", item: `${BASE}/knowledge` },
+              {
+                "@type": "ListItem",
+                position: 1,
+                name: "Knowledge Hub",
+                item: `${BASE}/knowledge`,
+              },
               { "@type": "ListItem", position: 2, name: entry.category },
               { "@type": "ListItem", position: 3, name: locale.title, item: url },
             ],

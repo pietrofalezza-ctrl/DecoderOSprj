@@ -141,7 +141,10 @@ export const getRepository = createServerFn({ method: "POST" })
       .maybeSingle();
     if (pErr) throw pErr;
 
-    const static_scan_summary = await fetchStaticScanSummary(context.supabase as unknown as SupabaseCountClient, data.id);
+    const static_scan_summary = await fetchStaticScanSummary(
+      context.supabase as unknown as SupabaseCountClient,
+      data.id,
+    );
     const { data: files, error: fErr } = await context.supabase
       .from("files")
       .select(

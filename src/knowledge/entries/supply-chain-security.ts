@@ -16,21 +16,32 @@ export const supplyChainSecurity: KnowledgeEntry = {
         "Supply chain security is about trusting the code you didn't write. Decoder helps inventory and inspect that surface during analysis.",
       byLevel: {
         security: {
-          whatItIs: "Discipline focused on the integrity of dependencies, build systems, and distribution channels.",
-          whyUseful: "Modern breaches (SolarWinds, xz-utils, npm event-stream) come from upstream, not your code.",
-          howDecoderImplements: "Dependency surfacing + malware scan on uploaded sources; reports highlight unexpected scripts or postinstall hooks.",
-          whenToUse: "Reviewing new dependencies, auditing third-party drops, evaluating M&A repos.",
+          whatItIs:
+            "Discipline focused on the integrity of dependencies, build systems, and distribution channels.",
+          whyUseful:
+            "Modern breaches (SolarWinds, xz-utils, npm event-stream) come from upstream, not your code.",
+          howDecoderImplements:
+            "Dependency surfacing + malware scan on uploaded sources; reports highlight unexpected scripts or postinstall hooks.",
+          whenToUse:
+            "Reviewing new dependencies, auditing third-party drops, evaluating M&A repos.",
           whenNotToUse: "Build provenance / SLSA attestations — out of scope today.",
-          practicalExample: "A postinstall hook executing curl|sh from a fresh npm package is flagged during scan.",
+          practicalExample:
+            "A postinstall hook executing curl|sh from a fresh npm package is flagged during scan.",
         },
       },
       faq: [
         { q: "SBOM support?", a: "Reading existing SBOMs is on the roadmap; generation is not." },
-        { q: "Is local inference safer?", a: "Yes for confidentiality — code never leaves your machine." },
+        {
+          q: "Is local inference safer?",
+          a: "Yes for confidentiality — code never leaves your machine.",
+        },
       ],
       glossary: [
         { term: "SBOM", definition: "Software Bill of Materials — inventory of components." },
-        { term: "SLSA", definition: "Supply-chain Levels for Software Artifacts — build-integrity framework." },
+        {
+          term: "SLSA",
+          definition: "Supply-chain Levels for Software Artifacts — build-integrity framework.",
+        },
       ],
       cta: { label: "Inspect a repository", href: "/" },
     },

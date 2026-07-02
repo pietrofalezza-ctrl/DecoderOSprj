@@ -17,11 +17,14 @@ export const dependencyAnalysis: KnowledgeEntry = {
       byLevel: {
         dev: {
           whatItIs: "Static parse of manifests to enumerate packages, versions, and pinning state.",
-          whyUseful: "Shows the real attack surface — typosquats, abandoned packages, unpinned ranges.",
-          howDecoderImplements: "Parses common manifests during repo/ZIP analysis and surfaces them in the Insights tab.",
+          whyUseful:
+            "Shows the real attack surface — typosquats, abandoned packages, unpinned ranges.",
+          howDecoderImplements:
+            "Parses common manifests during repo/ZIP analysis and surfaces them in the Insights tab.",
           whenToUse: "Auditing any third-party project, especially before merging or shipping.",
           whenNotToUse: "For runtime CVE tracking — pair with a dedicated SCA in CI.",
-          practicalExample: "A package named reqeusts (typo) is flagged for review during a Python repo scan.",
+          practicalExample:
+            "A package named reqeusts (typo) is flagged for review during a Python repo scan.",
         },
       },
       faq: [
@@ -30,7 +33,10 @@ export const dependencyAnalysis: KnowledgeEntry = {
       ],
       glossary: [
         { term: "SCA", definition: "Software Composition Analysis — auditing third-party code." },
-        { term: "Lockfile", definition: "Pinned dependency manifest (package-lock.json, poetry.lock…)." },
+        {
+          term: "Lockfile",
+          definition: "Pinned dependency manifest (package-lock.json, poetry.lock…).",
+        },
       ],
       cta: { label: "Analyse a repo", href: "/" },
     },

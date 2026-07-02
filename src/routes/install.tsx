@@ -9,7 +9,6 @@ import { LangSwitcher } from "@/components/LangSwitcher";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { usePwaInstall } from "@/hooks/use-pwa-install";
 
-
 export const Route = createFileRoute("/install")({
   head: () => ({
     meta: [
@@ -146,4 +145,3 @@ function InstallPage() {
     </div>
   );
 }
-

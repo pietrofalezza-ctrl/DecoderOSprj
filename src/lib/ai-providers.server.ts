@@ -47,13 +47,20 @@ async function failSafe(label: string, r: Response): Promise<never> {
       if (Number.isFinite(n) && n > 0 && n < 86400) waitHint = ` Retry in ~${Math.ceil(n)}s.`;
     }
     const lower = (parsedMsg + " " + body).toLowerCase();
-    if (label === "OpenRouter" && (lower.includes("free-models-per-day") || lower.includes("free tier") || lower.includes("daily limit"))) {
+    if (
+      label === "OpenRouter" &&
+      (lower.includes("free-models-per-day") ||
+        lower.includes("free tier") ||
+        lower.includes("daily limit"))
+    ) {
       throw new Error(
         `OpenRouter free-tier daily limit reached. Add credits at openrouter.ai/credits or switch to a paid model.${waitHint}`,
       );
     }
     if (label === "OpenRouter" && (lower.includes("insufficient") || lower.includes("credit"))) {
-      throw new Error(`OpenRouter has no available credits on this key. Top up at openrouter.ai/credits.`);
+      throw new Error(
+        `OpenRouter has no available credits on this key. Top up at openrouter.ai/credits.`,
+      );
     }
     throw new Error(`${label} rate limit reached (429).${waitHint || " Wait a moment and retry."}`);
   }
@@ -78,7 +85,8 @@ async function fetchWithRetry(label: string, url: string, init: RequestInit): Pr
   let r = await fetch(url, init);
   if (r.status === 429) {
     const retryAfter = Number(r.headers.get("retry-after") ?? "0");
-    const waitMs = Number.isFinite(retryAfter) && retryAfter > 0 && retryAfter <= 5 ? retryAfter * 1000 : 1500;
+    const waitMs =
+      Number.isFinite(retryAfter) && retryAfter > 0 && retryAfter <= 5 ? retryAfter * 1000 : 1500;
     console.warn(`[ai-providers] ${label} 429 — retrying once in ${waitMs}ms`);
     await new Promise((res) => setTimeout(res, waitMs + Math.floor(Math.random() * 300)));
     r = await fetch(url, init);

@@ -10,7 +10,6 @@
     "goToDashboard": "前往工作台",
     "repoUrl": "https://github.com/pietrofalezza-ctrl/DecoderOSprj",
     "instagramUrl": "https://www.instagram.com/decoderead.dev"
-
   },
   "nav": {
     "dashboard": "工作台",
@@ -351,7 +350,6 @@
     },
     "roadmapTitle": "路线图状态",
     "roadmapBody": "当前路线图与已交付阶段公布在 /open-source 与仓库 README 中。公开讨论,不设截止期,也不保证一定交付。"
-
   },
   "openSource": {
     "kicker": "开源",

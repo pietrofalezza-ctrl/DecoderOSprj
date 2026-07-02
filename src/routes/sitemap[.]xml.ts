@@ -118,7 +118,6 @@ const STATIC_ENTRIES: SitemapEntry[] = [
   { path: "/knowledge/formats", changefreq: "weekly", priority: "0.8" },
 ];
 
-
 export const Route = createFileRoute("/sitemap.xml")({
   server: {
     handlers: {

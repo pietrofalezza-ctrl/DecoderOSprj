@@ -170,7 +170,6 @@ export const Route = createFileRoute("/_authenticated/projects/$projectId/repos/
   component: WorkspacePage,
 });
 
-
 function WorkspacePage() {
   const { repoId } = Route.useParams();
   const { t, i18n } = useTranslation();
@@ -1035,7 +1034,6 @@ function WorkspacePage() {
             defaultSize={20}
             minSize={14}
           >
-
             <div className="flex h-full flex-col border-r border-border bg-sidebar">
               <div className="flex items-center justify-between gap-2 border-b border-border px-3 py-2">
                 <span className="truncate text-xs font-medium uppercase text-muted-foreground">
@@ -1143,7 +1141,6 @@ function WorkspacePage() {
             defaultSize={46}
             minSize={20}
           >
-
             <div className="h-full">
               {selectedFolderPath ? (
                 <div className="flex h-full items-center justify-center p-6">
@@ -1273,7 +1270,6 @@ function WorkspacePage() {
             defaultSize={34}
             minSize={26}
           >
-
             {selectedFolderPath ? (
               <FolderAnalysisPanel
                 repoId={repoId}

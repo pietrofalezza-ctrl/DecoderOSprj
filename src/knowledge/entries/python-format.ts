@@ -17,8 +17,10 @@ export const pythonFormat: KnowledgeEntry = {
       byLevel: {
         dev: {
           whatItIs: "Static + malware analysis tuned for Python idioms.",
-          whyUseful: "Catches eval/exec misuse, hardcoded secrets, subprocess shell=True, pickle deserialisation, suspicious imports.",
-          howDecoderImplements: "Language-aware rules + manifest parsing for requirements.txt, pyproject.toml, Pipfile.",
+          whyUseful:
+            "Catches eval/exec misuse, hardcoded secrets, subprocess shell=True, pickle deserialisation, suspicious imports.",
+          howDecoderImplements:
+            "Language-aware rules + manifest parsing for requirements.txt, pyproject.toml, Pipfile.",
           whenToUse: "Any Python project review.",
           whenNotToUse: "Runtime profiling — Decoder is static-only.",
           practicalExample: "A pickle.loads on untrusted input lands as CWE-502 / High.",
@@ -28,9 +30,7 @@ export const pythonFormat: KnowledgeEntry = {
         { q: "Which Python versions?", a: "Rules are version-agnostic at the source level." },
         { q: "Notebooks?", a: ".ipynb support is on the roadmap — export to .py for now." },
       ],
-      glossary: [
-        { term: "CWE-502", definition: "Deserialisation of Untrusted Data." },
-      ],
+      glossary: [{ term: "CWE-502", definition: "Deserialisation of Untrusted Data." }],
       cta: { label: "Scan a Python file", href: "/" },
     },
   },

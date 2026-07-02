@@ -504,7 +504,10 @@ function extractImports(content: string, language: string): SourceSymbol[] {
     let m: RegExpExecArray | null;
     while ((m = named.exec(content))) {
       for (const part of m[1].split(",")) {
-        const name = part.trim().split(/\s+as\s+/i)[0]?.trim();
+        const name = part
+          .trim()
+          .split(/\s+as\s+/i)[0]
+          ?.trim();
         if (name) push(name, m.index);
       }
     }

@@ -3,7 +3,9 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 const { mockUnzipSync, mockStrFromU8, mockAssessStaticRisk } = vi.hoisted(() => ({
   mockUnzipSync: vi.fn(),
   mockStrFromU8: vi.fn((bytes: Uint8Array) => new TextDecoder().decode(bytes)),
-  mockAssessStaticRisk: vi.fn((): { findings: Array<Record<string, unknown>> } => ({ findings: [] })),
+  mockAssessStaticRisk: vi.fn((): { findings: Array<Record<string, unknown>> } => ({
+    findings: [],
+  })),
 }));
 
 vi.mock("fflate", () => ({

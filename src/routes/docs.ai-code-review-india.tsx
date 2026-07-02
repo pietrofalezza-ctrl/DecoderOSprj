@@ -36,7 +36,11 @@ export const Route = createFileRoute("/docs/ai-code-review-india")({
     meta: [
       { title: TITLE },
       { name: "description", content: DESC },
-      { name: "keywords", content: "ai code review india, ai code analysis india, byok code review, dpdp act, open source code review india, bangalore ai tools" },
+      {
+        name: "keywords",
+        content:
+          "ai code review india, ai code analysis india, byok code review, dpdp act, open source code review india, bangalore ai tools",
+      },
       { property: "og:title", content: TITLE },
       { property: "og:description", content: DESC },
       { property: "og:type", content: "article" },
@@ -47,8 +51,16 @@ export const Route = createFileRoute("/docs/ai-code-review-india")({
       { rel: "canonical", href: URL },
       { rel: "alternate", hrefLang: "en", href: URL },
       { rel: "alternate", hrefLang: "en-IN", href: URL },
-      { rel: "alternate", hrefLang: "hi", href: "https://decoderead.dev/docs/hi/ai-code-review-bharat" },
-      { rel: "alternate", hrefLang: "ta", href: "https://decoderead.dev/docs/ta/ai-code-review-chennai" },
+      {
+        rel: "alternate",
+        hrefLang: "hi",
+        href: "https://decoderead.dev/docs/hi/ai-code-review-bharat",
+      },
+      {
+        rel: "alternate",
+        hrefLang: "ta",
+        href: "https://decoderead.dev/docs/ta/ai-code-review-chennai",
+      },
       { rel: "alternate", hrefLang: "x-default", href: URL },
     ],
     scripts: [
@@ -92,7 +104,11 @@ export const Route = createFileRoute("/docs/ai-code-review-india")({
         children: JSON.stringify({
           "@context": "https://schema.org",
           "@type": "FAQPage",
-          mainEntity: FAQ.map((f) => ({ "@type": "Question", name: f.q, acceptedAnswer: { "@type": "Answer", text: f.a } })),
+          mainEntity: FAQ.map((f) => ({
+            "@type": "Question",
+            name: f.q,
+            acceptedAnswer: { "@type": "Answer", text: f.a },
+          })),
         }),
       },
     ],
@@ -100,11 +116,21 @@ export const Route = createFileRoute("/docs/ai-code-review-india")({
   component: Page,
 });
 
-function Section({ icon, title, children }: { icon: React.ReactNode; title: string; children: React.ReactNode }) {
+function Section({
+  icon,
+  title,
+  children,
+}: {
+  icon: React.ReactNode;
+  title: string;
+  children: React.ReactNode;
+}) {
   return (
     <section className="mt-12">
       <div className="mb-3 flex items-center gap-3">
-        <span className="inline-flex h-9 w-9 items-center justify-center rounded-md border border-border bg-card text-primary">{icon}</span>
+        <span className="inline-flex h-9 w-9 items-center justify-center rounded-md border border-border bg-card text-primary">
+          {icon}
+        </span>
         <h2 className="font-display text-2xl font-medium tracking-tight">{title}</h2>
       </div>
       <div className="prose prose-sm max-w-none text-muted-foreground prose-headings:text-foreground prose-strong:text-foreground prose-li:marker:text-muted-foreground">
@@ -118,7 +144,9 @@ function Page() {
   return (
     <div className="min-h-screen bg-background text-foreground">
       <header className="sticky top-0 z-30 flex h-14 items-center justify-between border-b border-border/60 bg-background/80 px-6 backdrop-blur">
-        <Link to="/" aria-label="Decoder"><Logo /></Link>
+        <Link to="/" aria-label="Decoder">
+          <Logo />
+        </Link>
         <div className="flex items-center gap-1">
           <ThemeToggle />
           <LangSwitcher />
@@ -127,7 +155,10 @@ function Page() {
       </header>
 
       <main className="mx-auto max-w-3xl px-4 py-12 sm:px-6 md:py-16">
-        <Link to="/docs" className="inline-flex items-center gap-2 text-xs text-muted-foreground hover:text-foreground">
+        <Link
+          to="/docs"
+          className="inline-flex items-center gap-2 text-xs text-muted-foreground hover:text-foreground"
+        >
           <ArrowLeft className="h-3 w-3" /> Back to documentation
         </Link>
 
@@ -135,56 +166,115 @@ function Page() {
           AI code review in India
         </h1>
         <p className="mt-4 text-lg text-muted-foreground">
-          Indian developers ship huge volumes of AI-generated code every day — from Bangalore product teams to Chennai
-          service providers to Hyderabad enterprise SaaS. Decoder is an <strong>open-source (MIT)</strong>,
-          <strong> BYOK</strong> code-analysis tool built for teams that need real AI review without a per-seat SaaS bill
-          or a foreign vendor holding their source.
+          Indian developers ship huge volumes of AI-generated code every day — from Bangalore
+          product teams to Chennai service providers to Hyderabad enterprise SaaS. Decoder is an{" "}
+          <strong>open-source (MIT)</strong>,<strong> BYOK</strong> code-analysis tool built for
+          teams that need real AI review without a per-seat SaaS bill or a foreign vendor holding
+          their source.
         </p>
 
         <Section icon={<Coins className="h-5 w-5" />} title="Why BYOK matters for Indian teams">
           <p>
-            Global AI-review SaaS products charge $15–$50 per developer per month in USD. For a 20-person team that is
-            &#8377;3–10 lakh a year before you have shipped a single review. With Decoder there is no per-seat fee. You
-            connect your own OpenAI, Anthropic, Gemini or OpenRouter key and pay only the model usage — which for most
-            teams lands at a small fraction of the SaaS price. Or run it fully local with Ollama and pay zero.
+            Global AI-review SaaS products charge $15–$50 per developer per month in USD. For a
+            20-person team that is &#8377;3–10 lakh a year before you have shipped a single review.
+            With Decoder there is no per-seat fee. You connect your own OpenAI, Anthropic, Gemini or
+            OpenRouter key and pay only the model usage — which for most teams lands at a small
+            fraction of the SaaS price. Or run it fully local with Ollama and pay zero.
           </p>
           <ul>
-            <li><strong>Static code analysis</strong> — free, no key, 20+ languages.</li>
-            <li><strong>Malware / secret scanning</strong> — free, no key.</li>
-            <li><strong>AI-origin detector</strong> — free, no key. Flags Copilot / Cursor / Claude patterns.</li>
-            <li><strong>AI explanations &amp; repo chat</strong> — BYOK or local model.</li>
+            <li>
+              <strong>Static code analysis</strong> — free, no key, 20+ languages.
+            </li>
+            <li>
+              <strong>Malware / secret scanning</strong> — free, no key.
+            </li>
+            <li>
+              <strong>AI-origin detector</strong> — free, no key. Flags Copilot / Cursor / Claude
+              patterns.
+            </li>
+            <li>
+              <strong>AI explanations &amp; repo chat</strong> — BYOK or local model.
+            </li>
           </ul>
         </Section>
 
         <Section icon={<ShieldCheck className="h-5 w-5" />} title="DPDP Act 2023 alignment">
           <p>
-            India's Digital Personal Data Protection Act came into force in 2023 with data-minimisation and purpose-limitation
-            duties for anyone processing personal data. Decoder helps by keeping source-code movement to the minimum:
+            India's Digital Personal Data Protection Act came into force in 2023 with
+            data-minimisation and purpose-limitation duties for anyone processing personal data.
+            Decoder helps by keeping source-code movement to the minimum:
           </p>
           <ul>
-            <li><strong>BYOK</strong> — model credentials stay in your account, encrypted at rest (AES-256-GCM).</li>
-            <li><strong>Ephemeral uploads</strong> — ZIPs are processed and discarded, not indexed for training.</li>
-            <li><strong>Local inference</strong> — with Ollama or LM Studio, no source ever leaves the developer's machine.</li>
+            <li>
+              <strong>BYOK</strong> — model credentials stay in your account, encrypted at rest
+              (AES-256-GCM).
+            </li>
+            <li>
+              <strong>Ephemeral uploads</strong> — ZIPs are processed and discarded, not indexed for
+              training.
+            </li>
+            <li>
+              <strong>Local inference</strong> — with Ollama or LM Studio, no source ever leaves the
+              developer's machine.
+            </li>
           </ul>
           <p>Not legal advice — consult your DPO for a formal DPIA.</p>
         </Section>
 
         <Section icon={<Building2 className="h-5 w-5" />} title="Common use cases in India">
           <ul>
-            <li><strong>Product startups (Bangalore, Pune)</strong> — cheap AI review during rapid iteration, without locking into a vendor.</li>
-            <li><strong>Service providers &amp; agencies (Chennai, Hyderabad, Noida)</strong> — audit AI-generated code from junior devs and offshore contributors before delivery.</li>
-            <li><strong>Enterprise SaaS (Mumbai, Delhi NCR)</strong> — DPDP-aligned analysis with local models for regulated verticals (fintech, health).</li>
-            <li><strong>Educational institutions</strong> — teach students to read and critique AI code, not just accept it.</li>
+            <li>
+              <strong>Product startups (Bangalore, Pune)</strong> — cheap AI review during rapid
+              iteration, without locking into a vendor.
+            </li>
+            <li>
+              <strong>Service providers &amp; agencies (Chennai, Hyderabad, Noida)</strong> — audit
+              AI-generated code from junior devs and offshore contributors before delivery.
+            </li>
+            <li>
+              <strong>Enterprise SaaS (Mumbai, Delhi NCR)</strong> — DPDP-aligned analysis with
+              local models for regulated verticals (fintech, health).
+            </li>
+            <li>
+              <strong>Educational institutions</strong> — teach students to read and critique AI
+              code, not just accept it.
+            </li>
           </ul>
         </Section>
 
         <Section icon={<MapPin className="h-5 w-5" />} title="Regional guides">
           <ul>
-            <li><Link to="/docs/ai-code-review-bangalore" className="text-foreground underline">Bangalore — Bengaluru IT hub</Link></li>
-            <li><Link to="/docs/ai-code-review-hyderabad-chennai" className="text-foreground underline">Hyderabad &amp; Chennai — Southern IT corridors</Link></li>
-            <li><Link to="/docs/ai-code-review-sri-lanka-colombo" className="text-foreground underline">Sri Lanka &amp; Colombo</Link></li>
-            <li><Link to="/docs/ai-code-review-outsourcing" className="text-foreground underline">Auditing outsourced AI-generated code</Link></li>
-            <li><Link to="/docs/dpdp-act-ai-code-analysis" className="text-foreground underline">DPDP Act &amp; AI code analysis</Link></li>
+            <li>
+              <Link to="/docs/ai-code-review-bangalore" className="text-foreground underline">
+                Bangalore — Bengaluru IT hub
+              </Link>
+            </li>
+            <li>
+              <Link
+                to="/docs/ai-code-review-hyderabad-chennai"
+                className="text-foreground underline"
+              >
+                Hyderabad &amp; Chennai — Southern IT corridors
+              </Link>
+            </li>
+            <li>
+              <Link
+                to="/docs/ai-code-review-sri-lanka-colombo"
+                className="text-foreground underline"
+              >
+                Sri Lanka &amp; Colombo
+              </Link>
+            </li>
+            <li>
+              <Link to="/docs/ai-code-review-outsourcing" className="text-foreground underline">
+                Auditing outsourced AI-generated code
+              </Link>
+            </li>
+            <li>
+              <Link to="/docs/dpdp-act-ai-code-analysis" className="text-foreground underline">
+                DPDP Act &amp; AI code analysis
+              </Link>
+            </li>
           </ul>
         </Section>
 
@@ -202,8 +292,10 @@ function Page() {
 
       <footer className="border-t border-border px-6 py-6 text-center text-xs text-muted-foreground">
         Decoder — open-source code understanding for the AI era.
-      
-        <div className="mt-2"><InstagramLink /></div></footer>
+        <div className="mt-2">
+          <InstagramLink />
+        </div>
+      </footer>
     </div>
   );
 }

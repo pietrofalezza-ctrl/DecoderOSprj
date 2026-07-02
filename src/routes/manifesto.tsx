@@ -17,7 +17,6 @@ import { Logo } from "@/components/Logo";
 import { InstagramLink } from "@/components/InstagramLink";
 import { PublicHeaderAuthSlot } from "@/components/PublicHeaderAuthSlot";
 
-
 export const Route = createFileRoute("/manifesto")({
   head: () => ({
     meta: [
@@ -232,7 +231,6 @@ function ManifestoPage() {
             <InstagramLink />
           </nav>
           <span>{t("footer.ownership")}</span>
-
         </div>
       </footer>
     </div>

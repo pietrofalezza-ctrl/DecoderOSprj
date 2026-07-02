@@ -9,7 +9,6 @@ import { Logo } from "@/components/Logo";
 import { InstagramLink } from "@/components/InstagramLink";
 import { PublicHeaderAuthSlot } from "@/components/PublicHeaderAuthSlot";
 
-
 export const Route = createFileRoute("/contact")({
   head: () => ({
     meta: [
@@ -139,7 +138,6 @@ function ContactPage() {
             <InstagramLink />
           </nav>
           <span>{t("footer.ownership")}</span>
-
         </div>
       </footer>
     </div>

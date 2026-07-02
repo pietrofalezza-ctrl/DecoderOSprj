@@ -1,6 +1,7 @@
 Add the official Instagram profile (https://www.instagram.com/decoderead.dev) as a visible, consistent social link across the public site surfaces.
 
 Scope
+
 - Reusable icon: create `src/components/SocialLink.tsx` (or inline Instagram SVG icon) so every link uses the same mark and opens in a new tab with `rel="noreferrer"`.
 - i18n: add `common.instagramUrl` to EN/IT/ZH/HI/TA locale files, and a `footer.instagram` label where a text label is needed.
 - SEO: add the Instagram URL to the `sameAs` array in the root `WebSite` JSON-LD (`src/routes/__root.tsx`).

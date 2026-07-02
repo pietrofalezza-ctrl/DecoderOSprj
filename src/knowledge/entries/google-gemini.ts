@@ -18,10 +18,12 @@ export const googleGemini: KnowledgeEntry = {
         dev: {
           whatItIs: "BYOK adapter for the Google Generative Language / Gemini API.",
           whyUseful: "Very large context windows, useful for full-repo chat.",
-          howDecoderImplements: "Key encrypted AES-256-GCM, decrypted only server-side, streaming supported.",
+          howDecoderImplements:
+            "Key encrypted AES-256-GCM, decrypted only server-side, streaming supported.",
           whenToUse: "Repo chat over large codebases, AI explain.",
           whenNotToUse: "Strict offline / on-prem requirements — use local inference.",
-          practicalExample: "Settings → add Gemini key → Chat asks questions across a 500-file repo with no chunking pain.",
+          practicalExample:
+            "Settings → add Gemini key → Chat asks questions across a 500-file repo with no chunking pain.",
         },
       },
       faq: [

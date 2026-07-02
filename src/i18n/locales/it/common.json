@@ -10,7 +10,6 @@
     "goToDashboard": "Vai alla dashboard",
     "repoUrl": "https://github.com/pietrofalezza-ctrl/DecoderOSprj",
     "instagramUrl": "https://www.instagram.com/decoderead.dev"
-
   },
   "nav": {
     "dashboard": "Dashboard",
@@ -351,7 +350,6 @@
     },
     "roadmapTitle": "Stato roadmap",
     "roadmapBody": "La roadmap attuale e le fasi già rilasciate vivono in /open-source e nel README del repository. Discussa in pubblico, senza scadenze né garanzie di consegna."
-
   },
   "openSource": {
     "kicker": "Open Source",

@@ -18,15 +18,20 @@ export const openaiGpt: KnowledgeEntry = {
         dev: {
           whatItIs: "BYOK adapter for the OpenAI Chat Completions / Responses API.",
           whyUseful: "Wide model choice, mature ecosystem, predictable behaviour for code tasks.",
-          howDecoderImplements: "Key encrypted AES-256-GCM, model selected per request, streaming supported.",
+          howDecoderImplements:
+            "Key encrypted AES-256-GCM, model selected per request, streaming supported.",
           whenToUse: "Explain, AI-origin verbalisation, repo chat.",
           whenNotToUse: "Strict data-residency requirements — prefer local inference.",
-          practicalExample: "Settings → add sk-... → Explain a function with GPT-4o-mini in seconds.",
+          practicalExample:
+            "Settings → add sk-... → Explain a function with GPT-4o-mini in seconds.",
         },
       },
       faq: [
         { q: "Which models?", a: "Any chat/completions model your key can call." },
-        { q: "Is my key shared?", a: "No — keys are user-scoped with RLS and decrypted only server-side." },
+        {
+          q: "Is my key shared?",
+          a: "No — keys are user-scoped with RLS and decrypted only server-side.",
+        },
       ],
       glossary: [
         { term: "Streaming", definition: "Server-Sent token-by-token response delivery." },

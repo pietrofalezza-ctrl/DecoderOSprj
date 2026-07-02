@@ -35,6 +35,5 @@ export function InstagramLink({
       <InstagramIcon />
       {showLabel && <span>{t("footer.instagram")}</span>}
     </a>
-
   );
 }

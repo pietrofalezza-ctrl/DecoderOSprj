@@ -236,7 +236,16 @@ Keep title <60 chars, slug <60 chars, draft 250-600 words, ground claims in the 
         title: String(parsed.title ?? "Untitled"),
         rationale: String(parsed.rationale ?? ""),
         suggested_slug: String(parsed.slug ?? ""),
-        suggested_type: (["capability","concept","integration","format","case_study","guide"].includes(String(parsed.type)) ? String(parsed.type) : "concept") as EntryType,
+        suggested_type: ([
+          "capability",
+          "concept",
+          "integration",
+          "format",
+          "case_study",
+          "guide",
+        ].includes(String(parsed.type))
+          ? String(parsed.type)
+          : "concept") as EntryType,
         keywords: Array.isArray(parsed.keywords) ? (parsed.keywords as string[]) : [],
         related_entries: Array.isArray(parsed.related_slugs)
           ? (parsed.related_slugs as string[])
@@ -309,9 +318,7 @@ export const convertOpportunityToDraft = createServerFn({ method: "POST" })
 
 export const translateEntry = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator(
-    z.object({ entry_id: z.string().uuid(), target: z.enum(["it", "zh"]) }),
-  )
+  .inputValidator(z.object({ entry_id: z.string().uuid(), target: z.enum(["it", "zh"]) }))
   .handler(async ({ context, data }) => {
     await assertAdmin(context.userId);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
@@ -330,10 +337,12 @@ export const translateEntry = createServerFn({ method: "POST" })
       summary: string;
       body_md: string;
     };
-    const { error } = await supabaseAdmin.from("knowledge_translations").upsert(
-      { entry_id: data.entry_id, lang: data.target, ...parsed },
-      { onConflict: "entry_id,lang" },
-    );
+    const { error } = await supabaseAdmin
+      .from("knowledge_translations")
+      .upsert(
+        { entry_id: data.entry_id, lang: data.target, ...parsed },
+        { onConflict: "entry_id,lang" },
+      );
     if (error) throw error;
     await audit(context.userId, `translation:ai:${data.target}`, { entry_id: data.entry_id });
     return { ok: true };
@@ -366,7 +375,11 @@ export const rebuildEdges = createServerFn({ method: "POST" })
       auto_generated: true,
     }));
     if (rows.length === 0) return { created: 0 };
-    await supabaseAdmin.from("knowledge_edges").delete().eq("from_entry", entry.id).eq("auto_generated", true);
+    await supabaseAdmin
+      .from("knowledge_edges")
+      .delete()
+      .eq("from_entry", entry.id)
+      .eq("auto_generated", true);
     const { error } = await supabaseAdmin.from("knowledge_edges").insert(rows);
     if (error) throw error;
     return { created: rows.length };

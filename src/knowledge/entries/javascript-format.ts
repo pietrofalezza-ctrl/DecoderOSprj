@@ -5,7 +5,12 @@ export const javascriptFormat: KnowledgeEntry = {
   type: "format",
   category: "Formats",
   tags: ["javascript", "typescript", "js", "ts", "node"],
-  related: ["static-malware-analysis", "secret-detection", "dependency-analysis", "obfuscation-detection"],
+  related: [
+    "static-malware-analysis",
+    "secret-detection",
+    "dependency-analysis",
+    "obfuscation-detection",
+  ],
   i18n: {
     en: {
       title: "JavaScript & TypeScript — Supported formats",
@@ -17,8 +22,10 @@ export const javascriptFormat: KnowledgeEntry = {
       byLevel: {
         dev: {
           whatItIs: "Static + malware analysis for the JS/TS ecosystem.",
-          whyUseful: "Most supply-chain attacks ship through npm — pattern detection plus manifest parsing matters.",
-          howDecoderImplements: "Language-aware rules, package.json parsing, postinstall hook detection, entropy + obfuscation signals.",
+          whyUseful:
+            "Most supply-chain attacks ship through npm — pattern detection plus manifest parsing matters.",
+          howDecoderImplements:
+            "Language-aware rules, package.json parsing, postinstall hook detection, entropy + obfuscation signals.",
           whenToUse: "Any JS/TS project review, especially fresh npm dependencies.",
           whenNotToUse: "Runtime taint tracking — Decoder is static.",
           practicalExample: "A postinstall script with curl|sh trips supply-chain alarms.",
@@ -29,7 +36,10 @@ export const javascriptFormat: KnowledgeEntry = {
         { q: "Frameworks?", a: "Rules are framework-agnostic; React/Next/Vue/Svelte all work." },
       ],
       glossary: [
-        { term: "Postinstall", definition: "npm lifecycle script that runs after install — common attack vector." },
+        {
+          term: "Postinstall",
+          definition: "npm lifecycle script that runs after install — common attack vector.",
+        },
       ],
       cta: { label: "Scan a JS project", href: "/" },
     },

@@ -10,7 +10,6 @@
     "goToDashboard": "Go to dashboard",
     "repoUrl": "https://github.com/pietrofalezza-ctrl/DecoderOSprj",
     "instagramUrl": "https://www.instagram.com/decoderead.dev"
-
   },
   "nav": {
     "dashboard": "Dashboard",
@@ -351,7 +350,6 @@
     },
     "roadmapTitle": "Roadmap status",
     "roadmapBody": "The current roadmap and shipped phases live in /open-source and in the repository README. Discussed in the open, no deadlines, no delivery guarantees."
-
   },
   "openSource": {
     "kicker": "Open Source",
@@ -1002,12 +1000,30 @@
         "subtitle": "These features work out of the box, with no AI provider or LLM required.",
         "badge": "No API key",
         "items": {
-          "static": { "title": "Static code analysis", "body": "20+ languages: complexity, smells, anti-patterns." },
-          "malware": { "title": "Malware & ransomware scan", "body": "Heuristic patterns, including LockBit-style markers." },
-          "aiOrigin": { "title": "AI-origin detector", "body": "Heuristic signals on AI-generated code." },
-          "upload": { "title": "ZIP & single file", "body": "Upload an archive or paste a single file." },
-          "history": { "title": "Analysis history", "body": "Every run is saved and re-openable across sessions." },
-          "i18n": { "title": "Multilingual & tone", "body": "EN / IT / ZH plus reader-level tuning." }
+          "static": {
+            "title": "Static code analysis",
+            "body": "20+ languages: complexity, smells, anti-patterns."
+          },
+          "malware": {
+            "title": "Malware & ransomware scan",
+            "body": "Heuristic patterns, including LockBit-style markers."
+          },
+          "aiOrigin": {
+            "title": "AI-origin detector",
+            "body": "Heuristic signals on AI-generated code."
+          },
+          "upload": {
+            "title": "ZIP & single file",
+            "body": "Upload an archive or paste a single file."
+          },
+          "history": {
+            "title": "Analysis history",
+            "body": "Every run is saved and re-openable across sessions."
+          },
+          "i18n": {
+            "title": "Multilingual & tone",
+            "body": "EN / IT / ZH plus reader-level tuning."
+          }
         }
       }
     },

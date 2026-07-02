@@ -9,7 +9,6 @@ import { Logo } from "@/components/Logo";
 import { InstagramLink } from "@/components/InstagramLink";
 import { PublicHeaderAuthSlot } from "@/components/PublicHeaderAuthSlot";
 
-
 export const Route = createFileRoute("/data-flow")({
   head: () => ({
     meta: [
@@ -160,7 +159,6 @@ function DataFlowPage() {
             <InstagramLink />
           </nav>
           <span className="max-w-md text-right">{t("footer.disclaimer")}</span>
-
         </div>
       </footer>
     </div>

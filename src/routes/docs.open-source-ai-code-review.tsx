@@ -1,5 +1,13 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowLeft, Cpu, GitBranch, ShieldCheck, GitCompare, BookOpen, Terminal } from "lucide-react";
+import {
+  ArrowLeft,
+  Cpu,
+  GitBranch,
+  ShieldCheck,
+  GitCompare,
+  BookOpen,
+  Terminal,
+} from "lucide-react";
 
 import { LangSwitcher } from "@/components/LangSwitcher";
 import { ThemeToggle } from "@/components/ThemeToggle";
@@ -154,16 +162,28 @@ function OpenSourcePage() {
         <p className="mt-4 text-lg text-muted-foreground">
           Most AI code review runs on someone else's GPUs, behind someone else's NDA. Decoder is the
           opposite: <strong>MIT-licensed</strong>, <strong>BYOK</strong>, and able to run end-to-end
-          against a <strong>local model</strong>. This page is the short version of why that
-          matters and how to set it up.
+          against a <strong>local model</strong>. This page is the short version of why that matters
+          and how to set it up.
         </p>
 
-        <Section icon={<GitBranch className="h-5 w-5" />} title="Why open source matters for code review">
+        <Section
+          icon={<GitBranch className="h-5 w-5" />}
+          title="Why open source matters for code review"
+        >
           <ul>
-            <li><strong>Auditable prompts.</strong> You can read every prompt sent to the model.</li>
-            <li><strong>Auditable rules.</strong> The static and malware patterns are in the repo, not a vendor blackbox.</li>
-            <li><strong>Forkable.</strong> Add a rule, change a scorer, ship internally.</li>
-            <li><strong>No lock-in.</strong> Swap provider or run local without changing tools.</li>
+            <li>
+              <strong>Auditable prompts.</strong> You can read every prompt sent to the model.
+            </li>
+            <li>
+              <strong>Auditable rules.</strong> The static and malware patterns are in the repo, not
+              a vendor blackbox.
+            </li>
+            <li>
+              <strong>Forkable.</strong> Add a rule, change a scorer, ship internally.
+            </li>
+            <li>
+              <strong>No lock-in.</strong> Swap provider or run local without changing tools.
+            </li>
           </ul>
         </Section>
 
@@ -176,18 +196,44 @@ function OpenSourcePage() {
           </p>
           <p>Recommended starting models:</p>
           <ul>
-            <li><strong>Qwen2.5-Coder 14B</strong> — best quality on a single 16GB GPU.</li>
-            <li><strong>Llama 3.1 8B Instruct</strong> — fast, runs on M-series Macs.</li>
-            <li><strong>DeepSeek-Coder-V2-Lite</strong> — great for tight VRAM budgets.</li>
+            <li>
+              <strong>Qwen2.5-Coder 14B</strong> — best quality on a single 16GB GPU.
+            </li>
+            <li>
+              <strong>Llama 3.1 8B Instruct</strong> — fast, runs on M-series Macs.
+            </li>
+            <li>
+              <strong>DeepSeek-Coder-V2-Lite</strong> — great for tight VRAM budgets.
+            </li>
           </ul>
         </Section>
 
         <Section icon={<Terminal className="h-5 w-5" />} title="Quickstart">
           <ol>
-            <li>Install <a href="https://ollama.com" target="_blank" rel="noopener noreferrer" className="text-foreground underline">Ollama</a> and run <code>ollama pull qwen2.5-coder:14b</code>.</li>
-            <li>Open <Link to="/settings" className="text-foreground underline">Settings → Credentials</Link> and add an Ollama endpoint (default <code>http://localhost:11434</code>).</li>
+            <li>
+              Install{" "}
+              <a
+                href="https://ollama.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-foreground underline"
+              >
+                Ollama
+              </a>{" "}
+              and run <code>ollama pull qwen2.5-coder:14b</code>.
+            </li>
+            <li>
+              Open{" "}
+              <Link to="/settings" className="text-foreground underline">
+                Settings → Credentials
+              </Link>{" "}
+              and add an Ollama endpoint (default <code>http://localhost:11434</code>).
+            </li>
             <li>Upload a file or ZIP from the dashboard.</li>
-            <li>Run Static and Malware (no key needed), then "Explain with AI" against your local model.</li>
+            <li>
+              Run Static and Malware (no key needed), then "Explain with AI" against your local
+              model.
+            </li>
           </ol>
         </Section>
 
@@ -203,12 +249,42 @@ function OpenSourcePage() {
                 </tr>
               </thead>
               <tbody className="text-muted-foreground [&_td]:px-3 [&_td]:py-2 [&_tr]:border-t [&_tr]:border-border">
-                <tr><td className="text-foreground">License</td><td>MIT, open source</td><td>Closed source</td><td>Closed source</td></tr>
-                <tr><td className="text-foreground">Self-hostable</td><td>Yes</td><td>No</td><td>No</td></tr>
-                <tr><td className="text-foreground">Local-only review</td><td>Yes (Ollama / LM Studio)</td><td>No</td><td>No</td></tr>
-                <tr><td className="text-foreground">BYOK</td><td>Yes</td><td>No</td><td>No</td></tr>
-                <tr><td className="text-foreground">Auditable prompts</td><td>Yes</td><td>No</td><td>No</td></tr>
-                <tr><td className="text-foreground">Static + malware scan</td><td>Built-in, no key</td><td>No</td><td>No</td></tr>
+                <tr>
+                  <td className="text-foreground">License</td>
+                  <td>MIT, open source</td>
+                  <td>Closed source</td>
+                  <td>Closed source</td>
+                </tr>
+                <tr>
+                  <td className="text-foreground">Self-hostable</td>
+                  <td>Yes</td>
+                  <td>No</td>
+                  <td>No</td>
+                </tr>
+                <tr>
+                  <td className="text-foreground">Local-only review</td>
+                  <td>Yes (Ollama / LM Studio)</td>
+                  <td>No</td>
+                  <td>No</td>
+                </tr>
+                <tr>
+                  <td className="text-foreground">BYOK</td>
+                  <td>Yes</td>
+                  <td>No</td>
+                  <td>No</td>
+                </tr>
+                <tr>
+                  <td className="text-foreground">Auditable prompts</td>
+                  <td>Yes</td>
+                  <td>No</td>
+                  <td>No</td>
+                </tr>
+                <tr>
+                  <td className="text-foreground">Static + malware scan</td>
+                  <td>Built-in, no key</td>
+                  <td>No</td>
+                  <td>No</td>
+                </tr>
               </tbody>
             </table>
           </div>
@@ -216,8 +292,8 @@ function OpenSourcePage() {
 
         <Section icon={<ShieldCheck className="h-5 w-5" />} title="Privacy and compliance">
           <p>
-            For regulated teams the calculus is simple: if the review never leaves the laptop,
-            there is no DPA to negotiate, no sub-processor to disclose, no leak to investigate.
+            For regulated teams the calculus is simple: if the review never leaves the laptop, there
+            is no DPA to negotiate, no sub-processor to disclose, no leak to investigate.
             Open-source + local inference is the only configuration that delivers that, and it's
             Decoder's default story.
           </p>
@@ -262,8 +338,10 @@ function OpenSourcePage() {
 
       <footer className="border-t border-border px-6 py-6 text-center text-xs text-muted-foreground">
         Decoder — open-source code understanding for the AI era.
-      
-        <div className="mt-2"><InstagramLink /></div></footer>
+        <div className="mt-2">
+          <InstagramLink />
+        </div>
+      </footer>
     </div>
   );
 }

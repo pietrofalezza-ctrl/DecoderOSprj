@@ -9,7 +9,6 @@ import { Logo } from "@/components/Logo";
 import { InstagramLink } from "@/components/InstagramLink";
 import { PublicHeaderAuthSlot } from "@/components/PublicHeaderAuthSlot";
 
-
 export const Route = createFileRoute("/cookies")({
   head: () => ({
     meta: [
@@ -166,7 +165,6 @@ function CookiesPage() {
             <InstagramLink />
           </nav>
           <span className="max-w-md text-right">{t("footer.disclaimer")}</span>
-
         </div>
       </footer>
     </div>

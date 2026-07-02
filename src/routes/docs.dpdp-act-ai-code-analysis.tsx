@@ -36,7 +36,11 @@ export const Route = createFileRoute("/docs/dpdp-act-ai-code-analysis")({
     meta: [
       { title: TITLE },
       { name: "description", content: DESC },
-      { name: "keywords", content: "dpdp act, digital personal data protection act, ai code review india, data minimisation, cross border data transfer india, byok compliance" },
+      {
+        name: "keywords",
+        content:
+          "dpdp act, digital personal data protection act, ai code review india, data minimisation, cross border data transfer india, byok compliance",
+      },
       { property: "og:title", content: TITLE },
       { property: "og:description", content: DESC },
       { property: "og:type", content: "article" },
@@ -46,8 +50,16 @@ export const Route = createFileRoute("/docs/dpdp-act-ai-code-analysis")({
     links: [
       { rel: "canonical", href: URL },
       { rel: "alternate", hrefLang: "en", href: URL },
-      { rel: "alternate", hrefLang: "hi", href: "https://decoderead.dev/docs/hi/dpdp-act-code-analysis" },
-      { rel: "alternate", hrefLang: "ta", href: "https://decoderead.dev/docs/ta/dpdp-act-code-analysis" },
+      {
+        rel: "alternate",
+        hrefLang: "hi",
+        href: "https://decoderead.dev/docs/hi/dpdp-act-code-analysis",
+      },
+      {
+        rel: "alternate",
+        hrefLang: "ta",
+        href: "https://decoderead.dev/docs/ta/dpdp-act-code-analysis",
+      },
       { rel: "alternate", hrefLang: "x-default", href: URL },
     ],
     scripts: [
@@ -73,7 +85,11 @@ export const Route = createFileRoute("/docs/dpdp-act-ai-code-analysis")({
         children: JSON.stringify({
           "@context": "https://schema.org",
           "@type": "FAQPage",
-          mainEntity: FAQ.map((f) => ({ "@type": "Question", name: f.q, acceptedAnswer: { "@type": "Answer", text: f.a } })),
+          mainEntity: FAQ.map((f) => ({
+            "@type": "Question",
+            name: f.q,
+            acceptedAnswer: { "@type": "Answer", text: f.a },
+          })),
         }),
       },
     ],
@@ -81,11 +97,21 @@ export const Route = createFileRoute("/docs/dpdp-act-ai-code-analysis")({
   component: Page,
 });
 
-function Section({ icon, title, children }: { icon: React.ReactNode; title: string; children: React.ReactNode }) {
+function Section({
+  icon,
+  title,
+  children,
+}: {
+  icon: React.ReactNode;
+  title: string;
+  children: React.ReactNode;
+}) {
   return (
     <section className="mt-12">
       <div className="mb-3 flex items-center gap-3">
-        <span className="inline-flex h-9 w-9 items-center justify-center rounded-md border border-border bg-card text-primary">{icon}</span>
+        <span className="inline-flex h-9 w-9 items-center justify-center rounded-md border border-border bg-card text-primary">
+          {icon}
+        </span>
         <h2 className="font-display text-2xl font-medium tracking-tight">{title}</h2>
       </div>
       <div className="prose prose-sm max-w-none text-muted-foreground prose-headings:text-foreground prose-strong:text-foreground prose-li:marker:text-muted-foreground">
@@ -99,7 +125,9 @@ function Page() {
   return (
     <div className="min-h-screen bg-background text-foreground">
       <header className="sticky top-0 z-30 flex h-14 items-center justify-between border-b border-border/60 bg-background/80 px-6 backdrop-blur">
-        <Link to="/" aria-label="Decoder"><Logo /></Link>
+        <Link to="/" aria-label="Decoder">
+          <Logo />
+        </Link>
         <div className="flex items-center gap-1">
           <ThemeToggle />
           <LangSwitcher />
@@ -108,7 +136,10 @@ function Page() {
       </header>
 
       <main className="mx-auto max-w-3xl px-4 py-12 sm:px-6 md:py-16">
-        <Link to="/docs" className="inline-flex items-center gap-2 text-xs text-muted-foreground hover:text-foreground">
+        <Link
+          to="/docs"
+          className="inline-flex items-center gap-2 text-xs text-muted-foreground hover:text-foreground"
+        >
           <ArrowLeft className="h-3 w-3" /> Back to documentation
         </Link>
 
@@ -116,33 +147,56 @@ function Page() {
           DPDP Act &amp; AI code analysis
         </h1>
         <p className="mt-4 text-lg text-muted-foreground">
-          India's Digital Personal Data Protection Act 2023 (DPDP) reshapes how software teams handle personal data —
-          including the personal data that ends up inside source code, logs and test fixtures. Here is how Decoder is
-          designed to make DPDP alignment easier for AI code review.
+          India's Digital Personal Data Protection Act 2023 (DPDP) reshapes how software teams
+          handle personal data — including the personal data that ends up inside source code, logs
+          and test fixtures. Here is how Decoder is designed to make DPDP alignment easier for AI
+          code review.
         </p>
 
-        <Section icon={<Scale className="h-5 w-5" />} title="The three DPDP principles that matter for code review">
+        <Section
+          icon={<Scale className="h-5 w-5" />}
+          title="The three DPDP principles that matter for code review"
+        >
           <ul>
-            <li><strong>Data minimisation</strong> — only process what's necessary. Local inference &amp; BYOK cut the number of parties who see your code.</li>
-            <li><strong>Purpose limitation</strong> — Decoder analyses code you upload; it does not train models on it.</li>
-            <li><strong>Storage limitation</strong> — uploads are ephemeral. You choose what history to save; you can delete it any time.</li>
+            <li>
+              <strong>Data minimisation</strong> — only process what's necessary. Local inference
+              &amp; BYOK cut the number of parties who see your code.
+            </li>
+            <li>
+              <strong>Purpose limitation</strong> — Decoder analyses code you upload; it does not
+              train models on it.
+            </li>
+            <li>
+              <strong>Storage limitation</strong> — uploads are ephemeral. You choose what history
+              to save; you can delete it any time.
+            </li>
           </ul>
         </Section>
 
         <Section icon={<Lock className="h-5 w-5" />} title="How Decoder aligns by design">
           <ul>
-            <li><strong>BYOK credentials encrypted at rest</strong> with AES-256-GCM.</li>
-            <li><strong>Local model support</strong> via Ollama and LM Studio — zero egress option.</li>
-            <li><strong>No training</strong> on your code — ever.</li>
-            <li><strong>Open source (MIT)</strong> — you can audit every line, self-host, or run offline.</li>
+            <li>
+              <strong>BYOK credentials encrypted at rest</strong> with AES-256-GCM.
+            </li>
+            <li>
+              <strong>Local model support</strong> via Ollama and LM Studio — zero egress option.
+            </li>
+            <li>
+              <strong>No training</strong> on your code — ever.
+            </li>
+            <li>
+              <strong>Open source (MIT)</strong> — you can audit every line, self-host, or run
+              offline.
+            </li>
           </ul>
         </Section>
 
         <Section icon={<ShieldCheck className="h-5 w-5" />} title="Cross-border data transfers">
           <p>
-            The DPDP Act allows cross-border transfers unless a country is on a government blocklist. Even so,
-            most Indian teams prefer to minimise transfers where possible. Decoder's local-inference path lets you keep
-            your code in India end-to-end, using models running on your own machine or on infrastructure inside the country.
+            The DPDP Act allows cross-border transfers unless a country is on a government
+            blocklist. Even so, most Indian teams prefer to minimise transfers where possible.
+            Decoder's local-inference path lets you keep your code in India end-to-end, using models
+            running on your own machine or on infrastructure inside the country.
           </p>
         </Section>
 
@@ -155,23 +209,44 @@ function Page() {
               </div>
             ))}
           </dl>
-          <p className="mt-6 text-xs text-muted-foreground">This page is educational, not legal advice. Consult your DPO or counsel for a formal DPIA.</p>
+          <p className="mt-6 text-xs text-muted-foreground">
+            This page is educational, not legal advice. Consult your DPO or counsel for a formal
+            DPIA.
+          </p>
         </Section>
 
         <Section icon={<BookOpen className="h-5 w-5" />} title="Related guides">
           <ul>
-            <li><Link to="/docs/ai-code-review-india" className="text-foreground underline">AI code review in India</Link></li>
-            <li><Link to="/docs/gdpr-ai-code-review" className="text-foreground underline">GDPR &amp; AI code review (Europe)</Link></li>
-            <li><Link to="/docs/secure-code-review-byok" className="text-foreground underline">Secure code review with BYOK</Link></li>
-            <li><Link to="/docs/ai-code-review-outsourcing" className="text-foreground underline">Auditing outsourced AI code</Link></li>
+            <li>
+              <Link to="/docs/ai-code-review-india" className="text-foreground underline">
+                AI code review in India
+              </Link>
+            </li>
+            <li>
+              <Link to="/docs/gdpr-ai-code-review" className="text-foreground underline">
+                GDPR &amp; AI code review (Europe)
+              </Link>
+            </li>
+            <li>
+              <Link to="/docs/secure-code-review-byok" className="text-foreground underline">
+                Secure code review with BYOK
+              </Link>
+            </li>
+            <li>
+              <Link to="/docs/ai-code-review-outsourcing" className="text-foreground underline">
+                Auditing outsourced AI code
+              </Link>
+            </li>
           </ul>
         </Section>
       </main>
 
       <footer className="border-t border-border px-6 py-6 text-center text-xs text-muted-foreground">
         Decoder — open-source code understanding for the AI era.
-      
-        <div className="mt-2"><InstagramLink /></div></footer>
+        <div className="mt-2">
+          <InstagramLink />
+        </div>
+      </footer>
     </div>
   );
 }

@@ -3,21 +3,11 @@ import { z } from "zod";
 
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { appendAnalysisActivity } from "@/lib/analysis-activities";
-import {
-  normalizeChatMessages,
-  type PersistedChatMessage,
-} from "@/lib/chat-history";
+import { normalizeChatMessages, type PersistedChatMessage } from "@/lib/chat-history";
 
 const Provider = z.enum(["openai", "anthropic", "gemini", "openrouter"]);
 const LocalProvider = z.enum(["ollama", "lmstudio"]);
-const Proficiency = z.enum([
-  "nontech",
-  "junior",
-  "intermediate",
-  "senior",
-  "architect",
-  "cto",
-]);
+const Proficiency = z.enum(["nontech", "junior", "intermediate", "senior", "architect", "cto"]);
 const ExplanationType = z.enum(["human", "technical"]);
 const UiLanguage = z.enum(["en", "it", "zh"]);
 
@@ -125,7 +115,9 @@ async function loadFolderContext(
     }),
   );
 
-  return snippets.filter((s): s is { path: string; language: string | null; excerpt: string } => !!s);
+  return snippets.filter(
+    (s): s is { path: string; language: string | null; excerpt: string } => !!s,
+  );
 }
 
 export const sendFolderChatMessage = createServerFn({ method: "POST" })
@@ -388,14 +380,12 @@ export const saveLocalFolderChatTurn = createServerFn({ method: "POST" })
       { role: "assistant" as const, content: data.assistant_message },
     ];
     for (const m of inserts) {
-      const { error } = await context.supabase
-        .from("analysis_chat_messages")
-        .insert({
-          owner_id: context.userId,
-          folder_session_id: session.id,
-          role: m.role,
-          content: m.content,
-        });
+      const { error } = await context.supabase.from("analysis_chat_messages").insert({
+        owner_id: context.userId,
+        folder_session_id: session.id,
+        role: m.role,
+        content: m.content,
+      });
       if (error) throw error;
     }
 
