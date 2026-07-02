@@ -190,6 +190,10 @@ function OpenSourcePage() {
             {t("openSource.roadmapTitle")}
           </h2>
           <p className="mt-3 max-w-2xl text-muted-foreground">{t("openSource.roadmapIntro")}</p>
+          <p className="mt-4 max-w-2xl border-l-2 border-primary/60 bg-primary/5 px-4 py-3 text-sm text-foreground">
+            {t("openSource.roadmapShipped")}
+          </p>
+
           <ol className="mt-8 space-y-3">
             {roadmap.map((k, i) => (
               <li

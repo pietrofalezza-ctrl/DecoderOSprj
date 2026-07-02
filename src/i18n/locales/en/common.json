@@ -347,8 +347,9 @@
       "providers": "Integrate new AI providers or local engines compatible with the OpenAI API.",
       "docs": "Improve the user documentation in /docs."
     },
-    "roadmapTitle": "Future ideas",
-    "roadmapBody": "Areas under exploration are documented in the README and in the internal roadmap file in the repository, with no deadlines and no delivery guarantees."
+    "roadmapTitle": "Roadmap status",
+    "roadmapBody": "The current roadmap and shipped phases live in /open-source and in the repository README. Discussed in the open, no deadlines, no delivery guarantees."
+
   },
   "openSource": {
     "kicker": "Open Source",
@@ -371,13 +372,15 @@
     },
     "roadmapTitle": "Public roadmap",
     "roadmapIntro": "Next areas of work. Discussed in the open, editable by the community.",
+    "roadmapShipped": "Already shipped: Knowledge Hub + Engine, folder-scoped repo chat, cross-session persistence, installable PWA, EU/India SEO clusters, 2FA password reset, cleanup endpoint hardening, 20+ static-analysis languages.",
     "roadmap": {
-      "r1": "Extend analysis rules to new languages (Rust, Go, Kotlin, Swift).",
-      "r2": "VS Code plugin that invokes Decoder during PR review.",
-      "r3": "Shared community library of rules for typical AI-generated code smells.",
-      "r4": "Diff-aware mode: verify only the parts changed in a PR.",
-      "r5": "Provenance: track AI origin (Copilot, Cursor, ChatGPT) block by block."
+      "r1": "GitHub OAuth login and private-repo import with user PAT (in progress).",
+      "r2": "VS Code / JetBrains companion that invokes Decoder during PR review (in progress).",
+      "r3": "Deeper analyses: architecture, dependencies, performance, maintainability (next).",
+      "r4": "Diff-aware suggested inline comments, exportable as a PR review (next).",
+      "r5": "MCP server + shared community rule library for AI-generated code smells and block-level provenance (design)."
     },
+
     "extendTitle": "Extend the guardrail",
     "extendBody": "Analysis prompts live in src/lib/analysis-prompt.ts. Add a new kind, write the instructions, open a PR: the community reviews it, we refine it together.",
     "extendCta": "See the prompt file",

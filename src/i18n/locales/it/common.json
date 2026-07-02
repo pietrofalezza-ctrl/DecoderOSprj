@@ -347,8 +347,9 @@
       "providers": "Integrare nuovi provider AI o motori locali compatibili con OpenAI API.",
       "docs": "Migliorare la documentazione utente in /docs."
     },
-    "roadmapTitle": "Idee future",
-    "roadmapBody": "Le aree di lavoro in esplorazione sono documentate nel README e nel file di roadmap interna del repository, senza impegno di scadenze né garanzie di realizzazione."
+    "roadmapTitle": "Stato roadmap",
+    "roadmapBody": "La roadmap attuale e le fasi già rilasciate vivono in /open-source e nel README del repository. Discussa in pubblico, senza scadenze né garanzie di consegna."
+
   },
   "openSource": {
     "kicker": "Open Source",
@@ -371,13 +372,15 @@
     },
     "roadmapTitle": "Roadmap pubblica",
     "roadmapIntro": "Le prossime aree di lavoro. Discusse in pubblico, modificabili dalla community.",
+    "roadmapShipped": "Già live: Knowledge Hub + Engine, chat sul repo per cartella, persistenza tra sessioni, PWA installabile, cluster SEO EU/India, reset password con 2FA, hardening dell'endpoint di cleanup, oltre 20 linguaggi per l'analisi statica.",
     "roadmap": {
-      "r1": "Estensione delle regole di analisi a nuovi linguaggi (Rust, Go, Kotlin, Swift).",
-      "r2": "Plugin VS Code che richiama Decoder durante la review delle PR.",
-      "r3": "Libreria condivisa di regole community per smell tipici del codice generato da IA.",
-      "r4": "Modalità diff-aware: verifica solo le porzioni cambiate in una PR.",
-      "r5": "Provenance: tracciamento dell'origine AI (Copilot, Cursor, ChatGPT) blocco per blocco."
+      "r1": "Login GitHub OAuth e import di repo private con PAT utente (in corso).",
+      "r2": "Companion VS Code / JetBrains che richiama Decoder durante la review delle PR (in corso).",
+      "r3": "Analisi più profonde: architettura, dipendenze, performance, manutenibilità (prossima).",
+      "r4": "Suggested inline comments diff-aware, esportabili come review di PR (prossima).",
+      "r5": "MCP server + libreria condivisa di regole community per smell del codice AI e provenance blocco per blocco (progettazione)."
     },
+
     "extendTitle": "Estendi il guardrail",
     "extendBody": "I prompt di analisi vivono in src/lib/analysis-prompt.ts. Aggiungi un nuovo kind, scrivi le istruzioni, apri una PR: la community la valuta, la rifiniamo insieme.",
     "extendCta": "Vedi il file dei prompt",

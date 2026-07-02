@@ -347,8 +347,9 @@
       "providers": "集成新的 AI 提供商或兼容 OpenAI API 的本地引擎。",
       "docs": "改进 /docs 中的用户文档。"
     },
-    "roadmapTitle": "未来设想",
-    "roadmapBody": "正在探索的方向记录在仓库的 README 与内部路线图文件中,不设截止期限,也不保证一定会实现。"
+    "roadmapTitle": "路线图状态",
+    "roadmapBody": "当前路线图与已交付阶段公布在 /open-source 与仓库 README 中。公开讨论,不设截止期,也不保证一定交付。"
+
   },
   "openSource": {
     "kicker": "开源",
@@ -371,13 +372,15 @@
     },
     "roadmapTitle": "公开路线图",
     "roadmapIntro": "下一步的工作领域。公开讨论,社区可编辑。",
+    "roadmapShipped": "已上线:Knowledge Hub 与 Engine、按目录的仓库对话、跨会话持久化、可安装 PWA、欧盟/印度 SEO 集群、带 2FA 的密码重置、cleanup 端点加固、20+ 静态分析语言。",
     "roadmap": {
-      "r1": "把分析规则扩展到新语言(Rust、Go、Kotlin、Swift)。",
-      "r2": "VS Code 插件,在 PR 审查时调用 Decoder。",
-      "r3": "为典型 AI 生成代码异味建立共享社区规则库。",
-      "r4": "Diff 感知模式:仅核验 PR 中变更的部分。",
-      "r5": "溯源:逐块跟踪 AI 来源(Copilot、Cursor、ChatGPT)。"
+      "r1": "GitHub OAuth 登录与使用用户 PAT 的私有仓库导入(进行中)。",
+      "r2": "VS Code / JetBrains 伴侣插件,在 PR 审查时调用 Decoder(进行中)。",
+      "r3": "更深入的分析:架构、依赖、性能、可维护性(下一步)。",
+      "r4": "Diff 感知的建议内联评论,可作为 PR 审查导出(下一步)。",
+      "r5": "MCP 服务器 + 面向 AI 代码异味与块级溯源的社区共享规则库(设计中)。"
     },
+
     "extendTitle": "扩展护栏",
     "extendBody": "分析提示位于 src/lib/analysis-prompt.ts。新增一种 kind,编写指令,提交 PR:社区审阅,我们一起打磨。",
     "extendCta": "查看提示文件",
