@@ -295,9 +295,10 @@ function Landing() {
                     onClick={() => setMenuOpen(false)}
                     className="inline-flex items-center gap-2 rounded-md px-3 py-3 hover:bg-accent"
                   >
-                    <InstagramLink showLabel={false} className="text-foreground" />
+                    <InstagramIcon className="h-4 w-4" />
                     Instagram
                   </a>
+
 
                   <div className="mt-4 border-t border-border pt-4">
                     <Link
