@@ -287,6 +287,17 @@ function Landing() {
                     <Github className="h-4 w-4" />
                     GitHub
                   </a>
+                  <a
+                    href={t("common.instagramUrl")}
+                    target="_blank"
+                    rel="noreferrer"
+                    onClick={() => setMenuOpen(false)}
+                    className="inline-flex items-center gap-2 rounded-md px-3 py-3 hover:bg-accent"
+                  >
+                    <InstagramLink showLabel={false} className="text-foreground" />
+                    Instagram
+                  </a>
+
                   <div className="mt-4 border-t border-border pt-4">
                     <Link
                       to="/auth"
