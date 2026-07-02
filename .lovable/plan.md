@@ -1,25 +1,73 @@
+CONSEGNA: Primo post di lancio Instagram per Decoder
 
-# Sostituire favicon e logo con il nuovo mark Instagram
+1. Format consigliato
+   Carosello 6 slide (1080×1080 o 1080×1350 verticale). Il carosello tende a performare meglio del post singolo sul target dev/tech perché permette di educare in più step. La prima slide deve essere un "pattern interrupt": domanda diretta, senza logo pesante.
 
-## Cosa faccio
+2. Post principale (caption)
 
-1. **Copia asset**: `decoder-instagram-logo.png` → `public/favicon.png` (versione 512px per icon), `public/apple-touch-icon.png` (180px), `public/og-image.png` (1200×630 con padding su fondo nero).
-2. **Rimuovo default**: `rm public/favicon.ico` (Lovable default) e `public/favicon.svg` obsoleto.
-3. **Aggiorno `src/routes/__root.tsx`**: sostituisco il link `favicon.svg` con `favicon.png` (type `image/png`) + `apple-touch-icon`.
-4. **Aggiorno `public/manifest.webmanifest`**: sostituisco entries `icons[]` con nuovo PNG (192/512).
-5. **Aggiorno `src/components/Logo.tsx`**: il componente attuale usa SVG inline — lo sostituisco con `<img src="/favicon.png">` mantenendo dimensioni e alt esistenti, in modo che header/AppShell mostrino il nuovo mark ovunque venga usato `<Logo />`.
-6. **Verifica**: build e ispezione visuale header su desktop + mobile.
+Il tuo codice è sempre più scritto dall'IA. Ma lo stai leggendo davvero?
 
-## File toccati
-- `public/favicon.png` (nuovo)
-- `public/apple-touch-icon.png` (nuovo)
-- `public/og-image.png` (nuovo)
-- `public/favicon.ico` (delete)
-- `public/favicon.svg` (delete se presente)
-- `public/manifest.webmanifest`
-- `src/routes/__root.tsx`
-- `src/components/Logo.tsx`
+Decoder è lo strumento open source che ti aiuta a capire il codice — prima che un bug, una dipendenza o uno snippet "AI-generated" ti sorprenda.
 
-## Note
-- Non tocco `src/components/LangSwitcher`, `PublicHeaderAuthSlot`, o altri componenti che consumano `<Logo />` — l'aggiornamento si propaga automaticamente.
-- OG image di default resta su leaf routes che già la definiscono; aggiorno solo il file `/og-image.png` se referenziato dal root, altrimenti lo lascio come asset disponibile.
+Cosa puoi fare gratis:
+→ Caricare un singolo file, uno ZIP o un URL Git
+→ Analisi statica su 20+ linguaggi (JavaScript, TypeScript, Python, Go, Rust, SQL...)
+→ Scan malware e rilevamento minacce come LockBit 3.0
+→ Usare le funzioni AI con la tua chiave (BYOK) o in locale
+→ Chiedere al codice in chat e tenere uno storico delle analisi
+
+Nessuna chiave API? Funziona comunque per tutti i controlli statici e di sicurezza.
+
+Open source · MIT · Made in Italy
+Link in bio 🔗
+
+#Decoder #OpenSource #AI #CodeReview #DevTools #AIcoding #DeveloperTools #Coding #AIcode #CodeSecurity #BYOK #Privacy #GDPR #MilanTech #ItalianTech #DevCommunity #AIAct #SoftwareEngineering #Programmazione #Sviluppatori #CodeAnalysis #MalwareScan #CleanCode #AIawareness
+
+3. Carosello 6 slide — copy per slide
+
+Slide 1 — Hook (domanda + logo piccolo)
+"Il tuo codice è scritto da un'IA. 
+Lo stai leggendo davvero?"
+Decoder — leggi il codice insieme all'IA.
+
+Slide 2 — Input
+"Carica qualsiasi cosa"
+✓ Singolo file
+✓ Archivio ZIP
+✓ URL Git pubblico
+Zero configurazione. 20+ linguaggi supportati.
+
+Slide 3 — Gratis senza API key
+"Controlli statici e sicurezza, subito"
+→ Analisi statica (SAST)
+→ Scan malware / LockBit 3.0
+→ Rilevamento AI-origin
+Nessuna chiave richiesta.
+
+Slide 4 — AI con il tuo controllo
+"AI con chiave tua, o in locale"
+→ BYOK (OpenRouter, OpenAI, Anthropic, Ollama...)
+→ Nessuna chiave salvata in chiaro
+→ Privacy-first e GDPR-friendly
+
+Slide 5 — Chatta e tieni storico
+"Chiedi al tuo codice"
+→ Spiegazioni AI su file o intero progetto
+→ Chat persistente per sessione
+→ Storico analisi tra i dispositivi
+
+Slide 6 — CTA + trust
+"Open source · MIT · Made in Italy"
+Provalo gratis. Link in bio.
+
+4. Prossimi passi su cui approviamo
+   - Selezionare il tono della slide 1 (tecnico/ironico/diretto)
+   - Generare le 6 immagini del carosello (formato 1080×1350) in stile Decoder con il nuovo logo
+   - Salvare copy e asset in /marketing/social/launch-instagram/
+
+5. Note tecniche per il virale
+   - Hook nei primi 90 caratteri
+   - 3 emoji nella caption, nessuna in eccesso
+   - Hashtag mix: 5 italiani (es. #AI, #Sviluppatori, #Programmazione), 5 tecnici internazionali, 5 nicchia (BYOK, AIAct, CodeReview)
+   - CTA "salva questo post" opzionale per aumentare il reach
+   - Consigliato di postare martedì o giovedì pomeriggio per il tech audience
