@@ -544,8 +544,10 @@ function Landing() {
               >
                 GitHub
               </a>
+              <InstagramLink />
             </nav>
             <span>{t("footer.ownership")}</span>
+
           </div>
           <p className="mt-6 border-t border-border/40 pt-6 text-center text-[11px] leading-relaxed text-muted-foreground/80 md:text-left">
             {t("footer.disclaimer")}
