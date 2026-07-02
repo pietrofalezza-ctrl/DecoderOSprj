@@ -229,8 +229,10 @@ function ManifestoPage() {
             >
               GitHub
             </a>
+            <InstagramLink />
           </nav>
           <span>{t("footer.ownership")}</span>
+
         </div>
       </footer>
     </div>
